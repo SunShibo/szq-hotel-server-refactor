@@ -323,6 +323,7 @@ public class AdminController extends BaseCotroller {
         super.safeJsonPrint(response, result);
     }
 
+
     /**
      * 编辑对应角色的权限
      * @param request

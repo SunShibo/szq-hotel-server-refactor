@@ -54,14 +54,13 @@
     <insert id="adminRegister" parameterType="com.szq.hotel.entity.bo.AdminBO" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO lt_admin  SET NAME = #{name},
-        phone_number = #{phoneNumber},
-        gender = #{gender},
+        mobile = #{mobile},
         PASSWORD=#{password},
-        create_time=#{createTime},
+        create_time=now(),
         STATUS=#{status},
         role_id=#{roleId},
-        update_time=#{updateTime},
-        email=#{email}
+        update_time=now(),
+
     </insert>
 
     <!-- wy查找角色名是否注册过  -->
