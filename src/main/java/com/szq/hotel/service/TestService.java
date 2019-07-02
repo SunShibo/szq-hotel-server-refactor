@@ -16,9 +16,10 @@ public class TestService {
     private TestDAO testDAO;
 
 
-
-
-   public int  test() {
-        return 0;
+   public void  test() {
+       testDAO.updateU1(1,100);
+       //模拟出现异常
+       int a=5/0;
+       testDAO.updateU2(2,100);
     }
 }

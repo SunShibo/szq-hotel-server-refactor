@@ -5,8 +5,13 @@
 <!-- 【用户】 -->
 <mapper namespace="com.szq.hotel.dao.TestDAO">
 
-    <select id="test" resultType="int">
-        select count(id) from hm_hotel
-    </select>
+    <update id="updateU1"  >
+      UPDATE  hm_test SET  num=num-#{num}  WHERE  id=#{id}
+    </update>
+
+    <update id="updateU2"  >
+        UPDATE  hm_test SET  num=num+#{num}  WHERE  id=#{id}
+    </update>
+
 
 </mapper>

@@ -23,7 +23,7 @@
     </bean>
 
     <aop:aspectj-autoproxy/>
-    <bean id="idempotencyInterceptor" class="com.szq.hotel.system.idempotency.core.IdempotencyInterceptor">
+           <bean id="idempotencyInterceptor" class="com.szq.hotel.system.idempotency.core.IdempotencyInterceptor">
     </bean>
 
     <aop:config proxy-target-class="true">

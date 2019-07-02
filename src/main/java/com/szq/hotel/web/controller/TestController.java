@@ -1,9 +1,12 @@
 package com.szq.hotel.web.controller;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
+import com.szq.hotel.service.TestService;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -14,13 +17,12 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/test")
 public class TestController extends BaseCotroller {
+    @Resource
+    private TestService testService;
 
     @RequestMapping("/test")
-    public void queryVersion(HttpServletResponse response){
-
-        String json=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("0000001"));
-        safeTextPrint(response,json);
-        return;
+    public void queryVersion(){
+        testService.test();
     }
 
 }
