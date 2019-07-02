@@ -242,7 +242,15 @@ public class BaseCotroller {
 //    public void putLoginClientInfo (String loginId , ClientInfo clientInfo) {
 //        this.putSession(createKey(loginId, SysConstants.CURRENT_LOGIN_CLIENT), clientInfo) ;
 //    }
+    /**wy获取登录管理员*/
+    public AdminBO getLoginAdmin (HttpServletRequest request ) {
+        return (AdminBO) this.getSession(request, SysConstants.CURRENT_LOGIN_USER) ;
+    }
 
+    /** wy把管理员信息存入redis*/
+    public void putLoginAdmin (String loginId , AdminBO loginUser) {
+        this.putSession(createKey(loginId, SysConstants.CURRENT_LOGIN_USER), loginUser) ;
+    }
     /** putSession */
     public void putSession (HttpServletRequest request, String key , String value ) {
         this.putSession(createKey(this.getLoginID(request), key), value) ;
