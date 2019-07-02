@@ -8,12 +8,28 @@ public class RoleBO {
     private Integer id; // 角色
 
     private String roleName; //角色名称
-
+    private Integer createUserId;//创建时间
+    private Integer updateUserId;//修改时间
     private Date createTime; //创建时间按
-
     private Date updateTime; // 修改时间
 
     private List<MenuBO> menus;//该角色拥有的菜单权限
+
+    public Integer getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(Integer createUserId) {
+        this.createUserId = createUserId;
+    }
+
+    public Integer getUpdateUserId() {
+        return updateUserId;
+    }
+
+    public void setUpdateUserId(Integer updateUserId) {
+        this.updateUserId = updateUserId;
+    }
 
     public List<MenuBO> getMenus() {
         return menus;

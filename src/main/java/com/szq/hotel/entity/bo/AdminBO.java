@@ -1,5 +1,6 @@
 package com.szq.hotel.entity.bo;
 
+import com.sun.jmx.snmp.SnmpInt;
 import com.szq.hotel.entity.bo.common.base.BaseModel;
 
 import java.util.Date;
@@ -11,22 +12,41 @@ import java.util.Set;
 public class AdminBO extends BaseModel {
 
     private Integer id;// 管理员用户
-
     private String mobile; // 手机号
-
     private String name; // 名称
-
     private String password; // 密码
-
     private String status; // 状态
-
     private Integer roleId; // 角色id
-
     private Date createTime; // 创建时间
-
+    private Integer createUserId;//创建人
+    private Date updateTime; //修改时间
+    private Integer updateUserId;//修改人
     private String roleName; //角色
-
     private Set<String> url;//所拥有的接口
+
+    public Integer getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(Integer createUserId) {
+        this.createUserId = createUserId;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Integer getUpdateUserId() {
+        return updateUserId;
+    }
+
+    public void setUpdateUserId(Integer updateUserId) {
+        this.updateUserId = updateUserId;
+    }
 
     public Integer getId() {
         return id;
