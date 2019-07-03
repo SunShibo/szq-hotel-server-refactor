@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.MemberLevelDAO">
+
+    <!--查询会员所有信息-->
+    <select id="selectmember" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
+        SELECT * FROM hm_member_level WHERE state = 'yes'
+    </select>
+
+    <!--新增会员级别-->
+    <insert id="addMemberLevel" useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.MemberLevelBO">
+        INSERT INTO `hm_member_level` (`name`, `state`, `type`, `create_user_id`, `create_time`)
+        VALUES (#{name},#{state},#{type},#{createUserId},NOW())
+    </insert>
+
+    <!--修改酒店-->
+    <update id="updateMemberLevel" parameterType="com.szq.hotel.entity.bo.MemberLevelBO">
+        UPDATE `hm_member_level`
+        <set>
+            <if test="name!=null and name !=''" >   `name`=#{name},  </if>
+            <if test="state!=null and state !=''" >   `state`=#{state},  </if>
+            <if test="type!=null and type !=''" >    `type`=#{type}, </if>
+            <if test="updateUserId!=null" >`update_user_id`=#{updateUserId},</if>
+            `update_time`=NOW()
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <!--通过id查询会员级别-->
+    <select id="queryMemberById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberLevelBO">
+        SELECT * FROM `hm_member_level` WHERE id=#{id}
+    </select>
+
+
+</mapper>
