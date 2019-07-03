@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>房型管理</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<div class="layui-btn-container" style="width: 90%;margin: 0 auto;padding: 10px 0;">
+    <button class="layui-btn" id="addRoomType">添加房型</button>
+</div>
+<div class="tab-box">
+    <table id="roomTypeManage" lay-filter="roomTypeManage" class="layui-table"></table>
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="query">远期价格</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'element', 'form'], function () {
+        var table = layui.table, form = layui.form, element = layui.element, $ = layui.$;
+        renderReport($)
+        $(function () {
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+        })
+
+        var tab = table.render({
+            elem: '#roomTypeManage'
+            , method: 'POST'
+            , limit: 10000
+            , url: api.queryHouseType //数据接口
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            }
+            , cols: [[ //表头
+                {field: 'id', title: '房型编号', align: 'center'}
+                , {field: 'name', title: '房型名称', align: 'center'}
+                , {field: 'typePrice', title: '标准价格', align: 'center'}
+                , {field: 'timePrice', title: '钟点房价格', align: 'center'}
+                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo'}
+            ]]
+        });
+
+        //表格操作按钮
+        table.on('tool(roomTypeManage)', function (obj) { //tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if (layEvent === 'query') { //查看价格
+                sessionStorage.setItem('roomTypeId', data.id);
+                layer.open({
+                    type: 2,
+                    skin: 'demo-class',
+                    area: ['800px', '400px'],
+                    title: data.name + '价格',
+                    shade: 0.6,
+                    shadeClose: true,
+                    content: 'iframe_queryRoomPriceAll.html'
+                });
+            } else if (layEvent === 'edit') { //编辑
+                sessionStorage.setItem('roomTypeId', data.id);
+                layer.open({
+                    type: 2,
+                    skin: 'demo-class',
+                    area: ['1000px', '700px'],
+                    title: data.name + '价格设置',
+                    shade: 0.6,
+                    shadeClose: true,
+                    content: 'iframe_roomTypePrice.html?s=1',
+                    end: function () {
+                        tab.reload();
+                    }
+                });
+            } else if (layEvent === 'del') {
+                layer.confirm('真的删除吗', function (index) {
+                    $.ajax({
+                        url: api.deleteHouseType,
+                        data: {
+                            id: data.id
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            tab.reload();//刷新表格
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+        //新增
+        $('#addRoomType').on('click', function () {
+            layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['1000px', '700px'],
+                title: '新增房型',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_roomTypePrice.html',
+                end: function () {
+                    tab.reload();
+                }
+            });
+        })
+
+
+    });
+</script>
+</body>
+</html>

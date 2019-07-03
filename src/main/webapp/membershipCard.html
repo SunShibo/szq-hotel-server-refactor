@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员卡管理</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="layui-form" style="padding: 10px 0; position: relative;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">筛选</label>
+        <div class="layui-input-block">
+            <input type="radio" lay-filter="option" name="option" value="" title="全部" lay-skin="primary" checked>
+            <input type="radio" lay-filter="option" name="option" value="1" title="待分配" lay-skin="primary">
+            <input type="radio" lay-filter="option" name="option" value="2" title="使用中" lay-skin="primary">
+        </div>
+        <div class="layui-input-block" style="position: absolute; right: 5%;top: 10px;">
+            <a class="layui-btn" id="addCard">添加</a>
+            <button class="layui-btn" lay-submit lay-filter="outExcel">导出</button>
+        </div>
+    </div>
+</form>
+<div class="tab-box">
+    <table id="membershipCard" lay-filter="membershipCard" class="layui-table"></table>
+</div>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    {{# if(d.state == 1) { }}
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{# } else { }}
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="cancellation">注销</a>
+    {{# } }}
+</script>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.$, form = layui.form, table = layui.table;
+        renderReport($)
+        $(function () {
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+        });
+
+        //第一个实例
+        var tab = table.render({
+            elem: '#membershipCard'
+            , method: 'POST'
+            , url: api.cartInfo //数据接口
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.cart //解析数据列表
+                };
+            }
+            , page: true //开启分页
+            , even: true
+            , cols: [[ //表头
+                {field: 'cart', title: '卡号', align: 'center'}
+                , {field: 'name', title: '会员级别', align: 'center'}
+                , {field: 'price', title: '卡售价', align: 'center'}
+                , {
+                    field: 'state', title: '卡状态', align: 'center', templet: function (data) {
+                        switch (data.state) {
+                            case 1:
+                                return '待分配';
+                            case 2:
+                                return '使用中';
+                        }
+                    }
+                }
+                , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barDemo'}
+            ]]
+        });
+
+        //监听导出按钮提交
+        form.on('submit(outExcel)', function (data) {
+            location.href = api.cartExport + '?state=' + data.field.option;
+            return false;
+        });
+
+        //表格操作按钮
+        table.on('tool(membershipCard)', function (obj) { //tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if(layEvent === 'cancellation'){//注销
+                layer.confirm('真的注销吗', function (index) {
+                    $.ajax({
+                        url: api.cartLogout,
+                        data: {
+                            id: data.id
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            tab.reload();//刷新表格
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('真的删除吗', function (index) {
+                    $.ajax({
+                        url: api.cartDelete,
+                        data: {
+                            id: data.id
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            tab.reload();//刷新表格
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (layEvent === 'edit') { //编辑
+                layer.open({
+                    type: 2,
+                    skin: 'demo-class',
+                    area: ['650px', '400px'],
+                    title: '编辑',
+                    shade: 0.6,
+                    shadeClose: true,
+                    content: 'iframe_membersCard.html?state=1&id=' + data.id,
+                    end: function (index, layero) {
+                        tab.reload();
+                    }
+                });
+            }
+        });
+
+        $('#addCard').on('click', function () {
+            layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['700px', '300px'],
+                title: '添加会员卡',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_membersCard.html?state=0',
+                end: function (index, layero) {
+                    tab.reload();
+                }
+            });
+        });
+
+        form.on('radio(option)', function (data) {
+            tab.reload({
+                where: {
+                    state: data.value
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

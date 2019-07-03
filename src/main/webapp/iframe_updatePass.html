@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<form class="layui-form" style="padding: 10px 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">旧密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="oldPass" required lay-verify="required|pass" placeholder="请输入旧密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="newPass" required lay-verify="required|pass" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="okPass" required lay-verify="required|pass" placeholder="请输入确认密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-input-block" style="position: fixed; right: 20px; bottom: 20px;">
+        <button class="layui-btn" lay-submit="" lay-filter="formData">生效</button>
+        <button type="button" class="layui-btn layui-btn-primary" id="back">取消</button>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form','jquery'], function () {
+        form = layui.form,$=layui.jquery;
+
+        //取消按钮
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        //自定义验证规则
+        form.verify({
+            pass: [/(.+){6,12}$/, '密码必须6到12位']
+        });
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            if(data.field.newPass === data.field.okPass){
+                $.ajax({
+                    url:api.updatePassWord,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        passWord: data.field.oldPass,
+                        newPassword: data.field.newPass,
+                        confirmPassword: data.field.okPass
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if(data.success){
+                            showMsg('修改成功', 1, true);
+                            parent.location.href = 'login.html'
+                        } else {
+                            showMsg(data.errMsg, 2, false);
+                        }
+                    }
+                })
+            } else {
+                showMsg('输入新密码与确认密码不匹配', 2, false);
+                return false;
+            }
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理层报表</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .text {
+            text-indent: 25px
+        }
+    </style>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="layui-form" style="padding-top: 10px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">起止时间</label>
+        <div class="layui-input-inline" style="width: 165px;">
+            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
+                   class="layui-input inline-input"
+                   id="startTime1"
+                   placeholder="开始时间">
+        </div>
+        <div class="layui-input-inline">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
+        </div>
+    </div>
+</form>
+<div class="tab-box">
+    <table id="cashierAccount" lay-filter="cashierAccount" class="layui-table"></table>
+</div>
+<div style="color:#ff3400; width: 90%;margin: 20px auto;">
+    <label>注：</label>
+    <div class="text">房晚数 = 夜核房晚数 + 新增房晚数</div>
+    <div class="text">REVPAR = 应收合计 / (总房间数 - 维修房数)</div>
+    <div class="text">出租率 = 房晚数 / (总房间数 - 维修房数) * 100%</div>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+
+    layui.use(['form', 'jquery', 'table', 'laydate'], function () {
+        var form = layui.form, $ = layui.$, table = layui.table, laydate = layui.laydate
+            , startTime = 0, endTime = 0;
+        $(function () {
+            console.log(new Date());
+            $('#startTime').val(DateToLStr3(new Date()));
+            $.ajax({
+                url: api.FormManangeResponse,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    startTime: new Date(DateToLStr4(new Date()).concat('04:00:00')),
+                    endTime: new Date(new Date(DateToLStr4(new Date()).concat('04:00:00')).getTime() + (24 * 60 * 60 * 1000))
+                },
+                success: function (rs) {
+                    if (rs.success) {
+                        var data = formatData(rs.data);
+                        if(!!data.length){
+                            tab.reload({data: JSON.parse(JSON.stringify(data))})
+                        }
+                    } else {
+                        showMsg(rs.errMsg, 2, false);
+                    }
+                }
+            });
+        })
+
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            if (!startTime) {
+                startTime = new Date(DateToLStr4(new Date()).concat(' 04:00:00'))
+            }
+            if (!endTime) {
+                endTime = new Date(new Date(DateToLStr4(new Date()).concat(' 04:00:00')).getTime() + (24 * 60 * 60 * 1000));
+            }
+            $.ajax({
+                url: api.FormManangeResponse,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    startTime: startTime,
+                    endTime: new Date(endTime)
+                },
+                success: function (rs) {
+                    if (rs.success) {
+                        var data = formatData(rs.data);
+                        tab.reload({data: JSON.parse(JSON.stringify(data))})
+                    } else {
+                        showMsg(rs.errMsg, 2, false);
+                    }
+                }
+            });
+            return false;
+        });
+
+        /**
+         *这里需要先用Number进行数据类型转换，然后去指定截取转换后的小数点后几位(按照四舍五入)，这里是截取一位，0.1266转换后会变成12.7%
+         */
+        function toPercent(point) {
+            var str = Number(point * 100).toFixed(2);
+            str += "%";
+            return str;
+        }
+
+        function formatObj(data, dataName) {
+            data[dataName].day = data[dataName].day ? toDecimal(parseInt(data[dataName].day)) : '0.00';
+            data[dataName].month = data[dataName].month ? toDecimal(parseInt(data[dataName].month)) : '0.00';
+            data[dataName].year = data[dataName].year ? toDecimal(parseInt(data[dataName].year)) : '0.00';
+            data[dataName].lastYear = data[dataName].lastYear ? toDecimal(parseInt(data[dataName].lastYear)) : '0.00';
+            data[dataName].lastYearMonth = data[dataName].lastYearMonth ? toDecimal(parseInt(data[dataName].lastYearMonth)) : '0.00';
+            data[dataName].lastYearDay = data[dataName].lastYearDay ? toDecimal(parseInt(data[dataName].lastYearDay == '' ? 0 : data[dataName].lastYearDay)) : '0.00';
+            return data[dataName];
+        }
+
+
+        function formatDataInfo(data) {
+            data['guestRoomCount'].name = '客房总数';
+            data['roomCount'].name = '房晚数';
+            data['people'].name = '人晚数';
+            data['vacancies'].name = '空房数';
+            data['rents'].name = '出租率';
+            data['freeRoom'].name = '免费房数';
+            data['rents'].day = data['rents'].day ? toPercent(data['rents'].day) : '0%';
+            data['rents'].month = data['rents'].month ? toPercent(data['rents'].month) : '0%';
+            data['rents'].year = data['rents'].year ? toPercent(data['rents'].year) : '0%';
+            data['rents'].lastYear = data['rents'].lastYear ? toPercent(data['rents'].lastYear) : '0%';
+            data['rents'].lastYearMonth = data['rents'].lastYearMonth ? toPercent(data['rents'].lastYearMonth) : '0%';
+            data['rents'].lastYearDay = data['rents'].lastYearDay ? toPercent(data['rents'].lastYearDay == '' ? 0 : data['rents'].lastYearDay) : '0%';
+            data['stopRoom'].name = '停用房数';
+            data['maintenanceRoom'].name = '维修房数';
+            data['memberRoom'].name = '会员房晚';
+            data['accountsReceivable'] = formatObj(data, 'accountsReceivable');
+            data['accountsReceivable'].name = '应收合计';
+            data['theRent'] = formatObj(data, 'theRent');
+            data['theRent'].name = '房租收入';
+            data['product'] = formatObj(data, 'product');
+            data['product'].name = '商品收入';
+            data['compensation'] = formatObj(data, 'compensation');
+            data['compensation'].name = '赔偿收入';
+            data['membership'] = formatObj(data, 'membership');
+            data['membership'].name = '会员销售收入';
+            data['rateAdjustment'] = formatObj(data, 'rateAdjustment');
+            data['rateAdjustment'].name = '房费调整';
+            data['averageHouse'] = formatObj(data, 'averageHouse');
+            data['averageHouse'].name = '平均房价';
+            data['averageHousePay'] = formatObj(data, 'averageHousePay');
+            data['averageHousePay'].name = '房均消费';
+            data['capitaPay'] = formatObj(data, 'capitaPay');
+            data['capitaPay'].name = '人均消费';
+            // data['newRoom'].name = '新增房晚数';
+            data['nightRoom'].name = '夜核房晚数';
+            data['zdRoom'].name = '钟点房晚数';
+            data['revpar'].name = 'REVPAR';
+            return data
+        }
+
+        function formatData(rs) {
+            var data = formatDataInfo(rs), arr = [];
+            for (var item in data) {
+                if(typeof data[item] != 'object' || !data[item])continue;
+                arr.push(data[item]);
+            }
+            // arr.push(data['guestRoomCount']);
+            // arr.push(data['roomCount']);
+            // arr.push(data['people']);
+            // arr.push(data['vacancies']);
+            // arr.push(data['rents']);
+            // arr.push(data['freeRoom']);
+            // arr.push(data['stopRoom']);
+            // arr.push(data['maintenanceRoom']);
+            // arr.push(data['memberRoom']);
+            // arr.push(data['accountsReceivable']);
+            // arr.push(data['theRent']);
+            // arr.push(data['product']);
+            // arr.push(data['compensation']);
+            // arr.push(data['membership']);
+            // arr.push(data['rateAdjustment']);
+            // arr.push(data['averageHouse']);
+            // arr.push(data['averageHousePay']);
+            // arr.push(data['capitaPay']);
+            // // arr.push(data['newRoom']);
+            // arr.push(data['nightRoom']);
+            // arr.push(data['zdRoom']);
+            // arr.push(data['revpar']);
+            return arr
+        }
+
+        var tab = table.render({
+            elem: '#cashierAccount'
+            , even: true
+            , loading: true // 是否显示加载条
+            , title: '管理层报表'
+            , done: function (res, curr, count) {
+                $(".layui-table-tool-temp").html('<p style="text-align: center">管理层报表</p>');
+            }
+            , toolbar: true
+            , limit: 10000
+            , cols: [[ //标题栏
+                {field: 'name', title: '项目', align: 'center'}
+                , {field: 'day', title: '当日', align: 'center'}
+                , {field: 'month', title: '本月', align: 'center'}
+                , {field: 'year', title: '本年', align: 'center'}
+                , {field: 'lastYear', title: '去年', align: 'center'}
+                , {field: 'lastYearMonth', title: '去年当月', align: 'center'}
+                , {
+                    field: 'lastYearDay', title: '去年当天', align: 'center', templet: function (data) {
+                        if (data.lastYearDay == '') {
+                            return '0';
+                        } else {
+                            return data.lastYearDay;
+                        }
+                    }
+                }
+            ]]
+        });
+
+        var start = laydate.render({
+            elem: '#startTime',
+            type: 'date',
+            btns: ['confirm'],
+            done: function (value, date) {
+                startTime = new Date(value.concat(' 04:00:00').replace(/-/g, "/"));
+                endTime = new Date(value.concat(' 04:00:00').replace(/-/g, "/")).getTime() + (24 * 60 * 60 * 1000);
+            }
+        });
+    });
+</script>
+</body>
+</html>

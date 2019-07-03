@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>预订修改</title>
+	<script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+	<style>
+		.layui-colla-title {
+			background: transparent;
+			text-align: left;
+			border: 0px;
+		}
+	</style>
+</head>
+
+<body>
+
+<nav class="hotel-nav">
+
+	<ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+	</ul>
+	<ul class="layui-nav layui-layout-right">
+		<li class="layui-nav-item">
+			<a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+			<dl class="layui-nav-child">
+				<dd>
+					<a href="javascript:;" id="updateHotel">更换酒店</a>
+				</dd>
+				<dd>
+					<a href="javascript:;" id="updatePass">修改密码</a>
+				</dd>
+				<dd>
+					<a href="javascript:;" class="outLogin">退出登录</a>
+				</dd>
+			</dl>
+		</li>
+	</ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="layui-form">
+	<div class="layui-tab layui-tab-card" lay-filter="rzfs">
+		<ul class="layui-tab-title">
+			<!--<li class="center-tab-list layui-this">直接入住</li>-->
+			<li class="center-tab-list">预定修改</li>
+		</ul>
+		<section class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<div class="line-block portrait-wp">
+					<img src="images/portrait.jpg" width="140" height="160" />
+					<p class="portrait-lev" id="userLevel"></p>
+				</div>
+				<div class="line-block right-content">
+					<div class="layui-form-item layui-form">
+						<div class="layui-inline">
+							<label class="layui-form-label require">姓名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="name"  id="name" lay-verify="required|name" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">证件类型</label>
+							<div class="layui-input-inline">
+								<select name="certificateId" id="certificateId">
+
+								</select>
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label ">证件号</label>
+							<div class="layui-input-inline">
+								<input type="text" name="credentialNo" onblur="idFlag(1)" id="credentialNo" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label require">电话</label>
+							<div class="layui-input-inline">
+								<input type="tel" name="phoneNumber" onblur="idFlag(2)"  id="phoneNumber" autocomplete="off" lay-verify="required" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-inline fr">
+							<!--<a class="layui-btn layui-btn-primary " id="readCre">读取证件</a>-->
+							<a class="layui-btn layui-btn-warm" onclick="clearData()">清除资料</a>
+						</div>
+
+					</div>
+				</div>
+				<div class="layui-collapse more" >
+					<div class="layui-colla-item">
+						<h2 class="layui-colla-title">更多资料</h2>
+						<div class="layui-colla-content">
+							<div class="layui-form-item layui-form">
+								<div class="layui-inline">
+									<label class="layui-form-label">性别</label>
+									<div class="layui-input-inline">
+										<input type="text" name="gender" id="gender" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">生日</label>
+									<div class="layui-input-inline">
+										<input type="text" class="layui-input" id="birthday" name="birthday" placeholder="yyyy-MM-dd">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">邮箱</label>
+									<div class="layui-input-inline">
+										<input type="text" name="email" id="email" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+
+								<div class="layui-inline">
+									<label class="layui-form-label">微信</label>
+									<div class="layui-input-inline">
+										<input type="text" name="wechat" id="wechat" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">qq</label>
+									<div class="layui-input-inline">
+										<input type="text" name="qq" id="qq" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">国籍</label>
+									<div class="layui-input-inline">
+										<input type="text" name="nationality" id="nationality" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">爱好</label>
+									<div class="layui-input-inline">
+										<input type="text" name="hobby" id="hobby" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">民族</label>
+									<div class="layui-input-inline">
+										<input type="text" name="nation" id="nation" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+
+
+								<div class="layui-inline">
+									<label class="layui-form-label">地址</label>
+									<div class="layui-input-inline">
+										<input type="text" name="address" id="address" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">备注</label>
+									<div class="layui-input-inline">
+										<input type="text" name="remark" id="remark" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">车牌号</label>
+									<div class="layui-input-inline">
+										<input type="text" name="licensePlateNumber" id="licensePlateNumber" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</section>
+		<section class="border-e6 mg10 pd10">
+			<p class="border-e6 order-title">订单信息</p>
+			<div class="layui-form-item layui-form">
+				<div class="layui-inline" style="padding-left: 20px;">
+					<input type="checkbox" name="" title="合作机构" id="hhzzjjgg" lay-skin="primary" lay-filter="hzjg">
+					<span style="background: #ccc;width: 200px;height: 45px;line-height: 45px;"></span>
+				</div>
+				<div class="layui-inline channelSelect layui-hide" >
+					<select id="channelSelect" lay-filter="floor" lay-search>
+					</select>
+				</div>
+				<div class="layui-input-inline" style="float: none">
+					<input type="text" name="OTA"id="ota" autocomplete="off" class="layui-input" placeholder="OTA">
+				</div>
+			</div>
+			<div class="pd20  layui-form layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">入住方式</label>
+					<div class="layui-input-inline" style="width:auto;">
+						<input type="radio" name="inWay" value="1" title="全天房" checked="">
+						<input type="radio" name="inWay" value="2" title="钟点房">
+						<input type="radio" name="inWay" value="3" title="免费房">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label">接单员</label>
+					<div class="layui-input-inline">
+						<input type="text" name="ordering" id="ordering" autocomplete="off" class="layui-input">
+					</div>
+				</div><br>
+				<div class="layui-inline">
+					<label class="layui-form-label">客源</label>
+					<div class="layui-input-inline">
+						<input type="text" value="散客 " name="source" id="source" readonly="" style="background: #eee;" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label">渠道</label>
+					<div class="layui-input-inline">
+						<input type="text" name="channel" id="channel" value="步入 " readonly="" style="background: #eee;" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+
+				<br>
+
+				<div class="layui-inline ">
+					<label class="layui-form-label">入住时间</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="startTime" id="startTime"  readonly>
+					</div>
+				</div>
+				<div class="layui-inline typea ">
+					<label class="layui-form-label">离店时间</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name="leaveDate1" id="leaveDate1"  readonly>
+					</div>
+				</div>
+				<div class="layui-inline typea">
+					<label class="layui-form-label">共计</label>
+					<div class="layui-input-inline" >
+						<input  style="display: inline-block;width: 50px" readonly type="number" name="dayNumber1" id="days1" autocomplete="off" class="layui-input"><span style="">天</span>
+					</div>
+				</div>
+				<div class="layui-inline typeb layui-hide">
+					<label class="layui-form-label">共计</label>
+					<div class="layui-input-inline" >
+						<input  style="display: inline-block;width: 50px" readonly type="number" value="3" name="dayNumber2" id="days2" autocomplete="off" class="layui-input"><span style="">小时</span>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="border-e6 mg10 pd10">
+			<p class="border-e6 order-title">房间信息<a class="fr" style="overflow: hidden;margin-right: 30px;font-size: 20px;">总房价:<span id="totalPrice">0</span>元</a></p>
+
+			<table  id="test" lay-filter="fjxx"></table>
+			<div>
+				<a class="layui-btn" onclick="selectRoom()">选房</a>
+				<a class="layui-btn" onclick="remarks()">批量备注</a>
+			</div>
+		</section>
+		<section style="padding: 20px;overflow: hidden;">
+			<a class="layui-btn layui-btn-normal fr" style="margin: 0 20px;padding: 0 50px;" onclick="cancel();">取消</a>
+			<button class="layui-btn layui-btn-normal fr" style="margin: 0 20px;padding: 0 50px;"  id="btnSave"  lay-submit=""  lay-filter="checksubmit">确定</button>
+		</section>
+
+	</div>
+</form>
+
+</body>
+
+</html>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+	<!--<a class="layui-btn layui-btn-xs" lay-event="tonglai">同来</a>-->
+</script>
+<script>
+    var allChannel =[];
+    var element, laydate, form, $, layer, index,table,data=[],pickRoomTypeData;
+    var state = {
+        channel:2// 1电话入住  2步入 3网络
+        ,roomType:1//1,全天房,2,钟点房，3,免费房
+        ,source:1// 1散客,2会员
+        ,user:''
+        ,tl:[]
+        ,curtl:0
+        ,selRow:[]
+        ,totalPrice:0// 房价总金额
+        ,idFlag:false//标记证件号是否查询到会员信息了
+        ,orderNumber:0//订单号码
+        ,hzjg:false//是否勾选合作机构
+        ,type:true//选房型和房间状态切换
+    };
+    var userInfo ={};//会员信息
+    var sRooms = [];//已选房间信息
+    var customs = [];//同来人员信息
+    var saleInfo = [];//折扣信息
+    var currHZJG = "";
+    layui.use(['element', 'form', 'laydate', 'jquery', 'layer','table'], function() {
+        element = layui.element,
+            laydate = layui.laydate,
+            form = layui.form,
+            $ = layui.jquery,
+            layer = layui.layer,
+            table = layui.table;
+
+        renderOrderInfo();
+
+
+        renderSelect("channelSelect", 'id', 'name', api.allChannel, form,function (str,rs) {allChannel = rs});
+        renderReport($)
+        $(function () {
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+        })
+        form.on('checkbox(hzjg)', function(data) {
+            updateMySelect(data.elem.checked)
+            dealChange()//合作机构勾选
+        });
+        form.on('select(floor)', function (data) {
+
+            if(data.value!=currHZJG){
+                currHZJG = data.value;
+                clearRoomInfo()
+            }
+            setTimeout(function () {
+                updateMySelect(true)
+            },200)
+        });
+        renderSelect("certificateId",'id','type',api.certificate,form);//证件类型获取
+        try{
+            $("#ordering").val(JSON.parse( localStorage.hotelUserInfo ).name)
+        }catch (e){
+            console.info(e)
+        }
+        form.on('radio', function(data){
+            if(data.value==2){
+                $(".typea").addClass("layui-hide")
+                $(".typeb").removeClass("layui-hide")
+            }else {
+                $(".typeb").addClass("layui-hide")
+                $(".typea").removeClass("layui-hide")
+            }
+            historystate = ""+state.roomType;
+            state.roomType=data.value;
+			clearRoomInfo();
+        });
+        element.on('tab(rzfs)', function(data){
+            // console.log(data.index); //得到当前Tab的所在下标
+            if(data.index==0){
+                state.channel = 2;
+                document.getElementById("channel").value = "步入";
+
+            }else{
+                state.channel = 1;
+                document.getElementById("channel").value = "网络";
+            }
+        });
+        form.on('submit(checksubmit)', function(data) {
+
+            var d = data.field;
+            if(d.inWay==2){
+                // d.leaveDate = d.leaveDate2.replace(/-/, "/").replace(/-/, "/")
+                d.dayNumber = 1;
+                d.hourage = d.dayNumber2;
+
+            }else{
+                if(d.leaveDate1==''){
+                    layer.alert("离店时间不能为空")
+                    return false;
+                }
+                d.leaveDate = d.leaveDate1.replace(/-/, "/").replace(/-/, "/")
+                d.birthday = "2018-02-02";
+                d.dayNumber = d.dayNumber1
+            }
+            if(document.getElementById("birthday").value==''){
+                delete d.birthday;
+            }else{
+                d.birthday = d.birthday.replace(/-/, "/").replace(/-/, "/")
+            }
+            d.source = state.source;
+            d.channel = 1;//电脑预定，一律为电话预约
+            d.idType = d.certificateId;
+            d.idNumber = d.credentialNo;
+            if(sRooms.length==0){
+                layer.alert("还没有选房")
+                return false;
+            }
+            d.startTime = 	d.startTime.replace(/-/, "/").replace(/-/, "/")
+
+            var urll = api.scheduleUpdate;
+            if(sRooms[0].roomNum==''){//房型
+                d.otherAll = dealRoomType();
+                d.msg = dealRoomInfo1();
+            }else{//房间
+                d.otherAll = dealRoomInfo();
+                d.roomIds = getIdsByRooms();
+            }
+            if(state.hzjg){
+                d.cnId = $("#channelSelect").val();
+                d.channel = 4;
+            }
+            d.orderNumber = state.number;
+            console.info(d)
+            // return false;
+            var index = layer.load(1,{time:10*1000});
+            $.ajax({
+                data: d,
+                type: "POST",
+                dataType: "JSON",
+                url: urll,
+                beforeSend: function () {
+                    $("#btnSave").addClass('layui-btn-disabled');
+                },
+                complete: function () {
+                    layer.close(index);
+                    $("#btnSave").removeClass('layui-btn-disabled');
+                },
+                success: function (rs) {
+                    layer.close(index);
+                    if(rs.success){
+                        layer.alert("操作成功",function () {
+                            location.href = HOME;
+                        })
+                    }else{
+                        layer.alert("预定失败"+rs.errMsg)
+                    }
+                }
+            });
+
+            return false;
+        });
+        $("#readCre").on("click",function () {
+            return;
+            // var _i = layer.load();
+            var urll = api.getMemberByCre;//直接入住查询会员信息
+            var url1 = api.yueCheckIn;//预约入住信息查询
+            var credentialNo = document.getElementById("credentialNo").value;
+            querySaleInfo(credentialNo)
+            if(credentialNo==''){
+                layer.msg('证件号码不能为空', {icon: 2,shift:6});
+                return;
+            }else{
+                if(state.channel==1){
+
+                    //网络入住
+                    url1+="&certificateNumber="+credentialNo
+                }else{
+                    //步入
+                    urll+=credentialNo
+                }
+
+            }
+
+        })
+        //监听工具条
+        table.on('tool(fjxx)', function(obj){
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            // sessionStorage.selectedRoomList = JSON.stringify(selectedRoomList)
+            if(layEvent === 'tonglai'){
+
+                layer.open({
+                    area: ['1000px', '420px'],
+                    type: 2,
+                    content: "iframe_together.html?roomid="+data.roomId+"&a="+Date.now(),
+                    title: "同来宾客"
+
+
+                })
+            } else if(layEvent === 'yichu'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    removeRooms(obj.data.roomId)
+
+                });
+            } else if(layEvent === 'beizhu'){ //备注
+                //do something
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            }
+        });
+
+        tableObj = table.render({
+            elem: '#test'
+            , method: 'POST'
+            , data: data
+            , limit: 10000
+            ,cols: [[
+                {type:'checkbox'}
+                ,{field:'roomNum', title: '房号',}
+                ,{field:'roomTypeName',  title: '房型'}
+                ,{field:'price',  title: '房价',}
+                ,{field:'name',  title: '姓名',}
+                ,{field:'credentialNo', title: '证件号',}
+                ,{field:'phoneNumber', title: '手机号',}
+                ,{field:'remark',  title: '备注',}
+                ,{title:'操作',toolbar:'#barDemo',width:160 }
+            ]]
+            ,page: false
+        });
+        table.on('checkbox(fjxx)', function(obj){
+            console.log(table.checkStatus('test').data);
+            state.selRow = table.checkStatus('test').data;
+        });
+        laydate.render({
+            elem: '#birthday',
+        });
+        laydate.render({
+            elem: '#leaveDate1',//全天房和免费房离店时间
+            min:0,
+            format:'yyyy-MM-dd HH:mm:ss',
+            done: function(value, date, endDate){
+                if($("#startTime").val()==''){
+                    clearTimeInfo();
+                    layer.msg('请先选择入住时间', {icon: 2,shift:6});
+                    return;
+                }
+                var vv =  GetDateDiff($("#startTime").val(),value.split(" ")[0] + LEAVETIME);
+                if(vv==0){
+                    clearTimeInfo();
+                    layer.msg('离店时间有误', {icon: 2,shift:6});
+                    return;
+                }
+                updateTimeInfo(value);
+            }
+        });
+        laydate.render({
+            elem: '#leaveDate2',//钟点房离店时间
+            type:"datetime",
+            format:'yyyy-MM-dd HH:mm:ss',
+            done: function(value, date, endDate){
+                updateTimeInfo(value);
+            }
+        });
+        laydate.render({
+            elem: '#startTime',
+            type:"datetime",
+            min:0,
+            format:'yyyy-MM-dd HH:mm:ss',
+            done: function(value, date, endDate){
+                if(value.indexOf("00:00:00")>0){
+                    var a = value.split(" ")[0] + " 18:00:00";
+                    setTimeout(function () {
+                        $('#startTime').val(a);
+                    },100)
+                }
+                clearTimeInfo();
+            }
+        });
+
+    });
+
+    function par(v, vv) {
+        $("#hzjg").val(vv)
+        layer.close(index)
+    }
+    function changeDays(t){
+        document.getElementById("leaveDate").value =
+            DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value))).split(" ")[0] + LEAVETIME
+        clearRoomInfo();
+    }
+    function selectRoom(){
+        if(document.getElementById("name").value==''){
+            layer.msg('姓名未填写', {icon: 2,shift:6});
+            return;
+        }
+
+        if(document.getElementById("phoneNumber").value==''){
+            layer.msg('手机号未填写', {icon: 2,shift:6});
+            return;
+        }
+        var roomtypeurl = ''
+
+        if(state.roomType==2){
+
+        }else{
+            if(document.getElementById("leaveDate1").value!=''){
+
+            }else{
+                layer.msg('没有选择离店时间', {icon: 2,shift:6});
+                return;
+            }
+
+        }
+        roomtypeurl+="&phoneNumber=" + $("#phoneNumber").val();
+        roomtypeurl+="&idNumber=" + $("#credentialNo").val();
+        roomtypeurl+="&inWay=" + state.roomType;
+        roomtypeurl+="&endTime="+document.getElementById("leaveDate1").value;
+        roomtypeurl+="&startTime="+document.getElementById("startTime").value;
+
+        if(state.roomType==2){
+            roomtypeurl+="&dayNumber=1";
+		}else{
+            roomtypeurl+="&dayNumber="+document.getElementById("days1").value;
+		}
+        if(state.hzjg)roomtypeurl+="&cnId="+$("#channelSelect").val();
+        roomtypeurl+="&channel="+state.channel;
+        roomtypeurl+="&orderNumber="+state.number;
+
+
+
+        //询问框
+        layer.confirm('选房型还是选房间？', {
+            btn: ['房型','房间'] //按钮
+        }, function(){
+            if(sRooms.length==0||sRooms[0].roomNum==''){
+                layer.closeAll('dialog');
+                layer.open({
+                    area: ['820px', '520px'],
+                    type: 2,
+                    content: 'iframe_pick_room_type1.html?vv=1&'+roomtypeurl,
+                    title: "选房型"
+                })
+            }else{
+                layer.confirm('选择房型将清除已选房间，继续选择？', function (index) {
+                    sRooms = [];
+                    customs = [];
+                    calcPrice();
+                    layer.closeAll('dialog');
+                    layer.open({
+                        area: ['820px', '520px'],
+                        type: 2,
+                        content: 'iframe_pick_room_type1.html?vv=1&'+roomtypeurl,
+                        title: "选房型"
+                    })
+                    layer.close(index);
+                });
+            }
+        }, function(){
+            if(sRooms.length==0||sRooms[0].roomNum!=''){
+                layer.closeAll('dialog');
+                layer.open({
+                    area: ['820px', '520px'],
+                    type: 2,
+                    content: 'iframe_pick_room1.html?vv=1&'+roomtypeurl,
+                    title: "选房间"
+                })
+            }else{
+                layer.confirm('选择房间将清除已选房型，继续选择？', function (index) {
+                    sRooms = [];
+                    customs = [];
+                    calcPrice();
+                    layer.closeAll('dialog');
+                    layer.open({
+                        area: ['820px', '520px'],
+                        type: 2,
+                        content: 'iframe_pick_room1.html?vv=1&'+roomtypeurl,
+                        title: "选房间"
+                    })
+                    layer.close(index);
+                });
+            }
+        });
+
+    }
+    function modifyPrice(){
+        layer.open({
+            area: ['840px', '320px'],
+            type: 2,
+            content: "iframe_modify_price.html?v="+Date.now(),
+            title: "改价格",
+            success:function(a,b){
+                modifyPriceIndex = b;
+            }
+
+        })
+    }
+    function remarks(){
+        if(state.selRow.length==0){
+            layer.msg("您还没有勾选房间");
+            return;
+        }
+        layer.prompt({
+            formType: 2,
+            value: '',
+            title: '备注修改',
+        }, function(value, index, elem){
+            eachReamrk(state.selRow,value)
+            layer.close(index);
+        });
+    }
+
+    function parSelectRoom(v,t) {
+        pickRoomTypeData = t;
+        sRooms = [].concat.apply([],v)
+        console.info("选房后获取了如下数据↓")
+        console.info(sRooms)
+        setCustomInfo();
+        calcPrice();
+        dealChange();
+    }
+    function cancel(){
+        sessionStorage.clear();
+        // location.reload();
+        location.href =HOME;
+    }
+    function parToget() {
+        // tableObj.reload({data:JSON.parse(sessionStorage.selectedRoomList)})
+        calcPrice();
+    }
+    function clearData() {
+        sessionStorage.clear();
+        location.reload();
+    }
+    function dealOneRoomOnePeople() {
+        var d = sRooms[0];
+        var c = findPeopleByRoomId(d.roomId)[0];
+        var str='';
+        str = d.roomId+"@"+d.name+"-"+c.certificateId+"-"+c.credentialNo+"-"+c.phoneNumber+"-"+nospace(c.address)+"-"+nospace(c.remark)  + "-" + (c.gender || 2);
+        return str;
+    }
+    function nospace(v) {
+        if(!v)return'无';
+        if(v==null)return'无';
+        if(v=='null')return'无';
+        return v;
+    }
+    function dealOneRoomMulPeople() {
+        var d = sRooms[0];
+        var dd = findPeopleByRoomId(d.roomId);
+        var c = dd[0];
+        var str='';
+        str = d.roomId+"@"+d.name+"-"+c.certificateId+"-"+c.credentialNo+"-"+c.phoneNumber+"-"+nospace(c.address)+"-"+nospace(c.remark)  + "-" + (c.gender || 2);
+        var str1 = '';
+        for(var i=1;i<dd.length;i++){
+            str1 += "&"+dd[i].name+"-"+dd[i].certificateId+"-"+dd[i].credentialNo+"-"+dd[i].phoneNumber+"-"+nospace(dd[i].address)+"-"+nospace(dd[i].remark)  + "-" + (dd[i].gender || 2);
+        }
+        return str+str1;
+    }
+    function dealMulRoomMulPeople() {
+        var d = sRooms;
+
+        var str = '';
+        for(var i=0;i<d.length;i++){
+            var c = findPeopleByRoomId(d[i].roomId);
+            str+=d[i].roomId;
+            str+="@";
+            for(var j=0;j<c.length;j++){
+
+                str+=c[j].name;
+                str+="-";
+                str+=nospace(c[j].certificateId);
+                str+="-";
+                str+=nospace(c[j].credentialNo);
+                str+="-";
+                str+=nospace(c[j].phoneNumber);
+                str+="-";
+                str+=nospace(c[j].address);
+                str+="-";
+                str+=nospace(c[j].remark);
+                str += "-";
+                str +=  (c[j].gender || 2);
+                if(c.length==1){
+                    str+=","
+                }else if((c.length-1)!=j){
+                    str+="&"
+                }else{
+                    str+=","
+                }
+
+            }
+        }
+        return str;
+    }
+    function setCustomInfo() {
+        if(customs.length==0&&sRooms.length!=0){
+            customs = [{
+                name:document.getElementById("name").value,
+                certificateId:document.getElementById("certificateId").value,
+                credentialNo:document.getElementById("credentialNo").value,
+                address:document.getElementById("address").value,
+                phoneNumber:document.getElementById("phoneNumber").value,
+                remark:"",
+                roomId:sRooms[0].roomId
+            }]
+        }
+    }
+    function  updateTable() {
+        var d = sRooms,c = customs;
+        for(var i=0;i<d.length;i++){
+            for(var j=0;j<c.length;j++){
+                if(d[i].roomId==c[j].roomId){
+                    d[i].name = c[j].name;
+                    d[i].credentialNo = c[j].credentialNo;
+                    d[i].phoneNumber = c[j].phoneNumber;
+                    d[i].remark = c[j].remark;
+                    break;
+                }
+            }
+        }
+        // console.info(d);
+        tableObj.reload({data:JSON.parse(JSON.stringify(d))})
+        state.selRow=[];
+        // calcPrice();
+        $("#totalPrice").text(state.totalPrice);
+
+    }
+    function removeRooms(id) {
+        var d = sRooms;
+        var dd = [];
+        for(var i=0;i<d.length;i++){
+            if(d[i].roomId!=id){
+                dd.push(d[i]) ;
+            }
+        }
+        sRooms=dd;
+        calcPrice();
+    }
+    function checkPeopleNum() {
+        var s = sRooms,c = customs;
+        for(var i=0;i<s.length;i++){
+            var f = true;
+            for(var j=0;j<c.length;j++){
+                if(s[i].roomId==c[j].roomId){
+                    f = false;
+                    if(c[j]['name']==''
+                        ||c[j]['certificateId']==''
+                        ||c[j]['phoneNumber']==''
+                        ||c[j]['credentialNo']=='')
+                        return [false,s[i].room]
+                }
+            }
+            if(f){
+                return [false,s[i].roomNum]
+            }
+        }
+        return [true];
+
+    }
+
+    function findPeopleByRoomId(id) {
+        var d = [];
+        var c = customs;
+        for(var i=0;i<c.length;i++){
+            if(c[i].roomId==id)d.push(c[i])
+        }
+        return d;
+    }
+
+    function eachReamrk(arr,str) {
+        console.info(arr)
+        var d = customs;
+        var arr1 = new Array();
+        customs = arr1.concat(customs)
+        for(var i=0;i<arr.length;i++){
+            var flag = true;
+            for(var j=0;j<d.length;j++){
+                if(arr[i].roomId==d[j].roomId){
+                    d[j].remark = str;
+                    customs[j] =d[j];
+                    flag = false;
+                }
+            }
+            if(flag){
+                customs.push({
+                    remark:str,
+                    address: "",
+                    certificateId: "",
+                    credentialNo: "",
+                    name: "",
+                    phoneNumber: "",
+                    roomId: arr[i].roomId
+                })
+            }
+        }
+        calcPrice();
+    }
+    function querySaleInfo(v) {//查询该会员折扣信息
+        $.getJSON(api.querySale+v+"&random="+Date.now(),function (rs) {
+            if(rs.success){
+                saleInfo = rs.data;
+            }
+        })
+    }
+    function calcPrice() {
+        var d = sRooms;
+        var c = saleInfo;
+        state.totalPrice = 0;
+        // if(c.length==0)return;
+        var days = 1;
+        if($("#days").val()!=''){
+            days = Number($("#days1").val());
+        }
+        if(state.roomType==2){
+            days = 1;
+        }
+        for(var i=0;i<d.length;i++){
+            state.totalPrice+=(sRooms[i].price*1);
+
+        }
+        state.totalPrice = state.totalPrice.toFixed(0)
+        updateTable()
+    }
+    //s=1证件号码，s=2手机号码
+    function idFlag(s) {
+        var v = $("#credentialNo").val().trim();
+        var p = $("#phoneNumber").val().trim();
+        if ( s == 2 ) {
+            //如果根据证件号码没有查询到了会员信息
+            if(p=='')return;
+
+            $.getJSON(api.queryIdFlag + "&phoneNumber=" + p+"&random="+Date.now(), function (rs) {
+                if (rs.success) {
+                    renderUserInfo(rs.data)
+                    form.render();
+                    layer.msg('成功获取会员信息', {icon: 1});
+
+                    if(!state.hzjg){
+                        $("#source").val(rs.data.memberRank)
+                    }
+                }else{
+                    userInfo = {};
+                    if(!state.hzjg){
+                        $("#source").val("散客")
+                    }
+                    $("#userLevel").text();
+                }
+                dealChange();
+            })
+
+        } else{
+            //如果还没有开始查询证件查询，开始查询
+            if (v == '') return;
+            $.getJSON(api.queryIdFlag + "&credentialNumber=" + v+"&random="+Date.now(), function (rs) {
+                if (rs.success) {
+                    renderUserInfo(rs.data)
+                    form.render();
+                    state.idFlag = true;
+                    layer.msg('成功获取会员信息', {icon: 1});
+                    if(!state.hzjg){
+                        $("#source").val(rs.data.memberRank)
+                    }
+                } else {
+                    state.idFlag = false;
+                    userInfo = {};
+                    $("#userLevel").text();
+                    if(!state.hzjg){
+                        $("#source").val("散客")
+                    }
+                }
+                dealChange();
+            })
+
+        }
+
+    }
+    function renderUserInfo(d) {
+        var r = d;
+        querySaleInfo(r.credentialNo)
+        userInfo = r;
+        $("#userLevel").text(r.memberRank)
+        for(var i in r){
+            try{
+                document.getElementById(i).value = r[i];
+            }catch (err){
+
+            }
+        }
+        dealChange();
+    }
+
+    function payHtml(v) {
+        layer.open({
+            area: ['520px', '320px'],
+            type: 2,
+            content: "iframe_pay.html?v="+v,
+            title: "支付"
+        })
+    }
+    function makeCard(v) {
+        layer.open({
+            area: ['520px', '320px'],
+            type: 2,
+            content: "iframe_makeCard.html",
+            title: "制卡",
+            end: function () {
+                parent.location.href =  HOME;
+            }
+        })
+    }
+
+    function getIdName() {
+        var a = [];
+        var d = sRooms;
+        for(var i=0;i<d.length;i++){
+            var c = findPeopleByRoomId(d[i].roomId);
+            for(var j=0;j<c.length;j++){
+                a.push(c[j])
+            }
+        }
+        sessionStorage.idandname = JSON.stringify(a);
+    }
+    function  clearTimeInfo() {
+        document.getElementById("leaveDate1").value = "";
+        // document.getElementById("leaveDate2").value = "";
+        document.getElementById("days1").value = "";
+        document.getElementById("days2").value = "";
+    }
+    function updateTimeInfo(v) {
+        if(state.roomType!=2){
+            //全天房或者免费房
+            $("#leaveDate1").val(v.split(" ")[0] + LEAVETIME);
+            v.split(" ")[0] + LEAVETIME;
+            document.getElementById("days1").value =
+                GetDateDiff($("#startTime").val(),$("#leaveDate1").val());
+            $(".typea").removeClass("layui-hide")
+            $(".typeb").addClass("layui-hide")
+        }else{
+            // console.info($("#startTime").val(),v)
+            //钟点房
+            document.getElementById("days2").value =
+                getHour($("#startTime").val(),v);
+            $(".typea").addClass("layui-hide")
+            $(".typeb").removeClass("layui-hide")
+        }
+        clearRoomInfo();
+    }
+    function getIdsByRooms() {
+        var str = sRooms[0].roomId;var d = sRooms;
+        for(var i=1;i<d.length;i++){
+            str+=","+sRooms[i].roomId;
+        }
+        return str;
+    }
+    function clearRoomInfo() {
+        dealChange()
+        return;
+        //清除房间和人员信息
+        // sRooms = [];
+        // customs = [];
+        // calcPrice();
+        setTimeout(function () {
+            modifyInfoChange();
+        },200)
+    }
+
+    function madeArr(arr) {
+        //处理房间数据，按楼层分成二维数组
+        var t = [];
+        var l = 0
+        for(var i=0;i<arr.length;i++){
+            if(i==0){t.push([arr[i]]);continue}
+            if(arr[i].houseTypeId==arr[i-1].houseTypeId){
+                t[l].push(arr[i])
+            }else{
+                t.push([arr[i]]);
+                l++;
+            }
+        }
+        return t;
+    }
+    function madeArr1(arr) {
+        //处理房间数据，按楼层分成二维数组
+        var t = [];
+        var l = 0
+        for(var i=0;i<arr.length;i++){
+            if(i==0){t.push([arr[i]]);continue}
+            if(arr[i].roomType==arr[i-1].roomType){
+                t[l].push(arr[i])
+            }else{
+                t.push([arr[i]]);
+                l++;
+            }
+        }
+        return t;
+    }
+
+
+    /*-----------------------------------------------------------------*/
+    function renderOrderInfo() {
+        // api.getScheduleById
+		$.post(api.getScheduleById,{orderNumber:getUrl("id")},function (rs) {
+			var r = rs.data.subscribes;
+			if(r.length==0){
+			    layer.alert("没有查询到信息")
+			    return false;
+			}
+            $("#source").val("散客")
+			if(r[0].relation==1){
+			    //会员
+				setMember(r[0].relationId);
+                $("#source").val(rs.data.memberName)
+			}else if(r[0].relation==2){
+                //机构
+                setOrg(r[0].relationId);
+                $("#source").val("机构")
+			}
+            $("#name").val(r[0].name)
+            $("#certificateId").val(r[0].idType)
+            $("#credentialNo").val(r[0].idNumber)
+            $("#phoneNumber").val(r[0].phoneNumber)
+            state.channel = r[0].channel;
+            $("#ota").val(r[0].OTA);
+            $("input[name=inWay][value=" + r[0].inWay + "]").prop('checked', true);
+			state.number = r[0].number;
+            state.roomType = r[0].inWay;
+            $("#startTime").val(DateToLStr(new Date(r[0].startTime.time)))
+            $("#leaveDate1").val(DateToLStr(new Date(r[0].endTime.time)))
+			if(r[0].inWay==1||r[0].inWay==3){
+                $("#days1").val(GetDateDiff($("#startTime").val(),$("#leaveDate1").val()))
+			}else{
+                $(".typea").addClass("layui-hide")
+                $(".typeb").removeClass("layui-hide")
+                $("#days2").val(3)
+			}
+			if(r[0].channel==1){
+                //电话
+                $("#channel").val("电话")
+			}else if(r[0].channel==2){
+                //步入
+                $("#channel").val("步入")
+			}else{
+                //网络
+                $("#channel").val("网络")
+			}
+			setTimeout(function () {
+			    //证件类型
+                $("#certificateId").val(r[0].idType)
+                form.render();
+            },3000)
+            form.render();
+			if(r[0].roomId==0){
+			    //房型选择
+                renderSchedule2(r)
+
+			}else{
+                //房间选择
+				renderSchedule2(r)
+			}
+
+
+
+
+        },'json')
+    }
+
+
+    function setMember(v) {
+        //会员级别回显
+		state.source = 2;
+        setTimeout(function () {
+            $.getJSON(api.memberLevel+"&random="+Date.now(),function (rs) {
+				if(!rs.success)return false;
+				var _d = rs.data.cartLeaveBOs;
+				for(var i=0;i<_d.length;i++){
+				    if(v==_d[i].id){
+                        $("#userLevel").text(_d[i].name)
+					}
+				}
+            })
+        },3000)
+    }
+    function setOrg(v) {
+        state.hzjg = true;
+        $("#hhzzjjgg").prop("checked",true);
+		form.render();
+        $(".channelSelect").removeClass("layui-hide")
+
+        setTimeout(function () {
+			$("#channelSelect").val(v)
+            setTimeout(function () {
+                updateMySelect(true)
+            },200)
+			form.render();
+        },3000)
+    }
+
+    /*
+    * 	预约修改，房间回写
+    * */
+    function renderSchedule2(v) {
+
+
+        var d = v;
+        sRooms = [];//已选房间信息
+        customs = [];//同来人员信息
+        saleInfo = [];//折扣信息
+        var _yuyuePrice = 0;
+        for (var i = 0; i < 1; i++) {
+            var b = d[i];
+
+            customs.push({
+                certificateId: b.idType,
+                phoneNumber: b.phoneNumber,
+                address: "",
+                remark: b.remark,
+                credentialNo:b.idNumber,
+                roomId: b.roomId,
+                name:  b.name
+            })
+        }
+        // var d = v;
+        for (var i = 0; i < d.length; i++) {
+            var b = d[i];
+            _yuyuePrice += b.price;
+
+                sRooms.push({
+                    roomType: b.roomTypeId,
+                    roomId: b.roomId,
+                    price: b.roomPrice,
+                    roomNum: b.roomName,
+                    roomTypeName: b.roomType,
+                    id:b.id
+                })
+                continue;
+
+        }
+        $("#yuyuePrice").text(_yuyuePrice);
+        calcPrice();
+    }
+
+
+    function modifyInfoChange() {
+        var par = '';
+        var oo = {};
+
+        oo.phoneNumber= $("#phoneNumber").val();
+        oo.idNumber= $("#credentialNo").val();
+        oo.inWay= state.roomType;
+        oo.endTime=document.getElementById("leaveDate1").value.replace(/-/, "/").replace(/-/, "/")
+        oo.startTime= document.getElementById("startTime").value.replace(/-/, "/").replace(/-/, "/")
+
+        if(state.hzjg)oo.cnId= $("#channelSelect").val();
+        oo.channel=state.channel;
+        oo.orderNumber=state.number;
+        if(document.getElementById("days1").value==''&&state.roomType!=2){
+            var _day = GetDateDiff(document.getElementById("startTime").value,document.getElementById("leaveDate1").value);
+            document.getElementById("days1").value= _day;
+            oo.dayNumber= _day;
+		} else if(state.roomType==2){
+            oo.dayNumber= 1;
+        }
+		else {
+            oo.dayNumber= document.getElementById("days1").value;
+		}
+		// debugger;
+        if(sRooms.length==0){
+            //无房情况
+		}else if(sRooms[0].roomNum==''){
+			//房型
+            oo.msg= getRoomTypes();
+		}else{
+            //房间
+            oo.roomIds= getRoomIds();
+		}
+
+        var index = layer.load(1,{time:10*1000});
+        $.post(api.calcPrice2,oo,function (rs) {
+            layer.close(index);
+            var o;
+            rs = JSON.parse(rs);
+            if(rs.data.roomInfo){
+                o = rs.data.roomInfo;
+                sRooms =o;
+                setCustomInfo();
+                calcPrice();
+            }else if(rs.data.roomTypeInfo){
+                var tt = rs.data.roomTypeInfo;
+                for(var i=0;i<sRooms.length;i++){
+                    for(var j=0;j<tt.length;j++){
+                        if(sRooms[i].houseTypeId&&tt[j].roomType){
+                            if(sRooms[i].houseTypeId == tt[j].roomType){
+                                sRooms[i].price=tt[j].price;
+                                break;
+                            }
+                        }else if (sRooms[i].roomType&&tt[j].houseTypeId){
+                            if(sRooms[i].roomType == tt[j].houseTypeId){
+                                sRooms[i].price=tt[j].price;
+                                break;
+                            }
+						}else if(sRooms[i].houseTypeId&&tt[j].houseTypeId){
+                            if(sRooms[i].houseTypeId == tt[j].houseTypeId){
+                                sRooms[i].price=tt[j].price;
+                                break;
+                            }
+						}
+                    }
+                }
+                setCustomInfo();
+                calcPrice();
+			}else{
+                layer.alert(rs.errMsg)
+
+                $("input[name=inWay][value=" + historystate + "]").prop('checked', true);
+                form.render();
+                return false;
+            }
+
+
+        })
+
+    }
+    function getRoomIds() {
+        console.log(sRooms)
+        var ids = [];
+        for(var i=0;i<sRooms.length;i++){
+            ids.push(sRooms[i]['roomId'])
+        }
+        return ids.join(",")
+    }
+    function getRoomTypes() {
+        console.log(sRooms)
+        var ids = [];
+        var o = {};
+        var b = sRooms;
+
+        for(var i=0;i<b.length;i++){
+            // console.log(b[i].roomType)
+			if(b[i].roomType){
+
+
+				if(o[b[i].roomType]){
+					o[b[i].roomType]+=1
+				}else{
+					o[b[i].roomType]=1
+				}
+            }else{
+                if(o[b[i].houseTypeId]){
+                    o[b[i].houseTypeId]+=1
+                }else{
+                    o[b[i].houseTypeId]=1
+                }
+            }
+        }
+        for(var i in o){
+            ids.push(i+"&"+o[i])
+		}
+		console.log(ids.join(","))
+        return ids.join(",")
+
+    }
+    function dealRoomInfo() {
+        var str = [];
+        var r = sRooms;
+        var c = customs;
+        for(var i=0;i<r.length;i++ ){
+            var flag = true;
+            for(var j=0;j<c.length;j++){
+                if(r[i].roomId==c[j].roomId){
+                    str.push(
+                        c[j].roomId + ' - ' + c[j].name +' - ' + c[j].credentialNo +' - ' +c[j].phoneNumber +" - " +c[j].remark+' - ' + (c[j].gender || 2)+' - '
+                    )
+                    flag = false;
+                    break;
+                }
+
+            }
+            if(flag){
+                str.push(
+                    r[i].roomId + ' - - - - - 2 - '
+                )
+            }
+
+        }
+
+        return str.join(",")
+    }
+
+    function dealRoomType() {
+        var str = [];
+        var r = sRooms;
+        var c = customs;
+        for(var i=0;i<r.length;i++ ){
+            var flag = true;
+            for(var j=0;j<c.length;j++){
+                if(r[i].roomId==c[j].roomId){
+                    if(r[i].roomType){
+                        str.push(
+                            r[i].roomType + ' - ' + c[j].name +' - ' + c[j].credentialNo + " - "+ c[j].credentialNo +' - '+c[j].remark+ ' - '+(c[j].gender||2)+' - '
+                        )
+					}else if(r[i].houseTypeId){
+						str.push(
+							r[i].houseTypeId + ' - ' + c[j].name +' - ' + c[j].credentialNo + " - "+ c[j].credentialNo +' - '+c[j].remark +' - '+(c[j].gender||2)+' - '
+						)
+                    }
+                    flag = false;
+                    break;
+                }
+
+            }
+            if(flag){
+                str.push(
+                    r[i].houseTypeId + ' - - - - - 2 - '
+                )
+            }
+
+        }
+
+        return str.join(",")
+    }
+    function dealRoomInfo1() {
+        var str = [];var d,c=''; var dd;
+        if(sRooms.length==0)return;
+        if(sRooms[0]['roomType']){
+            d = sRooms.sort(compare("roomType"));
+            c="roomType";
+            dd = madeArr1(d);
+		}else{
+            d = sRooms.sort(compare("houseTypeId"));
+            c="houseTypeId";
+            dd = madeArr(d);
+		}
+
+        for(var i=0;i<dd.length;i++){
+            if(dd[i][0][c]){
+                str.push(dd[i][0][c]+"&"+dd[i].length)
+			}else{
+                str.push(dd[i][0][c]+"&"+dd[i].length)
+			}
+        }
+        return str.join(",")
+    }
+    function dealChange() {
+        modifyInfoChange();
+    }
+    function updateMySelect(f) {
+        var d = allChannel;
+        var v = document.getElementById("channelSelect").value;
+
+        if (f) {
+            $(".channelSelect").removeClass("layui-hide")
+            state.hzjg = true;
+            state.source = 3;
+            for (var i = 0; i < d.length; i++) {
+                if (v == d[i].id) {
+                    if (d[i].state == 2) {
+                        document.getElementById("source").value = '中介';
+                    } else {
+                        document.getElementById("source").value = '协议单位';
+                    }
+                    document.getElementById("channel").value = d[i].name;
+                    break;
+                }
+            }
+        }else{
+            $(".channelSelect").addClass("layui-hide")
+            state.hzjg = false;
+            $.getJSON(api.queryIdFlag + "&phoneNumber=" + $("#phoneNumber").val()+"&random="+Date.now(), function (rs) {
+                if (rs.success) {
+                    $("#source").val(rs.data.memberRank)
+                }else{
+                    userInfo = {};
+                    $("#source").val("散客")
+                }
+            })
+        }
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

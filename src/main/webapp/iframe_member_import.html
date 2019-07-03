@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员导入</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+<section style="overflow: hidden;padding: 10px 20px">
+        <div style="height: 50px;">
+            <p id="member0" style="float: right;">模板文件：<a target="_blank" href="/manage/download" class="layui-btn layui-btn-warm" >下载</a></p>
+            <p  id="member1" style="float: right;">模板文件：<a target="_blank" href="/manage/download1"class="layui-btn layui-btn-warm" >下载</a></p>
+        </div>
+        <p style="padding: 10px 20px;color: red;">温馨提示：数据导入时不允许数据有错误，一旦有错误将全部导入不成功，可以通过预导入功能检查数据的有效性</p>
+        <!--<p style="padding: 10px 20px;"><input class="layui-btn layui-btn-warm" type="file" value=". . . "/></p>-->
+        <div style="height: 50px;">
+            <p class="fr">
+                <button class="layui-btn layui-btn-warm" id="ydr" >预导入</button>
+                <button class="layui-btn layui-btn-warm layui-hide" id="dr" >导入</button>
+                <button class="layui-btn layui-btn-warm" onclick="no();" >取消</button>
+            </p>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">导入结果</label>
+            <div class="layui-input-inline">
+                <textarea placeholder="" id="result" readonly class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div style="padding: 25px">
+            <p>导入说明：</p>
+            <p>1，会员导入必须按规定的模板准备好数据文件，请自行下载</p>
+            <p>2，会员数据按规定的列准备（a列为空列），其中卡号，姓名，证件号码，会员类型累计积分，已兑换积分，可用积分，充值金额，赠送金额，充值赠送合计，可用余额，有效（1有效 0无效），发卡日期，失效日期，不允许为空，其他列如果暂无数据可直接置为空</p>
+            <p>3，会员卡号不允许重复，如出现重复卡号系统自动略过重复行，不进行该会员信息导入</p>
+            <p>4，会员类型如果不存在，系统将自动创建新的会员类型</p>
+            <p>5，会员导入数据从第二行开始 （第一行为标题行），会员数据中不能包含有统计行</p>
+            <p>6，如会员信息数据有其他错误（列数据格式错误等），将无法完成该会员信息的导入</p>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var $,element,$b,$remove;
+
+    layui.use(['element', 'jquery', 'table','laydate','upload'], function () {
+        laydate = layui.laydate,
+        element = layui.element,
+            $ = jQuery = layui.$;
+        var upload = layui.upload;
+        if(getUrl("v")==""){
+            $("#member1").addClass("layui-hide");
+        }else{
+            $("#member0").addClass("layui-hide");
+        }
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#ydr' //绑定元素
+            ,url: api.yuImport+getUrl("v") //上传接口
+            ,accept: 'file' //允许上传的文件类型
+            ,done: function(res){
+                //上传完毕回调
+                console.info(res);
+
+                if(res.success){
+                    if(!res.data.resultInfo){
+                        layer.msg(res.data.result, {icon: 2,shift:6});
+                        $("#result").val(res.data.result)
+                    }else{
+                        layer.alert("预导入成功");
+                        $("#result").val('预导入成功')
+                        $("#ydr").addClass("layui-hide");
+                        $("#dr").removeClass("layui-hide");
+                    }
+                }else{
+                    layer.msg(res.errMsg, {icon: 2,shift:6});
+                    $("#result").val(res.errMsg)
+                }
+            }
+            ,error: function(e){
+                //请求异常回调
+                console.info(e);
+                layer.msg(e, {icon: 2,shift:6});
+                $("#result").val(e)
+            }
+        });
+
+        $("#dr").on("click",function () {
+            $.getJSON(api.import+getUrl("v")+"?random="+Date.now(),function (res) {
+                console.info(res)
+                if(res.success){
+                    layer.alert("导入成功");
+                }else{
+                    layer.alert(res.errMsg)
+                    $("#result").val(res.errMsg)
+                }
+            })
+        })
+    });
+
+
+
+</script>
+</body>
+</html>

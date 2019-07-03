@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<form class="layui-form" style="padding: 10px 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">更换酒店</label>
+        <div class="layui-input-inline">
+            <select name="hotelId" lay-filter="hotel" id="hotel"></select>
+        </div>
+    </div>
+    <!--<div class="layui-form-item">-->
+        <!--<label class="layui-form-label">班次选择</label>-->
+        <!--<div class="layui-input-block" id="schedule"></div>-->
+    <!--</div>-->
+    <div class="layui-input-block" style="position: fixed; right: 20px; bottom: 20px;">
+        <button class="layui-btn" lay-submit="" lay-filter="formData">生效</button>
+        <button type="button" class="layui-btn layui-btn-primary" id="back">取消</button>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form, $ = layui.$;
+
+        $(function () {
+            selectData();
+        });
+
+        //酒店数据绑定
+        function selectData(){
+            $.ajax({
+                url: api.hotelInfo,
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    // defaultId = data.data[0].id;
+                    // scheduleData();
+                    setSelectData(data.data);
+                }
+            })
+        }
+
+        // function scheduleData() {
+        //     $.ajax({
+        //         url: api.queryClassessByHotelId,
+        //         type: 'POST',
+        //         dataType: 'json',
+        //         data: {
+        //             hotelId: defaultId
+        //         },
+        //         success: function (data) {
+        //             console.log(data.data);
+        //             setScheduleData(data.data);
+        //         }
+        //     })
+        // }
+        //
+        // function setScheduleData(data) {
+        //     $("#schedule").empty();
+        //     for(var i = 0, len = data.length; i< len; i++){
+        //         var div = '<input class="sch" type="radio" name="classes" value="'+data[i].id+'" title="'+data[i].name+'（'+data[i].startTime+'-'+data[i].endTime+'）">';
+        //         $('#schedule').append(div);
+        //     }
+        //     form.render();
+        // }
+        //
+        // form.on('select(hotel)', function(data){
+        //     // console.log(data.value); //得到被选中的值
+        //     defaultId = data.value;
+        //     scheduleData();
+        // });
+
+        /**
+         * 绑定下拉框数据
+         * @param three
+         */
+        function setSelectData(three) {
+            for (var i = 0, len = three.length; i < len; i++) {
+                $('#hotel').append("<option value=" + three[i].id + ">" + three[i].name + "</option>");
+            }
+            form.render('select');
+        }
+
+        //取消按钮
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            $.ajax({
+                url: api.changeHotel,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    hotelId: data.field.hotelId,
+                    classes: null
+                },
+                success: function (data) {
+                    if(data.success){
+                        showMsg('酒店更换成功', 1, true);
+                        parent.location.href = 'home.html'
+                    } else {
+                        showMsg('酒店更换失败', 2, false);
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

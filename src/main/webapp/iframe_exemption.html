@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>备注</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<form class="layui-form" lay-filter="exemption" style="padding: 10px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-inline">
+                <textarea name="exemption" required lay-verify="required" placeholder="请输入备注信息"
+                          class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="btn-list layui-btn-container">
+        <button class="layui-btn" lay-submit="" lay-filter="formData">确定</button>
+        <a class="layui-btn" id="back">取消</a>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form, $ = layui.$, oId = '', s = '', id = '';
+
+        //取消按钮
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        $(function () {
+            s = getUrl('s');
+            id = getUrl('id');
+            oId = getUrl('o');
+            form.val('exemption',{
+                "exemption": decodeURIComponent(getUrl('remark'))
+            })
+        });
+
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            if (s === '2') {//首页入住备注
+                $.ajax({
+                    url: api.updateCheckInComment,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: oId,
+                        remark: data.field.exemption,
+                        roomId:id
+                    },
+                    success: function (data) {
+                        if (data.errCode === '0000010') {
+                            layer.msg(data.errMsg);
+                            return;
+                        }
+                        if(!data.success){
+                            showMsg(data.errMsg, 2, false);
+                            return;
+                        }
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    }
+                });
+            } else if (s === '3') {//首页房屋备注
+                $.ajax({
+                    url: api.updateRoomComment,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        roomId: id,
+                        comment: data.field.exemption
+                    },
+                    success: function (data) {
+                        if (data.errCode === '0000010') {
+                            layer.msg(data.errMsg);
+                            return;
+                        }
+                        if(!data.success){
+                            showMsg(data.errMsg, 2, false);
+                            return;
+                        }
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    }
+                });
+            } else if (s === '4') {//首页预约备注
+                $.ajax({
+                    url: api.updateMainCommment,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: oId,
+                        roomId: id,
+                        remark: data.field.exemption
+                    },
+                    success: function (data) {
+                        if (data.errCode === '0000010') {
+                            layer.msg(data.errMsg);
+                            return;
+                        }
+                        if(!data.success){
+                            showMsg(data.errMsg, 2, false);
+                            return;
+                        }
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    }
+                });
+            }
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

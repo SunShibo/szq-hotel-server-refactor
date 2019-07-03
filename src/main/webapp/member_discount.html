@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员折扣设置</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .type{
+            width: 150px;
+        }
+        .type p{
+            text-align: center
+        }
+        .inputv{
+            width: 105px; padding: 0 25px;
+        }
+        .inputv input{
+            width: 100px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="  layui-form" style="width: 500px;padding: 20px;">
+    <div  class="layui-form-item fr">
+        <label class="layui-form-label">会员级别</label>
+        <div class="layui-input-inline">
+            <select id="leaveId" lay-filter="floor">
+            </select>
+        </div>
+    </div>
+    <div  class="layui-form-item">
+        <div class="layui-inline" style="width: 150px;visibility: hidden">
+            <p style="text-align: center">房型(基础价)</p>
+        </div>
+        <div class="layui-inline" style="width: 150px;">
+            <p style="text-align: center">消费1元获得多少积分</p>
+        </div>
+        <div class="layui-inline" style="width: 150px;">
+            <p style="text-align: center">会员折扣</p>
+        </div>
+
+    </div>
+    <div id="list">
+
+
+
+    </div>
+    <div class="fr">
+        <button class="layui-btn layui-btn-primary" id="btnSave" lay-filter="btnSave" lay-submit>生效</button>
+        <a class="layui-btn layui-btn-primary" onclick="backHome();">取消</a>
+    </div>
+
+</form>
+<div style="width: 500px;padding: 20px;">
+    <hr width="500px">
+    <input style="width: 200px;display: block;margin: auto;text-align: center" placeholder="请填名称" id="channelName" >
+    <a class="layui-btn" style="margin: auto;display: block;width: 90px;margin-top: 10px;" id="addChannel">新增级别</a>
+</div>
+<div class="tab-box">
+
+</div>
+
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'table','form'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var $ = layui.$;
+        var form = layui.form;
+        renderReport($)
+        $(function () {
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+        })
+
+        form.on('select(floor)', function (data) {
+            if (data.value) {
+                getData(data.value);
+            } else {
+                // form.render('select');
+            }
+        });
+        form.on('submit(btnSave)', function(data) {
+
+            // var fields=decodeURI($(data.form).serialize())
+            // console.info(fields);
+            // var datas = fields.split("&");
+            // var formd = dealFromData(datas);
+            // console.info(formd);
+            // $.post(api.memberUpdatePrice,JSON.stringify({info:formd}),function (rs) {
+            //     console.info(rs);
+            // })
+            // delete data.field.price;
+            console.log(data.field);
+            // return false;
+            $.ajax({
+                url: api.memberUpdatePrice,
+                type:'post',
+                dataType: "json",
+                data:data.field,
+                success:function(rs){
+                    // console.info(rs);
+                    layer.alert("您修改成功了 ")
+                }
+            })
+            return false;
+        })
+        renderSelect("leaveId", 'id', 'name', api.memberLevel, form,function (str,rs) {
+            // console.info(rs)
+            // getData(rs[0].id)
+            if(sessionStorage.hyjbid){
+                getData(sessionStorage.hyjbid);
+                $("#leaveId").val(sessionStorage.hyjbid)
+                form.render('select')
+                sessionStorage.removeItem("hyjbid")
+            }else {
+                getData(rs[0].id)
+            }
+        });
+
+        function getData(v) {
+            $.getJSON(api.memberPrice+v+"&random="+Date.now(),function (rs) {
+                if(rs.success){
+                    renderData(rs.data)
+                }
+            })
+        }
+        function  renderData(ddd) {
+            var r = [ddd]
+            var $l = $("#list");
+            var str = '';
+            $l.empty();
+            for(var i=0;i<r.length;i++){
+                var price = r[i].price;
+                str +=
+                  [ '<div  class="layui-form-item"> ',
+                ' <div class="layui-inline type" >',
+                '   <p>',
+                      // r[i].roomTypeName,
+                      // '(',
+                      // r[i].price,
+                      '</p>',
+                '   </div>',
+                '   <div class="layui-inline inputv">',
+                '   <input  type="hidden" name="id" value="',
+                      r[i].id,
+                      '"/>',
+                      '<input class="" data-pri="',
+                      // r[i].price,
+                      '" type="number" data-id="',
+                       r[i].id,
+                      '" name="ratio" id="ratio',
+                       r[i].id,
+                      '" name="ratio" value="',
+                      r[i].ratio,
+                      '"/>',
+                '   </div>',
+                '   <div class="layui-inline inputv">',
+                '   <input  data-pri="',
+                      // r[i].price,
+                      '" type="number" data-id="',
+                      r[i].id,
+                      '" name="discount" id="discount',
+                      r[i].id,
+                      '" onchange="calcPri(this)" value="',
+                      r[i].discount,
+                      '" />',
+                '   </div>',
+                '   </div>'].join("");
+            }
+            $l.append(str)
+        }
+        $("#addChannel").on("click",function () {
+            var v = document.getElementById("channelName").value.trim();
+            if(v==''){
+                return;
+            }
+            v = "&name="+encodeURIComponent(v);
+            $.getJSON(api.addMemberLev+v+"&random="+Date.now(),function (rs) {
+                if(rs.success){
+                    layer.alert("添加成功",function () {
+                        sessionStorage.hyjbid = rs.data
+                        location.reload();
+                    })
+                }
+            })
+        })
+    });
+    function calcPrice(v) {
+        return (v.price*v.discount).toFixed(0)
+    }
+    function calcDis(t) {
+        var basePrice = Number(t.dataset.pri);
+        var id = t.dataset.id;
+        var price = Number(t.value);
+        // if(price>basePrice){
+        //     layer.msg('折扣价格不得超过基本价格', {icon: 2,shift:6});
+        //     $("#discount"+id).val(1)
+        //     t.value = basePrice;
+        //     return;
+        // }
+        var p = price/basePrice;
+        $("#discount"+id).val(p.toFixed(2))
+
+    }
+    function calcPri(t) {
+        var basePrice = Number(t.dataset.pri);
+        var id = t.dataset.id;
+        var discount = Number(t.value);
+        // if(discount>1){
+        //     layer.msg('不能大于1折', {icon: 2,shift:6});
+        //     $("#price"+id).val(basePrice)
+        //     t.value = 1;
+        //     return;
+        // }
+        var p = discount*basePrice;
+        $("#price"+id).val(p.toFixed(0))
+    }
+    function dealFromData(d) {
+        var dList = [];
+        var y = 3;
+        var o={};
+        for(var i=0;i<d.length;i++){
+            var _o = d[i].split("=");
+            o[_o[0]] = _o[1];
+            if((i+1)%y==0) {
+                dList.push(o)
+                o = {};
+            }
+        }
+        return dList;
+
+    }
+
+</script>
+</body>
+</html>

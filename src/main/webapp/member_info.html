@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>信息详情</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="m-head">
+    <div class="layui-btn-group">
+        <button class="layui-btn" id="updateData">编辑</button>
+        <!--<button class="layui-btn" id="changeCard">换卡</button>-->
+        <button class="layui-btn" id="cancellation">注销</button>
+        <!--<button class="layui-btn" id="loss">挂失</button>-->
+        <button class="layui-btn" id="integral">积分增减</button>
+        <button class="layui-btn" id="debitCard">储值调整</button>
+        <!--<button class="layui-btn" id="membership">会员级别升降</button>-->
+    </div>
+</div>
+<div class="tab-box">
+    <table id="memberInfo" lay-filter="memberInfo"></table>
+</div>
+<script type="text/html" id="toolbarDemo">
+    <div class="nav-query">
+        <div class="layui-btn-group">
+            <button class="layui-btn layui-btn-sm" lay-event="consumptionDetail">消费明细</button>
+            <!--<button class="layui-btn" id="integralDetail">积分明细</button>-->
+            <button class="layui-btn layui-btn-sm" lay-event="integralDetail">积分明细</button>
+            <button class="layui-btn layui-btn-sm" lay-event="storageDetails">储值明细</button>
+        </div>
+    </div>
+</script>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['table'], function () {
+        var $ = layui.$, table = layui.table, id = 0;
+
+        $(document).ready(function () {
+            id = getUrl('id');//获取id
+        });
+
+        //头工具栏事件
+        table.on('toolbar(memberInfo)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id), data = checkStatus.data;
+            console.log(obj.event)
+            switch (obj.event) {
+                case 'consumptionDetail':
+                    tab.reload({
+                        url: '/integral/queryUserInformation'
+                        , where: {userId: id}
+                        , method: 'POST'
+                        , page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , request: {
+                            pageName: 'pageNo'
+                            , limitName: 'pageSize'
+                        }
+                        , response: {
+                            statusName: 'code' //规定数据状态的字段名称，默认：code
+                            , statusCode: 200 //规定成功的状态码，默认：0
+                            , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                            , countName: 'count' //规定数据总数的字段名称，默认：count
+                            , dataName: 'data' //规定数据列表的字段名称，默认：data
+                        }
+                        , parseData: function (res) { //res 即为原始返回的数据
+                            return {
+                                "code": 200, //解析接口状态
+                                "msg": res.errMsg, //解析提示文本
+                                "count": res.data.count, //解析数据长度
+                                "data": res.data.data //解析数据列表
+                            };
+                        }
+                        , cols: [[
+                            {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
+                            {field: 'type', title: '类型', minWidth: 80, align: 'center'},
+                            {field: 'single', title: '组单', minWidth: 80, align: 'center'},
+                            {field: 'guestList', title: '客单', minWidth: 80, align: 'center'},
+                            {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
+                            {field: 'voucher', title: '原始凭证', minWidth: 120, align: 'center'},
+                            {field: 'price', title: '交易金额', minWidth: 80, align: 'center'},
+                            {field: 'project', title: '交易项目', minWidth: 80, align: 'center'},
+                            {
+                                field: 'createTime',
+                                title: '发生时间',
+                                minWidth: 80,
+                                align: 'center',
+                                templet: function (data) {
+                                    return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
+                                }
+                            },
+                            {field: 'remark', title: '备注', minWidth: 80, align: 'center'},
+                            {field: 'operator', title: '收银员', minWidth: 80, align: 'center'}
+                        ]]
+                    });
+                    break;
+                case 'integralDetail':
+                    tab.reload({
+                        url: '/integral/queryUserStoreOrInter'
+                        , where: {status: 1, userId: id}
+                        , method: 'POST'
+                        , page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , request: {
+                            pageName: 'pageNo'
+                            , limitName: 'pageSize'
+                        }
+                        , response: {
+                            statusName: 'code' //规定数据状态的字段名称，默认：code
+                            , statusCode: 200 //规定成功的状态码，默认：0
+                            , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                            , countName: 'count' //规定数据总数的字段名称，默认：count
+                            , dataName: 'data' //规定数据列表的字段名称，默认：data
+                        }
+                        , parseData: function (res) { //res 即为原始返回的数据
+                            return {
+                                "code": 200, //解析接口状态
+                                "msg": res.errMsg, //解析提示文本
+                                "count": res.data.count, //解析数据长度
+                                "data": res.data.data //解析数据列表
+                            };
+                        }
+                        , cols: [[
+                            {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
+                            {field: 'type', title: '类型', minWidth: 80, align: 'center'},
+                            {field: 'single', title: '组单', minWidth: 80, align: 'center'},
+                            {field: 'guestList', title: '客单', minWidth: 80, align: 'center'},
+                            {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
+                            {field: 'variation', title: '余额变动', minWidth: 120, align: 'center'},
+                            {field: 'present', title: '当前余额', minWidth: 80, align: 'center'},
+                            {
+                                field: 'createTime',
+                                title: '创建时间',
+                                minWidth: 80,
+                                align: 'center',
+                                templet: function (data) {
+                                    return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
+                                }
+                            },
+                            {field: 'remark', title: '备注', minWidth: 80, align: 'center'},
+                            {field: 'operator', title: '收银员', minWidth: 80, align: 'center'}
+                        ]]
+                    });
+                    break;
+                case 'storageDetails':
+                    tab.reload({
+                        url: '/integral/queryUserStoreOrInter'
+                        , where: {status: 2, userId: id}
+                        , method: 'POST'
+                        , page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , request: {
+                            pageName: 'pageNo'
+                            , limitName: 'pageSize'
+                        }
+                        , response: {
+                            statusName: 'code' //规定数据状态的字段名称，默认：code
+                            , statusCode: 200 //规定成功的状态码，默认：0
+                            , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                            , countName: 'count' //规定数据总数的字段名称，默认：count
+                            , dataName: 'data' //规定数据列表的字段名称，默认：data
+                        }
+                        , parseData: function (res) { //res 即为原始返回的数据
+                            return {
+                                "code": 200, //解析接口状态
+                                "msg": res.errMsg, //解析提示文本
+                                "count": res.data.count, //解析数据长度
+                                "data": res.data.data //解析数据列表
+                            };
+                        }
+                        , cols: [[
+                            {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
+                            {field: 'type', title: '类型', minWidth: 80, align: 'center'},
+                            {field: 'single', title: '组单', minWidth: 80, align: 'center'},
+                            {field: 'guestList', title: '客单', minWidth: 80, align: 'center'},
+                            {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
+                            {field: 'variation', title: '余额变动', minWidth: 120, align: 'center'},
+                            {field: 'present', title: '当前余额', minWidth: 80, align: 'center'},
+                            {
+                                field: 'createTime',
+                                title: '创建时间',
+                                minWidth: 80,
+                                align: 'center',
+                                templet: function (data) {
+                                    return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
+                                }
+                            },
+                            {field: 'remark', title: '备注', minWidth: 80, align: 'center'},
+                            {field: 'operator', title: '收银员', minWidth: 80, align: 'center'}
+                        ]]
+                    });
+                    break;
+            }
+        });
+
+
+        var tab = table.render({
+            elem: '#memberInfo'
+            , method: 'POST'
+            , url: '/integral/queryUserInformation'
+            , where: {userId: id}
+            , even: true
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.data //解析数据列表
+                };
+            }
+            , toolbar: '#toolbarDemo'
+            , page: true //开启分页
+            , cols: [[
+                {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
+                {field: 'type', title: '类型', minWidth: 80, align: 'center'},
+                {field: 'single', title: '组单', minWidth: 80, align: 'center'},
+                {field: 'guestList', title: '客单', minWidth: 80, align: 'center'},
+                {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
+                {field: 'voucher', title: '原始凭证', minWidth: 120, align: 'center'},
+                {field: 'price', title: '交易金额', minWidth: 80, align: 'center'},
+                {field: 'project', title: '交易项目', minWidth: 80, align: 'center'},
+                {
+                    field: 'createTime',
+                    title: '发生时间',
+                    minWidth: 80,
+                    align: 'center',
+                    templet: function (data) {
+                        return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
+                    }
+                },
+                {field: 'remark', title: '备注', minWidth: 80, align: 'center'},
+                {field: 'operator', title: '收银员', minWidth: 80, align: 'center'}
+            ]]
+        });
+
+
+        $('#updateData').on('click', function () {
+            layer.open({
+                type: 2,
+                title: "编辑",
+                content: './iframe_member_add.html?id=' + getUrl("id"),
+                area: ['820px', '520px'],
+            });
+        });
+
+
+        $('#cancellation').on('click', function () {//注销
+            layer.confirm('确认注销吗?', {icon: 3, title: '提示'}, function (index) {
+                //请求
+                $.getJSON(api.offMember + getUrl("id") + "&random=" + Date.now(), function (rs) {
+                    if (rs.success) {
+                        layer.alert("操作成功", function () {
+                            location.reload();
+                        })
+                    } else {
+                        layer.alert(rs.errMsg);
+                    }
+                })
+                layer.close(index);
+            });
+        });
+
+        $('#integral').on('click', function () {//积分增减
+            layer.open({
+                type: 2,
+                title: '积分增减',
+                content: './iframe_member_integral.html?id=' + getUrl("id") + "&v=" + Date.now(),
+                skin: 'demo-class',
+                shadeClose: true,
+                shade: 0.6,
+                resize: false,
+                area: ['800px', '80%']
+            });
+        });
+
+        $('#debitCard').on('click', function () {//储值调整
+            layer.open({
+                type: 2,
+                title: '储值调整',
+                content: './iframe_member_debitCard.html?id=' + getUrl("id") + "&v=" + Date.now(),
+                skin: 'demo-class',
+                shadeClose: true,
+                shade: 0.6,
+                resize: false,
+                area: ['800px', '85%']
+            });
+        });
+    });
+
+
+</script>
+</body>
+</html>

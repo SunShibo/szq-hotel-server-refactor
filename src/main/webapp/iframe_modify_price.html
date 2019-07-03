@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>改价</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body style="width: 800px;background: #eee;padding-left: 20px;">
+		<div style="padding-bottom: 10px;">
+			<label style="font-size: 16px;">将每日房价统一修改为：&yen;</label>	
+			<input type="number" style="width: 100px;" />
+			<button class="layui-btn">批量修改</button>
+			<button class="layui-btn">恢复标准价</button>
+		</div>
+		<section>
+			<ul class="price-ul">
+				<li>周日</li>
+				<li>周一</li>
+				<li>周二</li>
+				<li>周三</li>
+				<li>周四</li>
+				<li>周五</li>
+				<li>周六</li>
+			</ul>
+			<ul class="price-cul">
+				<li></li>
+				
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li>
+					<p>09-01</p>
+					<p><input value="100" />/1020.00</p>
+				</li>
+				<li>
+					<p>09-01</p>
+					<p><input value="100" />/1020.00</p>
+				</li>
+				<li>
+					<p>09-01</p>
+					<p><input value="100" />/1020.00</p>
+				</li>
+			</ul>
+		</section>
+		<section style="height: 50px;"></section>
+		<section style="padding: 20px;position: absolute;bottom: 0px;right: 0px;">
+					<button class="layui-btn layui-btn-normal" onclick="yes();">确定</button>
+					<button class="layui-btn layui-btn-warm" onclick="no();">取消</button>
+		</section>
+		
+		
+   
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+		var $,element,$b,$remove;
+		
+    layui.use(['element', 'jquery', 'table'], function () {
+        element = layui.element,
+        $ = jQuery = layui.$;
+				
+      
+    });
+		function yes(){
+			parent.parModifyPrice();
+		}
+		function no(){
+			parent.parModifyPrice();
+		}
+		
+</script>
+</body>
+</html>

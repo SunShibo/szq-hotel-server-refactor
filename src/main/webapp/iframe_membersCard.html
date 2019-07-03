@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<form class="layui-form" lay-filter="data" style="padding: 10px 0;">
+    <div class="layui-form-item" id="isUpdate" style="display: none">
+        <label class="layui-form-label">开始卡号</label>
+        <div class="layui-input-inline">
+            <input type="number" name="startCard" placeholder="开始卡号" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">结束卡号</label>
+        <div class="layui-input-inline">
+            <input type="number" name="endCard" placeholder="结束卡号" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员级别</label>
+        <div class="layui-input-inline">
+            <select name="membersCard" id="membersCard"></select>
+        </div>
+        <label class="layui-form-label">卡售价</label>
+        <div class="layui-input-inline">
+            <input type="number" name="cardPrice" required  lay-verify="required" placeholder="卡售价" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div style="position: fixed; right: 10px; bottom: 10px;">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">生效</button>
+            <button type="button" class="layui-btn layui-btn-primary" id="back">取消</button>
+        </div>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var $ = layui.$, form = layui.form, state = 0, id = 0, cardLeave = [];
+
+        $(function () {
+            state = parseInt(getUrl('state'));
+            id = parseInt(getUrl('id'));
+            selectData()
+        });
+
+        function selectData() {
+            $.ajax({
+                url: api.memberLevel,
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    cardLeave = data.data.cartLeaveBOs;
+                    setSelectData(data.data.cartLeaveBOs);
+                    if (!state) {//添加
+                        $('#isUpdate').css('display', 'inline-block');
+                    } else {//修改
+                        updateInfo();
+                    }
+                }
+            });
+        }
+
+        //取消按钮
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        //下拉框数据绑定
+        function setSelectData(data) {
+            for (var i = 0, len = data.length; i < len; i++) {
+                $('#membersCard').append("<option value=" + data[i].id + ">" + data[i].name + "</option>");
+            }
+            form.render('select');
+        }
+
+        //监听提交按钮提交
+        form.on('submit(formData)', function (data) {
+            if (state) {//修改
+                $.ajax({
+                    url: api.cartUpdate,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        cartLeave: data.field.membersCard,
+                        price: data.field.cardPrice,
+                        id: id
+                    },
+                    success: function (data) {
+                        if(data.success){
+                            showMsg('修改成功', 1, false);
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        }else {
+                            showMsg(data.errMsg, 2, false);
+                            return false;
+                        }
+                    }
+                })
+            } else {//添加
+                var obj = formatData(data.field);
+                if (!!obj) {
+                    $.ajax({
+                        url: api.cartAdd,
+                        type: 'POST',
+                        dataType: 'json',
+                        data:obj,
+                        success: function (data) {
+                            if(data.success){
+                                showMsg('添加成功', 1, false);
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                            }else {
+                                showMsg(data.errMsg, 2, false);
+                                return false;
+                            }
+                        }
+                    })
+                }
+            }
+            return false;
+        });
+
+        function formatData(data) {
+            if (isNaN(parseInt(data.startCard)) || isNaN(parseInt(data.endCard))) {
+                showMsg('请输入数字', 2, false);
+                return null;
+            }
+            if(parseInt(data.startCard)<0||data.endCard<0){
+                showMsg('数字格式不正确', 2, false);
+                return null;
+            }
+            var startCard =  Math.ceil(parseInt(data.startCard)), endCard =  Math.ceil(parseInt(data.endCard)), arr = [], obj = {};
+            var len = endCard - startCard < 0 ? startCard - endCard : endCard - startCard;
+            var start = endCard - startCard < 0 ? endCard : startCard;
+            var end = endCard - startCard > 0 ? endCard : startCard;
+            if (len <= 100) {
+                for (var i = 0; i <= len; i++) {
+                    if (start + i > end) break;
+                    var newStartCard = start + i;
+                    if (newStartCard.toString().length < 10) {
+                        for (var j = 10, strlen = newStartCard.toString().length; j >= strlen; j--) {
+                            newStartCard = '0' + newStartCard;
+                        }
+                        arr.push(newStartCard);
+                    } else {
+                        arr.push(newStartCard);
+                    }
+                }
+                obj.cart = arr.join(',');
+                obj.leaveId = data.membersCard;
+                obj.price = data.cardPrice;
+                return obj;
+            } else {
+                showMsg('一次只能添加100张会员卡', 2, false);
+                return null;
+            }
+        }
+
+        //编辑回显
+        function updateInfo() {
+            $.ajax({
+                url: api.cartDetail,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if(!data.success){
+                        showMsg(data.errMsg, 2, false);
+                        return;
+                    }
+                    form.val('data', {
+                        'membersCard': data.data.cartLeave,
+                        'cardPrice': data.data.price
+                    });
+                }
+            })
+        }
+    });
+</script>
+</body>
+</html>

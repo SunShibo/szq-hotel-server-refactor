@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .layui-form-label {
+            width: 100px;
+        }
+
+        .height-block {
+            line-height: 38px;
+        }
+    </style>
+</head>
+<body>
+<OBJECT id=MSComm1 CLASSID="clsid:648A5600-2C6E-101B-82B6-000000000014" codebase="mscomm32.ocx"
+        type="application/x-oleobject" style="LEFT:54px;TOP:14px">
+    <PARAM NAME="CommPort" VALUE="3"/>
+    <PARAM NAME="DataBits" VALUE="8"/>
+    <PARAM NAME="StopBits" VALUE="1"/>
+    <PARAM NAME="BaudRate" VALUE="9600"/>
+    <PARAM NAME="Settings" VALUE="9600,N,8,1"/>
+
+    <PARAM NAME="RTSEnable" VALUE="1"/>
+    <PARAM NAME="DTREnable" VALUE="1"/>
+    <PARAM NAME="Handshaking" VALUE="0"/>
+    <PARAM NAME="NullDiscard" VALUE="0"/>
+    <PARAM NAME="ParityReplace" VALUE="?"/>
+
+    <PARAM NAME="EOFEnable" VALUE="0"/>
+    <PARAM NAME="InputMode" VALUE="0"/>
+    <PARAM NAME="InBufferSize" VALUE="1024"/>
+    <PARAM NAME="InputLen" VALUE="0"/>
+    <PARAM NAME="OutBufferSize" VALUE="512"/>
+
+    <PARAM NAME="SThreshold" VALUE="0"/>
+    <PARAM NAME="RThreshold" VALUE="1"/>
+
+</OBJECT>
+<form class="layui-form" lay-filter="formData">
+    <div class="layui-form-item" id="payType" style="display:none;">
+        <label class="layui-form-label">支付方式:</label>
+        <div class="layui-input-block">
+            <input type="radio" name="payType" lay-filter="payType" value="1" title="现金" checked>
+            <input type="radio" name="payType" lay-filter="payType" value="2" title="刷卡">
+            <input type="radio" name="payType" lay-filter="payType" value="3" title="微信">
+            <input type="radio" name="payType" lay-filter="payType" value="4" title="支付宝">
+            <!--<input type="radio" name="payType" lay-filter="payType" value="5" title="其他支付">-->
+            <!--<input type="radio" name="payType" lay-filter="payType" value="6" title="积分支付">-->
+            <input type="radio" name="payType" lay-filter="payType" value="7" title="储值支付">
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">积分减免</label>
+            <div class="layui-input-inline height-block">
+                <input type="checkbox" name="integral" id="integral" lay-filter="integral" lay-skin="primary" value="1"
+                       title="是否减免">
+            </div>
+        </div>
+    </div>
+    <div class="optional" style="display: none;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">证件号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="IDCard" id="card" placeholder="请输入证件号码"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+            <div class="layui-input-inline" style="width: auto">
+                <a class="layui-btn layui-btn-primary" id="IDCard">扫描身份证</a>
+            </div>
+        </div>
+    </div>
+    <div class="optional_1" style="display: none;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">会员详情</label>
+            <div class="layui-input-block" style="line-height: 38px">
+                拥有积分：<span class="integral" style="color:#ff0000;"></span>，储值卡余额：<span class="prepaidCard"
+                                                                                       style="color:#ff0000;"></span>元
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item glx" style="display: none">
+        <label class="layui-form-label">减免金额</label>
+        <div class="layui-input-inline height-block">
+            <input type="number" name="glx" id="glx" placeholder="请输入金额"
+                   autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">已付费金额</label>
+        <div class="layui-input-inline height-block">
+            <span id="allPay"></span>
+            元
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">消费金额</label>
+        <div class="layui-input-inline height-block">
+            <span id="consumption"></span>
+            元
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">超时费用</label>
+        <div class="layui-input-inline height-block">
+            <span id="timeOut"></span>元
+        </div>
+    </div>
+    <div class="layui-form-item" id="timeOutRadio" style="display: none">
+        <label class="layui-form-label">超时减免</label>
+        <div class="layui-input-inline height-block">
+            <input type="checkbox" name="timeOut1" id="timeOut1" lay-filter="timeOut1" lay-skin="primary" value="1"
+                   title="是否减免">
+        </div>
+    </div>
+    <div class="layui-form-item" id="moneyInfo" style="display: none">
+        <label class="layui-form-label">结账详情</label>
+        <div class="layui-input-inline height-block">
+            <span id="info"></span>
+        </div>
+    </div>
+    <!--  <div class="layui-form-item" id="cardInfo" style="display: none">
+          <label class="layui-form-label">银行卡信息</label>
+          <div class="layui-input-inline height-block">
+              <div>原参考号：<span id="referNo" style="color: #ff3400"></span></div>
+              <div>原交易日期：<span id="transDate" style="color: #ff3400"></span></div>
+          </div>
+      </div>-->
+    <div class="layui-form-item" style="display: none" id="tips">
+        <label class="layui-form-label">退款金额</label>
+        <div class="layui-input-inline height-block">
+            <input type="number" name="gopay" id="gopay" placeholder="请输入金额"
+                   autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">合计</label>
+        <div class="layui-input-inline height-block">
+            <span id="pay"></span>
+            元
+        </div>
+    </div>
+    <div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData" id="btn"></button>
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData" data-id="1" id="manual">手动结账</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<SCRIPT LANGUAGE=javascript FOR=MSComm1 EVENT=OnComm>
+    MSComm1_OnComm()
+
+    function MSComm1_OnComm() {
+        switch (MSComm1.CommEvent) {
+            case 1: {
+                alert("Send OK！");
+                break;
+            } //发送事件
+            case 2: {
+                Receive();
+                break;
+            } //接收事件
+            default:
+                alert("Event Raised!" + MSComm1.CommEvent);
+        }
+    }
+</SCRIPT>
+<script>
+    var str = '', status = 0, $, _pay_index = 0, isFlig = false, sessionData = {}, credentialNumber = 0, glx = 0,
+        sessionDataStr = "",
+        payPrice = 0;
+
+    layui.use(['form'], function () {
+        var form = layui.form, state = 0, flag = false, checked = false, $ = layui.$;
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        $(function () {
+            //绑定Activex标签
+            IDCardReaderInfo($(document.body));
+            state = parseInt(getUrl('state'));
+            sessionData = JSON.parse(sessionStorage.getItem('data'));
+            dataInfo(state);
+        });
+
+
+        $('#glx').on('input', debounce(handle, 1000));
+        //证件号码输入事件绑定
+        $('#card').on('input', debounce(handleInput, 1000));
+
+        //监听支付方式
+        form.on('radio(payType)', function (data) {
+            if (!checked) clearIDForm(form, 'formData');
+            //判断选中的是否是储值支付
+            switch (data.value) {
+                case "7":
+                    //选中储值支付后先控制身份证
+                    $('.optional').show();
+                    if (!checked) $('.optional_1').hide();
+                    flag = true;//标记是否选中储值支付
+                    break;
+                default:
+                    flag = false;//标识
+                    if (checked) {//控制是否隐藏
+                        break;
+                    }
+                    //选中其他支付方式以后隐藏身份证和会员详情
+                    $('.optional,.optional_1').hide();
+                    break;
+            }
+        });
+
+        //积分复选框选中事件
+        form.on('checkbox(integral)', function (data) {
+            checked = data.elem.checked;
+            if (data.elem.checked) {
+                $('.optional').show();
+                $('.glx').show();
+            } else {
+                if (!flag) {
+                    clearIDForm(form, 'formData');
+                    $('.optional').hide();
+                } else {
+                    form.val('formData', {
+                        glx: ''
+                    });
+                    handle();
+                }
+                $('.glx').hide();
+            }
+
+        });
+
+        // 积分减免
+        function handle() {
+            $.ajax({
+                url: api.refund,
+                type: 'POST',
+                dataType: 'json',
+                data: {ids: sessionStorage.getItem('oIds'), glx: $('#glx').val(), typeState: 0},
+                success: function (res) {
+                    if (!res.success) {
+                        sessionData = null;
+                        showMsg(res.errMsg, 2, false);
+                        return;
+                    }
+                    sessionData = res.data;
+                    dataInfo(state);
+                }
+            })
+        }
+
+        //超时费复选框选中事件
+        form.on('checkbox(timeOut1)', function (data) {
+            var value = data.value;
+            if (!data.elem.checked) {
+                value = 0
+            }
+            $.ajax({
+                url: api.refund,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    ids: sessionStorage.getItem('oIds'),
+                    typeState: value
+                },
+                success: function (data) {
+                    if (data.errCode === '00100010') {
+                        layer.alert(data.errMsg, function () {
+                            layer.closeAll('dialog');
+                        });
+                        return;
+                    }
+                    if (!data.success) {
+                        showMsg(data.errMsg, 2, false);
+                        return;
+                    }
+                    sessionData = data.data;
+                    dataInfo(state);
+                }
+            })
+        });
+
+        //数据加载
+        function dataInfo(state) {
+            $('#allPay').text(sessionData.AllPay);//已付金额
+            $('#consumption').text(sessionData.consumption);//消费金额
+            $('#timeOut').text(sessionData.timeOut);//超时费
+            $('#pay').text(sessionData.pay);//合计
+            payPrice = sessionData.payPrice;//去积分后应支付金额
+            sessionDataStr = sessionData.str;
+
+            if (state !== 1) {
+                $('#btn').text('自动结账');
+                $('#moneyInfo').show();
+                if (sessionData.payState != 110 && sessionData.payState != '' && sessionData.pay < 0) {
+                    $('#tips').show();
+                    // if (sessionData.payState == "0" && sessionData.referNo && sessionData.transDate) {
+                    //     $('#cardInfo').css('display', 'block');
+                    //     $('#referNo').text(sessionData.referNo);
+                    //     $('#transDate').text(sessionData.transDate);
+                    // }
+                } else {
+                    $('#tips').hide();
+                }
+                sessionData.pay > 0 ? $('#payType').show() : $('#payType').hide();//是否显示支付方式
+                sessionData.timeOut !== 0 ? $('#timeOutRadio').show() : $('#timeOutRadio').hide();//是否显示超时费复选框
+                !!sessionData.info ? $('#info').text(sessionData.info) : $('#info').text('无')//是否显示退款详情
+            } else {
+                $('#btn').text('退房');
+                $('#moneyInfo').hide();
+                $('#manual').hide();
+            }
+        }
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            if (sessionData == null) {
+                showMsg("减免金额大于总金额", 2, false);
+                return false;
+            }
+            //获取按钮上绑定的data-id属性,用于判断是否点击手动结账
+            var isFlag = $(this).data('id');
+            //判断退房和结账页面
+            if (state === 1) {//退房
+                $.ajax({
+                    url: api.outRoomBtn,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        timeOut: sessionData.timeOut,
+                        id: !!sessionStorage.getItem('oId') ? sessionStorage.getItem('oId') : null,
+                        timeOutStatus: !!sessionData.timeOutStatus ? sessionData.timeOutStatus : null
+                    },
+                    success: function (data) {
+                        if (data.errCode === '0000010') {
+                            parent.layer.msg(data.errMsg);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                            return;
+                        }
+                        if (!data.success) {
+                            showMsg(data.errMsg, 2, false);
+                            return;
+                        }
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    }
+                });
+            } else {//结账
+                //初始化数据
+                str = '';
+                //传入POS数据
+                var payjson = {};
+                _pay_index = layer.load(1, {time: 10 * 1000});
+                //保存支付方式
+                var _p = parseInt(data.field.payType);
+                //身份证
+                credentialNumber = data.field.IDCard;
+                glx = parseInt($('#glx').val());//获取积分输入框
+                //判断是否需要超时费
+                if (data.field.timeOut1) {
+                    status = data.field.timeOut1
+                }
+                //判断是否应收应退或者等于0
+                if (sessionData.pay == 0) {
+                    //合计为0的时候直接传入type=payState
+                    Receive1(JSON.stringify({type: sessionData.payState != "" ? 2 : 1}));
+                } else if (sessionData.pay > 0) {//当合计大于0时，应收
+                    //积分判断
+                    if (_p == 5 && parseInt(payValue.integValue) < glx) {
+                        layer.alert("积分不足,交易失败！");
+                        return false;
+                    } else if (_p != 1 && (payValue.streValue == null || payValue.integral == null || payValue.integValue == null)) {
+                        layer.alert("用户信息输入错误,交易失败！");
+                        return false;
+                    } else if (glx > sessionData.pay) {
+                        layer.alert("积分不能超过当前支付金额,交易失败！");
+                        return false;
+                    }
+                    //储值支付
+                    if (_p == 7) {
+                        //储值判断
+                        if (_p == 7 && parseInt(payValue.streValue) < sessionData.pay) {
+                            layer.alert("储值余额不足,交易失败！");
+                            return false;
+                        }
+                        //格式化支付传值
+                        var payTp = formatPayTp(_p);
+                        Receive1(JSON.stringify({type: payTp}));
+                    } else if (_p == 1) {//判断应收现金还是POS  1为现金 其余为POS
+                        //现金收的时候传入type=1
+                        Receive1(JSON.stringify({type: 1}));
+                    } else {
+                        //判断传入POS的支付方式
+                        payjson = checkPayState(_p);
+                        payjson = $.extend({}, PAYJSON);
+                        if (!sessionData.pay) {
+                            layer.alert("交易金额有误");
+                            layer.close(_pay_index);
+                            return false;
+                        }
+                        //price为POS收多少
+                        payjson.amt = sessionData.price;
+                        //POS应收时，不传入订单号
+                        payjson.orderNo = "";
+                        //判断手动或自动结账
+                        if (isFlag) {//手动结账
+                            //格式化支付传值
+                            var payTp = formatPayTp(_p);
+                            Receive1(JSON.stringify({type: 2, payTp: payTp}))
+                        } else {//调起POS机
+                            Send(JSON.stringify(payjson));
+                        }
+                    }
+                } else if (sessionData.pay < 0) {//当合计小于0时，应退
+                    //当合计小于0，payState等于空时为现金退款，否则为POS退款
+                    if (sessionData.payState === "") {//应退现金
+                        Receive1(JSON.stringify({type: 1}));
+                        return false;
+                    } else {//应退POS
+                        //标识
+                        isFlig = true;
+                        payjson = $.extend({}, OUTPAYJSON);
+                        if (sessionData.payState == 110) {//预授权
+                            payjson.procCd = 680000;
+                        } else {
+                            //保存输入实际退款金额
+                            gopay = $('#gopay').val();
+                            if (!gopay) {
+                                showMsg('退款金额不能为空！', 2, false);
+                                layer.close(_pay_index);
+                                return false;
+                            }
+                            //sessionData.price为应退款金额，用户不能输入超过此金额或者小于0的数字
+                            if (gopay <= sessionData.price && gopay >= 0) {
+                                //输入0元直接调用接口，不调用POS机
+                                if (gopay == 0) {
+                                    Receive1(JSON.stringify({type: 2}));
+                                    return false;
+                                }
+                                //不为0时判断是扫码支付还是刷卡支付
+                                if (sessionData.payState !== '0') {//扫码
+                                    payjson.procCd = 680000;
+                                } else {//刷卡
+                                    payjson.procCd = 500000;
+                                }
+                            }
+                            else {
+                                showMsg('金额不能大于POS支付金额，或小于0！', 2, false);
+                                layer.close(_pay_index);
+                                return false;
+                            }
+                        }
+                        if (!sessionData.pay) {
+                            layer.alert("交易金额有误");
+                            layer.close(_pay_index);
+                            return false;
+                        }
+                        //退款金额
+                        payjson.amt = gopay;
+                        //当时支付时POS机返回订单号再次传入到POS机
+                        payjson.orderNo = sessionData.number;
+                        //判断手动或自动结账
+                        if (isFlag) {
+                            Receive1(JSON.stringify({type: 2}))
+                        } else {
+                            Send(JSON.stringify(payjson));
+                        }
+                    }
+                }
+            }
+            return false;
+        });
+    });
+    setTimeout(function () {
+        MSComm1.PortOpen == false;
+        OperatePort();
+    }, 1000)
+
+    function OperatePort() {
+        try {
+            MSComm1.CommPort = localStorage.posport ? localStorage.posport : 6
+            MSComm1.Settings = 115200 +
+                ",N" +
+                ",8" +
+                ",1";
+            MSComm1.OutBufferCount = 0; //清空发送缓冲区
+            MSComm1.InBufferCount = 0; //滑空接收缓冲区
+            MSComm1.PortOpen = true;
+        } catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    //调起POS机方法，方法参数是向POS传送的参数
+    function Send(orgstr) {
+        try {
+            // MSComm1.Output = hexflag ? newstr : orgstr;
+            MSComm1.Output = orgstr;
+            console.info("发送数据到pos机：" + orgstr);
+        } catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    //POS数据返回迭代方法
+    function Receive() {
+        // console.log("接收到的数据::" + MSComm1.Input)
+        // var index = layer.load(1);
+        str += MSComm1.Input;
+        if (str.indexOf('}') != -1) {
+            Receive1(str)
+        }
+    }
+
+    //接口请求方法
+    function Receive1(data) {
+        layer.close(_pay_index);
+        console.log("接收到的数据:" + data)
+        // var index = layer.load(1);
+        // console.info(JSON.parse(data));
+        var _data = JSON.parse(data);
+        if (_data.code == '-1') {
+            showMsg(data.message, 2, false);
+            return;
+        }
+
+        var pd = {
+            ids: sessionStorage.getItem('oIds'),
+            status: status,
+            orderId: sessionData.orderId,
+            money: sessionData.pay,
+            str: !!sessionDataStr ? sessionDataStr : null,
+            integralPrice: !!glx ? glx : null,
+            payPrice: !!payPrice ? payPrice : null,
+            credentialNumber: !!credentialNumber ? credentialNumber : null
+        };
+        if (isFlig) {
+            pd.amount = -gopay;
+        }
+        pd = $.extend({}, pd, JSON.parse(data));
+        // alert(JSON.stringify(pd));
+        // alert(data)
+        var index = layer.load(1, {time: 10 * 1000});
+        $.ajax({
+            data: pd,
+            type: "POST",
+            dataType: "JSON",
+            url: api.refundBtn,
+            beforeSend: function () {
+                $("#btn").addClass('layui-btn-disabled');
+                $("#btn").prop('disabled', 'true')
+            },
+            complete: function () {
+                layer.close(index);
+                $("#btn").removeClass('layui-btn-disabled');
+                $("#btn").prop('disabled', 'false');
+            },
+            success: function (rs) {
+                layer.close(index);
+                if (!rs.success) {
+                    showMsg(rs.errMsg, 2, false);
+                    return;
+                }
+                if (rs.success) {
+                    layer.alert("交易成功", function (index) {
+                        sessionStorage.setItem('backState', 1);
+                        window.open('queryPrice.html?state=1', "_blank");
+                        window.opener = null;
+                        window.open('', '_self');
+                        window.close();
+                        parent.layer.closeAll();
+                    });
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

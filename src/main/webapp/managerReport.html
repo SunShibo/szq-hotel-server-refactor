@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>经理日报表</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .table {
+            display: table;
+        }
+
+        .tr {
+            display: table-row;
+            height: 40px;
+        }
+
+        .td {
+            display: table-cell;
+            height: 40px;
+            width: 100px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+        }
+
+        .atr {
+            vertical-align: middle;
+        }
+
+        .noright {
+            border-right: 0px;
+        }
+    </style>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="" class="layui-nav-img"></a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="layui-form" style="padding-top: 10px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">营业日期</label>
+        <div class="layui-input-inline" style="width: 165px;">
+            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
+                   class="layui-input inline-input"
+                   placeholder="时间">
+        </div>
+        <div class="layui-input-inline">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
+        </div>
+    </div>
+</form>
+<!--<div class="tab-box">-->
+<!--<table id="residentStatement" lay-filter="residentStatement" class="layui-table"></table>-->
+<!--</div>-->
+<div style="width: 800px;border: 1px solid #ccc;margin: 20px;" class="table ">
+    <div class="tr" style="background: #ccc">
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright">经理日报表</p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+    </div>
+    <div class="tr" style="background: #ccc">
+        <p class="td">统计项目</p>
+        <p class="td">今日发生</p>
+        <p class="td">本月累计</p>
+        <p class="td">上月同期</p>
+        <p class="td">本年累计</p>
+        <p class="td">上年同期</p>
+        <p class="td">年增长率</p>
+    </div>
+    <div class="tr"><p class="td noright">营业状况统计</p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+    </div>
+    <div class="tr">
+        <p class="td">总实际收入</p>
+        <p class="td" id="grossrealIncomeday"></p>
+        <p class="td" id="grossrealIncomemonth"></p>
+        <p class="td" id="grossrealIncomelastMonthDay"></p>
+        <p class="td" id="grossrealIncomeyear"></p>
+        <p class="td" id="grossrealIncomelastYearDay"></p>
+        <p class="td" id="grossrealIncomeinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">总营业额</p>
+        <p class="td" id="totalTurnoverday"></p>
+        <p class="td" id="totalTurnovermonth"></p>
+        <p class="td" id="totalTurnoverlastMonthDay"></p>
+        <p class="td" id="totalTurnoveryear"></p>
+        <p class="td" id="totalTurnoverlastYearDay"></p>
+        <p class="td" id="totalTurnoverinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">预订未到房数</p>
+        <p class="td" id="numberOrderday"></p>
+        <p class="td" id="numberOrdermonth"></p>
+        <p class="td" id="numberOrderlastMonthDay"></p>
+        <p class="td" id="numberOrderyear"></p>
+        <p class="td" id="numberOrderlastYearDay"></p>
+        <p class="td" id="numberOrderinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">维修房数</p>
+        <p class="td" id="maintenanceroomNumberday"></p>
+        <p class="td" id="maintenanceroomNumbermonth"></p>
+        <p class="td" id="maintenanceroomNumberlastMonthDay"></p>
+        <p class="td" id="maintenanceroomNumberyear"></p>
+        <p class="td" id="maintenanceroomNumberlastYearDay"></p>
+        <p class="td" id="maintenanceroomNumberinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">门店锁房数</p>
+        <p class="td" id="numberlockedStoresday"></p>
+        <p class="td" id="numberlockedStoresmonth"></p>
+        <p class="td" id="numberlockedStoreslastMonthDay"></p>
+        <p class="td" id="numberlockedStoresyear"></p>
+        <p class="td" id="numberlockedStoreslastYearDay"></p>
+        <p class="td" id="numberlockedStoresinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">可出租房数</p>
+        <p class="td" id="numberroomsAvailablerentday"></p>
+        <p class="td" id="numberroomsAvailablerentmonth"></p>
+        <p class="td" id="numberroomsAvailablerentlastMonthDay"></p>
+        <p class="td" id="numberroomsAvailablerentyear"></p>
+        <p class="td" id="numberroomsAvailablerentlastYearDay"></p>
+        <p class="td" id="numberroomsAvailablerentinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">客房总数</p>
+        <p class="td" id="totalnumberGuestroomsday"></p>
+        <p class="td" id="totalnumberGuestroomsmonth"></p>
+        <p class="td" id="totalnumberGuestroomslastMonthDay"></p>
+        <p class="td" id="totalnumberGuestroomsyear"></p>
+        <p class="td" id="totalnumberGuestroomslastYearDay"></p>
+        <p class="td" id="totalnumberGuestroomsinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">现金支出</p>
+        <p class="td" id="cashDisbursementsday"></p>
+        <p class="td" id="cashDisbursementsmonth"></p>
+        <p class="td" id="cashDisbursementslastMonthDay"></p>
+        <p class="td" id="cashDisbursementsyear"></p>
+        <p class="td" id="cashDisbursementslastYearDay"></p>
+        <p class="td" id="cashDisbursementsinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">现金</p>
+        <p class="td" id="cashday"></p>
+        <p class="td" id="cashmonth"></p>
+        <p class="td" id="cashlastMonthDay"></p>
+        <p class="td" id="cashyear"></p>
+        <p class="td" id="cashlastYearDay"></p>
+        <p class="td" id="cashinsertRial"></p>
+    </div>
+    <div class="tr"><p class="td noright">营业收入明细</p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+    </div>
+    <div class="tr">
+        <p class="td">全天日租</p>
+        <p class="td" id="throughoutDayrentday"></p>
+        <p class="td" id="throughoutDayrentmonth"></p>
+        <p class="td" id="throughoutDayrentlastMonthDay"></p>
+        <p class="td" id="throughoutDayrentyear"></p>
+        <p class="td" id="throughoutDayrentlastYearDay"></p>
+        <p class="td" id="throughoutDayrentinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">房费调整</p>
+        <p class="td" id="rateAdjustmentday"></p>
+        <p class="td" id="rateAdjustmentmonth"></p>
+        <p class="td" id="rateAdjustmentlastMonthDay"></p>
+        <p class="td" id="rateAdjustmentyear"></p>
+        <p class="td" id="rateAdjustmentlastYearDay"></p>
+        <p class="td" id="rateAdjustmentinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">钟点房费</p>
+        <p class="td" id="hourRateday"></p>
+        <p class="td" id="hourRatemonth"></p>
+        <p class="td" id="hourRatelastMonthDay"></p>
+        <p class="td" id="hourRateyear"></p>
+        <p class="td" id="hourRatelastYearDay"></p>
+        <p class="td" id="hourRateinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">超时房费</p>
+        <p class="td" id="timeoutRateday"></p>
+        <p class="td" id="timeoutRatemonth"></p>
+        <p class="td" id="timeoutRatelastMonthDay"></p>
+        <p class="td" id="timeoutRateyear"></p>
+        <p class="td" id="timeoutRatelastYearDay"></p>
+        <p class="td" id="timeoutRateinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">夜核房费</p>
+        <p class="td" id="nuclearnightRoomchargeday"></p>
+        <p class="td" id="nuclearnightRoomchargemonth"></p>
+        <p class="td" id="nuclearnightRoomchargelastMonthDay"></p>
+        <p class="td" id="nuclearnightRoomchargeyear"></p>
+        <p class="td" id="nuclearnightRoomchargelastYearDay"></p>
+        <p class="td" id="nuclearnightRoomchargeinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">赔偿</p>
+        <p class="td" id="compensationday"></p>
+        <p class="td" id="compensationmonth"></p>
+        <p class="td" id="compensationlastMonthDay"></p>
+        <p class="td" id="compensationyear"></p>
+        <p class="td" id="compensationlastYearDay"></p>
+        <p class="td" id="compensationinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">会员卡费</p>
+        <p class="td" id="membershipFeeday"></p>
+        <p class="td" id="membershipFeemonth"></p>
+        <p class="td" id="membershipFeelastMonthDay"></p>
+        <p class="td" id="membershipFeeyear"></p>
+        <p class="td" id="membershipFeelastYearDay"></p>
+        <p class="td" id="membershipFeeinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">商品</p>
+        <p class="td" id="goodsday"></p>
+        <p class="td" id="goodsmonth"></p>
+        <p class="td" id="goodslastMonthDay"></p>
+        <p class="td" id="goodsyear"></p>
+        <p class="td" id="goodslastYearDay"></p>
+        <p class="td" id="goodsinsertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">小计：</p>
+        <p class="td" id="subtotal2day"></p>
+        <p class="td" id="subtotal2month"></p>
+        <p class="td" id="subtotal2lastMonthDay"></p>
+        <p class="td" id="subtotal2year"></p>
+        <p class="td" id="subtotal2lastYearDay"></p>
+        <p class="td" id="subtotal2insertRial"></p>
+    </div>
+    <div class="tr"><p class="td noright">房费收入分析</p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+    </div>
+    <div class="tr">
+        <p class="td">会员</p>
+        <p class="td" id="members3day"></p>
+        <p class="td" id="members3month"></p>
+        <p class="td" id="members3lastMonthDay"></p>
+        <p class="td" id="members3year"></p>
+        <p class="td" id="members3lastYearDay"></p>
+        <p class="td" id="members3insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">散客</p>
+        <p class="td" id="individualTraveler3day"></p>
+        <p class="td" id="individualTraveler3month"></p>
+        <p class="td" id="individualTraveler3lastMonthDay"></p>
+        <p class="td" id="individualTraveler3year"></p>
+        <p class="td" id="individualTraveler3lastYearDay"></p>
+        <p class="td" id="individualTraveler3insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">协议单位</p>
+        <p class="td" id="agreementUnit3day"></p>
+        <p class="td" id="agreementUnit3month"></p>
+        <p class="td" id="agreementUnit3lastMonthDay"></p>
+        <p class="td" id="agreementUnit3year"></p>
+        <p class="td" id="agreementUnit3lastYearDay"></p>
+        <p class="td" id="agreementUnit3insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">中介</p>
+        <p class="td" id="intermediary3day"></p>
+        <p class="td" id="intermediary3month"></p>
+        <p class="td" id="intermediary3lastMonthDay"></p>
+        <p class="td" id="intermediary3year"></p>
+        <p class="td" id="intermediary3lastYearDay"></p>
+        <p class="td" id="intermediary3insertRial"></p>
+    </div>
+
+    <div class="tr">
+        <p class="td">app</p>
+        <p class="td" id="app3day"></p>
+        <p class="td" id="app3month"></p>
+        <p class="td" id="app3lastMonthDay"></p>
+        <p class="td" id="app3year"></p>
+        <p class="td" id="app3lastYearDay"></p>
+        <p class="td" id="app3insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">微信</p>
+        <p class="td" id="microLetter3day"></p>
+        <p class="td" id="microLetter3month"></p>
+        <p class="td" id="microLetter3lastMonthDay"></p>
+        <p class="td" id="microLetter3year"></p>
+        <p class="td" id="microLetter3lastYearDay"></p>
+        <p class="td" id="microLetter3insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">步入</p>
+        <p class="td" id="enter3day"></p>
+        <p class="td" id="enter3month"></p>
+        <p class="td" id="enter3lastMonthDay"></p>
+        <p class="td" id="enter3year"></p>
+        <p class="td" id="enter3lastYearDay"></p>
+        <p class="td" id="enter3insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">直接预订</p>
+        <p class="td" id="directBooking3day"></p>
+        <p class="td" id="directBooking3month"></p>
+        <p class="td" id="directBooking3lastMonthDay"></p>
+        <p class="td" id="directBooking3year"></p>
+        <p class="td" id="directBooking3lastYearDay"></p>
+        <p class="td" id="directBooking3insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">小计</p>
+        <p class="td" id="subtotal3day"></p>
+        <p class="td" id="subtotal3month"></p>
+        <p class="td" id="subtotal3lastMonthDay"></p>
+        <p class="td" id="subtotal3year"></p>
+        <p class="td" id="subtotal3lastYearDay"></p>
+        <p class="td" id="subtotal3insertRial"></p>
+    </div>
+    <div class="tr"><p class="td noright">房晚数分析</p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+    </div>
+    <div class="tr">
+        <p class="td">会员</p>
+        <p class="td" id="members4day"></p>
+        <p class="td" id="members4month"></p>
+        <p class="td" id="members4lastMonthDay"></p>
+        <p class="td" id="members4year"></p>
+        <p class="td" id="members4lastYearDay"></p>
+        <p class="td" id="members4insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">散客</p>
+        <p class="td" id="individualTraveler4day"></p>
+        <p class="td" id="individualTraveler4month"></p>
+        <p class="td" id="individualTraveler4lastMonthDay"></p>
+        <p class="td" id="individualTraveler4year"></p>
+        <p class="td" id="individualTraveler4lastYearDay"></p>
+        <p class="td" id="individualTraveler4insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">协议单位</p>
+        <p class="td" id="agreementUnit4day"></p>
+        <p class="td" id="agreementUnit4month"></p>
+        <p class="td" id="agreementUnit4lastMonthDay"></p>
+        <p class="td" id="agreementUnit4year"></p>
+        <p class="td" id="agreementUnit4lastYearDay"></p>
+        <p class="td" id="agreementUnit4insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">中介</p>
+        <p class="td" id="intermediary4day"></p>
+        <p class="td" id="intermediary4month"></p>
+        <p class="td" id="intermediary4lastMonthDay"></p>
+        <p class="td" id="intermediary4year"></p>
+        <p class="td" id="intermediary4lastYearDay"></p>
+        <p class="td" id="intermediary4insertRial"></p>
+    </div>
+
+    <div class="tr">
+        <p class="td">app</p>
+        <p class="td" id="app4day"></p>
+        <p class="td" id="app4month"></p>
+        <p class="td" id="app4lastMonthDay"></p>
+        <p class="td" id="app4year"></p>
+        <p class="td" id="app4lastYearDay"></p>
+        <p class="td" id="app4insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">微信</p>
+        <p class="td" id="microLetter4day"></p>
+        <p class="td" id="microLetter4month"></p>
+        <p class="td" id="microLetter4lastMonthDay"></p>
+        <p class="td" id="microLetter4year"></p>
+        <p class="td" id="microLetter4lastYearDay"></p>
+        <p class="td" id="microLetter4insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">步入</p>
+        <p class="td" id="enter4day"></p>
+        <p class="td" id="enter4month"></p>
+        <p class="td" id="enter4lastMonthDay"></p>
+        <p class="td" id="enter4year"></p>
+        <p class="td" id="enter4lastYearDay"></p>
+        <p class="td" id="enter4insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">直接预订</p>
+        <p class="td" id="directBooking4day"></p>
+        <p class="td" id="directBooking4month"></p>
+        <p class="td" id="directBooking4lastMonthDay"></p>
+        <p class="td" id="directBooking4year"></p>
+        <p class="td" id="directBooking4lastYearDay"></p>
+        <p class="td" id="directBooking4insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">小计</p>
+        <p class="td" id="subtotal4day"></p>
+        <p class="td" id="subtotal4month"></p>
+        <p class="td" id="subtotal4lastMonthDay"></p>
+        <p class="td" id="subtotal4year"></p>
+        <p class="td" id="subtotal4lastYearDay"></p>
+        <p class="td" id="subtotal4insertRial"></p>
+    </div>
+    <div class="tr"><p class="td noright">平均房价分析</p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+    </div>
+    <div class="tr">
+        <p class="td">会员</p>
+        <p class="td" id="members5day"></p>
+        <p class="td" id="members5month"></p>
+        <p class="td" id="members5lastMonthDay"></p>
+        <p class="td" id="members5year"></p>
+        <p class="td" id="members5lastYearDay"></p>
+        <p class="td" id="members5insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">散客</p>
+        <p class="td" id="individualTraveler5day"></p>
+        <p class="td" id="individualTraveler5month"></p>
+        <p class="td" id="individualTraveler5lastMonthDay"></p>
+        <p class="td" id="individualTraveler5year"></p>
+        <p class="td" id="individualTraveler5lastYearDay"></p>
+        <p class="td" id="individualTraveler5insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">协议单位</p>
+        <p class="td" id="agreementUnit5day"></p>
+        <p class="td" id="agreementUnit5month"></p>
+        <p class="td" id="agreementUnit5lastMonthDay"></p>
+        <p class="td" id="agreementUnit5year"></p>
+        <p class="td" id="agreementUnit5lastYearDay"></p>
+        <p class="td" id="agreementUnit5insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">中介</p>
+        <p class="td" id="intermediary5day"></p>
+        <p class="td" id="intermediary5month"></p>
+        <p class="td" id="intermediary5lastMonthDay"></p>
+        <p class="td" id="intermediary5year"></p>
+        <p class="td" id="intermediary5lastYearDay"></p>
+        <p class="td" id="intermediary5insertRial"></p>
+    </div>
+
+    <div class="tr">
+        <p class="td">app</p>
+        <p class="td" id="app5day"></p>
+        <p class="td" id="app5month"></p>
+        <p class="td" id="app5lastMonthDay"></p>
+        <p class="td" id="app5year"></p>
+        <p class="td" id="app5lastYearDay"></p>
+        <p class="td" id="app5insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">微信</p>
+        <p class="td" id="microLetter5day"></p>
+        <p class="td" id="microLetter5month"></p>
+        <p class="td" id="microLetter5lastMonthDay"></p>
+        <p class="td" id="microLetter5year"></p>
+        <p class="td" id="microLetter5lastYearDay"></p>
+        <p class="td" id="microLetter5insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">步入</p>
+        <p class="td" id="enter5day"></p>
+        <p class="td" id="enter5month"></p>
+        <p class="td" id="enter5lastMonthDay"></p>
+        <p class="td" id="enter5year"></p>
+        <p class="td" id="enter5lastYearDay"></p>
+        <p class="td" id="enter5insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">直接预订</p>
+        <p class="td" id="directBooking5day"></p>
+        <p class="td" id="directBooking5month"></p>
+        <p class="td" id="directBooking5lastMonthDay"></p>
+        <p class="td" id="directBooking5year"></p>
+        <p class="td" id="directBooking5lastYearDay"></p>
+        <p class="td" id="directBooking5insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">小计</p>
+        <p class="td" id="subtotal5day"></p>
+        <p class="td" id="subtotal5month"></p>
+        <p class="td" id="subtotal5lastMonthDay"></p>
+        <p class="td" id="subtotal5year"></p>
+        <p class="td" id="subtotal5lastYearDay"></p>
+        <p class="td" id="subtotal5insertRial"></p>
+    </div>
+
+    <div class="tr"><p class="td noright">出租率分析</p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+        <p class="td noright"></p>
+    </div>
+    <div class="tr">
+        <p class="td">会员</p>
+        <p class="td" id="members6day"></p>
+        <p class="td" id="members6month"></p>
+        <p class="td" id="members6lastMonthDay"></p>
+        <p class="td" id="members6year"></p>
+        <p class="td" id="members6lastYearDay"></p>
+        <p class="td" id="members6insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">散客</p>
+        <p class="td" id="individualTraveler6day"></p>
+        <p class="td" id="individualTraveler6month"></p>
+        <p class="td" id="individualTraveler6lastMonthDay"></p>
+        <p class="td" id="individualTraveler6year"></p>
+        <p class="td" id="individualTraveler6lastYearDay"></p>
+        <p class="td" id="individualTraveler6insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">协议单位</p>
+        <p class="td" id="agreementUnit6day"></p>
+        <p class="td" id="agreementUnit6month"></p>
+        <p class="td" id="agreementUnit6lastMonthDay"></p>
+        <p class="td" id="agreementUnit6year"></p>
+        <p class="td" id="agreementUnit6lastYearDay"></p>
+        <p class="td" id="agreementUnit6insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">中介</p>
+        <p class="td" id="intermediary6day"></p>
+        <p class="td" id="intermediary6month"></p>
+        <p class="td" id="intermediary6lastMonthDay"></p>
+        <p class="td" id="intermediary6year"></p>
+        <p class="td" id="intermediary6lastYearDay"></p>
+        <p class="td" id="intermediary6insertRial"></p>
+    </div>
+
+    <div class="tr">
+        <p class="td">app</p>
+        <p class="td" id="app6day"></p>
+        <p class="td" id="app6month"></p>
+        <p class="td" id="app6lastMonthDay"></p>
+        <p class="td" id="app6year"></p>
+        <p class="td" id="app6lastYearDay"></p>
+        <p class="td" id="app6insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">微信</p>
+        <p class="td" id="microLetter6day"></p>
+        <p class="td" id="microLetter6month"></p>
+        <p class="td" id="microLetter6lastMonthDay"></p>
+        <p class="td" id="microLetter6year"></p>
+        <p class="td" id="microLetter6lastYearDay"></p>
+        <p class="td" id="microLetter6insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">步入</p>
+        <p class="td" id="enter6day"></p>
+        <p class="td" id="enter6month"></p>
+        <p class="td" id="enter6lastMonthDay"></p>
+        <p class="td" id="enter6year"></p>
+        <p class="td" id="enter6lastYearDay"></p>
+        <p class="td" id="enter6insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">直接预订</p>
+        <p class="td" id="directBooking6day"></p>
+        <p class="td" id="directBooking6month"></p>
+        <p class="td" id="directBooking6lastMonthDay"></p>
+        <p class="td" id="directBooking6year"></p>
+        <p class="td" id="directBooking6lastYearDay"></p>
+        <p class="td" id="directBooking6insertRial"></p>
+    </div>
+    <div class="tr">
+        <p class="td">小计</p>
+        <p class="td" id="subtotal6day"></p>
+        <p class="td" id="subtotal6month"></p>
+        <p class="td" id="subtotal6lastMonthDay"></p>
+        <p class="td" id="subtotal6year"></p>
+        <p class="td" id="subtotal6lastYearDay"></p>
+        <p class="td" id="subtotal6insertRial"></p>
+    </div>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'element', 'form', 'laydate'], function () {
+        var table = layui.table, $ = layui.$, form = layui.form, state = 0, laydate = layui.laydate;
+        var today = DateToLStr(new Date(Date.now() - 86400000)).split(" ")[0];
+        $("#startTime").val(today);
+        setTimeout(function () {
+            resultInfo()
+        }, 100);
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            resultInfo();
+            return false;
+        });
+
+
+        //获取
+        function resultInfo() {
+            var obj = {
+                endTime: $("#startTime").val().replace(/-/g, "/") + " 04:00:00"
+            };
+            var index = layer.load(1, {time: 10 * 1000});
+            $.ajax({
+                url: '/roomForms/queryTableMember',
+                type: 'POST',
+                data: obj,
+                dataType: 'json',
+                success: function (data) {
+                    formatData(data.data)
+                    layer.closeAll()
+                }
+            })
+        }
+
+        function formatData(d) {
+            // console.info(d)
+            for (var i in d) {
+                var b = d[i]
+                for (var j in b) {
+                    $("#" + i + j).text(b[j])
+                }
+            }
+            return;
+            tab.reload({data: JSON.parse(JSON.stringify(data))});
+        }
+
+        var tab = table.render({
+            elem: '#residentStatement' //指定原始表格元素选择器（推荐id选择器）
+            , limit: 10000
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.statement //解析数据列表
+                };
+            }
+            , even: true
+            , loading: true // 是否显示加载条
+            , toolbar: true
+            , cols: [[ //标题栏
+                {field: 'project', align: 'center', title: '营业项目', rowspan: 2} //rowspan即纵向跨越的单元格数
+                , {align: 'center', title: '本年实际情况', colspan: 4}
+                , {align: 'center', title: '去年同期', colspan: 4}
+
+            ], [
+                {field: 'thisYearThisPrice', align: 'center', title: '当日'}
+                , {field: 'thisYearThisMonth', align: 'center', title: '月累计'}
+                , {field: 'thisYearThisLastMonth', align: 'center', title: '上月累计'}
+                , {field: 'thisYearThisYear', align: 'center', title: '年累计'}
+                , {field: 'lastYearThisMonth', align: 'center', title: '月累计'}
+                , {field: 'lastYearMonthDifferences', align: 'center', title: '月差异'}
+                , {field: 'lastYearThisYear', align: 'center', title: '年累计'}
+                , {field: 'lastYearDifferencesIn', align: 'center', title: '年差异'}
+            ]]
+        });
+
+        laydate.render({
+            elem: '#startTime',
+            type: 'date',
+            btns: ['confirm'],
+            max: 0,
+            done: function (value, date) {
+
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

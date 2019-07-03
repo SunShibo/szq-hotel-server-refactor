@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>免单</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<form class="layui-form" style="padding: 10px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">免单金额</label>
+        <div class="layui-input-inline">
+            <input type="number" name="freePrice" required lay-verify="required" placeholder="请输入金额" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux" style="color: red !important;">请输入免单金额即可</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-inline">
+                <textarea name="exemption" required lay-verify="required" placeholder="请输入备注信息"
+                          class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="btn-list layui-btn-container">
+        <button class="layui-btn" lay-submit="" lay-filter="formData">确定</button>
+        <a class="layui-btn" id="back">取消</a>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form, $ = layui.$, oId = '';
+
+        //取消按钮
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        $(function () {
+            oId = sessionStorage.getItem('oId');
+        });
+
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {//订单免单备注
+            $.ajax({
+                url: api.exemption,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: oId,
+                    info: data.field.exemption,
+                    price: data.field.freePrice
+                },
+                success: function (data) {
+                    if (data.errCode === '0000010') {
+                        layer.msg(data.errMsg);
+                        return;
+                    }
+                    if(!data.success){
+                        showMsg(data.errMsg, 2, false);
+                        return;
+                    }
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

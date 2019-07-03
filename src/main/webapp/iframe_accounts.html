@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>联房结账</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        #LAY_app, body, html {
+            height: auto;
+        }
+
+        body {
+            overflow-y: scroll;
+        }
+
+        /* 禁止刷新后出现横向滚动条 */
+
+        .title {
+            padding: 0 12px;
+            width: 90%;
+            margin: 0 auto;
+            font-size: 20px;
+
+        }
+    </style>
+</head>
+<body>
+<div class="title">现有联房房间</div>
+<div class="tab-box">
+    <table id="caaountsTop" lay-filter="caaountsTop" class="layui-table"></table>
+</div>
+<div class="title">可加入联房房间</div>
+<div class="tab-box">
+    <table id="caaountsBottom" lay-filter="caaountsBottom" class="layui-table"></table>
+</div>
+<div style="height: 50px;"></div>
+<div class="layui-input-block" style="position: fixed; right: 20px; bottom: 20px;">
+    <button class="layui-btn" lay-submit="" lay-filter="addAccounts">加入联房</button>
+    <button class="layui-btn" lay-submit="" lay-filter="delAccounts">解散联房</button>
+    <button type="button" class="layui-btn layui-btn-primary" id="back">取消</button>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form, $ = layui.$, c = 0, caaountsTop, caaountsBottom, table = layui.table, selectNewArr = []
+            , selectOldArr = [];
+
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+
+        $(function () {
+            c = parseInt(getUrl('c'));
+            getData()
+        });
+        caaountsBottom = table.render({
+            elem: '#caaountsBottom'
+            , limit: 10000
+            , method: 'POST'
+            , cols: [[ //表头
+                {field: 'checkbox', title: 'ID', type: 'checkbox', fixed: 'roomId', align: 'center'}
+                , {field: 'roomName', title: '房号', align: 'center'}
+                , {field: 'name', title: '姓名', align: 'center'}
+                , {
+                    field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
+                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
+                    }
+                }
+            ]]
+        });
+
+        caaountsTop = table.render({
+            elem: '#caaountsTop'
+            , limit: 10000
+            , method: 'POST'
+            , cols: [[ //表头
+                , {field: 'roomName', title: '房号', align: 'center'}
+                , {field: 'name', title: '姓名', align: 'center'}
+                , {
+                    field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
+                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
+                    }
+                }
+            ]]
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(caaountsBottom)', function (obj) {
+            var checkStatus = table.checkStatus('caaountsBottom'), data = checkStatus.data;
+            selectNewArr = selectOldArr;
+            for (var i = 0, len = data.length; i < len; i++) {
+                selectNewArr.push(data[i].id);
+            }
+        });
+
+
+        function getData() {
+            $.ajax({
+                url: api.jointHousingt,
+                type: 'POST',
+                dataType: 'json',
+                data: {id: c},
+                success: function (rs) {
+                    if(!rs.success){
+                        showMsg(rs.errMsg, 2, false);
+                        return;
+                    }
+                    formatData(rs.data.old);
+                    caaountsTop.reload({data: rs.data.old});
+                    caaountsBottom.reload({data: rs.data.new});
+                }
+            })
+        }
+
+        function formatData(data) {
+            for (var i = 0, len = data.length; i < len; i++) {
+                selectOldArr.push(data[i].id);
+            }
+        }
+
+        //添加
+        form.on('submit(addAccounts)', function (data) {
+            $.ajax({
+                url: api.join,
+                typeL: 'POST',
+                dataType: 'json',
+                data: {ids: selectNewArr.join(',')},
+                success: function (rs) {
+                    if (rs.success) {
+                        showMsg('加入成功', 1, false);
+                        parent.layer.closeAll();
+                    } else {
+                        showMsg(rs.errMsg, 2, false);
+                    }
+                }
+            })
+        });
+
+        //解散
+        form.on('submit(delAccounts)', function (data) {
+            $.ajax({
+                url: api.dismiss,
+                typeL: 'POST',
+                dataType: 'json',
+                data: {ids: selectOldArr.join(',')},
+                success: function (rs) {
+                    if (rs.success) {
+                        showMsg('解散成功', 1, false);
+                        parent.layer.closeAll();
+                    } else {
+                        showMsg(rs.errMsg, 2, false);
+                    }
+                }
+            })
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        #myLock{
+            width:0px;height: 0px;
+        }
+    </style>
+</head>
+<body>
+<OBJECT classid="clsid:B1C704A0-A23F-417A-9353-40552328E699"
+        id="myLock" name="myLock" width="0" height="0">
+</OBJECT>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <!--<p style="text-align: center">支付成功</p>-->
+        </br>
+        <p style="text-align: center">请制房卡</p>
+
+    </div>
+    <div id="list">
+    </div>
+    <div class="layui-input-block" style="margin: auto;width: 100px;">
+        <a class="layui-btn" lay-submit="" lay-filter="formData" >制卡完成</a>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+
+    layui.use(['form','jquery'], function () {
+         form = layui.form, $ = layui.jquery, id = 0;
+        var _myLock = document.getElementById("myLock");
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+        var $l = $("#list");
+        var  d = JSON.parse(sessionStorage.idandname);
+        for(var i=0;i<d.length;i++)
+        $l.append(['<div class="layui-form-item" style="margin-left: 27px;">',
+                 ' <div class="layui-input-inline" style="width: 100px;">',
+                 '  <input class="layui-input"  style="width: 100px;"  readonly value="'+d[i].name+'">',
+                 '  </div>',
+                 '  <div class="layui-input-inline">',
+                 '      <input class="layui-input" readonly value="'+d[i].credentialNo+'">',
+                 ' </div>',
+                 '  <div class="layui-input-inline" style="width: 80px">',
+                 '       <input type="button" data-roomid="',d[i].roomId,
+                            '"  data-cn="',d[i].credentialNo,'" class="layui-btn makecard" id="zhi',d[i].credentialNo,'"  value="制卡">',
+                 '   </div>',
+            '       <input type="button" data-roomid="',d[i].roomId,
+            '"  data-cn="',d[i].credentialNo,'" class="layui-btn cancelmakecard layui-hide"  id="xiao',d[i].credentialNo,'"  value="消卡">',
+            '   </div>',
+                 '</div>'].join(""))
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            no();
+            parent.location.href = HOME;
+            return false;
+        });
+
+        $(document).on("click",".makecard",function () {
+            var ri = $(this).data("roomid");
+            var cn = $(this).data("cn");
+            if( !$("#xiao"+cn).hasClass("layui-hide") ) return false;
+            var index = layer.load(1,{time:10*1000});
+            $.getJSON('/roomInformationController/chacardinperson?roomId='+ri+'&v='+Date.now(),function (rs) {
+                var d = rs.data;
+                var num = d[0].roomName;
+                var time = Number(d[0].endTime.time);
+                if(!num){layer.alert("缺少房间号");return false;}
+                var st = DateToLStr3(new Date(Date.now()-1800000));//提前半小时
+                var et = DateToLStr3(new Date(time));
+                var strReadResult = _myLock.MakeGuestCard(num+"",st,et);
+                layer.close(index);
+                var aBool;
+                var aStr;
+                aBool = strReadResult.getItem(0);
+                aStr = strReadResult.getItem(1);
+                if (aBool == 1) {
+                    console.log("物理写卡成功,卡号是：" + aStr);
+                    $.getJSON('/roomInformationController/gaicardinperson?r=' + Date.now() + '&idNumber=' + cn + '&roomId=' + ri + "&cardstatusAttribute=1", function (rs) {
+
+                        if (!rs.success) {
+                            layer.alert(rs.errMsg);
+                            return;
+                        }
+                        $("#zhi" + cn).val("已制卡")
+                        $("#xiao" + cn).removeClass("layui-hide");
+                        layer.alert("制卡完成")
+                    })
+                }else {
+                    layer.alert(aStr);
+
+                }
+                setTimeout(function () {
+                    layer.close(index);
+                },3000)
+            })
+
+        })
+        $(document).on("click",".cancelmakecard",function () {
+            var ri = $(this).data("roomid");
+            var cn = $(this).data("cn");
+            var strReadResult = _myLock.LogoffGuestCard();
+            var aBool;
+            var aStr;
+            aBool = strReadResult.getItem(0);
+            aStr = strReadResult.getItem(1);
+            if (aBool == 1) {
+                console.log("物理消卡成功");
+                $.getJSON('/roomInformationController/gaicardinperson?r='+Date.now()+'&idNumber='+cn+'&roomId='+ri+"&cardstatusAttribute=2",function (rs) {
+                    if(!rs.success){
+                        layer.alert(rs.errMsg);
+                        return;
+                    }
+                    $("#zhi"+cn).val("制卡")
+                    $("#xiao"+cn).addClass("layui-hide");
+                    layer.alert("消卡完成")
+                })
+            }
+            else {
+
+                alert("消卡失败："+ aStr);
+
+            }
+
+        })
+
+    });
+    function DateToLStr3(dt) {
+        try {
+            var y, m, m1, d, d1, h, h1, mm, mm1, s, s1;
+            y = dt.getFullYear();
+            m = dt.getMonth() + 1; //1-12
+            d = dt.getDate();
+            h = dt.getHours();
+            mm = dt.getMinutes();
+            s = dt.getSeconds();
+
+            m1 = (m < 10 ? "0" + m : m);
+            d1 = (d < 10 ? "0" + d : d);
+            h1 = (h < 10 ? "0" + h : h);
+            mm1 = (mm < 10 ? "0" + mm : mm);
+            s1 = (s < 10 ? "0" + s : s);
+            return "" + y + "" + m1 + "" + d1 + "" + h1 + "" + mm1;
+        } catch (e) {
+            console.log("error");
+            return "";
+        }
+    }
+
+</script>
+</body>
+</html>

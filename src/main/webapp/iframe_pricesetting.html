@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+
+        .layui-input-block {
+            margin-left: 0;
+            min-height: 36px;
+        }
+
+        .icon-box {
+            vertical-align: middle;
+            line-height: 36px;
+            display: none;
+        }
+
+        .layui-form-item:hover .icon-box {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<form class="layui-form head" style="padding: 10px 0;" lay-filter="data">
+    <div id="dayRooms">
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="margin: 0 10px;">
+                <input type="checkbox" name="dayRoom" id="dayRoom" lay-filter="dayRoom" value="1"
+                       lay-skin="primary"
+                       title="特殊价格">
+                <i class="layui-icon layui-icon-add-1" style="position: absolute; right:  20px;"
+                   id="addDom">添加</i>
+            </div>
+        </div>
+        <div data-id="1" class="layui-form-item" style="vertical-align: middle">
+            <div class='layui-input-block'>
+                <label class="layui-form-label">起止时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="startTime1" autocomplete="off" class="layui-input" id="startTime1"
+                           placeholder="开始时间">
+                </div>
+                <div class="layui-input-inline" style="margin-left: 20px;">
+                    <input type="text" name="endTime1" autocomplete="off" class="layui-input" id="endTime1"
+                           placeholder="结束时间">
+                </div>
+                <label class="layui-form-label">价格</label>
+                <div class="layui-input-inline">
+                    <input type="number" class="layui-input" name="price1" id="price1" placeholder="￥"
+                           autocomplete="off">
+                </div>
+                <div class="layui-input-inline" id="update" style="width: 75px;">
+                    <a class="layui-btn layui-btn-primary" id="updateItem1">修改</a>
+                </div>
+                <div class="icon-box">
+                    <i class="layui-icon layui-icon-close"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="margin: 0 10px;">
+                <input type="checkbox" name="hourRoom" id="hourRoom" lay-filter="hourRoom" value="2"
+                       lay-skin="primary" title="钟点房">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class='layui-input-block'>
+                <label class="layui-form-label">标准价格</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="hourPrice" id="hourPrice" placeholder="￥" autocomplete="off"
+                           class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">每小时</div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="margin: 0 10px;">
+                <input type="checkbox" name="freeRoom" id="freeRoom" lay-filter="freeRoom" value="3"
+                       lay-skin="primary" title="免费房">
+            </div>
+        </div>
+    </div>
+    <div style="position: fixed; bottom: 10px; right: 10px;">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">生效</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <button type="button" class="layui-btn layui-btn-primary" id="back">取消</button>
+        </div>
+    </div>
+</form>
+
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'element', 'laydate'], function () {
+        var form = layui.form, $ = layui.$, select = {}, laydate = layui.laydate, num = 1, formData = {},
+            dayRoom = [],
+            hourRoom = null,
+            startTime = [],
+            endTime = [],
+            roomId = '',
+            numArr = [];
+        $(function () {//页面加载
+            roomId = sessionStorage.getItem('selectArr');
+            addDateTimeDom(num);
+        });
+        $('.icon-box').on('click', function () {//删除当前dom节点
+            var child = this.parentNode.parentNode;
+            var id = $(child).data("id");
+            var start = $('#startTime' + id).val();
+            var end = $('#endTime' + id).val();
+            numArr.splice(checkArrayId(numArr, id), 1);//删除当前下标的num
+            if (start) {
+                startTime.splice(checkArrayId(startTime, start), 1);
+            }
+            if (end) {
+                endTime.splice(checkArrayId(endTime, end), 1);
+            }
+            $(child).remove();
+        });
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+        $('#price1').on('input', function () {//输入全天房价格时复选框选中
+            $('#dayRoom').attr("checked", true);
+            layui.form.render('checkbox');
+        });
+        $('#hourPrice').on('input', function () {//输入钟点房时复选框选中
+            hourRoom = $('#hourPrice').val();
+            $('#hourRoom').attr("checked", true);
+            layui.form.render(); //重新渲染显示效果
+        });
+
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            console.log(data.field);
+            var roomInfo = formatData(data.field);
+            console.log(roomInfo);
+            $.ajax({
+                url: api.updatePriceAll,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    roomInfo: JSON.stringify(roomInfo),
+                    roomIds: roomId
+                },
+                success: function (data) {
+                    if (data.success) {
+                        showMsg('客房修改成功', 1, true);
+                    } else {
+                        showMsg('客房修改失败', 2, false);
+                    }
+                }
+            });
+            return false;
+        });
+
+        $('#updateItem1').on('click', function () {
+            var child = this.parentNode.parentNode.parentNode;
+            var id = $(child).data("id");
+            var startTime = $('#startTime' + id).val();
+            var endTime = $('#endTime' + id).val();
+            var price = $('#price' + id).val();
+            if (!price || !endTime || !startTime) {
+                showMsg('时间或价格不能为空', 2, false);
+                return;
+            }
+            $.ajax({
+                url: api.largeUpdatePriceTime,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    startTime: startTime,
+                    endTime: endTime,
+                    price: price,
+                    roomIds: roomId
+                },
+                success: function (data) {
+                    console.log(data);
+                    if (data.success) {
+                        showMsg('修改成功', 1, true);
+                    } else {
+                        layer.confirm('是否确认拆分冲突时间段?', {icon: 3, title: '提示'}, function (index) {
+                            $.ajax({
+                                url: api.largeUpdatePriceTime,
+                                type: 'POST',
+                                dataType: 'json',
+                                data: {
+                                    startTime: startTime,
+                                    endTime: endTime,
+                                    price: price,
+                                    state: 1,
+                                    roomIds: roomId
+                                },
+                                success: function (data) {
+                                    if (data.success) {
+                                        showMsg('修改成功', 1, true);
+                                    } else {
+                                        showMsg('修改失败', 2, false)
+                                    }
+                                }
+                            });
+                            layer.close(index);
+                        });
+                    }
+                }
+            })
+        });
+
+        //获取当前系统时间
+        function getNowFormatDate() {
+            var date = new Date();
+            var seperator1 = "-";
+            var seperator2 = ":";
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+                + " " + date.getHours() + seperator2 + date.getMinutes()
+                + seperator2 + date.getSeconds();
+            return currentdate;
+        }
+
+        //form监听事件
+        form.on('checkbox(hourRoom)', function (obj) {
+            if (!obj.elem.checked) {
+                $('#hourPrice').val('');
+                hourRoom = {};
+                if (formData.hourRoom != null) {
+                    delete formData.hourRoom;
+                }
+            }
+        });
+        //form监听事件
+        form.on('checkbox(dayRoom)', function (obj) {
+            if (!obj.elem.checked) {
+                for (var i = 1; i <= num; i++) {
+                    $('#time' + num).val('');
+                    $('#price' + num).val('');
+                    dayRoom = [];
+                }
+                if (formData.dayRoom != null) {
+                    delete formData.dayRoom;
+                }
+            }
+        });
+        $(document).on('click', '.icon-box', function (event) {//删除当前dom节点
+            event.preventDefault();
+            var child = this.parentNode.parentNode;
+            var id = $(child).data("id");
+            var start = $('#startTime' + id).val();
+            var end = $('#endTime' + id).val();
+            // console.log('下标',checkArrayId(numArr, id))
+            var index = checkArrayId(numArr, id);
+            if (index !== -1) {
+                numArr.splice(index, 1);//删除当前下标的num
+            }
+            console.log(numArr);
+            if (start) {
+                startTime.splice(checkArrayId(startTime, start), 1);
+            }
+            if (end) {
+                endTime.splice(checkArrayId(endTime, end), 1);
+            }
+            $(child).remove();
+        });
+        $('#addDom').on('click', function () {
+            num++;
+            var div = "<div data-id='" + num + "' class='layui-form-item'><div class='layui-input-block'><label class='layui-form-label'>起止时间</label><div class=\"layui-input-inline\"><input type=\"text\" name=\"startTime" + num + "\" class=\"layui-input\" autocomplete=\"off\" id=\"startTime" + num + "\" placeholder=\"开始时间\"></div><div class=\"layui-input-inline\" style=\"margin-left: 20px;\"><input type=\"text\" name=\"endTime" + num + "\" autocomplete=\"off\" class=\"layui-input\" id=\"endTime" + num + "\" placeholder=\"结束时间\"></div><label class='layui-form-label'>价格</label><div class='layui-input-inline'><input type='number' class='layui-input' name='price" + num + "' id='price" + num + "' placeholder='￥' autocomplete='off'></div><div class=\"layui-input-inline\" style='width: 75px;'><a class=\"layui-btn layui-btn-primary\" id='updateItem" + num + "'>修改</a></div><div class='icon-box'><i class='layui-icon layui-icon-close'></i></div></div></div>";
+            numArr.push(num);
+            $('#dayRooms').append(div);
+
+            $('#updateItem' + num).on('click', function () {
+                var child = this.parentNode.parentNode.parentNode;
+                var id = $(child).data("id");
+                var startTime = $('#startTime' + id).val();
+                var endTime = $('#endTime' + id).val();
+                var price = $('#price' + id).val();
+                if (!price || !endTime || !startTime) {
+                    showMsg('时间或价格不能为空', 2, false);
+                    return;
+                }
+                $.ajax({
+                    url: api.largeUpdatePriceTime,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        startTime: startTime,
+                        endTime: endTime,
+                        price: price,
+                        roomIds: roomId
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            showMsg('修改成功', 1, true);
+                        } else {
+                            layer.confirm('是否确认拆分冲突时间段?', {icon: 3, title: '提示'}, function (index) {
+                                $.ajax({
+                                    url: api.largeUpdatePriceTime,
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    data: {
+                                        startTime: startTime,
+                                        endTime: endTime,
+                                        price: price,
+                                        state: 1,
+                                        roomIds: roomId
+                                    },
+                                    success: function (data) {
+                                        if (data.success) {
+                                            showMsg('修改成功', 1, true);
+                                            location.reload();
+                                        } else {
+                                            showMsg('修改失败', 2, false);
+                                        }
+                                    }
+                                });
+                                layer.close(index);
+                            });
+                        }
+                    }
+                })
+            });
+            $("#price" + num).on('input', function () {
+                $('#dayRoom').attr("checked", true);
+                layui.form.render('checkbox'); //重新渲染显示效果
+            });
+            addDateTimeDom(num);
+        });
+
+        //绑定事件控件
+        function addDateTimeDom(num) {
+            var start = laydate.render({
+                elem: '#startTime' + num,
+                type: 'datetime',
+                btns: ['confirm'],
+                done: function (value, date) {
+                    var newTime = new Date(value.replace('00:00:00', '06:00:00')).getTime();
+                    startTime.push(newTime);
+                    if (endTime.length > 1) {//第一次的开始时间不等于空ss
+                        if (newTime < endTime[num - 2]) {
+                            startTime.splice(num - 1, 1);
+                            showMsg('时间与上一次重叠', 2, false);
+                            setTimeout(function () {
+                                document.getElementById('startTime' + num).value = '';
+                            }, 200);
+                            return;
+                        }
+                        startTime.splice(num - 1, 1, newTime);
+                    }
+                    var _value = value;
+                    setTimeout(function () {
+                        document.getElementById('startTime' + num).value = _value.replace('00:00:00', '06:00:00');
+                    }, 200);
+                    end.config.min = date;
+                    end.config.min.month = date.month - 1;
+                },
+                change: function (value, date, endDate) {
+                    var timestamp2 = Date.parse(new Date(value));
+                    timestamp2 = timestamp2 / 1000;
+                    end.config.min = timestamp2;
+                    end.config.min.month = date.month - 1;
+                }
+            });
+            var end = laydate.render({
+                elem: '#endTime' + num,
+                type: 'datetime',
+                btns: ['confirm'],
+                done: function (value, date) {
+                    var newTime = new Date(value.replace('00:00:00', '06:00:00')).getTime();
+                    endTime.push(newTime);
+                    if (startTime.length >= 1) {//判断数组内是否有值
+                        if (newTime <= startTime[num - 1]) {
+                            endTime.splice(num - 1, 1);
+                            showMsg('结束时间要大于开始时间', 2, false);
+                            setTimeout(function () {
+                                document.getElementById('endTime' + num).value = '';
+                            }, 200);
+                            return;
+                        }
+                        endTime.splice(num - 1, 1, newTime);
+                    }
+                    var _value = value;
+                    setTimeout(function () {
+                        document.getElementById('endTime' + num).value = _value.replace('00:00:00', '06:00:00');
+                    }, 200);
+                    if (!$.trim(value)) {
+                        var curDate = new Date();
+                        date = {
+                            'date': curDate.getDate(),
+                            'month': curDate.getMonth() + 1,
+                            'year': curDate.getFullYear()
+                        };
+                    }
+                    start.config.max = date;
+                    start.config.max.month = date.month - 1;
+                }
+            });
+        }
+
+        /**
+         * 格式化当前表单数据
+         * @param data
+         */
+        function formatData(data) {
+            var objName = getName(data), roomInfo = {};
+            //判断
+            if (!checkArray(objName, 'hourRoom') && hourRoom != null) {
+                roomInfo.price = hourRoom;
+                roomInfo.timeRoomResult = data.hourRoom ? 1 : 0;
+            }
+
+            if (checkArray(objName, 'freeRoom')) {
+                roomInfo.freeRoomResult = 1;
+            } else {
+                roomInfo.freeRoomResult = 0;
+            }
+            return roomInfo;
+        }
+
+        /**
+         * 判断数组内是否存在指定值
+         * @param arr
+         * @param value
+         * @returns {boolean}
+         */
+        function checkArray(arr, value) {
+            for (var i = 0; i < arr.length; i++) {
+                if (value === arr[i]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //判断数组内是否存在指定值并返回数组
+        function checkArrayId(arr, value) {
+            for (var i = 0; i < arr.length; i++) {
+                if (value === arr[i]) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        /**
+         * 获取json属性名
+         * @param obj
+         * @returns {Array}
+         */
+        function getName(obj) {
+            var arr = [];
+            for (var prop in obj) {
+                arr.push(prop);
+            }
+            return arr;
+        }
+    });
+</script>
+</body>
+</html>

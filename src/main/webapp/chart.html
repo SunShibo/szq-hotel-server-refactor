@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>统计图表</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <style>
+        td {
+            padding: 5px 0;
+        }
+
+        tr {
+            border-bottom: 1px solid #ccc;
+        }
+
+        tr:nth-child(odd) {
+            background: #eeeeee;
+        }
+
+        tr:nth-child(even) {
+
+        }
+
+        tr:hover {
+            background: #CAFFFF;
+        }
+
+        .plabel {
+            width: 120px;
+            display: inline-block;
+            /*text-align: right;*/
+            padding-right: 10px;
+            /*text-align: left;*/
+        }
+    </style>
+</head>
+
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 70px;"></div>
+<div class="layui-form">
+    <div class="layui-inline">
+        <label class="layui-form-label">日期范围</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" id="test6" readonly placeholder=" - ">
+        </div>
+        <a class="layui-btn" id="search">查询</a>
+    </div>
+</div>
+
+<div class="layui-tab" lay-filter="filter">
+    <ul class="layui-tab-title">
+        <li>统计图表</li>
+        <li lay-id="showInfo">数据表格</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div id="container111"></div>
+        </div>
+        <div class="layui-tab-item">
+            <div class="tab-box">
+                <table id="otherTab" lay-filter="otherTab" class="layui-table"></table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'jquery', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            $ = layui.jquery,
+            table = layui.table,
+            element = layui.element,
+            index = 0;
+
+        $(function () {
+            element.tabChange('filter', 'showInfo');
+            index = 1;
+            getTabData();
+        })
+        document.onkeydown = function(e) { // 回车提交表单
+            var theEvent = window.event || e;
+            var code = theEvent.keyCode || theEvent.which;
+            if(code == 13) {
+                $("#search").click(); // #chk_match 是你 提交按钮的ID
+            }
+        }
+        function getTabData() {
+            var obj;
+            var tt = $("#test6").val();
+            if (tt == '') {
+                var startTime = DateToLStr4(new Date()).concat('04:00:00');
+                var endTime = DateToLStr2(new Date(new Date(DateToLStr4(new Date()).concat('04:00:00')).getTime() +(86400000 * 7)));
+                obj = {
+                    startTime: startTime,
+                    endTime: endTime
+                }
+                $("#test6").val(DateToLStr(new Date()).split(" ")[0] + " - " + DateToLStr(new Date(Date.now() + (86400000 * 7))).split(" ")[0])
+
+            } else {
+                obj = {
+                    startTime: DateToLStr4(new Date(tt.split(" - ")[0])).concat('04:00:00'),
+                    endTime: DateToLStr2(new Date(DateToLStr4(new Date(tt.split(" - ")[1])).concat('04:00:00')))
+                }
+            }
+            var index = layer.load(1,{time:10*1000});
+            $.ajax({
+                url: api.otherView,
+                type: 'POST',
+                dataType: 'json',
+                data: obj,
+                success: function (rs) {
+                    if (rs.success) {
+                        layer.close(index);
+                        var arr = setCols(rs.data);
+                        var otherTab = table.render({
+                            elem: '#otherTab'
+                            , method: 'POST'
+                            // , even: true
+                            , loading: true // 是否显示加载条
+                            , page: true //开启分页
+                            , cols: arr
+                        });
+                        otherTab.reload({data: JSON.parse(JSON.stringify(rs.data.first))});
+                    }
+
+                }
+            })
+        }
+
+        function setCols(data) {
+            var arr = [[]];
+            for (var i = 1; i <= data.dateNumber + 2; i++) {
+                var obj = {};
+                if (i == 1) {
+                    obj.field = 'roomTypeName';
+                    obj.title = '房型';
+                    obj.align = 'center';
+                    arr[0].push(obj);
+                } else if (i == 2) {
+                    obj.field = 'sumCountRoomType';
+                    obj.title = '总数';
+                    obj.align = 'center';
+                    arr[0].push(obj);
+                } else {
+                    obj.field = 'Date' + (i - 2);
+                    obj.title = data.date[i - 3];
+                    obj.align = 'center';
+                    arr[0].push(obj);
+                }
+            }
+            return arr
+        }
+
+        element.on('tab(filter)', function (data) {
+            if (data.index == 0) {
+                index = 0;
+                search();
+            } else {
+                index = 1;
+                getTabData();
+            }
+        });
+
+        laydate.render({
+            elem: '#test6'
+            , range: true,
+        });
+
+        $("#search").on("click", function () {
+            if (index) {
+                getTabData();
+            } else {
+                search();
+            }
+        })
+        search();
+
+        function search() {
+            var urll = api.reportList + '?v=1';
+            var tt = $("#test6").val();
+            if (tt == '') {
+                var startTime = DateToLStr2(new Date());
+                var endTime = DateToLStr2(new Date(Date.now() + (86400000 * 7)))
+                urll += "&startTime=" + startTime + "&endTime=" + endTime;
+                $("#test6").val(DateToLStr(new Date()).split(" ")[0] + " - " + DateToLStr(new Date(Date.now() + (86400000 * 7))).split(" ")[0])
+
+            } else {
+                urll += "&startTime=" + DateToLStr2(new Date(tt.split(" - ")[0])) + "&endTime=" + DateToLStr2(new Date(tt.split(" - ")[1]));
+            }
+            // $("#test6").val()
+            var index = layer.load(1,{time:10*1000});
+            $.getJSON(urll + "&random=" + Date.now(), function (rs) {
+                layer.close(index)
+                // console.info(rs)
+                if (rs.success) {
+
+                    var type = dealType(rs.data[0]);
+                    var category = dealCategory(rs.data);
+                    var series = dealSeries(rs.data, category, type);
+                    var _o = $.extend({}, option, {
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: category
+                            }
+                        ],
+                        series: series,
+                        // legend: {
+                        //     data:type
+                        // },
+                    })
+                    myChart.setOption(_o, true);
+                } else {
+
+                }
+            })
+        }
+
+        function dealType(r) {
+            var a = [];
+            for (var i = 0; i < r.length; i++) {
+                a.push(r[i].typename + "可用")
+                // a.push(r[i].typename+"预约")
+                // a.push(r[i].typename+"入住")
+                a.push(r[i].typename + "总数")
+            }
+            return a;
+        }
+
+        function dealCategory(r) {
+            var a = [];
+            for (var i = 0; i < r.length; i++) {
+                a.push(r[i][0].date)
+            }
+            return a;
+        }
+
+        function dealSeries(r, c, t) {
+            var a = [];
+
+            var len = t.length;
+            var ma = madeArr([].concat.apply([], r))
+            // console.info(ma)
+            for (var i = 0; i < len; i++) {
+                // var c = [];
+                var b = {
+                    name: t[i], type: 'bar',
+                    stack: t[i].substr(0, t[i].length - 2),
+                    data: dealData(r, c, t, t[i]),
+                    itemStyle: {
+                        normal: {
+                            color: function (params) {
+                                if (params.seriesName.indexOf("可用") >= 0) {
+                                    return '#00ff70'
+                                }
+                                // if(params.seriesName.indexOf("预约")>=0){
+                                //     return '#F0DF00'
+                                // }
+                                // return '#FF0000'
+                                return '#FF0000'
+
+                            },
+
+                        }
+                    },
+                };
+                a.push(b);
+
+            }
+            console.info(a)
+            return a;
+
+        }
+
+        function dealData(r, c, t, v) {
+            var a = [];
+            var v1 = v.substr(0, v.length - 2);//房间类型
+            var v2 = v.substr(v.length - 2);//可用？预约？入住？
+            for (var i = 0; i < r.length; i++) {
+                for (var j = 0; j < r[i].length; j++) {
+                    if (r[i][j].typename == v1) {
+                        if (v2 == '可用') {
+                            a.push(r[i][j]['usableRoomNunber'])
+                        }
+                        // else if(v2=='预约'){
+                        //    a.push(r[i][j]['orderRoomNumber'])
+                        // }
+                        // else if(v2 =='入住'){
+                        //    a.push(r[i][j]['times'])
+                        // }
+                        else if (v2 == '总数') {
+                            a.push(r[i][j]['sumRoomType'] - r[i][j]['usableRoomNunber'])
+                        }
+                    }
+                }
+            }
+            return a;
+        }
+
+        function madeArr(arr) {
+            // console.info(arr);
+            //处理房间数据，分成二维数组
+            var t = [];
+            var l = 0
+            for (var i = 0; i < arr.length; i++) {
+                if (i == 0) {
+                    t.push([arr[i]]);
+                    continue
+                }
+                if (arr[i].typename == arr[i - 1].typename) {
+                    t[l].push(arr[i])
+                } else {
+                    t.push([arr[i]]);
+                    l++;
+                }
+            }
+            return t;
+        }
+    });
+    var dom = document.getElementById("container111");
+    console.log(document.body.clientHeight);
+    // if(document.body.clientHeight)
+    dom.style.height = document.body.clientHeight * 0.75 + 'px';
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    app.title = '堆叠柱状图';
+
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            show: true,
+            showDelay: 100,
+            formatter: function (p, t, callback) {
+                console.log(p);
+                var str = ['<h3>' + p[0].axisValue + '</h3>'];
+                for (var i = 0; i < p.length; i++) {
+                    if (p[i].seriesName.indexOf("总数") > -1) {
+                        str.push("<span class='plabel'>" + p[i].seriesName + " ： </span><span>" + (p[i].value + p[i - 1].value) + "</span></br>")
+                    } else
+                        str.push("<span class='plabel'>" + p[i].seriesName + " ： </span><span>" + p[i].value + "</span></br>")
+                }
+
+                return str.join("");
+            }
+        },
+
+        toolbox: {
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {
+                    show: true,
+                    readOnly: true,
+                    optionToContent: function (opt) {
+                        var axisData = opt.xAxis[0].data;
+                        var series = opt.series;
+                        var table = '<table style="width:100%;text-align:center"><tbody><tr style="background: #84c1ff">'
+                            + '<td>&nbsp;</td>'
+                            + getHead(axisData)
+                            + '</tr>';
+                        for (var i = 0, l = series.length; i < l; i++) {
+                            table += '<tr>'
+                                + '<td>' + series[i].name + '</td>'
+                                + getBody(series, i)
+                                + '</tr>';
+                        }
+                        table += '</tbody></table>';
+                        return table;
+                    }
+                },
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+    };
+
+    function getHead(t) {
+        var str = [];
+        for (var i = 0; i < t.length; i++) {
+            str.push('<td>' + t[i] + '</td>');
+        }
+        return str.join("");
+    }
+
+    function getBody(t, j) {
+        var _t = t[j].data;
+        var _n = t[j].name;
+        var str = [];
+        if (_n.indexOf("总数") > -1) {
+            for (var i = 0; i < _t.length; i++) {
+                str.push('<td>' + (_t[i] + t[j - 1].data[i]) + '</td>');
+            }
+        } else
+            for (var i = 0; i < _t.length; i++) {
+                str.push('<td>' + _t[i] + '</td>');
+            }
+        return str.join("");
+    }
+
+    // if (option && typeof option === "object") {
+    //     myChart.setOption(option, true);
+    // }
+</script>

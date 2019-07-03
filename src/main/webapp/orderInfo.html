@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .layui-table, .layui-table-view {
+            margin: 10px 0 0;
+        }
+
+        body {
+            overflow-y: scroll;
+        }
+
+        /* 禁止刷新后出现横向滚动条 */
+    </style>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<div class="order-info-main">
+    <div class="o-left">
+        <div>
+            <table id="orderList" lay-filter="orderList" class="layui-table"></table>
+        </div>
+        <div style="height: 38px;"></div>
+        <div class="l-btn" id="checkOutBox">
+            <button class="layui-btn" style="width: 200px;" id="checkOut">结账</button>
+        </div>
+    </div>
+    <div class="o-reight">
+        <div class="layui-btn-container btn-box" id="btnList">
+            <button class="r-btn layui-btn" id="deposit">押金</button>
+            <button class="r-btn layui-btn" id="other">入账</button>
+            <!--<button class="r-btn layui-btn" id="refund">退款</button>-->
+            <button class="r-btn layui-btn" id="blanking">冲减</button>
+            <button class="r-btn layui-btn" id="outHouse">退房</button>
+            <button class="r-btn layui-btn" id="rollback">退房回滚</button>
+        </div>
+        <div class="r-total">
+            <div class="t-left">
+                <div>合计:</div>
+                <div>
+                    <span id="total"></span>元
+                </div>
+            </div>
+            <div class="t-reight">
+                <div>
+                    收款合计：现金<span id="payCash"></span>元 非现金<span id="posPay"></span>元 合计<span id="cash"></span>元
+                </div>
+                <div>
+                    消费合计：房费 <span id="roomCharge"></span>元 其它费用 <span id="ortherPrice"></span>元 免单金额 <span
+                        id="freePrice"></span>元 合计 <span
+                        id="payCount"></span>元
+                </div>
+                <div class="room-state" style="display: none">
+                    房态：<span id="roomState"></span>
+                </div>
+                <div class="order-state" style="display: none">
+                    订单状态：<span id="orderState"></span>
+                </div>
+            </div>
+        </div>
+        <div class="remark-box">
+            <div>备注: <span id="remarks"></span></div>
+        </div>
+        <div>
+            <table id="orderInfo" lay-filter="orderInfo" class="layui-table"></table>
+        </div>
+        <div style="float: right;overflow: hidden;margin-top: 10px;margin-right: 30px;">
+            <button class="r-btn layui-btn" id="gopay">消费项目结账</button>
+            <button class="r-btn layui-btn" id="transfer">消费项目转账</button>
+        </div>
+
+    </div>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'element', 'laydate', 'table'], function () {
+        var $ = layui.$, form = layui.form, table = layui.table, resLeft = [], resReight = [], orderList = null,
+            orderInfo = null, oId = 0, oIds = [], id = 0, manageState = '';
+        var tmpobj = null, tmpIndex = 0, roomId = '';
+        var state = {};
+        renderReport($)
+        $(function () {
+            //id为初始化使用
+            id = parseInt(getUrl('id'));
+            var state = parseInt(getUrl('state'));
+            sessionStorage.setItem('backState', 0);//修改结账跳转
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+
+            orderList = table.render({
+                elem: '#orderList'
+                , limit: 10000
+                , method: 'POST'
+                , cols: [[ //表头
+                    {field: 'checkbox', title: 'ID', type: 'checkbox', fixed: 'roomId', align: 'center'}
+                    , {field: 'roomName', title: '房号', align: 'center', width: 90}
+                    , {field: 'name', title: '姓名', align: 'center', width: 100}
+                    , {
+                        field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
+                            return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
+                        }
+                    }
+                ]]
+            });
+
+
+            orderInfo = table.render({
+                elem: '#orderInfo'
+                , data: resReight
+                , method: 'POST'
+                , limit: 10000
+                , even: true
+                , done: function (res, curr, count) {
+                    var data = res;
+                    var allck = true;
+                    if (res.data.length == 0) return;
+                    if (!res.data[0]['status']) return;
+                    for (var item in data) {
+                        if (data[item].status == 2) { //关键点如果data中score包含57那么就不能全选
+                            allck = false;
+                        }
+                        break;
+                    }
+                    if (!allck) {
+                        $(".o-reight .layui-table-header").find("input[name = 'layTableCheckbox'][lay-filter='layTableAllChoose']").each(
+                            function () {
+                                $(this).attr("disabled", 'disabled').next().removeClass("layui-form-checked");
+                                form.render('checkbox');
+                            });
+                    }
+                    var i = 0;
+                    $(".o-reight .layui-table-body.layui-table-main").find("input[name='layTableCheckbox']").each(function () {
+                        if (res.data.length == i) return false;
+                        if (res.data[i].status == 2) { //关键点如果当前行数据中score包含57那么就不可选
+
+                            $(this).attr("disabled", 'disabled').removeAttr("checked");
+                            form.render('checkbox');
+                        }
+                        i++;
+                    });
+                    i = 0;
+                    $(".o-reight .layui-table-fixed.layui-table-fixed-l").find(".layui-table-body").find("input[name='layTableCheckbox']")
+                        .each(function () {
+                            if (res.data.length == i) return false;
+                            if (res.data[i].status == 2) { //关键点如果当前行数据中score包含57那么就不可选
+                                $(this).attr("disabled", 'disabled').removeAttr("checked");
+                                form.render('checkbox');
+                            }
+                            i++;
+                        });
+                }
+                , cols: [[ //表头
+                    {
+                        type: 'checkbox',
+                        templet: function (data) {
+                            console.info(data)
+                            // alert(e);
+                            // if (e.IsOperation) return '0'; else return '1';
+                        }
+                    },
+                    {
+                        title: '消费时间', width: 198, align: 'center', templet: function (data) {
+                            // console.log(data)
+                            return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
+                        }
+                    }
+                    , {
+                        field: 'project', title: '项目', align: 'center', templet: function (data) {
+                            if (data.project === '1') {
+                                return '商品';
+                            } else if (data.project === '2') {
+                                return '赔偿'
+                            } else if (data.project === '3') {
+                                return '会员卡'
+                            } else {
+                                return data.project
+                            }
+                        }
+                    }
+                    , {
+                        field: 'payStatu', title: '类型', align: 'center', templet: function (data) {
+                            switch (data.payStatu) {
+                                case '':
+                                case 0:
+                                    return '';
+                                case 1:
+                                    return '现金';
+                                case 2:
+                                    return '非现金';
+                                case 3:
+                                    return '其他支付';
+                                case 4:
+                                    return '积分支付';
+                                case 5:
+                                    return '储值支付';
+                            }
+                        }
+                    }
+                    , {field: 'info', title: '详情', width: 200, align: 'center'}
+                    , {field: 'number', title: '数量', align: 'center'}
+                    , {field: 'price', title: '金额', align: 'center'}
+                    , {field: 'operator', title: '操作员', align: 'center'}
+                    , {
+                        field: 'status', title: '状态', align: 'center', templet: function (data) {
+                            switch (data.status) {
+                                case 1:
+                                    return '未结';
+                                case 2:
+                                    return '已结';
+                            }
+                        }
+                    }
+                ]]
+            });
+
+
+            if (state == 2) {
+                $('.room-state').css('display', 'block');
+                $('.order-state').css('display', 'block');
+                getSessionInfo()
+            } else if (state == 1) {
+                $('#btnList').css('display', 'none');
+                $('#checkOutBox').css('display', 'none');
+                queryBeforeOrder()
+            } else if (state == 0) {
+                $('.room-state').css('display', 'block');
+                $('.order-state').css('display', 'block');
+                queryOrderInfo();
+            }
+        });
+
+
+        function getSessionInfo() {
+            var accounts = JSON.parse(sessionStorage.getItem('accounts'));
+            roomId = accounts.room.roomId;
+            priceInfo(accounts.childOrder, stateJudgment(accounts.room.status), setPayStatus(accounts.childOrderBOs[tmpIndex].payStatus));
+            oId = accounts.childOrder.id;
+            resLeft = accounts.childOrderBOs;
+            resReight = accounts.orderManageBOs;
+            orderList.reload({data: JSON.parse(JSON.stringify(resLeft))});
+            if (resReight[0] != null) {
+                orderInfo.reload({data: JSON.parse(JSON.stringify(resReight))});
+            }
+            tmpRows();
+        }
+
+        function setPayStatus(payStatus) {
+            switch (payStatus) {
+                case 0:
+                case 1:
+                    return '预约中';
+                case 2:
+                    return '入住待支付';
+                case 3:
+                    return '入住中';
+                case 4:
+                    return '退房待结账';
+                case 5:
+                    return '已结账';
+                case 6:
+                    return '已取消';
+            }
+        }
+
+        //查看详情
+        function queryBeforeOrder() {
+            $.ajax({
+                url: api.beforeOrder,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    priceInfo(data.data.childOrder, '', '');
+                    resLeft = data.data.childOrderBOs;
+                    resReight = data.data.orderManageBOs;
+                    orderList.reload({data: JSON.parse(JSON.stringify(resLeft))});
+                    orderInfo.reload({data: JSON.parse(JSON.stringify(resReight))});
+
+                    tmpobj = 1
+
+                    $('.o-left .layui-table-main tr').eq(0).css('backgroundColor', '#33ABA0');
+                    $('.o-left .layui-table-fixed tr').eq(1).css('backgroundColor', '#33ABA0');
+                }
+            })
+        }
+
+        //客账管理
+        function queryOrderInfo() {
+            $.ajax({
+                url: api.queryOrderInfo,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    roomId = data.data.room.roomId;
+                    console.log()
+                    priceInfo(data.data.childOrder, stateJudgment(data.data.room.status), setPayStatus(data.data.childOrderBOs[tmpIndex].payStatus));
+                    oId = data.data.childOrder.id;
+                    resLeft = data.data.childOrderBOs;
+                    resReight = data.data.orderManageBOs;
+                    orderList.reload({data: JSON.parse(JSON.stringify(resLeft))});
+                    if (resReight[0] != null) {
+                        orderInfo.reload({data: JSON.parse(JSON.stringify(resReight))});
+                    }
+                    tmpRows();
+                }
+            })
+        }
+
+        function tmpRows() {
+            tmpobj = 1;
+            if (tmpIndex) {
+                $('.o-left .layui-table-main tr').eq(tmpIndex).css('backgroundColor', '#33ABA0');
+                $('.o-left .layui-table-fixed tr').eq(tmpIndex + 1).css('backgroundColor', '#33ABA0');
+            } else {
+                $('.o-left .layui-table-main tr').eq(0).css('backgroundColor', '#33ABA0');
+                $('.o-left .layui-table-fixed tr').eq(1).css('backgroundColor', '#33ABA0');
+            }
+        }
+
+        //点击押金
+        $('#deposit').on('click', function () {
+            if (!oId) {
+                layer.msg('系统错误,请刷新页面！');
+                return;
+            }
+            layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['500px', '400px'],
+                title: '押金',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_orderDeposit.html?id=' + oId,
+                end: function (index, layero) {
+                    tmpRows();
+                    getRowData(oId);
+                }
+            });
+        });
+        //点击其他费用
+        $('#other').on('click', function () {
+            if (!oId) {
+                layer.msg('系统错误,请刷新页面！');
+                return;
+            }
+            layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['500px', '300px'],
+                title: '其他费用',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_orderOther.html?id=' + oId,
+                end: function (index, layero) {
+                    tmpRows();
+                    getRowData(oId);
+                }
+            });
+        });
+        // //点击退款
+        // $('#refund').on('click', function () {
+        //     if (!oId) {
+        //         layer.msg('系统错误,请刷新页面！');
+        //         return;
+        //     }
+        //     sessionStorage.setItem('oId', oId);
+        //     layer.open({
+        //         type: 2,
+        //         skin: 'demo-class',
+        //         area: ['500px', '300px'],
+        //         title: '退款',
+        //         shade: 0.6,
+        //         shadeClose: true,
+        //         content: 'iframe_orderRefund.html',
+        //         end: function (index, layero) {
+        //             location.reload();
+        //         }
+        //     });
+        // });
+        //点击免单
+        $('#blanking').on('click', function () {
+            if (!oId) {
+                layer.msg('系统错误,请刷新页面！');
+                return;
+            }
+            sessionStorage.setItem('oId', oId);
+            layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['500px', '300px'],
+                title: '免单',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_free.html?s=1',
+                end: function () {
+                    tmpRows();
+                    getRowData(oId);
+                }
+            });
+        });
+
+        //退房消卡
+        $('#outHouse').on('click', function () {
+            if (!oId) {
+                layer.msg('请选择需要支付的订单！');
+                return;
+            }
+            sessionStorage.setItem('oId', oId);
+            sessionStorage.setItem('rId', roomId);
+            $.ajax({
+                url: '/roomInformationController/chacardinperson',
+                type: 'POST',
+                dataType: 'json',
+                data: {roomId: roomId},
+                success: function (rs) {
+                    parent.layer.closeAll('loading');
+                    if (!checkCardstatusAttribute(rs.data)) {
+                        parent.layer.open({
+                            area: ['520px', '320px'],
+                            type: 2,
+                            content: "iframe_makeCard1.html?roomid=" + roomId,
+                            title: "制卡消卡",
+                            shade: 0.6,
+                            shadeClose: true
+                            , btn: ['确认', '取消']
+                            , yes: function (index, layero) {
+                                //按钮【按钮一】的回调
+                                parent.layer.load(1, {time: 10 * 1000});
+                                //退房
+                                outHouse();
+                            }
+                            , btn2: function (index, layero) {
+                                //按钮【按钮二】的回调
+
+                                //return false 开启该代码可禁止点击该按钮关闭
+                            }
+
+                        });
+                    } else {
+                        outHouse();
+                    }
+                }
+            });
+
+        });
+
+        //退房
+        function outHouse() {
+            $.ajax({
+                url: api.outRoom,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: oId
+                },
+                success: function (data) {
+                    if (data.errCode === '00100010') {
+                        layer.alert(data.errMsg, function () {
+                            parent.layer.closeAll('dialog');
+                        });
+                        return;
+                    }
+                    parent.layer.closeAll('loading');
+                    sessionStorage.setItem('data', JSON.stringify(data.data));
+                    layer.open({
+                        type: 2,
+                        skin: 'demo-class',
+                        area: ['500px', '500px'],
+                        title: '退房',
+                        shade: 0.6,
+                        shadeClose: true,
+                        content: 'iframe_orderCheckOut.html?state=1',
+                        end: function () {
+                            tmpRows();
+                            getRowData(oId);
+                        }
+                    });
+                }
+            });
+        }
+
+        function checkCardstatusAttribute(rs) {
+            var flag = true;
+            for (var i = 0, len = rs.length; i < len; i++) {
+                if (rs[i].cardstatusAttribute == 1) {
+                    flag = false;
+                }
+            }
+            return flag;
+        }
+
+        //退房回滚
+        $('#rollback').on('click', function () {
+            parent.layer.confirm('是否确定进行退房回滚？', {icon: 3, title: '提示'}, function (index) {
+                $.ajax({
+                    url: api.outRoomRefound,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: oId
+                    },
+                    success: function (data) {
+                        if (data.errCode === '0000001') {
+                            layer.alert(data.errMsg, function () {
+                                layer.closeAll('dialog');
+                            });
+                            return;
+                        }
+                        if (data.success) {
+                            parent.layer.open({
+                                area: ['520px', '320px'],
+                                type: 2,
+                                content: "iframe_makeCard1.html?roomid=" + roomId,
+                                title: "制卡消卡",
+                                shade: 0.6,
+                                shadeClose: true,
+                                end: function () {
+                                    manageState = 1;
+                                    parent.layer.closeAll();
+                                    tmpRows();
+                                    getRowData(oId);
+                                }
+                            });
+                        }
+                    }
+                })
+
+            });
+        });
+
+        //点击结账
+        $('#checkOut').on('click', function () {
+            if (!oIds.length) {
+                layer.msg('请选择需要支付的订单！');
+                return;
+            }
+            sessionStorage.setItem('oIds', oIds);
+            $.ajax({
+                url: api.refund,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    ids: oIds.join(','),
+                    typeState: 0
+                },
+                success: function (data) {
+                    if (data.errCode === '00100010') {
+                        layer.alert(data.errMsg, function () {
+                            layer.closeAll('dialog');
+                        });
+                        return;
+                    }
+                    sessionStorage.setItem('data', JSON.stringify(data.data));
+                    layer.open({
+                        type: 2,
+                        skin: 'demo-class',
+                        area: ['500px', '650px'],
+                        title: '结账',
+                        shade: 0.6,
+                        shadeClose: true,
+                        content: 'iframe_orderCheckOut.html?state=2&back=' + getUrl('back'),
+                        end: function () {
+                            if (parseInt(sessionStorage.getItem('backState'))) {
+                                location.href = "order.html";
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+
+        //监听表格复选框选择
+        table.on('checkbox(orderList)', function (obj) {
+            //获取表格内复选框已选中的数据data
+            var checkStatus = table.checkStatus('orderList'), data = checkStatus.data;
+            oIds = [];
+            for (var i = 0, len = data.length; i < len; i++) {
+                oIds.push(data[i].id);
+            }
+            sessionStorage.setItem('oIds', oIds);
+        });
+
+        //行点击事件监听
+        layui.table.on('row(orderList)', function (obj) {
+            var data = obj.data;
+            oId = data.id;
+            sessionStorage.setItem('oId', oId);
+            getRowData(data.id);
+            if (tmpobj != null && tmpobj != 1) {
+                $(tmpobj.tr[0]).css('backgroundColor', '#ffffff');
+                if (tmpobj.tr[1]) {
+                    $(tmpobj.tr[1]).css('backgroundColor', '#ffffff');
+                }
+            }
+            if (tmpobj == 1) {
+                $('.o-left .layui-table-main tr').eq(tmpIndex).css('backgroundColor', '#ffffff');
+                $('.o-left .layui-table-fixed tr').eq(tmpIndex + 1).css('backgroundColor', '#ffffff');
+            }
+            tmpIndex = $(this).data('index');
+            tmpobj = obj;
+            $(obj.tr[0]).css('backgroundColor', '#33ABA0');
+            if (obj.tr[1]) {
+                $(obj.tr[1]).css('backgroundColor', '#33ABA0');
+            }
+        });
+
+        layui.table.on('checkbox(orderInfo)', function (obj) {
+            // console.log(table.checkStatus('orderInfo').data);
+            state.selRow = table.checkStatus('orderInfo').data;
+        });
+
+        //获取子订单
+        function getRowData(id) {
+            $.ajax({
+                url: api.queryRowsOrderInfo,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    roomId = data.data.room.roomId;
+                    priceInfo(data.data.childOrderBOs, stateJudgment(data.data.room.status), setPayStatus(data.data.childOrderBOs.payStatus));
+                    resReight = data.data.orderManageBOs;
+                    orderInfo.reload({data: JSON.parse(JSON.stringify(resReight))});
+                }
+            });
+        }
+
+        //更新合计数据
+        function priceInfo(data, roomState, orderState) {
+            if (!!roomState) {
+                $('#roomState').html(roomState);
+            }
+            if (!!orderState) {
+                $('#orderState').html(orderState);
+            }
+
+            for (var item in data) {
+                $('#' + item).text(data[item] ? data[item] : 0);
+            }
+            state = {};
+            var total = data.cash - data.payCount;
+            if (total > 0) {
+                $('#total').text('应退' + total.toFixed(2));
+            } else {
+                $('#total').text('应收' + Math.abs(total).toFixed(2));
+            }
+        }
+
+        //挂账
+        $('#transfer').on('click', function () {
+            state.selRow = table.checkStatus('orderInfo').data;
+            if (!state.selRow) {
+                layer.alert("没有选择");
+                return false;
+            }
+            if (state.selRow.length == 0) {
+                layer.alert("没有选择");
+                return false;
+            }
+            var rids = [];
+            for (var i = 0; i < state.selRow.length; i++) {
+                rids.push(state.selRow[i].id)
+            }
+
+            var uu = 'iframe_tally2.html?v=' + Date.now() + '&ids=' + rids.join(",") + "&oldId=" + oId;
+            parent.layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['500px', '200px'],
+                title: '消费项目转账',
+                shade: 0.6,
+                shadeClose: true,
+                content: uu,
+                end: function () {
+                    tmpRows();
+                    getRowData(oId);
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                }
+            });
+        });
+
+        $('#gopay').on('click', function () {
+            if (!state.selRow) {
+                layer.alert("没有选择");
+                return false;
+            }
+            if (state.selRow.length == 0) {
+                layer.alert("没有选择");
+                return false;
+            }
+            var rids = [];
+            for (var i = 0; i < state.selRow.length; i++) {
+                rids.push(state.selRow[i].id)
+            }
+            sessionStorage.setItem('rids', rids);
+            $.ajax({
+                url: api.subitemOnclick,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    ids: rids.join(',')
+                },
+                success: function (data) {
+                    if (data.success) {
+                        sessionStorage.setItem('payData', JSON.stringify(data.data));
+                        layer.open({
+                            type: 2,
+                            skin: 'demo-class',
+                            area: ['550px', '550px'],
+                            title: '消费项目结账',
+                            shade: 0.6,
+                            shadeClose: true,
+                            content: 'iframe_gopay.html?state=2',
+                            end: function () {
+                                tmpRows();
+                                getRowData(oId);
+                            }
+                        });
+                    } else {
+                        layer.alert(data.errMsg, function () {
+                            layer.closeAll();
+                        });
+                        return;
+                    }
+                }
+            })
+        });
+
+    });
+</script>
+</body>
+</html>

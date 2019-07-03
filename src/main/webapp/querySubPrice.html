@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>结账打印</title>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        /* 禁止刷新后出现横向滚动条 */
+        body {
+            overflow-y: scroll;
+        }
+
+        .p-price {
+            width: 1024px;
+            margin: 0 auto;
+            text-align: right;
+            padding: 20px;
+            line-height: 40px;
+        }
+
+        .remark-info{
+            width: 1024px;
+            margin: 0 auto;
+            font-size: 14px;
+        }
+
+        .p-price div {
+            font-size: 18px;
+        }
+
+        .p-title {
+            font-size: 20px;
+        }
+
+        #sign {
+            display: inline-block;
+            width: 150px;
+            border-bottom: 1px #0C0C0C solid;
+        }
+    </style>
+</head>
+<body>
+<div id="main" style="width:1024px;margin: 0 auto;">
+
+
+</div>
+<div class="remark-info">备注：<span class="remark"></span></div>
+<div class="p-price">
+    <div class="p-title" style="display: none">总消费:<span id="total"></span>元</div>
+    <div>酒店地址：<span id="addr"></span></div>
+    <div>酒店电话：<span id="phone"></span></div>
+    <div>签字：<span id="sign"></span></div>
+    <div>打印时间：<span id="time"></span></div>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('table', function () {
+        var table = layui.table, $ = layui.$, num = 1;
+        $(function () {
+            var data = JSON.parse(sessionStorage.getItem('QSD'));
+            $('.remark').text(data.remark);
+            var state = getUrl('s');
+            //判断是子订单结账打印，还是订单列表的在住打印
+            if (!!state) {
+                addTable(data.data);
+                $('#addr').text(data.hotelBO.address);
+                $('#phone').text(data.hotelBO.phoneNumber);
+                $('#time').text(DateToLStr(new Date(data.date.time)));
+            } else {
+                //隐藏总消费
+                $('.p-title').css('display', 'block');
+                var div = '<div style="padding: 20px 0"><div id="date">结账时间： ' + DateToLStr(new Date(data.date.time)) + '</div><table id="topTable' + num + '" lay-filter="topTable' + num + '"></table></div>';
+                $('#main').append(div);
+                var tab = table.render({
+                    elem: '#topTable' + num
+                    , limit: 10000
+                    , cols: [[ //表头
+                        {field: 'childOrderId', title: '子订单号', align: 'center'}
+                        , {
+                            field: 'price', title: '消费金额', align: 'center'
+                        }
+                        , {
+                            field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
+                                return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
+                            }
+                        }
+                        , {field: 'info', title: '消费详情', align: 'center'}
+
+                    ]]
+                });
+                tab.reload({data: JSON.parse(JSON.stringify(data.Info))});
+                if (data.price < 0) {
+                    $('#total').text('应退' + Math.abs(data.price));
+                } else {
+                    $('#total').text('应收' + data.price);
+                }
+                $('#addr').text(data.hotelBO.address);
+                $('#phone').text(data.hotelBO.phoneNumber);
+                $('#time').text(DateToLStr(new Date(data.date.time)));
+            }
+        });
+
+        function addTable(data) {
+
+            for (var i = 0, len = data.length; i < len; i++, num++) {
+                var money = data[i].price < 0 ? '应退' + Math.abs(data[i].price) : "应收" + data[i].price;
+                var div = '<div style="padding: 20px 0"><div>结账时间： ' + DateToLStr(new Date(data[i].date.time)) + '</div><table id="topTable' + num + '" lay-filter="topTable' + num + '"></table><div class="p-title">总消费:' + money + '元</div></div>';
+                $('#main').append(div);
+                var tab = table.render({
+                    elem: '#topTable' + num
+                    , limit: 10000
+                    , data: data[i].list
+                    , cols: [[ //表头
+                        {field: 'childOrderId', title: '子订单号', align: 'center'}
+                        , {
+                            field: 'price', title: '消费金额', align: 'center'
+                        }
+                        , {
+                            field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
+                                return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
+                            }
+                        }
+                        , {field: 'info', title: '消费详情', align: 'center'}
+
+                    ]]
+                });
+            }
+
+
+        }
+
+
+    });
+</script>
+</body>
+</html>

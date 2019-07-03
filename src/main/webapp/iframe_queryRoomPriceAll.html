@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .layui-input-block {
+            margin-left: 0;
+        }
+
+        .room-state-box {
+            width: 90%;
+        }
+
+        .date {
+            color: #003cff;
+        }
+
+        #price {
+            color: #ff3400;
+        }
+    </style>
+</head>
+<body>
+<form class="layui-form" style="padding: 10px 0">
+    <div class="layui-form-item">
+        <div class='layui-input-block'>
+            <label class="layui-form-label">起止时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="startTime" required lay-verify="required" autocomplete="off"
+                       class="layui-input" id="startTime"
+                       placeholder="开始时间">
+            </div>
+            <label class="layui-form-label">查询天数</label>
+            <div class="layui-input-inline">
+                <input type="number" name="date" required lay-verify="required" autocomplete="off" class="layui-input"
+                       id="date"
+                       placeholder="查询天数">
+            </div>
+            <div class="layui-input-inline" style="width: 50px; line-height: 36px">
+                <button class="layui-btn layui-btn-sm layui-btn-fluid" lay-submit lay-filter="formData">查询</button>
+            </div>
+        </div>
+    </div>
+</form>
+<fieldset class="layui-elem-field" style="width: 60%;margin: 0 auto;">
+    <div class="layui-field-box">
+        <div class="room-state-box" id="roomPrice"></div>
+    </div>
+</fieldset>
+
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, $ = layui.$, id = 0, laydate = layui.laydate, startTime = '', dayNumber = '';
+
+        $(function () {
+            id = sessionStorage.getItem('roomTypeId');
+        });
+
+        var start = laydate.render({
+            elem: '#startTime',
+            type: 'datetime',
+            min: new Date().getTime(),
+            btns: ['confirm']
+        });
+
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            // layer.msg(JSON.stringify(data.field));
+            var newTime = data.field.startTime;
+            if(startTime === newTime && dayNumber === data.field.date){
+                return false;
+            }
+            startTime = newTime;
+            dayNumber = data.field.date;
+            getResult(new Date(startTime.replace(/-/g, "/")), dayNumber);
+            return false;
+        });
+
+        function getResult(startTime, dayNumber) {
+            var _pay_index = layer.load(1,{time:10*1000});
+            $.ajax({
+                url: api.priceAll,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    houseTypeId: id,
+                    startTime: startTime,
+                    dayNumber: dayNumber
+                },
+                success: function (data) {
+                    layer.close(_pay_index);
+                    // console.log(data);
+                    $('#roomPrice').empty();
+                    timeInfo(startTime, data.data);
+                }
+            });
+        }
+
+        function timeInfo(startTime, data) {
+            // console.log(data);
+            var timestamp = startTime.getTime();
+            for (var i = 0, len = data.length; i < len; i++) {
+                var month = new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getMonth() + 1 < 10 ? '0' + (new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getMonth() + 1) : new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getMonth() + 1;
+                var date = new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getDate() < 10 ? '0' + (new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getDate()) : new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getDate();
+                var div = '<div class="room-state-item" style=""><div><span class="date">' + month + '/' + date + '</span></div><div><span id="price">' + data[i] + '</span>元</div></div>'
+                $('#roomPrice').append(div);
+            }
+        }
+    });
+</script>
+</body>
+</html>

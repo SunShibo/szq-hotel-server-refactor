@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增会员</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+<section>
+    <div class="layui-form-item layui-form" style="padding-top: 20px;">
+        <div class="layui-inline">
+            <label class="layui-form-label require">姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" id="name" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label require">电话</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="phoneNumber" id="phoneNumber" autocomplete="off" lay-verify="required" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">生日</label>
+            <div class="layui-input-inline">
+                <input  readonly class="layui-input" name="birthday" id="birthday" placeholder="yyyy-MM-dd">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-inline">
+                <select name="gender" id="gender">
+                    <option value="男" selected="">男</option>
+                    <option value="女">女</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">证件类型</label>
+            <div class="layui-input-inline">
+                <select name="certificateId" id="certificateId">
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label require">证件号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="credentialNo" id="credentialNo" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!--<div class="layui-inline">-->
+        <!--<label class="layui-form-label">籍贯</label>-->
+        <!--<div class="layui-input-inline">-->
+        <!--<input type="text" name="jiguan" autocomplete="off" class="layui-input">-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="layui-inline">
+            <label class="layui-form-label">地址</label>
+            <div class="layui-input-inline">
+                <input type="text" name="address" id="address" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!--<div class="layui-inline">-->
+        <!--<label class="layui-form-label">会员卡状态</label>-->
+        <!--<div class="layui-input-inline">-->
+        <!--<input type="text" name="cartStatus" readonly autocomplete="off" value="有效" class="layui-input">-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="layui-inline">
+            <label class="layui-form-label">卡级别</label>
+            <div class="layui-input-inline">
+                <select name="leaveId" id="leaveId">
+                </select>
+            </div>
+        </div>
+        <!--<div class="layui-inline layui-hide">-->
+        <!--<label class="layui-form-label">失效日期</label>-->
+        <!--<div class="layui-input-inline">-->
+        <!--<input type="text" readonly class="layui-input" name="abateTime" id="abateTime" placeholder="yyyy-MM-dd">-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="layui-inline">
+            <label class="layui-form-label">销售员</label>
+            <div class="layui-input-inline">
+                <input type="text" name="salesperson" id="salesperson" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-inline">
+                <textarea placeholder="请输入内容" name="remark" id="remark" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <section style="padding: 20px;position: absolute;bottom: 0px;right: 0px;">
+            <button class="layui-btn layui-btn-primary IDCardReader">读取证件</button>
+            <button class="layui-btn layui-btn-normal" id="btnSave" lay-filter="btnSave" lay-submit>确定</button>
+            <button class="layui-btn layui-btn-warm" onclick="no();">取消</button>
+        </section>
+    </div>
+</section>
+<section style="height: 50px;"></section>
+
+
+
+
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var $,element,$b,$remove,ddd;
+
+    layui.use(['element', 'jquery', 'laytpl','laydate','form'], function () {
+        var flag = getUrl("id") == 'null' ? true : false;
+        laydate = layui.laydate,
+            element = layui.element,
+            form = layui.form,
+            laytpl = layui.laytpl,
+            $ = jQuery = layui.$;
+        laydate.render({
+            elem: '#birthday',
+            max:0
+        });
+        $(function () {
+            IDCardReaderInfo($(document.body));
+        });
+        // laydate.render({
+        //     elem: '#abateTime',
+        // });
+        if(flag) {
+            renderSelect("certificateId", 'id', 'type', api.certificate, form);
+            renderSelect("leaveId", 'id', 'name', api.memberLevel, form);
+        }else{
+            // console.info(JSON.parse(localStorage['member'+getUrl("id")]))
+
+            dealData();
+        }
+
+        $(document).on('click', '.IDCardReader', function () {
+            var CVR_IDCard = IDCardReader();
+            if(!!CVR_IDCard){
+                clearForm();
+                $('#name').val(CVR_IDCard.Name);
+                $('#birthday').val(formatDate(CVR_IDCard.Born));
+                $('#gender').val(CVR_IDCard.Sex);
+                $('#certificateId').val(1);
+                $('#credentialNo').val(CVR_IDCard.CardNo);
+                $('#address').val(CVR_IDCard.Address);
+                try {
+                    $("#salesperson").val(JSON.parse(localStorage.hotelUserInfo).name)
+                } catch (e) {
+                    console.info(e)
+                }
+                layui.form.render();
+            }
+        });
+
+        function clearForm() {
+            $('#name').val('');
+            $('#birthday').val('');
+            $('#gender').val('');
+            $('#certificateId').val(1);
+            $('#credentialNo').val('');
+            $('#address').val('');
+            layui.form.render();
+        }
+        form.on('submit(btnSave)', function(data) {
+
+
+            console.info('开始保存')
+            var isDisabled = $("#btnSave").hasClass('layui-btn-disabled');
+            if (isDisabled) return false;
+            var formData = data.field;
+            if(!isEmpty(formData.birthday)){
+                formData.birthday = new Date(formData.birthday);
+            } else{
+                delete formData['birthday']
+            }
+            // formData.abateTime = new Date(formData.abateTime);
+
+            console.info(formData);
+            sessionStorage.addMemberInfo = JSON.stringify(formData);
+            if($("#leaveId").val() == null||$("#leaveId").val() == 'null'){
+                layer.alert("会员级别不能为空")
+                return false;
+            }
+            //flag==ture表示新增
+            if(flag){
+                // delete formData.birthday;
+                // sessionStorage.addMemberInfo = JSON.stringify(formData);
+                $.getJSON(api.getCardNoByLeaveId+$("#leaveId").val()+"&random="+Date.now(),function (rs) {
+                    if(!rs.success){
+                        layer.alert(rs.errMsg)
+                        return false;
+                    }
+                    layer.open({
+                        area: ['520px', '320px'],
+                        type: 2,
+                        content: "iframe_card_pay.html?state="+rs.data.state+"&no="+rs.data.Number+"&price="+rs.data.price,
+                        title: "提示"
+                    })
+                })
+            }else {
+                $.getJSON(api.getCardUpdate+"&userId="+getUrl("id")+"&leaveId="+$("#leaveId").val()+"&random="+Date.now(),function (rs) {
+                    if(!rs.success){
+                        layer.alert(rs.errMsg)
+                        return false;
+                    }
+                    layer.open({
+                        area: ['520px', '320px'],
+                        type: 2,
+                        content: "iframe_card_pay.html?state="+rs.data.state+"&no="+rs.data.Number+"&price="+rs.data.price+"&id="+getUrl("id"),
+                        title: "提示"
+                    })
+                })
+                return false;
+            }
+        });
+    });
+    function yes(){
+        // parent.parAdd();
+
+    }
+    function dealData() {
+
+
+        $.getJSON(api.queryMemberById+getUrl("id")+"&random="+Date.now(),function (rs) {
+            var dom1 = $("#leaveId");
+            var dom2 = $("#certificateId");
+            if(rs.success){
+                var d1 = rs.data.cartLeaveBOs;
+                var d2 = rs.data.certificateTypeBOs;
+                var d = rs.data.data;
+                delete d.createTime;
+                // d.userId = d.id;
+                // delete d.id;
+                ddd = d;
+                for(var i=0;i<d1.length;i++)
+                    dom1.append(
+                        '<option value="'+d1[i].id+'">'+d1[i].name+'</option>'
+                    );
+                for(var i=0;i<d2.length;i++)
+                    dom2.append(
+                        '<option value="'+d2[i].id+'">'+d2[i].type+'</option>'
+                    );
+                for(var i in d){
+                    try{
+                        console.info(i)
+                        // debugger;
+                        if(d[i]==null)continue;
+                        document.getElementById(i).value = d[i];
+// debugger;
+                        // debugger;
+                        if(i=='birthday'){
+
+                            if(!d[i]);
+                            laydate.render({
+                                elem: '#'+i
+                                ,value: new Date(d[i].time)
+                            });
+                        }
+                        // if(i==)
+                    }catch(v) {
+                        console.info(v)
+                    }
+                }
+
+                form.render("select");
+            }
+
+
+        })
+
+    }
+
+    function confirmYes() {
+        no();
+    }
+
+</script>
+</body>
+</html>

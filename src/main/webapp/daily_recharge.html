@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>充值日报</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="layui-form" style="padding-top: 10px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">起止时间</label>
+        <div class="layui-input-inline" style="width: 165px;">
+            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
+                   class="layui-input inline-input"
+                   placeholder="开始时间">
+        </div>
+        <div class="layui-input-inline" style="width: 165px;">
+            <input type="text" name="endTime" lay-verify="required" id="endTime" autocomplete="off"
+                   class="layui-input inline-input"
+                   placeholder="结束时间">
+        </div>
+        <div class="layui-input-inline">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
+        </div>
+    </div>
+</form>
+<div class="tab-box">
+    <table id="dailyRecharge" lay-filter="dailyRecharge" class="layui-table"></table>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'form', 'laydate', 'jquery', 'layer', 'table'], function () {
+        var form = layui.form, $ = layui.$, table = layui.table, laydate = layui.laydate
+            , startTime = 0, endTime = 0, date = new Date(), yesterday = DateToLStr3(date),
+            today = DateToLStr3(new Date(date.getTime() - (24 * 60 * 60 * 1000)));
+        ;
+
+        $(function () {
+            $("#startTime").val(today);
+            $("#endTime").val(yesterday);
+            resultInfo();
+        });
+
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            resultInfo();
+            return false;
+        });
+
+        //获取
+        function resultInfo() {
+            var obj = {
+                startTime: $("#startTime").val().replace(/-/g, "/") + ' 00:00:00',
+                endTime: $("#endTime").val().replace(/-/g, "/") + ' 23:59:59',
+            };
+            var index = layer.load(1, {time: 10 * 1000});
+            $.ajax({
+                url: '/integral/queryRecharge',
+                type: 'POST',
+                dataType: 'json',
+                data: obj,
+                success: function (rs) {
+                    tab.reload({data: JSON.parse(JSON.stringify(rs.data))})
+                    layer.closeAll()
+                },
+                error: function (rs) {
+                    layer.closeAll();
+                    layer.alert(rs.responseText);
+                }
+            });
+        }
+
+        var tab = table.render({
+            elem: '#dailyRecharge'
+            , even: true
+            , limit: 10000
+            , loading: true // 是否显示加载条
+            , title: '充值日报'
+            , done: function (res, curr, count) {
+                $(".layui-table-tool-temp").html('<p style="text-align: center">充值日报</p>');
+            }
+            , toolbar: true
+            , cols: [[ //标题栏
+                {field: 'hotelId', title: '酒店名称', align: 'center'}
+                , {field: 'hotelName', title: '酒店名称', align: 'center'}
+                , {field: 'cartNumber', title: '卡号', align: 'center'}
+                , {field: 'name', title: '姓名', align: 'center'}
+                , {field: 'leave', title: '会员级别', align: 'center'}
+                , {field: 'certificateNumber', title: '证件号', align: 'center'}
+                , {field: 'certificateType', title: '证件类型', align: 'center'}
+                , {field: 'pattern', title: '充值方式', align: 'center'}
+                , {field: 'price', title: '充值金额', align: 'center'}
+                , {field: 'present', title: '赠送金额', align: 'center'}
+                , {
+                    field: 'createTime', title: '操作时间', align: 'center', templet: function (data) {
+                        if (data.dateTime)
+                            return DateToLStr(new Date(data.dateTime.time))
+                        else return ''
+                    }
+                }
+                , {field: 'operator', title: '操作员', align: 'center'}
+                , {field: 'remark', title: '备注', align: 'center'}
+            ]]
+        });
+
+        laydate.render({
+            elem: '#startTime',
+            type: 'date',
+            btns: ['confirm']
+        });
+        laydate.render({
+            elem: '#endTime',
+            type: 'date',
+            btns: ['confirm']
+        });
+    });
+</script>
+</body>
+</html>

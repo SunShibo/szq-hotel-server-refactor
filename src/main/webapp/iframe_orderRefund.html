@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>退款（废弃）</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">支付方式</label>
+        <div class="layui-input-block">
+            <input type="radio" name="payType" value="1" title="现金" checked>
+            <input type="radio" name="payType" value="2" title="刷卡">
+            <input type="radio" name="payType" value="2" title="微信">
+            <input type="radio" name="payType" value="2" title="支付宝">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">退款金额</label>
+            <div class="layui-input-inline">
+                <input type="number" name="refundPrice" required lay-verify="required" id="refund" placeholder="请输入退款金额" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">退款备注</label>
+            <div class="layui-input-inline">
+                <textarea name="refund" required lay-verify="required" placeholder="请输入退款备注"
+                          class="layui-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData">支付</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form, $ = layui.$, id = 0;
+
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        $(function () {
+            id = sessionStorage.getItem('oId');
+        });
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            $.ajax({
+                url: api.refundprice,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    type: data.field.payType,
+                    number: data.field.refundPrice,
+                    info: data.field.refund,
+                    id: id
+                },
+                success: function (data) {
+                    if (data.errCode === '0000010') {
+                        layer.msg(data.errMsg);
+                        return;
+                    }
+                    if(!data.success){
+                        showMsg(data.errMsg, 2, false);
+                        return;
+                    }
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员管理</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<div class="m-head">
+    <div class="layui-btn-group">
+        <button class="layui-btn" id="add">新增</button>
+        <button class="layui-btn" id="importMembers">导入会员</button>
+        <a href="/manage/outExcel" target="_blank" class="layui-btn" id="exportMembership">导出会员</a>
+        <button class="layui-btn" id="cardReading">读卡</button>
+        <button class="layui-btn" id="importMembers1">卡号导入</button>
+    </div>
+    <div class="query-box">
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="query" id="query" placeholder="输入姓名/手机号/证件号" autocomplete="off" class="layui-input">
+            </div>
+            <a href="#" id="queryBtn" class="layui-btn">查询</a>
+        </div>
+    </div>
+</div>
+<div class="tab-box">
+    <table id="member" lay-filter="member"></table>
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+</script>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'table'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var $ = layui.$;
+        renderReport($)
+        $(function () {
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+        })
+        document.onkeydown = function(e) { // 回车提交表单
+            var theEvent = window.event || e;
+            var code = theEvent.keyCode || theEvent.which;
+            if(code == 13) {
+                $("#queryBtn").click(); // #chk_match 是你 提交按钮的ID
+            }
+        }
+        var tableObj = table.render({
+             elem: '#member'
+            , method: 'POST'
+            ,url:api.queryMember
+            ,request:{
+                 pageName:'pageNo'
+                ,limitName:'pageSize'
+            }
+            ,response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                ,statusCode: 200 //规定成功的状态码，默认：0
+                ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                ,countName: 'count' //规定数据总数的字段名称，默认：count
+                ,dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            ,parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code":200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.infoBOs //解析数据列表
+                };
+            }
+            , even: true
+            , page: true //开启分页
+            , cols: [[
+                // {field: 'cart', title: '卡号', minWidth: 80, align: 'center'},
+                {field: 'name', title: '姓名', minWidth: 80, align: 'center'},
+                {field: 'source', title: '来源', minWidth: 80, align: 'center'},
+                {field: 'cartName', title: '卡类型', minWidth: 80, align: 'center'},
+                {field: 'birthday', title: '生日', minWidth: 110, align: 'center'
+                    ,templet:function (d) {
+                        if(d.birthday) return DateToLStr(new Date(d.birthday.time)).split(' ')[0]
+                        return '-'
+                    }
+                },
+                {field: 'phoneNumber', title: '手机号', minWidth: 120, align: 'center'},
+                // {field: 'discount', title: '会员折扣', minWidth: 90, align: 'center'},
+              //  {field: 'payCount', title: '消费合计', minWidth: 120, align: 'center'},
+           //     {field: 'integralCount', title: '累计积分', minWidth: 120, align: 'center'},
+             //   {field: 'payIntegral', title: '已兑换积分', minWidth: 120, align: 'center'},
+                {field: 'storedValue', title: '储值', minWidth: 120, align: 'center'},
+                {field: 'integral', title: '积分', minWidth: 120, align: 'center'},
+                {field: 'salesperson', title: '销售员', minWidth: 90, align: 'center'},
+                // {field: 'cartStatus', title: '卡状态', minWidth: 90, align: 'center'},
+                {field: 'createTime', title: '发卡日期', minWidth: 120, align: 'center'
+                    ,templet:function (d) {
+                        if(d.createTime) return DateToLStr(new Date(d.createTime.time)).split(' ')[0]
+                        return '-'
+                    }
+                },
+                {field: 'credentialNo', title: '证件号', minWidth: 120, align: 'center'},
+                {field: 'abateTime', title: '失效日期', minWidth: 120, align: 'center'
+                    ,templet:function (d) {
+                        if(d.abateTime) return DateToLStr(new Date(d.abateTime.time)).split(' ')[0]
+                        return '-'
+                    }
+                },
+                {fixed: 'right', title: '操作', width: 100, align: 'center', toolbar: '#barDemo'}
+            ]]
+        });
+
+        table.on('tool(member)', function (obj) { //tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            console.info(data)
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if (layEvent === 'detail') { //查看
+                console.log(JSON.stringify(data));
+                localStorage['member'+data.id] = JSON.stringify(data);
+                window.open('member_info.html?id=' + data.id);
+            }
+        });
+
+        $('#add').on('click', function () {//新增按钮
+            layer.open({
+                type: 2,
+                title: "新增",
+                content: './iframe_member_add.html?id=null',
+                area: ['820px', '520px'],
+            });
+        });
+
+        $('#importMembers').on('click', function () {
+            layer.open({
+                type: 2,
+                title: "会员导入",
+                content: './iframe_member_import.html?v=',
+                area: ['820px', '600px']
+
+            });
+        });
+        $('#importMembers1').on('click', function () {
+            layer.open({
+                type: 2,
+                title: "卡号导入",
+                content: './iframe_member_import.html?v=1',
+                area: ['820px', '600px']
+
+            });
+        });
+
+        $('#exportMembership').on('click', function () {
+
+        });
+
+        $('#cardReading').on('click', function () {
+
+        });
+        $('#queryBtn').on('click', function () {
+            search();
+        });
+        function  search() {
+            tableObj.reload( {
+                where:{
+                    query:document.getElementById("query").value.trim()
+                },
+            });
+        }
+
+    });
+
+</script>
+</body>
+</html>

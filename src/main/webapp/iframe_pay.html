@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+<OBJECT id=MSComm1 CLASSID="clsid:648A5600-2C6E-101B-82B6-000000000014" codebase="mscomm32.ocx"
+        type="application/x-oleobject" style="LEFT:54px;TOP:14px">
+    <PARAM NAME="CommPort" VALUE="3"/>
+    <PARAM NAME="DataBits" VALUE="8"/>
+    <PARAM NAME="StopBits" VALUE="1"/>
+    <PARAM NAME="BaudRate" VALUE="9600"/>
+    <PARAM NAME="Settings" VALUE="9600,N,8,1"/>
+    <PARAM NAME="RTSEnable" VALUE="1"/>
+    <PARAM NAME="DTREnable" VALUE="1"/>
+    <PARAM NAME="Handshaking" VALUE="0"/>
+    <PARAM NAME="NullDiscard" VALUE="0"/>
+    <PARAM NAME="ParityReplace" VALUE="?"/>
+    <PARAM NAME="EOFEnable" VALUE="0"/>
+    <PARAM NAME="InputMode" VALUE="0"/>
+    <PARAM NAME="InBufferSize" VALUE="1024"/>
+    <PARAM NAME="InputLen" VALUE="0"/>
+    <PARAM NAME="OutBufferSize" VALUE="512"/>
+    <PARAM NAME="SThreshold" VALUE="0"/>
+    <PARAM NAME="RThreshold" VALUE="1"/>
+</OBJECT>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <p class="show" style="text-align: center;">入住成功</p>
+        <p class="show" style="text-align: center;">请支付</p>
+        <label class="layui-form-label">支付方式:</label>
+        <div class="layui-input-block">
+            <input type="radio" name="pament" value="1" title="现金" checked>
+            <input type="radio" name="pament" value="2" title="刷卡">
+            <!--<input type="radio" name="pament" value="5" title="预授权">-->
+            <input type="radio" name="pament" value="3" title="微信">
+            <input type="radio" name="pament" value="4" title="支付宝">
+            <input type="radio" name="pament" value="5" title="其他支付">
+            <!--<input type="hidden" name="pament" value="6" title="积分支付">-->
+            <input type="radio" name="pament" value="7" title="储值支付">
+
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">应付金额:</label>
+        <div class="layui-input-inline">
+            <input type="number" name="deposit" id="deposit" autocomplete="off" readonly class="layui-input">
+
+        </div>
+        <div class="layui-form-mid layui-word-aux">元</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">实付金额:</label>
+        <div class="layui-input-inline">
+            <input type="number" required lay-verify="required" name="payPrice" id="payPrice" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">元</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">付款人:</label>
+        <div class="layui-input-inline">
+            <select name="chilId" lay-filter="drawee" id="drawee"></select>
+        </div>
+    </div>
+    <div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
+        <button class="layui-btn layui-btn-sm" lay-submit="" id="btnSave" lay-filter="formData">自动支付</button>
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData" data-id="1">手动支付</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<SCRIPT LANGUAGE=javascript FOR=MSComm1 EVENT=OnComm>
+    MSComm1_OnComm()
+
+    function MSComm1_OnComm() {
+        switch (MSComm1.CommEvent) {
+            case 1: {
+                alert("Send OK！");
+                break;
+            } //发送事件
+            case 2: {
+                Receive();
+                break;
+            } //接收事件
+            default:
+                alert("Event Raised!" + MSComm1.CommEvent);
+                ;
+        }
+    }
+</SCRIPT>
+<script>
+    var _str_, payPrice, chilId, payBO, s = '', _p, _pay_index = 0;
+    layui.use(['form', 'jquery'], function () {
+        var form = layui.form, $ = layui.$, id = 0;
+
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        $(function () {
+            payBO = JSON.parse(sessionStorage.getItem('payBO'));
+            s = getUrl('s');
+            var v = getUrl('v');
+            setSelectData(payBO);
+            $("#deposit").val(v)
+        });
+
+        /**
+         * 绑定下拉框数据
+         * @param three
+         */
+        function setSelectData(three) {
+            for (var i = 0, len = three.length; i < len; i++) {
+                $('#drawee').append("<option value=" + three[i].id + ">" + three[i].name + "</option>");
+            }
+            form.render('select');
+        }
+        //查询积分和储值余额
+        form.on('radio', function(data){
+            if(data.value==6||data.value==7){
+                var index = layer.load(1,{time:10*1000});
+                var certificateId = getUrl("certificateId");
+                $.ajax({
+                    data: {credentialNumber:certificateId},
+                    type: "POST",
+                    dataType: "JSON",
+                    url: "/checkin/queryStoreValue",
+                    complete: function () {
+                        layer.close(index);
+                    },
+                    success: function (rs) {
+                        layer.close(index);
+                        if(!rs.success){
+                            layer.alert(rs.errMsg)
+                            return false;
+                        }
+                        if(data.value==6){
+                            layer.alert("积分余额： "+ rs.data.integral+"<br>可抵现金： "+rs.data.integValue +" 元")
+                        }
+                        if(data.value==7){
+                            layer.alert("储值余额: "+ rs.data.streValue +" 元")
+                        }
+
+                    }
+                });
+            }
+        });
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            data.field.orderNumber = getUrl("or");
+            data.field.number = getUrl("or");
+            data.field.cid = data.field.chilId;
+            chilId = data.field.chilId;
+            payPrice = data.field.payPrice;
+            _p = data.field.pament;
+            flagg = $(this).data("id") == 1;
+            if (_p == 1 || _p == 5|| _p == 6|| _p == 7) {
+                if (_p == 5) data.field.pament = 3;
+                if (_p == 6) data.field.pament = 4;
+                if (_p == 7) data.field.pament = 5;
+                if( _p == 6|| _p == 7)data.field.credentialNumber = getUrl("certificateId");
+
+                var index = layer.load(1, {time: 10 * 1000});
+                $.ajax({
+                    data: data.field,
+                    type: "POST",
+                    dataType: "JSON",
+                    url: api.cashPay,
+                    beforeSend: function () {
+                        $("#btnSave").addClass('layui-btn-disabled');
+                    },
+                    complete: function () {
+                        layer.close(index);
+                        $("#btnSave").removeClass('layui-btn-disabled');
+                    },
+                    success: function (rs) {
+                        layer.close(index);
+                        if (!rs.success) {
+                            showMsg(rs.errMsg, 2, false);
+                           //  layer.msg(data.errMsg);
+                            return false;
+                        }
+                        if (rs.success) {
+                            parent.layer.alert("操作成功", {closeBtn: 0}, function (index) {
+                                if (s !== '1' || s == undefined || s == null) {//判断是否是订单列表页进入
+                                    parent.makeCard();
+                                    no();
+
+                                } else {
+                                    parent.layer.open({
+                                        area: ['520px', '320px'],
+                                        type: 2,
+                                        content: "iframe_makeCard1.html?roomid=" + getUrl('roomid'),
+                                        title: "制卡",
+                                        end: function () {
+                                            parent.layer.closeAll();
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                });
+            } else if (flagg) {
+                var pt = '';
+                if (_p == 2) {
+                    pt = 0;
+                } else if (_p == 3) {
+                    pt = 1;
+                } else if (_p == 4) {
+                    pt = 2;
+                }
+                Receive1(JSON.stringify({payTp: pt, code: 1, transAmount: data.field.payPrice}))
+            }
+
+
+            else {
+                _str_ = ''
+                _pay_index = layer.load(1, {time: 10 * 1000});
+                var payjson = $.extend({}, PAYJSON)
+                if (_p == 2) {
+                    payjson.payTp = 0;
+                }
+                if (_p == 3) {
+                    payjson.payTp = 11;
+                    payjson.procCd = 660000;
+                }
+                if (_p == 4) {
+                    payjson.payTp = 12;
+                    payjson.procCd = 660000;
+                }
+                if (_p == 5) {
+                    payjson.payTp = 0;
+                    payjson.procCd = 300000;
+                }
+                if (!getUrl("v") || getUrl("v") == 'null') {
+                    layer.alert("交易金额有误")
+                    layer.close(_pay_index);
+                    return false;
+                }
+                payjson.amt = data.field.payPrice;
+                // payjson.amt = 0.01;
+                payjson.orderNo = getUrl("payNumber");
+                Send(JSON.stringify(payjson));
+            }
+            return false;
+        });
+
+    });
+    setTimeout(function () {
+        MSComm1.PortOpen == false;
+        OperatePort();
+    }, 1000)
+
+    function OperatePort() {
+        if (MSComm1.PortOpen == true) {
+            try {
+                MSComm1.PortOpen = false;
+            } catch (ex) {
+                alert(ex.message);
+            }
+        } else {
+            try {
+                MSComm1.CommPort = localStorage.posport ? localStorage.posport : 6
+                MSComm1.Settings = 115200 +
+                    ",N" +
+                    ",8" +
+                    ",1";
+                MSComm1.OutBufferCount = 0; //清空发送缓冲区
+                MSComm1.InBufferCount = 0; //滑空接收缓冲区
+                MSComm1.PortOpen = true;
+            } catch (ex) {
+                alert(ex.message);
+            }
+        }
+    }
+
+    function Send(orgstr) {
+        try {
+            MSComm1.Output = orgstr;
+            console.info("发送数据到pos机：" + orgstr);
+        } catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    function Receive() {
+        _str_ += MSComm1.Input;
+        if (_str_.indexOf('}') != -1) {
+            Receive1(_str_)
+        }
+    }
+
+    function Receive1(data) {
+
+        layer.close(_pay_index);
+
+        var _data = JSON.parse(data);
+        if (_data.code == -1) {
+            layer.alert(_data.message);
+            return false;
+        }
+        var pd = {
+            chilId: chilId,
+            payPrice: payPrice,
+            pament: 2,
+            deposit: getUrl("v"),
+            orderNumber: getUrl("or"),
+            payNumber: getUrl("payNumber"),
+            number: getUrl("or"),
+        }
+        pd = $.extend({}, pd, _data);
+        if (_p == 5) {
+            pd.amt = _data.transAmount
+        }
+        console.log("最终提交数据如下")
+        console.info(pd);
+
+        var index = layer.load(1, {time: 10 * 1000});
+        $.ajax({
+            data: pd,
+            type: "POST",
+            dataType: "JSON",
+            url: api.cashPay,
+            beforeSend: function () {
+                $("#btnSave").addClass('layui-btn-disabled');
+            },
+            complete: function () {
+                layer.close(index);
+                $("#btnSave").removeClass('layui-btn-disabled');
+            },
+            success: function (rs) {
+                layer.close(index);
+                if (!rs.success) {
+                    showMsg(data.errMsg, 2, false);
+                    return;
+                }
+                if (rs.success) {
+                    parent.layer.alert("支付成功", function (index) {
+                        if (s !== '1' || s == undefined || s == null) {//判断是否是订单列表页进入
+                            parent.makeCard();
+                            no();
+                        } else {
+                            parent.layer.open({
+                                area: ['520px', '320px'],
+                                type: 2,
+                                content: "iframe_makeCard1.html?roomid=" + getUrl('roomid'),
+                                title: "制卡",
+                                end: function () {
+                                    parent.layer.closeAll();
+                                }
+                            })
+                        }
+                    })
+                }
+            }
+        });
+
+    }
+
+
+</script>
+</body>
+</html>

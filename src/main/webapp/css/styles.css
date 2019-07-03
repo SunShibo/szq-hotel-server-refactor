@@ -1,0 +1,560 @@
+/*首页*/
+.flex-container {
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+}
+.flex-container .item {
+  width: 180px;
+  height: 120px;
+  border: 1px solid #eee;
+  margin: 10px;
+  position: relative;
+}
+.flex-container .item .placehoder {
+  height: 5px;
+}
+.flex-container .item .type {
+  font-size: 16px;
+  padding: 5px;
+  color: #fff;
+}
+.flex-container .item .name {
+  line-height: 10px;
+  text-align: center;
+  height: 10px;
+}
+.flex-container .item .state {
+  text-align: center;
+  height: 40px;
+}
+.flex-container .item .state .iconfont {
+  text-align: center;
+  font-size: 40px;
+}
+.flex-container .partner-item {
+  padding: 5px 8px;
+  border: 1px solid #eee;
+  margin: 10px;
+  cursor: pointer;
+}
+.flex-container .partner-item:hover {
+  border: 1px solid green;
+  color: #009688;
+}
+.state-item {
+  float: left;
+  font-size: 18px;
+  height: 50px;
+  width: 150px;
+  border: 1px solid #ccc;
+  border-left: 0px;
+  line-height: 50px;
+  text-align: center;
+  background: #fff;
+}
+.filter-state {
+  height: 60px;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  padding: 10px;
+  padding-left: 0;
+}
+.occupancy-rate {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: green;
+  text-align: center;
+  line-height: 150px;
+  font-size: 18px;
+  color: #fff;
+  z-index: 999;
+  cursor: pointer;
+}
+.hotel-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+/*首页*/
+/*入住中心*/
+.center-tab-list {
+  width: 45%;
+}
+.line-block {
+  display: inline-block;
+}
+.portrait-wp {
+  width: 140px;
+  height: 180px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+.portrait-wp .portrait-lev {
+  padding: 5px;
+  font-size: 16px;
+  text-align: center;
+  color: #333;
+}
+.right-content {
+  height: 180px;
+  vertical-align: top;
+  padding: 5px;
+  width: calc(100% - 200px);
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.require:before {
+  content: "*";
+  color: red;
+}
+.xfjl {
+  max-height: 100px;
+  overflow: auto;
+  min-width: 700px;
+}
+.layui-colla-title {
+  background: transparent;
+  text-align: center;
+  border: 0px;
+}
+.more {
+  margin-top: 10px;
+}
+.border-e6 {
+  border: 1px solid #E6E6E6;
+}
+.readonly {
+  background: #ccc;
+}
+.vam {
+  vertical-align: middle;
+}
+.mt10 {
+  margin-top: 10px;
+}
+.order-title {
+  text-align: center;
+  height: 42px;
+  line-height: 42px;
+  margin-bottom: 10px;
+}
+.pd20 {
+  padding: 20px;
+}
+.pd10 {
+  padding: 10px;
+}
+.mg10 {
+  margin: 10px;
+}
+.partner-input {
+  background: #ccc;
+  float: left;
+  height: 20px;
+}
+.partner-btn {
+  height: 22px;
+  line-height: 22px;
+}
+.layui-form-label:after {
+  content: '\ff1a';
+}
+.pick-room-p {
+  font-size: 16px;
+  width: 170px;
+  background: #C9C5C5;
+  line-height: 40px;
+  padding: 0 5px;
+}
+.pick-room-type {
+  background: #fff;
+  width: 180px;
+  height: 200px;
+  overflow-x: hidden;
+}
+.pick-room-type p {
+  font-size: 16px;
+  width: 170px;
+  background: #C9C5C5;
+  line-height: 40px;
+  padding: 0 5px;
+}
+.pick-room-type div p {
+  font-size: 16px;
+  width: 170px;
+  background: #C9C5C5;
+  line-height: 40px;
+  padding: 0 5px;
+  background: #fff;
+}
+.pick-room-type div p:hover {
+  background: #f2f2f2;
+  cursor: pointer;
+}
+.room-type-selected {
+  background: #fadc96 !important;
+}
+.room-type-selected:hover {
+  background: #f2f2f2;
+  cursor: pointer;
+}
+.pick-room-container {
+  width: 560px;
+  height: 200px;
+  background: #fff;
+  overflow: auto;
+}
+.pick-room-container .prc-row {
+  line-height: 40px;
+  font-size: 16px;
+  border-bottom: 1px solid #ccc;
+}
+.pick-room-container .prc-row p {
+  display: table-cell;
+  width: 60px;
+  vertical-align: middle;
+  padding: 0 10px;
+  border-right: 2px solid #fff;
+}
+.pick-room-container .prc-row p:nth-child(1) {
+  width: 112px;
+}
+.pick-room-container .prc-row div {
+  display: table-cell;
+  width: 380px;
+  vertical-align: middle;
+  padding: 0 10px;
+}
+.pick-fj {
+  height: 20px;
+  padding: 2px 5px;
+  color: #fff;
+  text-indent: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 22px;
+  cursor: pointer;
+  margin: 0 2px;
+}
+.pick-jf {
+  background: url(../images/pick1.png) 2px center no-repeat #009688;
+}
+.pick-jf-selected {
+  background: url(../images/pick2.png) 2px center no-repeat #009688;
+}
+.pick-zf {
+  cursor: not-allowed !important;
+  background: url(../images/pick1.png) 2px center no-repeat #777;
+}
+.pick-zf-selected {
+  background: url(../images/pick2.png) 2px center no-repeat #777;
+}
+.pick-ylf {
+  cursor: not-allowed !important;
+  background: url(../images/pick1.png) 2px center no-repeat orangered;
+}
+.pick-ylf-selected {
+  background: url(../images/pick2.png) 2px center no-repeat orangered;
+}
+.pick-room-type-sel {
+  width: 160px !important;
+}
+.pick-selected {
+  background: #009688;
+  text-indent: 0;
+}
+.price-ul {
+  width: 100%;
+  min-height: 40px;
+  background: #014051;
+  overflow: hidden;
+}
+.price-ul li {
+  float: left;
+  width: 114.28571429px;
+  line-height: 40px;
+  font-size: 16px;
+  color: #fff;
+}
+.price-cul {
+  width: 100%;
+  min-height: 60px;
+  background: #fff;
+  overflow: hidden;
+}
+.price-cul li {
+  float: left;
+  width: 114.28571429px;
+  line-height: 60px;
+  font-size: 16px;
+  color: #fff;
+}
+.price-cul li {
+  height: 60px;
+  color: #000000;
+  line-height: 30px;
+}
+.price-cul li input {
+  width: 45px;
+  font-size: 12px;
+}
+.price-cul li p:nth-child(2) {
+  font-size: 12px;
+}
+/*入住中心*/
+.head {
+  line-height: 38px;
+  width: 95%;
+  margin: 0 auto;
+}
+.row-top {
+  text-align: center;
+  line-height: 38px;
+}
+.cum-r {
+  text-align: right;
+}
+.row-m-top {
+  margin-top: 5px;
+}
+.tab-box {
+  width: 90%;
+  margin: 0 auto;
+}
+.tab-center {
+  text-align: center;
+}
+.from-box {
+  width: 90%;
+  margin: 0 auto;
+}
+.layui-tab {
+  margin: 0 auto;
+  text-align: left !important;
+}
+.room-state-box {
+  width: 50%;
+  margin: 0 auto;
+  padding: 20px;
+}
+.room-state-box .room-state-item {
+  display: inline-block;
+  width: 12%;
+  height: 50px;
+  margin: 5px;
+}
+.room-state-box .room-state-item div {
+  line-height: 25px;
+  text-align: center;
+}
+.m-head {
+  width: 90%;
+  margin: 0 auto;
+  position: relative;
+  margin: 5px auto 0;
+}
+.query-box {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+/*同来宾客*/
+.together-add-wp {
+  padding: 10px 20px;
+  overflow: hidden;
+}
+.together-table .t-table-thead {
+  display: flex;
+  background: #eee;
+  height: 50px;
+}
+.together-table .t-table-thead p {
+  line-height: 50px;
+  width: 120px;
+  text-align: center;
+  border-right: 1px solid #fff;
+  font-size: 16px;
+}
+.together-table .t-table-thead p:nth-child(1) {
+  width: 94px;
+}
+.together-table .t-table-thead p:nth-child(3) {
+  width: 194px;
+}
+.together-table .t-table-thead p:nth-child(4) {
+  width: 214px;
+}
+.together-table .t-table-body .t-table-item {
+  display: flex;
+  height: 50px;
+  align-items: center;
+}
+.together-table .t-table-body .t-table-item input {
+  width: 108px;
+  height: 23px;
+  line-height: 50px;
+  text-align: center;
+  margin: 0 5px;
+}
+.together-table .t-table-body .t-table-item select {
+  width: 98px;
+  height: 25px;
+  margin: 0 5px;
+}
+.together-table .t-table-body .t-table-item input:nth-child(1) {
+  width: 76px;
+}
+.together-table .t-table-body .t-table-item input:nth-child(3) {
+  width: 165px;
+}
+.together-table .t-table-body .t-table-item input:nth-child(4) {
+  width: 190px;
+}
+.together-table .t-table-body .t-table-item input:nth-child(5) {
+  width: 90px;
+}
+.together-table .t-table-body .t-table-item button:nth-child(6) {
+  margin-left: 8px;
+}
+/*同来宾客*/
+.nav-query {
+  width: 90%;
+  margin: 5px auto;
+}
+/* 交班 */
+#handover {
+  padding: 10px 50px;
+}
+#handover .h-title {
+  text-align: center;
+  font-size: 26px;
+}
+#handover .h-main {
+  width: 400px;
+  margin: 0 auto;
+}
+#handover .h-main .h-rows {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  padding: 5px 0;
+}
+#handover .h-main .h-rows .h-cols {
+  text-align: center;
+}
+#handover .h-btn {
+  text-align: right;
+}
+#handover .finance {
+  padding: 0 10px;
+}
+/* 订单详情页*/
+.order-info-main {
+  display: flex;
+  justify-content: space-between;
+}
+.order-info-main .o-left {
+  width: 30%;
+  position: relative;
+  border-right: 1px #0C0C0C solid;
+}
+.order-info-main .o-left .l-btn {
+  text-align: center;
+}
+.order-info-main .o-reight {
+  width: 69.9%;
+}
+.order-info-main .o-reight .btn-box {
+  margin: 10px 5px;
+}
+.order-info-main .o-reight .btn-box .r-btn {
+  width: 200px;
+}
+.order-info-main .o-reight .r-total {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px #0C0C0C solid;
+  border-bottom: 1px #0C0C0C solid;
+}
+.order-info-main .o-reight .r-total .t-left {
+  width: 25%;
+  padding: 20px 5px;
+  text-align: center;
+  border-right: 1px #0C0C0C solid;
+}
+.order-info-main .o-reight .r-total .t-left div {
+  padding: 5px 0;
+}
+.order-info-main .o-reight .r-total .t-reight {
+  width: 75%;
+  padding: 10px 5px;
+  position: relative;
+}
+.order-info-main .o-reight .r-total .t-reight div {
+  padding: 5px 0;
+  line-height: 29px;
+}
+.order-info-main .o-reight .r-total .t-reight .room-state {
+  position: absolute;
+  top: 15px;
+  right: 50px;
+  font-size: 20px;
+}
+.order-info-main .o-reight .r-total .t-reight .order-state {
+  position: absolute;
+  bottom: 15px;
+  right: 50px;
+  font-size: 20px;
+}
+#timeAll {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  flex-direction: column;
+}
+#timeAll .time-rows {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  border-bottom: 0.5px #cccccc solid;
+  text-align: center;
+}
+#timeAll .time-rows .timeItem {
+  width: 170px;
+  height: 30px;
+  line-height: 30px;
+}
+#timeAll .time-rows .price {
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+}
+.btn-list {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}
+.icon-box {
+  vertical-align: middle;
+  line-height: 35px;
+  display: none;
+}
+.layui-form-item:hover .icon-box {
+  display: inline-block;
+  cursor: pointer;
+}
+.remark-box {
+  border-bottom: 1px #0C0C0C solid;
+  padding: 10px;
+}

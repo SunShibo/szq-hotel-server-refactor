@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>同来宾客</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        input {
+            line-height: 25px !important;
+        }
+    </style>
+</head>
+<body>
+<object classid="clsid:10946843-7507-44FE-ACE8-2B3483D179B7" codebase="IDCardReader.ocx" id="CVR_IDCard" name="CVR_IDCard" width="0" height="0"></object>
+<div class="together-add-wp">
+    <button class="layui-btn fr" id="add">新增</button>
+</div>
+<form class="layui-form">
+
+
+    <div class="together-table ">
+        <section class="t-table-thead1">
+            <p>姓名</p>
+            <p>证件类别</p>
+            <p>证件号</p>
+            <p>地址</p>
+            <p>手机</p>
+            <p>备注</p>
+            <p>性别</p>
+            <p></p>
+        </section>
+        <section class="t-table-body " id="body">
+        </section>
+        <div style="height: 60px;"></div>
+        <section style="padding: 20px;position: fixed;bottom: 0px;right: 0px;">
+            <button class="layui-btn" lay-submit lay-filter="formsubmit">确定</button>
+            <button class="layui-btn layui-btn-warm" onclick="no();">取消</button>
+        </section>
+    </div>
+</form>
+
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+
+    layui.use(['element', 'jquery', 'form'], function () {
+        var element = layui.element,
+            $ = jQuery = layui.$,
+            form = layui.form,
+            $b = $("#body");
+        var roomid = getUrl("r"), c = parseInt(getUrl('c')), num = 0,selectDom,selecteData;
+        getData();
+
+        form.on('submit(formsubmit)', function (data) {
+            var $item = $('.t-table-item1[data-add="1"]'), obj = {};
+            if (!$item.length) {
+                no();
+                return;
+            }
+
+            obj.childId = c;
+            obj.roomMsg = [];
+            for (var i = 0, len = $item.length; i < len; i++) {
+                var index = $item.eq(i).data('num');
+                var arr = [];
+                arr.push($item.eq(i).children('[name="name"]').val());
+                arr.push($item.eq(i).children('[name="gender' + index + '"]').val());
+                arr.push($item.eq(i).children('[name="certificateId"]').val());
+                arr.push($item.eq(i).children('[name="credentialNo"]').val());
+                arr.push(nospace($item.eq(i).children('[name="address"]').val()));
+                arr.push($item.eq(i).children('[name="phoneNumber"]').val());
+                arr.push(nospace($item.eq(i).children('[name="remark"]').val()));
+                obj.roomMsg.push(arr.join('-'));
+            }
+
+            obj.roomMsg = roomid + "@" + obj.roomMsg.join('&');
+            $.ajax({
+                url: api.addRoomPerson,
+                type: 'POST',
+                dataType: 'json',
+                data: obj,
+                success: function (rs) {
+                    console.log(rs);
+                    if (!rs.success) {
+                        showMsg(rs.errMsg, 2, false);
+                    } else {
+                        getData();
+                    }
+                }
+            })
+            return false;
+        });
+
+        function nospace(v) {
+            if (!v) return '无';
+            if (v == null) return '无';
+            if (v == 'null') return '无';
+            return v;
+        }
+
+        $(document).on("click", ".del-btn", function () {
+            var id = $(this).data('id');
+            if (id) {
+                $.ajax({
+                    url: api.delRoomPerson,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {id: id},
+                    async: false,
+                    success: function (rs) {
+                        if (rs.success) {
+                            showMsg('删除成功', 1, false);
+                            $(".clildFrame .layui-tab-item.layui-show").find("iframe")[0].contentWindow.location.reload(true);
+                        } else {
+                            showMsg(rs.errMsg, 2, false);
+                        }
+                    }
+                });
+                // parent.location.reload();
+                renderInfo1();
+            } else {
+                $(this).parent().remove();
+            }
+        });
+
+
+        $(document).on('click', '.update-btn', function () {
+            var obj = {
+                id: $(this).data('id'),
+                name: $(this).siblings('input[name="name"]').val(),
+                gender: $(this).siblings('select[name="gender' + $(this).parent().data('id') + '"]').val(),
+                idType: $(this).siblings('select[name="certificateId"]').val(),
+                idNumber: $(this).siblings('input[name="credentialNo"]').val(),
+                address: $(this).siblings('input[name="address"]').val(),
+                phone: $(this).siblings('input[name="phoneNumber"]').val(),
+                remark: $(this).siblings('input[name="remark"]').val(),
+            };
+            $.ajax({
+                url: api.updateRoomPerson,
+                type: 'POST',
+                dataType: 'json',
+                data: obj,
+                async: false,
+                success: function (rs) {
+                    if (rs.success) {
+                        showMsg('修改成功', 1, false);
+                    } else {
+                        showMsg(rs.errMsg, 2, false);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+            renderInfo1();
+            // parent.location.reload();
+        });
+
+        $('#add').on('click', function () {
+            add();
+        })
+
+        function add() {
+            num++;
+            $b.append(
+                ['<div data-add="1" data-num="' + num + '" class="t-table-item1">',
+                    '<input name="name"  />',
+                    '<select name="certificateId" lay-ignore>',
+                    selectDom,
+                    '</select>',
+                    '<input name="credentialNo"/>',
+                    '<input  name="address" />',
+                    '<input  name="phoneNumber"  />',
+                    '<input  name="remark"  type="text" value="" />',
+                    '<select class="gender" name="gender' + num + '" lay-ignore>',
+                    '<option value="2"></option>',
+                    '<option value="1" selected>男</option>',
+                    '<option value="0">女</option>',
+                    '</select>',
+                    '<a class="layui-btn layui-btn-xs IDCardReader">识别证件</a>',
+                    '<button class="layui-btn layui-btn-danger layui-btn-xs del-btn">删除</button>',
+                    '<input name="roomId" type="hidden" value="' + roomid + '"/>',
+                    '</div>'].join("")
+            );
+            layui.form.render();
+        }
+
+
+        function getData() {
+            renderSelect("certificateId", 'id', 'type', api.certificate, form, function (str, d) {
+                selectDom = str;
+                selecteData = d;
+                renderInfo1();
+
+            });
+        }
+
+        $(document).on('click', '.IDCardReader', function () {
+            var CVR_IDCard = IDCardReader();
+            if (!!CVR_IDCard) {
+                clearForm1(this);
+                $(this).siblings('input[name="name"]').val(CVR_IDCard.Name);
+                $(this).siblings('input[class="gender"]').val(CVR_IDCard.sex == '男' ? 1 : 0);
+                $(this).siblings('select[name="certificateId"]').val(1);
+                $(this).siblings('input[name="credentialNo"]').val(CVR_IDCard.CardNo);
+                $(this).siblings('input[name="address"]').val(CVR_IDCard.Address);
+                layui.form.render();
+            }
+        });
+
+
+        function dealSelectGender(v) {
+            if (v.gender != 1) {
+                if (v.gender == 0) return '<option value="2"></option>,<option value="1" >男</option><option value="0" selected>女</option>';
+                if (v.gender == 2) return '<option value="2" selected></option>,<option value="1" >男</option><option value="0">女</option>';
+            }
+            return '<option value="2"></option><option value="1" selected>男</option><option value="0">女</option>'
+        }
+
+        //清空表单
+        function clearForm1(that) {
+            $(this).siblings('input[name="name"]').val('');
+            $(this).siblings('input[class="gender"]').val(1);
+            $(this).siblings('select[name="certificateId"]').val(1);
+            $(this).siblings('input[name="credentialNo"]').val('');
+            $(this).siblings('input[name="address"]').val('');
+            $(this).siblings('input[name="phoneNumber"]').val('');
+            $(this).siblings('input[name="remark"]').val('');
+            layui.form.render();
+        }
+
+        function renderInfo1() {
+            //打开页面后渲染同来人员信息
+            var d = {};
+            $b.children().remove();
+            $.ajax({
+                url: api.queryRoomPerson,
+                type: 'POST',
+                data: {roomId: roomid},
+                dataType: 'json',
+                success: function (rs) {
+                    d = rs.data;
+                    num = d.length;
+                    for (var i = 0; i < d.length; i++) {
+                        if (d[i].roomId == roomid) {
+                            $b.append(
+                                ['<div class="t-table-item1" data-id="' + i + '">',
+                                    '<input name="name"  value="' + d[i].name + '" />',
+                                    '<select name="certificateId" lay-ignore>',
+                                    dealSelect(d[i].idType),
+                                    '</select>',
+                                    '<input name="credentialNo" value="' + d[i].idNumber + '"/>',
+                                    '<input name="address" value="' + d[i].address + '"/>',
+                                    '<input name="phoneNumber" value="' + d[i].phone + '"/>',
+                                    '<input name="remark" value="' + d[i].remark.trim() + '"/>',
+                                    '<select name="gender' + i + '" lay-ignore>',
+                                    dealSelectGender(d[i]),
+                                    '</select>',
+                                    '<a class="layui-btn layui-btn-xs IDCardReader">识别证件</a>',
+                                    '<button class="layui-btn layui-btn-normal layui-btn-xs update-btn" data-id="' + d[i].id + '">修改</button>',
+                                    '<button class="layui-btn layui-btn-danger layui-btn-xs del-btn" data-id="' + d[i].id + '">删除</button>',
+                                    '<input name="roomId" type="hidden" value="' + d[i].roomId + '"/>',
+                                    '</div>'].join("")
+                            );
+                            $('.sex' + i).eq(d[i].gender == "1" ? 0 : 1).prop('checked', 'true');
+                            layui.form.render();
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function dealSelect(certificateId) {
+            var str = '', data = selecteData;
+            for (var i = 0; i < data.length; i++) {
+                if (certificateId == data[i].id) {
+                    str += '<option selected="selected" value="' + data[i]['id'] + '">' + data[i]['type'] + '</option>'
+                } else {
+                    str += '<option value="' + data[i]['id'] + '">' + data[i]['type'] + '</option>'
+                }
+            }
+            return str;
+
+        }
+    });
+
+
+</script>
+</body>
+</html>

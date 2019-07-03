@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<form class="layui-form" style="padding: 10px 0;" lay-filter="data">
+    <div class="layui-form-item">
+        <label class="layui-form-label">班次名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入班次名称" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开始时间</label>
+        <div class="layui-input-inline">
+            <input type="text" id="startTime" name="startTime" required lay-verify="required" placeholder="请选择开始时间"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">结束时间</label>
+        <div class="layui-input-inline">
+            <input type="text" id="endTime" name="endTime" required lay-verify="required" placeholder="请选择结束时间"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="roon-type-btn">
+        <div class="layui-input-block" style="text-align: right">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">生效</button>
+            <button type="button" class="layui-btn layui-btn-primary" id="back">取消</button>
+        </div>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'laydate', 'table'], function () {
+        var $ = layui.$, form = layui.form, laydate = layui.laydate, state = 0, dataInfo = {};
+
+        //取消按钮
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        $(function () {
+            state = parseInt(getUrl('s'));
+            bindDate();
+            if (!state) {
+                dataInfo = JSON.parse(sessionStorage.getItem('sc'));
+                form.val('data', {
+                    'name': dataInfo.name,
+                    'startTime': dataInfo.startTime,
+                    'endTime': dataInfo.endTime
+                });
+            }
+        });
+
+
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            // layer.msg(JSON.stringify(data.field));
+            if (state) {//添加
+                $.ajax({
+                    url: api.addClasses,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        name: data.field.name,
+                        startTime: data.field.startTime,
+                        endTime: data.field.endTime
+                    },
+                    success: function (data) {
+                        if(data.success){
+                            showMsg('添加成功', 1, false);
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        } else {
+                            showMsg('添加失败', 1, false);
+                        }
+                    }
+                })
+            } else {//编辑
+                $.ajax({
+                    url: api.updateClasses,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: dataInfo.id,
+                        name: data.field.name,
+                        startTime: data.field.startTime,
+                        endTime: data.field.endTime
+                    },
+                    success: function (data) {
+                        if(data.success){
+                            showMsg('修改成功', 1, false);
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        } else {
+                            showMsg('修改失败', 1, false);
+                        }
+                    }
+                })
+            }
+            return false;
+        });
+
+
+        function bindDate() {
+            var start = laydate.render({
+                elem: '#startTime',
+                type: 'time',
+                btns: ['confirm']
+            });
+            var end = laydate.render({
+                elem: '#endTime',
+                type: 'time',
+                btns: ['confirm']
+            });
+        }
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>首页</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .site-demo-button {
+            margin: 30px;
+            padding: 20px;
+        }
+
+        .state1 {
+            background-color: #00A600 !important;
+        }
+
+        .state2 {
+            background-color: #01B468 !important;
+        }
+
+        .state3 {
+            background-color: #84c1ff !important;
+        }
+
+        .state4 {
+            background-color: #750000 !important;
+        }
+
+        .state5 {
+            background-color: #750000 !important;
+        }
+
+        .state6 {
+            background-color: #AE00AE !important;
+        }
+
+        .state7 {
+            background-color: #4F4F4F !important;
+        }
+
+        .state8 {
+            background-color: #6A6AFF !important;
+        }
+
+        .state9 {
+            background-color: #548C00 !important;
+        }
+
+        .state10 {
+            background-color: #FFBB77 !important;
+        }
+        .state11 {
+            background-color: #4F4F4F !important;
+        }
+
+        .state {
+            font-size: 25px;
+            color: #fff;
+            cursor: pointer
+        }
+
+        .roomstate {
+            /*font-size: 16px;*/
+            /*text-align: right;*/
+            /*color: #fff;*/
+            /*padding-right: 10px;*/
+            /*margin-top: 14px;*/
+            /*height: 22px;*/
+        }
+
+        .roomType {
+            bottom: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!--<div class="occupancy-rate" id="div">入住率<span id="inRate"></span>%</div>-->
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="#" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<section>
+    <div id="floors">
+    </div>
+    <div class="filter-state roomType">
+        <ul id="checkBoxType">
+        </ul>
+    </div>
+    <div class="filter-state">
+        <ul id="checkBox">
+        </ul>
+    </div>
+
+    <div style="height: 60px;"></div>
+</section>
+
+</body>
+
+</html>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    // $(".side").css("height",
+
+    var ALLSTATE = '1,2,3,4,5,6,7,8,9,10';
+    var ALLTYPES = [];
+    layui.use(['element', 'jquery', 'layer'], function () {
+        var element = layui.element;
+        var $ = jQuery = layui.$;
+        layer = layui.layer;
+        var $cb = $("#checkBox");
+        var stateArr = [];
+        renderReport($)
+        try{
+            $.getJSON('/flag/info?v='+Date.now(),function (rs) {
+                if(rs.success)return;
+                console.log(rs.errMsg);
+            })
+        }catch (e){}
+
+        $(document).on('click', '.item', function (e) {
+            var roomId = $(this).data("roomid");
+            var roomNum = $(this).children('.type').children('span').get(0).innerText;
+            var roomTypeName = $(this).children('.type').children('span').get(1).innerText;
+            var state = $(this).data('state');
+            var fixRoomResult = $(this).data('fixroomresult');
+            if (!roomId || !roomNum || !roomTypeName) {
+                showMsg('网络错误，请刷新重试！');
+            }
+            clickItem(roomId, roomNum, roomTypeName, state, fixRoomResult);
+        });
+        $(document).on("click", ".filterState", function () {
+            if (this.dataset.id == 'countAllRoom') {
+                clickAll();
+            } else {
+                clickOne();
+            }
+        });
+        $(function () {
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+        })
+        $(document).on("click", ".filterType", function () {
+            if (this.dataset.id == 'countAllType') {
+                clickAllType();
+            } else {
+                clickOneType();
+            }
+        })
+
+        function clickAll() {
+            $(".filterState").prop("checked", $(".filterState").prop("checked"));
+            if ($(".filterState").prop("checked")) {
+                console.log('全选')
+                getRoomsInfo();
+            } else {
+                console.log('全不选')
+                //todo 清除所有房间信息
+            }
+        }
+
+        function clickOne() {
+            var allChecked = true;
+            $(".filterState").each(function () {
+                if ($(this).prop("checked") == false) {
+                    allChecked = false;
+                }
+                ;
+            });
+            if (allChecked) {
+                $("#countAllRoom").prop("checked", true);
+                getRoomsInfo();
+            } else {
+                $("#countAllRoom").prop("checked", false);
+                getRoomsInfo();
+            }
+        }
+
+        //第一次进入页面获取数据
+        $.post(api.homeRoomType, {}, function (r) {
+            var r = JSON.parse(r);
+            if (r.success) {
+                renderRoomType(r.data);
+                for (var i = 0; i < r.data.length; i++)
+                    ALLTYPES.push(r.data[i].id);
+                var __index = layer.load(1,{time:10*1000});
+                getHomeData({states: ALLSTATE, types: ALLTYPES.join(",")}, function (rs) {
+                    layer.close(__index);
+                    renderCheckBox(rs.sec);
+                    renderRooms(rs.first);
+                })
+            } else {
+                layer.alert("获取房型失败：" + r.errMsg);
+            }
+        })
+
+
+        function getHomeData(par, callback) {
+            // console.info(par);
+            $.post(api.homePage, par, function (r) {
+                var r = JSON.parse(r);
+                console.info(r)
+                if (r.success) {
+                    if(_timess==0){
+                        if(r.data.info){
+                            if(r.data.info!=''){
+                                layer.alert( r.data.info)
+                            }
+                        }
+                    }
+                    callback(r.data)
+                } else {
+                    layer.alert("2" + r.errMsg);
+                }
+            })
+        }
+
+        function renderCheckBox(r) {
+            // return;
+            $cb.empty();
+            var str = '';
+            var last = '';
+            for (var i in r) {
+                if (i == 'countLockRoom') continue;
+                if (i == 'countAllRoom') {
+                    $("#_countAllType").text(r[i]);
+                }
+
+                stateArr.push(i);
+                if(i=='countOrderRoom'||i=='countFix'||i=='countLockRoom'||i=='countNetLockRoom'||i=='countShopLockRoom'||i=='countLeaveRoom'){
+                    last += [
+                        '<li  class="state-item state',
+                        getRoomState(i).split(",")[1],
+                        '">',
+                        ' <input class="filterState" data-id="',
+                        i,
+                        '" type="checkbox" data-state="',
+                        getRoomState(i).split(",")[1],
+                        '" id="',
+                        i,
+                        '" /><label  data-id="',
+                        i,
+                        '" for="',
+                        i,
+                        '">',
+                        getRoomState(i).split(",")[0],
+                        '(<span id="_',
+                        i,
+                        '">',
+                        r[i],
+                        '</span>)</label>',
+                        '  </li>'
+                    ].join("")
+                    continue;
+                }
+                str += [
+                    '<li  class="state-item state',
+                    getRoomState(i).split(",")[1],
+                    '">',
+                    ' <input class="filterState" data-id="',
+                    i,
+                    '" type="checkbox" data-state="',
+                    getRoomState(i).split(",")[1],
+                    '" id="',
+                    i,
+                    '" /><label  data-id="',
+                    i,
+                    '" for="',
+                    i,
+                    '">',
+                    getRoomState(i).split(",")[0],
+                    '(<span id="_',
+                    i,
+                    '">',
+                    r[i],
+                    '</span>)</label>',
+                    '  </li>'
+                ].join("")
+            }
+            $cb.append(str);
+            $cb.append(last);
+
+
+        }
+
+        function getRoomState(s) {
+            switch (s) {
+                case 'countAllRoom':
+                    return '全部,0'
+                    break;
+                case 'countVacantRoom':
+                    return '空房,1'
+                    break;
+                case 'countCheckInRoom':
+                    return '已入住,3'
+                    break;
+                case 'countOrderRoom':
+                    return '预约中,2'
+                    break;
+                case 'countOverTimeRoom':
+                    return '入住超时,5'
+                    break;
+                case 'countLeaveRoom':
+                    return '预离店,4'
+                    break;
+                case 'countSweep':
+                    return '待打扫,6'
+                    break;
+                case 'countLockRoom':
+                    return '全部锁房,8'
+                    break;
+                case 'countShopLockRoom':
+                    return '门店锁房,9'
+                    break;
+                case 'countNetLockRoom':
+                    return '网络锁房,10'
+                case 'countFix':
+                    return '维修房,7'
+                    break;
+            }
+        }
+    });
+
+
+    //弹出层
+    function clickItem(id, roomNum, name, state, fixRoomResult) {
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.open({
+                type: 2,
+                title: roomNum + name,
+                content: encodeURI('iframe_home.html?id=' + id + '&state=' + state + '&rt=' + name+'&fr='+fixRoomResult), //这里content是一个普通的String
+                skin: 'demo-class',
+                shadeClose: true,
+                shade: 0.6,
+                resize: false,
+                area: ['60%', '90%'],
+                end: function () {
+                    getRoomsInfo()
+                }
+            });
+        });
+    }
+
+    function getRoomsInfo() {
+        var o = {};
+        var a = [], b = [];
+        if ($("#countAllRoom").prop("checked")) {
+            o = {states: ALLSTATE};
+        } else {
+            $(".filterState").each(function () {
+                if ($(this).prop("checked")) {
+                    a.push($(this).data("state"))
+                }
+            });
+            o.states = a.join(",")
+            if (o.states == '') {
+                o.states = ALLSTATE;
+            } else if (a.indexOf(9) != -1 && a.indexOf(10) != -1) {
+                o.states = o.states + ",8"
+            }
+        }
+        if ($("#countAllType").prop("checked")) {
+            o.types = ALLTYPES.join(",");
+        } else {
+            $(".filterType").each(function () {
+                if ($(this).prop("checked")) {
+                    b.push($(this).data("id"))
+                }
+            });
+            o.types = b.join(",")
+            if (o.types == '') {
+                o.types = ALLTYPES.join(",");
+            }
+        }
+        console.info(o)
+        // var index = layer.load(1);
+        $.post(api.homePage, o, function (r) {
+            // console.info( typeof r)
+            if (typeof r == 'string') r = JSON.parse(r)
+            if (r.success) {
+                if(_timess==28){
+                    if(r.data.info){
+                        if(r.data.info!=''){
+                            layer.alert( r.data.info)
+                        }
+                    }
+                }
+                renderRooms(r.data.first)
+                updateCheckBox(r.data.sec)
+            } else {
+                layer.alert("1" + r.errMsg);
+            }
+        })
+    }
+
+    function renderRooms(ddd) {
+        var r = ddd.sort(compare("sort"));
+        var $r = $("#floors");
+        $r.empty();
+        var str = ''
+        for (var i = 0; i < r.length; i++) {
+
+            if (!r[i]['roomBOList'].length) continue;
+            var f = r[i]['roomBOList'];
+            str += ['<fieldset class="layui-elem-field site-demo-button" >',
+                '<legend>',
+                r[i].name,
+                '</legend>',
+                '<div class="flex-container">'].join("")
+            for (var j = 0; j < f.length; j++) {
+                str += ['<div data-fixroomresult="'+f[j].fixRoomResult+'" data-state="' + f[j].lockState + '" class="item state',
+                    getStatus(f[j]),
+                    '" data-roomid="' +
+                    f[j].roomId,
+                    '">',
+                    '<p class="type"><span>',
+                    f[j].roomNum,
+                    '</span><span>',
+                    f[j].roomTypeName,
+                    '</span></p>',
+                    '<div class="placehoder"></div>',
+                    '<p class="name"></p>',
+                    '<p class="state">',
+                    getStateByValue(f[j]),
+                    '</p>',
+                    // '<p class="roomstate state',
+                    // f[j].lockState,
+                    // '">',
+                    checkIsClockRoom(f[j]),
+
+                    '</div>'].join("")
+            }
+            str += '</div></fieldset>';
+        }
+
+        $r.append(str);
+    }
+
+    var _timess = 0;
+    setInterval(function () {
+        getRoomsInfo();
+        _timess++;
+        if(_timess==30){
+            _timess = 0;
+        }
+        console.log("定时任务" + DateToLStr(new Date()) + " " + _timess)
+    }, 30000)
+
+    function getStateByValue(s) {
+        var v = '';
+        // if (s.state) {
+        //     v = s.state;
+        // } else {
+            v = s.status;
+        // }
+        switch (v) {
+            case 0:
+                return '全部'
+                break;
+            case 1:
+                return '空房'
+                break;
+            case 3:
+                return '已入住'
+                break;
+            case 2:
+                return '预约中'
+                break;
+            case 4:
+                return '预离店'
+                break;
+            case 5:
+                return '入住超时'
+                break;
+            case 6:
+                return '待打扫'
+                break;
+            case 8:
+                return '全部锁房'
+                break;
+            case 9:
+                return '门店锁房'
+                break;
+            case 10:
+                return '网络锁房'
+            case 7:
+                return '维修房'
+                break;
+        }
+    }
+
+    function getStatus(f) {
+
+        // if (f.state) {
+        //     return f.state
+        // }
+        return f.status
+    }
+
+    function updateCheckBox(r) {
+        for (var i in r) {
+            $("#_" + i).text(r[i])
+        }
+        try {
+            $("#inRate").text((r['countCheckInRoom'] * 100 / r['countAllRoom']).toFixed(0))
+        } catch (e) {
+        }
+    }
+
+    function checkIsClockRoom(r) {
+        var wlsf = " background-color: #FFBB77 !important; "
+        var mdsf = " background-color: #548C00 !important; "
+        var qbsf = " background-color: #808040 !important; "
+        var yyf = " background-color: #01B468 !important; "
+        var wxf = " background-color: #4F4F4F !important; "
+        var yld = " background-color: #750000 !important; "
+            return ['<p class="',ishere(r.lockState),'" style="position: absolute;width: 80px;height: 20px;left: 0;bottom: 0px; ',getcolor(r.lockState),'text-align: right;color:#fff;padding-right:10px;">',getlock(r.lockState),'</p>',
+                '<p class="',ishere(r.fixRoomResult),'" style="position: absolute;width: 80px;height: 20px;left: 90px;bottom: 0px; ',getcolor(r.fixRoomResult),'text-align: right;color:#fff;padding-right:10px;">维修房</p>',
+                '<p class="',isheres(r.leaveId),'" style="position: absolute;width: 80px;height: 20px;left: 90px;bottom: 20px; ',getcolors(r.leaveId),'text-align: right;color:#fff;padding-right:10px;">预离店</p>',
+                r.checkIn==2?'<p  style="background-color: #000 !important;position: absolute;width: 170px;height: 20px;left: 0;top: 27px; text-align: right;color:#fff;padding-right:10px;">钟点房至:'+getLeaveTime(r.endTime)+'</p>':'',
+                r.enough==2?'<img title="余额不足" src="images/money.gif" width="20px" height="20px" style="display: block;position:absolute;left: 20px;top: 53px;" />':'',
+                r.memberName!=''?('<p style="position:absolute;right: 20px;top: 4px;border: 1px dashed #ffb800;color: #fff;font-weight: bold;padding: 3px;background: #888;" >'+r.memberName+'</p>'):'',
+                '<p class="',ishere(r.state),'" style="position: absolute;width: 80px;height: 20px;left: 0;bottom: 20px; ',getcolor(r.state),'text-align: right;color:#fff;padding-right:10px;">预约房</p>'].join("");
+        
+        function getLeaveTime(v) {
+            if(!v)return '';
+            return v.hours+'点'+v.minutes+'分'
+        }
+        function ishere(v) {
+            if(!v)return ' layui-hide '
+        }
+        function isheres(v) {
+            if(1==v)return ' layui-hide '
+        }
+        function getcolors(v) {
+            if(v==2)return yld;
+        }
+        function getcolor(v) {
+            switch (v) {
+                case 9:
+                    return mdsf
+                    break;
+                case 8:
+                    return qbsf
+                    break;
+                case 10:
+                    return wlsf
+                    break;
+                case 2:
+                    return yyf
+                    break;
+                case 7:
+                    return wxf
+                    break;
+                default:
+                    return '';
+            }
+        }
+        function getlock(v) {
+            switch (v) {
+                case 9:
+                    return '门店锁房'
+                    break;
+                case 8:
+                    return '全部锁房'
+                    break;
+                case 10:
+                    return '网络锁房'
+                    break;
+                default:
+                    return '';
+            }
+        }
+    }
+
+    function renderRoomType(r) {
+        var $checkBoxType = $("#checkBoxType");
+        $checkBoxType.empty();
+        var str = '<li class="state-item state0"> <input class="filterType" data-id="countAllType" type="checkbox" data-state="0" id="countAllType"><label data-id="countAllType" for="countAllType">全部(<span id="_countAllType"></span>)</label>  </li>';
+        for (var i = 0; i < r.length; i++) {
+
+            str += [
+                '<li  class="state-item state0',
+                // r[i].id,
+                '">',
+                ' <input class="filterType" data-id="',
+                r[i].id,
+                '" type="checkbox" data-state="',
+                r[i].id,
+                '" id="',
+                r[i].id,
+                '" /><label  data-id="',
+                i,
+                '" for="',
+                r[i].id,
+                '">',
+                r[i].name,
+                '(<span id="_',
+                r[i].id,
+                '">',
+                r[i].count,
+                '</span>)</label>',
+                '  </li>'
+            ].join("")
+        }
+        $checkBoxType.append(str);
+    }
+
+    function clickAllType() {
+        $(".filterType").prop("checked", $(".filterType").prop("checked"));
+        if ($(".filterType").prop("checked")) {
+            console.log('全选')
+            getRoomsInfo();
+        } else {
+            console.log('全不选')
+        }
+    }
+
+    function clickOneType() {
+        var allChecked = true;
+        $(".filterType").each(function () {
+            if ($(this).prop("checked") == false) {
+                allChecked = false;
+            }
+            ;
+        });
+        if (allChecked) {
+            $("#countAllType").prop("checked", true);
+            getRoomsInfo();
+        } else {
+            $("#countAllType").prop("checked", false);
+            getRoomsInfo();
+        }
+    }
+
+
+
+
+</script>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>交班记录</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<div class="layui-btn-container" style="margin: 20px auto; width: 90%;">
+    <button class="layui-btn" id="printingAll">打印已选项</button>
+</div>
+<div class="tab-box">
+    <table id="handoverList" lay-filter="handoverList"></table>
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="printing">打印</a>
+</script>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['jquery', 'table'], function () {
+        var $ = layui.$, table = layui.table, mathArr = [];
+
+        renderReport($);
+        $(function () {
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+        });
+
+        var tab = table.render({
+            elem: '#handoverList'
+            , url: api.handoverList
+            , method: 'POST'
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.data //解析数据列表
+                };
+            }
+            , height: 'full'
+            , loading: true // 是否显示加载条
+            , page: true //开启分页
+            , cols: [[ //表头
+                {field: 'checkbox', title: 'ID', type: 'checkbox', fixed: 'roomId', align: 'center'},
+                {
+                    field: 'operator', title: '交班操作员', width: 100, align: 'center', templet: function (data) {
+                        return data.operator === '' ? 'admin' : data.operator;
+                    }
+                }
+                , {
+                    field: 'startTime', title: '上班时间', width: 170, align: 'center', templet: function (data) {
+                        return DateToLStr(new Date(data.startTime.time));
+                    }
+                }
+                , {
+                    field: 'endTime', title: '下班时间', width: 170, align: 'center', templet: function (data) {
+                        return data.endTime != null ? DateToLStr(new Date(data.endTime.time)) : '未下班';
+                    }
+                }
+                , {field: 'consumptionIncome', width: 100, title: '总收入', align: 'center'}
+                , {field: 'cashIncome', width: 100, title: '现金收入', align: 'center'}
+                , {field: 'cashOut', width: 100, title: '现金找出', align: 'center'}
+                , {field: 'cashCount', width: 100, title: '现金合计', align: 'center'}
+                , {field: 'bankCardIncome', width: 100, title: '银行卡收款', align: 'center'}
+                , {field: 'bankCardOut', width: 100, title: '银行卡找出', align: 'center'}
+                , {field: 'bankCardMat', width: 100, title: '银行卡预授权', align: 'center'}
+                , {field: 'bankCardCount', width: 100, title: '银行卡合计', align: 'center'}
+                , {field: 'wechatIncome', width: 100, title: '微信收入', align: 'center'}
+                , {field: 'wechatOut', width: 100, title: '微信找出', align: 'center'}
+                , {field: 'wechatPay', width: 100, title: '网络支付', align: 'center'}
+                , {field: 'wechatCount', width: 100, title: '微信支付合计', align: 'center'}
+                , {field: 'alipayIncome', width: 100, title: '支付宝收款', align: 'center'}
+                , {
+                    field: 'lipayOut', width: 100, title: '支付宝找出', align: 'center', templet: function (data) {
+                        return !!data.lipayOut ? data.lipayOut : '0';
+                    }
+                }
+                , {field: 'alipayCount', width: 100, title: '支付宝合计', align: 'center'}
+                , {
+                    field: 'yuPaylncome', width: 100, title: '其他支付', align: 'center', templet: function (data) {
+                        return !!data.yuPaylncome ? data.yuPaylncome : '0';
+                    }
+                }
+                , {
+                    field: 'storeIncome', width: 100, title: '储值收入', align: 'center', templet: function (data) {
+                        return !!data.storeIncome ? data.storeIncome : '0';
+                    }
+                }
+                , {
+                    field: 'storeOut', width: 100, title: '储值支出', align: 'center', templet: function (data) {
+                        return !!data.storeOut ? data.storeOut : '0';
+                    }
+                }
+                , {
+                    field: 'storeCount', width: 100, title: '储值合计', align: 'center', templet: function (data) {
+                        return !!data.storeCount ? data.storeCount : '0';
+                    }
+                }
+                , {
+                    field: 'interIncome', width: 100, title: '积分收入', align: 'center', templet: function (data) {
+                        return !!data.interIncome ? data.interIncome : '0';
+                    }
+                }
+                , {
+                    field: 'interOut', width: 100, title: '积分支出', align: 'center', templet: function (data) {
+                        return !!data.interOut ? data.interOut : '0';
+                    }
+                }
+                , {
+                    field: 'interCount', width: 100, title: '积分合计', align: 'center', templet: function (data) {
+                        return !!data.interCount ? data.interCount : '0';
+                    }
+                }
+                , {field: 'memberCart', width: 100, title: '会员卡售卖', align: 'center'}
+                , {field: 'thisPettyCash', width: 100, title: '当前备用金', align: 'center'}
+                , {field: 'thisMakeNumber', width: 100, title: '当前制卡数', align: 'center'}
+                , {fixed: 'right', title: '操作', width: 80, align: 'center', toolbar: '#barDemo'}
+            ]]
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(handoverList)', function (obj) {
+            var checkStatus = table.checkStatus('handoverList'), data = checkStatus.data;
+            console.log(data);
+            mathArr = data;
+        });
+
+        //打印选中项
+        $('#printingAll').on('click', function () {
+            if(!mathArr.length)return;
+            var obj = {};
+            for (var i = 0, len = mathArr.length; i < len; i++) {
+                for (var item in mathArr[i]) {
+                    if (typeof mathArr[i][item] !== 'number') continue;
+                    i == 0 ? obj[item] = 0 : '';
+                    obj[item] += mathArr[i][item];
+                }
+            }
+            sessionStorage.setItem('handover', JSON.stringify(obj));
+            parent.location.href = 'handover.html?s=2';
+            console.log(obj);
+        });
+
+        //表格操作按钮
+        table.on('tool(handoverList)', function (obj) { //tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if (layEvent === 'printing') { //打印
+                sessionStorage.setItem('handover', JSON.stringify(data));
+                parent.location.href = 'handover.html?s=0';
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

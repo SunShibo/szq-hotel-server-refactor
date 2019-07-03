@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中介收银汇总报表</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="layui-form" style="padding-top: 10px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">起止时间</label>
+        <div class="layui-input-inline" style="width: 165px;">
+            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off" class="layui-input inline-input"
+                   placeholder="开始时间">
+        </div>
+        <div class="layui-input-inline" style="width: 165px;">
+            <input type="text" name="endTime" lay-verify="required" id="endTime" autocomplete="off" class="layui-input inline-input"
+                   placeholder="结束时间">
+        </div>
+        <label class="layui-form-label layui-hide">收银员</label>
+        <div class="layui-input-inline layui-hide">
+            <input type="text" name="name" id="name" placeholder="请输入收银员姓名" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label layui-hide">渠道</label>
+        <div class="layui-input-inline layui-hide">
+            <select id="cnId" name="cnId" lay-filter="cnId" lay-search>
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
+        </div>
+    </div>
+</form>
+<div class="tab-box">
+    <table id="cashierAccount" lay-filter="cashierAccount" class="layui-table"></table>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+
+    layui.use(['form', 'jquery', 'table', 'laydate'], function () {
+        var form = layui.form, $ = layui.$, table = layui.table, laydate = layui.laydate
+            , startTime = 0, endTime = 0;
+        var today = DateToLStr(new Date()).split(" ")[0];
+        renderSelect("cnId", 'id', 'name', api.allChannel, form,function (str,rs) {});
+        $("#startTime").val(today);
+        $("#endTime").val(today);
+        setTimeout(function () {
+            resultInfo()
+        },100);
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            resultInfo();
+            return false;
+        });
+
+        //获取
+        function resultInfo() {
+            var obj = {
+                startTime:$("#startTime").val().replace(/-/g, "/")+' 00:00:00',
+                endTime: $("#endTime").val().replace(/-/g, "/")+' 23:59:59',
+            };
+            if($("#name").val()){
+                obj.name = $("#name").val();
+            }
+
+            if($("#cnId").val()){
+                obj.cnId = $("#cnId").val();
+            }
+            var index =layer.load(1,{time:10*1000});
+            $.ajax({
+                url: 'roomForms/FormAllmediation',
+                type: 'POST',
+                dataType: 'json',
+                data:obj,
+                success: function (rs) {
+                    tab.reload({data: JSON.parse(JSON.stringify(rs.data))})
+                    layer.closeAll()
+                },
+                error:function (rs) {
+                    layer.closeAll();
+                    layer.alert(rs.responseText);
+                }
+            });
+        }
+
+        var tab = table.render({
+            elem: '#cashierAccount'
+            , even: true
+            , limit: 10000
+            , loading: true // 是否显示加载条
+            , title: '中介收银汇总报表'
+            , done: function (res, curr, count) {
+                $(".layui-table-tool-temp").html('<p style="text-align: center">中介收银汇总报表</p>');
+            }
+            , toolbar: true
+            , cols: [[ //标题栏
+                {field: 'cashier', title: '收银员', align: 'center'}
+                , {field: 'channelName', title: '渠道', align: 'center'}
+                , {field: 'relationName', title: '客源', align: 'center'}
+                , {field: 'OTA', title: 'OTA', align: 'center'}
+                , {field: 'setSingle', title: '组单', align: 'center'}
+                , {field: 'guestList', title: '客单', align: 'center'}
+                , {field: 'roomNumber', title: '房号', align: 'center'}
+                , {field: 'name', title: '姓名', align: 'center'}
+                , {field: 'originalDocuments', title: '原始凭证', align: 'center'}
+                , {field: 'consumptionAmount', title: '消费金额', align: 'center'}
+                , {field: 'settlementAmount', title: '结算金额', align: 'center'}
+                , {field: 'authorizedAmount', title: '授权金额', align: 'center'}
+                , {
+                    field: 'createTime', title: '发生时间', align: 'center', templet: function (data) {
+                        if(data.dateTime)
+                            return DateToLStr(new Date(data.dateTime.time))
+                        else return ''
+                    }
+                }
+                , {field: 'note', title: '备注', align: 'center'}
+                , {
+                    field: 'type', title: '类型', align: 'center', templet: function (data) {
+                        switch (data.type){
+                            case 1:
+                                return '夜核房费'
+                                break;
+                            case 2:
+                                return '全天日租'
+                                break;
+                            case 3:
+                                return '钟点房费'
+                                break;
+                            case 4:
+                                return '房费调整'
+                                break;
+                            case 5:
+                                return '赔偿'
+                                break;
+                            case 6:
+                                return '商品'
+                                break;
+                            case 7:
+                                return '会员卡'
+                                break;
+                            case 8:
+                                return '现金'
+                                break;
+                            case 9:
+                                return '银行卡'
+                                break;
+                            case 10:
+                                return '支付宝'
+                                break;
+                            case 11:
+                                return '微信'
+                                break;
+                            case 12:
+                                return '现金支出'
+                                break;
+                            case 13:
+                                return '银行卡支出'
+                                break;
+                            case 14:
+                                return '支付宝支出'
+                                break;
+                            case 15:
+                                return '微信支出'
+                                break;
+                            case 16:
+                                return '银行卡授权'
+                                break;
+                            default:
+                                return '';
+                        }
+                    }
+                }
+            ]]
+        });
+
+        laydate.render({
+            elem: '#startTime',
+            type: 'date',
+            btns: ['confirm'],
+            done: function (value, date) {
+                // var _value = value;
+                // startTime = new Date(_value.replace(/-/g, "/")).getTime() + (4 * 60 * 60 * 1000);
+                // endTime = new Date(_value.replace('00:00:00', '04:00:00').replace(/-/g, "/")).getTime() + (28 * 60 * 60 * 1000);
+                // setTimeout(function () {
+                //     document.getElementById('startTime').value = _value.replace('00:00:00', '04:00:00');
+                // }, 200);
+            }
+        });
+        laydate.render({
+            elem: '#endTime',
+            type: 'date',
+            btns: ['confirm'],
+            done: function (value, date) {
+            }
+        });
+    });
+</script>
+</body>
+</html>

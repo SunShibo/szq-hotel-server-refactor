@@ -1,0 +1,83 @@
+<!DOCTYPE html><!--  客账管理消费项目转账使用-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客账管理消费项目转账</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="tab-box">
+    <table id="tallyInfo" lay-filter="tallyInfo" class="layui-table"></table>
+</div>
+<div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
+    <button class="layui-btn layui-btn-sm" id="formData">转账</button>
+    <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form, $ = layui.$, table = layui.table, tally = {}, tallyInfo = {};
+
+        $(function () {
+            tallyInfo = JSON.parse(sessionStorage.getItem('tallyInfo2'));
+            setTimeout(function () {
+                var arr = []
+                arr.push(tallyInfo);
+                tab.reload({data: arr});
+            }, 200)
+        });
+
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        //点击挂账按钮
+        $('#formData').on('click', function () {
+
+            var oo = {};
+            var urlll = "/OrderManage/transfer";
+
+            oo.oldId=getUrl("oldId");
+            oo.ids=getUrl("ids");
+            oo.newId = tallyInfo.id;
+            if(oo.oldId==oo.newId){
+                layer.alert("不能挂自己房间")
+                return;
+            }
+            console.info(oo)
+            $.ajax({
+                url: urlll,
+                type: 'POST',
+                dataType: 'json',
+                data: oo,
+                success: function (rs) {
+                    if(rs.success){
+                        showMsg('操作成功', 1, false);
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    }else{
+                        layer.alert(rs.errMsg);
+                    }
+                    return false;
+                }
+            })
+        });
+
+        var tab = table.render({
+            elem: '#tallyInfo'
+            , limit: 10000
+            , cols: [[ //表头
+                {field: 'roomName', title: '房号', align: 'center', width: 90}
+                , {field: 'name', title: '姓名', align: 'center', width: 100}
+                , {
+                    field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
+                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
+                    }
+                }
+            ]]
+        });
+    });
+</script>
+</body>
+</html>

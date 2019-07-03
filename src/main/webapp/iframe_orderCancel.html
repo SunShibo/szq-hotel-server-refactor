@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>取消订单</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="tab-box">
+    <table id="orderCancel" lay-filter="orderCancel" class="layui-table"></table>
+</div>
+<div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
+    <button class="layui-btn layui-btn-sm" id="orderCancelBtn">取消订单</button>
+    <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form, table = layui.table, $ = layui.$, orderNumber = 0, ids = [];
+
+        $(function () {
+            orderNumber = getUrl('orderNumber');
+        })
+
+        var tab = table.render({
+            elem: '#orderCancel'
+            , url: api.cancelSubQuery
+            , method: 'POST'
+            , where: {orderNumber: orderNumber}
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            }
+            , limit: 10000
+            , even: true
+            , cols: [[ //表头
+                {field: 'checkbox', title: 'ID', type: 'checkbox', fixed: 'id', align: 'center'}
+                , {field: 'name', title: '入住人', align: 'center'}
+                , {field: 'orderNumber', title: '订单号', align: 'center'}
+                , {field: 'roomName', title: '房间号', align: 'center'}
+                , {field: 'roomTypeName', title: '房型', align: 'center'}
+            ]]
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(orderCancel)', function (obj) {
+            //获取表格内复选框已选中的数据data
+            var checkStatus = table.checkStatus('orderCancel'), data = checkStatus.data;
+            ids = [];
+            for (var i = 0, len = data.length; i < len; i++) {
+                ids.push(data[i].id);
+            }
+        });
+
+        $('#orderCancelBtn').on('click', function () {
+            parent.layer.confirm('确定取消吗？', {icon: 3, title: '提示'}, function (index) {
+                $.ajax({
+                    url: api.cancelSubUpdate,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {childIds: ids.join(',')},
+                    success: function (rs) {
+                        if (rs.success) {
+                            parent.layer.closeAll();
+                        } else {
+                            showMsg(rs.errMsg, 2, false);
+                        }
+                    }
+                });
+            })
+        });
+
+    });
+</script>
+</body>
+</html>

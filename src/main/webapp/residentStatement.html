@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在住报表</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<div class="tab-box">
+    <table id="residentStatement" lay-filter="residentStatement" class="layui-table"></table>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'element', 'form'], function () {
+        var table = layui.table, $ = layui.$, form = layui.form, state = 0, title = '';
+
+        $(function () {
+            state = parseInt(getUrl('s'));
+            title = state == 0 ? '在住' : '预离店';
+            document.title = title + '报表';
+            resultInfo()
+        });
+
+        //获取
+        function resultInfo() {
+            var obj = {};
+            if (state) {
+                obj.le = 1;
+            }
+            $.ajax({
+                url: api.queryStatement,
+                type: 'POST',
+                data: obj,
+                dataType: 'json',
+                success: function (data) {
+                    formatData(data.data.statement)
+                }
+            })
+        }
+
+        function formatData(data) {
+            for (var i = 0, len = data.length; i < len; i++) {
+                data[i].endTime = layui.util.toDateString(data[i].endTime.time, 'yyyy-MM-dd HH:mm');
+                data[i].startTime = layui.util.toDateString(data[i].startTime.time, 'yyyy-MM-dd HH:mm');
+            }
+            console.log(data);
+            tab.reload({data: JSON.parse(JSON.stringify(data))});
+        }
+
+        var tab = table.render({
+            elem: '#residentStatement' //指定原始表格元素选择器（推荐id选择器）
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.statement //解析数据列表
+                };
+            }
+            , even: true
+            , loading: true // 是否显示加载条
+            , title: title + '报表'
+            , done: function (res, curr, count) {
+                $(".layui-table-tool-temp").html('<p style="text-align: center">' + title + '报表</p>');
+            }
+            , toolbar: true
+            , limit: 10000
+            , totalRow: true
+            , cols: [[ //标题栏
+                {field: 'number', title: '订单号', rowspan: 2, totalRowText: "合计："} //rowspan即纵向跨越的单元格数
+                , {field: 'name', title: '姓名', rowspan: 2}
+                , {
+                    field: 'idType', title: '证件类型', rowspan: 2, templet: function (data) {
+                        switch (data.idType) {
+                            case 1:
+                                return '身份证';
+                            case 2:
+                                return '港澳通行证';
+                            case 3:
+                                return '台胞证';
+                            case 4:
+                                return '护照';
+                            case 5:
+                                return '军官证';
+                            case 6:
+                                return '驾驶证';
+                        }
+                    }
+                }
+                , {field: 'idNumber', title: '证件号码', rowspan: 2}
+                , {field: 'roomName', title: '房号', rowspan: 2}
+                , {field: 'roomType', title: '房型', rowspan: 2}
+                , {field: 'roomPrice', title: '房价', rowspan: 2, totalRow: true}
+                , {field: 'startTime', title: '入住时间', rowspan: 2}
+                , {field: 'endTime', title: '预离时间', rowspan: 2}
+                , {align: 'center', title: '收款明细', colspan: 3} //colspan即横跨的单元格数，这种情况下不用设置field和width
+                , {field: 'consumeCount', title: '总消费', rowspan: 2}
+                , {field: 'balance', title: '余额', rowspan: 2}
+            ], [
+                {field: 'amt', title: '预授权'}
+                , {field: 'payCash', title: '现金'}
+                , {field: 'posPay', title: 'POS'}
+            ]]
+        });
+    });
+
+</script>
+</body>
+</html>

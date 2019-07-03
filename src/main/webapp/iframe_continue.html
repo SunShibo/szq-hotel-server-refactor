@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>续住</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<OBJECT id=MSComm1 CLASSID="clsid:648A5600-2C6E-101B-82B6-000000000014" codebase="mscomm32.ocx"
+        type="application/x-oleobject" style="LEFT:54px;TOP:14px">
+    <PARAM NAME="CommPort" VALUE="3"/>
+    <PARAM NAME="DataBits" VALUE="8"/>
+    <PARAM NAME="StopBits" VALUE="1"/>
+    <PARAM NAME="BaudRate" VALUE="9600"/>
+    <PARAM NAME="Settings" VALUE="9600,N,8,1"/>
+
+    <PARAM NAME="RTSEnable" VALUE="1"/>
+    <PARAM NAME="DTREnable" VALUE="1"/>
+    <PARAM NAME="Handshaking" VALUE="0"/>
+    <PARAM NAME="NullDiscard" VALUE="0"/>
+    <PARAM NAME="ParityReplace" VALUE="?"/>
+
+    <PARAM NAME="EOFEnable" VALUE="0"/>
+    <PARAM NAME="InputMode" VALUE="0"/>
+    <PARAM NAME="InBufferSize" VALUE="1024"/>
+    <PARAM NAME="InputLen" VALUE="0"/>
+    <PARAM NAME="OutBufferSize" VALUE="512"/>
+
+    <PARAM NAME="SThreshold" VALUE="0"/>
+    <PARAM NAME="RThreshold" VALUE="1"/>
+
+</OBJECT>
+<form class="layui-form" lay-filter="formData" style="padding: 10px 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">续住天数</label>
+        <div class="layui-input-inline">
+            <input type="number" name="dayNumber" id="dayNumber" lay-verify="required" placeholder="请输入天数"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">天</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">支付方式</label>
+        <div class="layui-input-block">
+            <input type="radio" name="payType" class="payType" lay-filter="payType" value="1" title="现金" checked
+                   disabled>
+            <input type="radio" name="payType" class="payType" lay-filter="payType" value="2" title="刷卡" disabled>
+            <input type="radio" name="payType" class="payType" lay-filter="payType" value="3" title="微信" disabled>
+            <input type="radio" name="payType" class="payType" lay-filter="payType" value="4" title="支付宝" disabled>
+            <!--<input type="radio" name="payType" class="payType" lay-filter="payType" value="5" title="其他支付" disabled>-->
+            <!--<input type="hidden" name="payType" class="payType" lay-filter="payType" value="6" title="积分支付" disabled>-->
+            <input type="radio" name="payType" class="payType" lay-filter="payType" value="7" title="储值支付" disabled>
+        </div>
+    </div>
+    <div class="optional" style="display: none;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">证件号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="IDCard" id="card" placeholder="请输入证件号码"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+            <div class="layui-input-inline" style="width: auto">
+                <a class="layui-btn layui-btn-primary" id="IDCard">扫描身份证</a>
+            </div>
+        </div>
+    </div>
+    <div class="optional_1" style="display: none;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">会员详情</label>
+            <div class="layui-input-block" style="line-height: 38px">
+                拥有积分：<span class="integral" style="color:#ff0000;"></span>，储值卡余额：<span class="prepaidCard"
+                                                                                       style="color:#ff0000;"></span>元
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">付款人</label>
+        <div class="layui-input-inline">
+            <select name="payPenson" lay-filter="payPenson" id="payPenson" disabled></select>
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">应付金额</label>
+        <div class="layui-input-inline">
+            <input type="number" name="roomPrice" id="roomPrice" autocomplete="off" class="layui-input" disabled>
+        </div>
+        <div class="layui-form-mid layui-word-aux">元</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">实付金额:</label>
+        <div class="layui-input-inline">
+            <input type="number" name="payPrice" id="payPrice" autocomplete="off"
+                   class="layui-input" disabled>
+        </div>
+        <div class="layui-form-mid layui-word-aux">元</div>
+    </div>
+    <div class="btn-list layui-btn-container">
+        <a class="layui-btn layui-btn-disabled pay" disabled lay-submit="" lay-filter="pay">自动支付</a>
+        <a class="layui-btn layui-btn-disabled pay" disabled lay-submit="" data-id="1" lay-filter="pay">手动支付</a>
+        <button class="layui-btn" id="ok" lay-submit="" lay-filter="formData">确定</button>
+        <button class="layui-btn" id="back">取消</button>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<SCRIPT LANGUAGE=javascript FOR=MSComm1 EVENT=OnComm>
+    MSComm1_OnComm()
+
+    function MSComm1_OnComm() {
+        switch (MSComm1.CommEvent) {
+            case 1: {
+                alert("Send OK！");
+                break;
+            } //发送事件
+            case 2: {
+                Receive();
+                break;
+            } //接收事件
+            default:
+                alert("Event Raised!" + MSComm1.CommEvent);
+        }
+    }
+</SCRIPT>
+<script>
+    var str = '', $, _pay_index = 0, str1 = '', pocket = 0, c = '', r = '', payNumber, price, paypPttern, cid,
+        dayNumber;
+    layui.use(['form', 'jquery'], function () {
+        var form = layui.form, flag = false,
+            $ = layui.$, isFlag = 0;
+
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+        //证件号码输入事件绑定
+        $('#card').on('input', debounce(handleInput, 1000));
+
+        $(function () {
+            //绑定Activex标签
+            IDCardReaderInfo($(document.body));
+            c = getUrl('c');
+            r = getUrl('r');
+        });
+
+        //监听支付方式
+        form.on('radio(payType)', function (data) {
+            clearIDForm(form, 'formData');
+            //判断选中的是否是储值支付和积分支付
+            switch (data.value) {
+                case "6":
+                case "7":
+                    //选中储值支付和积分支付后先控制身份证
+                    $('.optional').show();
+                    $('.optional_1').hide();
+                    flag = true;
+                    break;
+                default:
+                    //选中其他支付方式以后隐藏身份证和会员详情
+                    $('.optional,.optional_1').hide();
+                    flag = false;
+                    break;
+            }
+        });
+
+        //监听确定按钮提交
+        form.on('submit(formData)', function (data) {
+            console.log(typeof data.field.dayNumber);
+            if (data.field.dayNumber <= 0) {
+                parent.layer.alert("续住天数不能小于1天");
+                return false;
+            }
+            $.ajax({
+                url: api.stayOver,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    roomId: r,
+                    dayNumber: data.field.dayNumber,
+                    childOrderId: c
+                },
+                success: function (data) {
+                    if (data.success) {
+                        //保存数据
+                        str1 = data.data.str;
+                        pocket = data.data.price;
+                        //按钮和输入框禁用
+                        $('#payPenson,#payPrice,.payType').removeAttr('disabled');
+                        //设置同来人
+                        setScheduleData(data.data.payBO);
+                        //显示应收房价
+                        $('#roomPrice').val(data.data.price);
+                        //天数输入框禁用
+                        $('#dayNumber').attr('disabled', 'true');
+
+                        //确定和支付按钮禁用和取消禁用
+                        $('.pay').removeClass('layui-btn-disabled').removeAttr('disabled');
+                        $('#ok').addClass('layui-btn-disabled').attr('disabled', 'true');
+                        form.render('radio');
+                    } else {
+                        layer.msg(data.errMsg);
+                    }
+                }
+            });
+            return false;
+        })
+
+        //显示同来人
+        function setScheduleData(data) {
+            for (var i = 0, len = data.length; i < len; i++) {
+                var div = '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                $('#payPenson').append(div);
+            }
+            form.render();
+        }
+
+
+        //监听支付按钮提交
+        form.on('submit(pay)', function (data) {
+            //判断支付金额是否非空
+            if (!data.field.payPrice) {
+                layer.alert("交易金额有误");
+                return false;
+            }
+            //获取按钮上绑定的data-id属性,用于判断是否点击手动结账
+            isFlag = $(this).data('id');
+            //初始化
+            str = "";
+            var index = layer.load(1, {time: 10 * 1000});
+            pay(data.field.payType, data.field);
+            layer.close(index);
+            return false;
+        });
+
+        //支付方法
+        function pay(_p, data) {
+            //传值参数
+            var pd = {
+                pocket: pocket,//应付金额
+                str: str1,//每天价格
+                price: data.payPrice,
+                paypPttern: data.payType,
+                roomId: r,
+                cid: data.payPenson,
+                dayNumber: data.dayNumber,
+                childOrderId: c
+            };
+            //判断实际支付金额是否为0，同时进行POS和现金区分，积分支付、储值支付和其他支付的区分
+            if (_p == "5" || _p == '1' || (_p != '1' && data.payPrice == 0)) {
+                if (!data.payPrice) {
+                    layer.alert("交易金额有误");
+                    return false;
+                }
+                //当用户输入实际支付金额为0时，则让支付方式为现金支付
+                pd.paypPttern = _p != '1' && data.payPrice == 0 ? 1 : pd.paypPttern;
+                //当用户选择支付方式为其他支付
+                pd.paypPttern = _p == "5" ? 3 : pd.paypPttern;
+                Receive1(JSON.stringify(pd));
+
+            } else if (_p == '6' || _p == '7') {//支付方式为 积分支付或者储值支付
+                //积分判断
+                if (_p == "6" && parseInt(payValue.integValue) < data.roomPrice) {
+                    layer.alert("积分不足,交易失败！");
+                    return false;
+                }
+                //储值判断
+                if (_p == "7" && parseInt(payValue.streValue) < data.roomPrice) {
+                    layer.alert("储值余额不足,交易失败！");
+                    return false;
+                }
+                //格式化支付传值
+                var payTp = formatPayTp(_p);
+                Receive1(JSON.stringify({
+                    paypPttern: payTp,//用户选择的支付方式
+                    price: data.payPrice,//用户输入实际支付金额
+                    credentialNumber: data.IDCard,//用户输入或扫描的身份证号
+                    dayNumber: data.dayNumber,//续住天数
+                    cid: data.payPenson,//支付人
+                }));
+            } else {
+                //保存支付数据
+                price = data.payPrice;
+                paypPttern = 2;
+                cid = data.payPenson;
+                dayNumber = data.dayNumber;
+                //判断支付方式 2银行卡  3 微信  4支付宝
+                var payjson = checkPayState(_p);
+                payjson = $.extend(pd, PAYJSON);
+                payjson.amt = price;
+                payNumber = new Date().getTime();
+                payjson.orderNo = payNumber;
+
+                if (isFlag) {
+                    var payTp = formatPayTp(_p);
+                    Receive1(JSON.stringify({
+                        paypPttern: payTp,
+                        transAmount: data.payPrice,
+                        payNumber: payjson.orderNo
+                    }))
+                } else {
+                    Send(JSON.stringify(payjson));
+                }
+            }
+        }
+
+
+
+    });
+    setTimeout(function () {
+        MSComm1.PortOpen == false;
+        OperatePort();
+    }, 1000)
+
+    function OperatePort() {
+        try {
+            MSComm1.CommPort = localStorage.posport ? localStorage.posport : 6
+            MSComm1.Settings = 115200 +
+                ",N" +
+                ",8" +
+                ",1";
+            MSComm1.OutBufferCount = 0; //清空发送缓冲区
+            MSComm1.InBufferCount = 0; //滑空接收缓冲区
+            MSComm1.PortOpen = true;
+        } catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    function Send(orgstr) {
+        try {
+            // MSComm1.Output = hexflag ? newstr : orgstr;
+            MSComm1.Output = orgstr;
+            console.info("发送数据到pos机：" + orgstr);
+        } catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    function Receive() {
+        // console.log("接收到的数据::" + MSComm1.Input)
+        // var index = layer.load(1);
+        str += MSComm1.Input;
+        console.info(str)
+        console.log(str.indexOf('}') != -1)
+        if (str.indexOf('}') != -1) {
+            Receive1(str)
+        }
+    }
+
+    //POS支付接口
+    function Receive1(data) {
+        // console.log(1111)
+        console.log("接收到的数据:" + data);
+        // var index = layer.load(1);
+        // console.info(JSON.parse(data));
+        var _data = JSON.parse(data);
+        if (_data.code == '-1') {
+            showMsg(_data.message, 2, false);
+            return;
+        }
+        var pd = {
+            pocket: pocket,
+            str: str1,
+            price: price,
+            paypPttern: paypPttern,
+            roomId: r,
+            cid: cid,
+            dayNumber: dayNumber,
+            childOrderId: c,
+            payNumber: payNumber
+        };
+        pd = $.extend({}, pd, JSON.parse(data));
+        // alert(JSON.stringify(pd));
+        // alert(data)
+        $.ajax({
+            url: api.stayOverPay,
+            type: 'POST',
+            dataType: 'json',
+            data: pd,
+            success: function (data) {
+                console.log(data);
+                if (data.success) {
+                    parent.layer.msg('支付成功!');
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                } else {
+                    layer.msg(data.errMsg);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .layui-form-item .layui-input-inline {
+            margin: 0 20px;
+            padding: 10px 0
+        }
+    </style>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-form-item" id="time" style="display:none;">
+        <div class="layui-input-inline">
+            <input type="text" name="startTime" autocomplete="off" class="layui-input" id="startTime"
+                   placeholder="开始时间">
+        </div>
+        <div class="layui-input-inline" style="margin-left: 20px;">
+            <input type="text" name="endTime" autocomplete="off" class="layui-input" id="endTime"
+                   placeholder="结束时间">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <input type="checkbox" name="network" id="network" lay-skin="primary">
+            <input type="checkbox" name="room" id="room" lay-skin="primary">
+        </div>
+    </div>
+    <div class="layui-form-item" id="comment" style="display: none">
+        <label class="layui-form-label">锁房备注</label>
+        <div class="layui-input-inline">
+                <textarea name="comment" id="commentText" placeholder="请输入锁房备注"
+                          class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div style="height: 38px;"></div>
+    <div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData">生效</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, $ = layui.$, state = 0, laydate = layui.laydate;
+
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        $(function () {
+            state = parseInt(getUrl('state'));
+            if (state === 1) {
+                $('#time').css('display', 'block');
+                $('#comment').css('display', 'block');
+                $('#network').attr({title: '网络锁房', value: '10'});
+                $('#room').attr({title: '门店锁房', value: '9'});
+
+            } else {
+                // $('#commentText').attr({layVerify:'', required: false})
+                $('#network').attr({title: '网络解锁', value: '11'});
+                $('#room').attr({title: '门店解锁', value: '12'});
+            }
+            form.render();
+        });
+
+        var start = laydate.render({
+            elem: '#startTime',
+            type: 'datetime',
+            min: new Date().getTime(),
+            btns: ['confirm'],
+            done: function (value, date) {
+                end.config.min = date;
+                end.config.min.month = date.month - 1;
+            },
+            change: function (value, date, endDate) {
+                var timestamp2 = Date.parse(new Date(value));
+                timestamp2 = timestamp2 / 1000;
+                end.config.min = timestamp2;
+                end.config.min.month = date.month - 1;
+            }
+        });
+        var end = laydate.render({
+            elem: '#endTime',
+            type: 'datetime',
+            btns: ['confirm'],
+            done: function (value, date) {
+                if (!$.trim(value)) {
+                    var curDate = new Date();
+                    date = {
+                        'date': curDate.getDate(),
+                        'month': curDate.getMonth() + 1,
+                        'year': curDate.getFullYear()
+                    };
+                }
+                start.config.max = date;
+                start.config.max.month = date.month - 1;
+            }
+        });
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            var network = data.field.network, room = data.field.room, selectArr = sessionStorage.getItem('selectArr'),
+                status = 0;
+            if (state === 1) {//锁房
+                if(!data.field.comment){
+                    showMsg('备注不能为空', 2, false);
+                    return false;
+                }
+                if (network && room) {
+                    status = 8;
+                } else if (network) {
+                    status = network;
+                } else if (room) {
+                    status = room;
+                } else {
+                    layer.msg('请选择锁房状态(全选为全部锁房)');
+                    return false;
+                }
+                lockRoom(data.field, status, selectArr, 0);
+            } else {//解锁
+                if (network && room) {
+                    status = 13;
+                } else if (network) {
+                    status = network;
+                } else if (room) {
+                    status = room;
+                } else {
+                    layer.msg('请选择解锁状态(全选为全部解锁)');
+                    return false;
+                }
+                lockRoom(data.field, status, selectArr, null);
+            }
+            return false;
+        });
+
+
+        function lockRoom(data, status, selectArr, trueId) {
+            var obj = {};
+            obj.state = status;
+            obj.roomIds = selectArr;
+            if(trueId != null){
+                obj.startTime = new Date(data.startTime.replace(/-/, "/").replace(/-/, "/"));
+                obj.endTime = new Date(data.endTime.replace(/-/, "/").replace(/-/, "/"));
+                obj.comment = data.comment;
+                if (trueId === 1) {
+                    obj.trueId = trueId;
+                }
+                //保存当前数据
+                var oldData = data;
+                var oldStatus = status;
+                $.ajax({
+                    url: api.roomLockRoom,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: obj,
+                    success: function (data) {
+                        if (data.errCode === '0000014') {
+                            layer.confirm(data.errMsg, {icon: 3, title: '提示'}, function (index) {
+                                //do something
+                                lockRoom(oldData, oldStatus, selectArr, 1);
+                                layer.close(index);
+                            });
+                        }
+                        if (data.success) {
+                            showMsg('锁房成功', 1, false);
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        }else{
+                            showMsg(data.errMsg, 2, false);
+                        }
+
+                    }
+                });
+            }else {
+                $.ajax({
+                    url: api.roomUnLock,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        roomIds: selectArr,
+                        state: status
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        } else {
+                            showMsg(data.errMsg, 2, false);
+                        }
+                    }
+                })
+            }
+        }
+    });
+</script>
+</body>
+</html>

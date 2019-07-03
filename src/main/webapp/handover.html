@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>交班</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<fieldset class="layui-elem-field" style="margin: 10px auto;width: 70%;">
+    <div class="layui-field-box" id="handover">
+        <div class="h-title">交班</div>
+        <div>
+            <div class="h-rows" id="time">
+                <div class="h-cols">班次时间</div>
+                <div class="h-cols"><span id="startTime"></span> - <span id="className"></span></div>
+            </div>
+            <div class="h-rows" id="operator_user">
+                <div class="h-cols">交班操作员</div>
+                <div class="h-cols" id="operator"></div>
+            </div>
+            <div class="h-rows">
+                总收入：<span id="consumptionIncome"></span>元
+            </div>
+        </div>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">现金</legend>
+            <div class="layui-field-box finance">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">收现金</div>
+                        <div class="h-cols"><span id="cashIncome"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">退现金</div>
+                        <div class="h-cols"><span id="cashOut"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">合计</div>
+                        <div class="h-cols"><span id="cashCount"></span>元</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">银行卡</legend>
+            <div class="layui-field-box">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">收款</div>
+                        <div class="h-cols"><span id="bankCardIncome"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">退款</div>
+                        <div class="h-cols"><span id="bankCardOut"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">预授权</div>
+                        <div class="h-cols"><span id="bankCardMat"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">合计</div>
+                        <div class="h-cols"><span id="bankCardCount"></span>元</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">微信</legend>
+            <div class="layui-field-box">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">收款</div>
+                        <div class="h-cols"><span id="wechatIncome"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">退款</div>
+                        <div class="h-cols"><span id="wechatOut"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">网络支付</div>
+                        <div class="h-cols"><span id="wechatPay"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">合计</div>
+                        <div class="h-cols"><span id="wechatCount"></span>元</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">支付宝</legend>
+            <div class="layui-field-box">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">收款</div>
+                        <div class="h-cols"><span id="alipayIncome"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">退款</div>
+                        <div class="h-cols"><span id="alipayOut"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">合计</div>
+                        <div class="h-cols"><span id="alipayCount"></span>元</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">其他支付</legend>
+            <div class="layui-field-box">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">收款</div>
+                        <div class="h-cols"><span id="yuPayIncome"></span>元</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">积分支付</legend>
+            <div class="layui-field-box">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">当班积分收入</div>
+                        <div class="h-cols"><span id="interIncome"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">当班积分支出</div>
+                        <div class="h-cols"><span id="interOut"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">当班积分合计</div>
+                        <div class="h-cols"><span id="interCount"></span>元</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">储值支付</legend>
+            <div class="layui-field-box">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">当班储值收入</div>
+                        <div class="h-cols"><span id="storeIncome"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">当班储值支出</div>
+                        <div class="h-cols"><span id="storeOut"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">当班储值合计</div>
+                        <div class="h-cols"><span id="storeCount"></span>元</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">会员卡售卖</legend>
+            <div class="layui-field-box">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">数量</div>
+                        <div class="h-cols"><span id="memberCart"></span>张</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="text-align: center">实物交接</legend>
+            <div class="layui-field-box">
+                <div class="h-main">
+                    <div class="h-rows">
+                        <div class="h-cols">当前现金备用金</div>
+                        <div class="h-cols"><span id="thisPettyCash"></span>元</div>
+                    </div>
+                    <div class="h-rows">
+                        <div class="h-cols">当前制卡数</div>
+                        <div class="h-cols"><span id="thisMakeNumber"></span></div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="h-btn" id="h-btn" style="display:none;">
+            <button class="layui-btn" id="handoverBtn">去登录</button>
+        </div>
+    </div>
+</fieldset>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'jquery', 'layer'], function () {
+        var element = layui.element, $ = jQuery = layui.$, handover = {}, state= 0;
+        renderReport($)
+        $(function () {
+            state = parseInt(getUrl('s'));
+            if(state==1){
+                $('#h-btn').css('display', 'block')
+            }
+            handover = JSON.parse(sessionStorage.getItem('handover'));
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+            pageInfo();
+        });
+
+        //初始化信息
+        function pageInfo() {
+            if(state == 2){
+                $('#operator_user').css('display', 'none');
+                $('#time').css('display', 'none');
+                $('.h-title:first').text('交班统计');
+            }
+            for(var item in handover){
+                if(typeof handover[item] === 'object'){
+                    $('#'+item).text(DateToLStr(new Date(handover[item].time)));
+                    continue;
+                }
+                $('#'+item).text(handover[item]);
+            }
+        }
+
+        $('#handoverBtn').on('click', function () {
+            location.href = 'login.html'
+        });
+
+    });
+</script>
+</body>
+</html>

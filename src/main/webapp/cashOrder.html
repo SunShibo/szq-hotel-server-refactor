@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>现金订单管理</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="//t.cn/RCzsdCq" class="layui-nav-img">唐吉坷德</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="layui-form">
+    <div class="layui-form-item tab-box" style="padding: 10px;">
+        <label class="layui-form-label">起止时间</label>
+        <div class="layui-input-inline">
+            <input type="text" name="startTime" autocomplete="off" class="layui-input inline-input"
+                   id="startTime"
+                   placeholder="开始时间">
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" name="endTime" autocomplete="off" class="layui-input inline-input"
+                   id="endTime"
+                   placeholder="结束时间">
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" name="mate" placeholder="订单号/消费方式/操作员" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
+        </div>
+    </div>
+</form>
+<div class="tab-box">
+    <table id="cashOrder" lay-filter="cashOrder" class="layui-table"></table>
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="print">打印</a>
+</script>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'jquery', 'table', 'laydate'], function () {
+        var form = layui.form, $ = layui.$, table = layui.table, laydate = layui.laydate;
+        renderReport($)
+        $(function () {
+            setInterval(function () {
+                getReport($)
+            }, 60000)
+        });
+
+        var start = laydate.render({
+            elem: '#startTime',
+            type: 'datetime',
+            done: function (value, date) {
+
+                end.config.min = date;
+                end.config.min.month = date.month - 1;
+            },
+            change: function (value, date, endDate) {
+                var timestamp2 = Date.parse(new Date(value));
+                timestamp2 = timestamp2 / 1000;
+                end.config.min = timestamp2;
+                end.config.min.month = date.month - 1;
+            }
+        });
+        var end = laydate.render({
+            elem: '#endTime',
+            type: 'datetime',
+            done: function (value, date) {
+                if (!$.trim(value)) {
+                    var curDate = new Date();
+                    date = {
+                        'date': curDate.getDate(),
+                        'month': curDate.getMonth() + 1,
+                        'year': curDate.getFullYear()
+                    };
+                }
+                start.config.max = date;
+                start.config.max.month = date.month - 1;
+            }
+        });
+
+        //监听工具条
+        table.on('tool(cashOrder)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if(layEvent === 'print'){ //打印
+                //do somehing
+                window.open('shopPrinting.html?id=' + data.id, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
+            }
+        });
+
+
+
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            // layer.msg(JSON.stringify(data.field));
+            if (data.field.startTime && !data.field.endTime || !data.field.startTime && data.field.endTime) {
+                showMsg('起止时间不有为空', 2, false);
+                return false
+            }
+            var obj = {};
+            if (data.field.startTime) {
+                obj.startTime = new Date(data.field.startTime.replace(/-/, "/").replace(/-/, "/"))
+            }
+            if (data.field.endTime) {
+                obj.endTime = new Date(data.field.endTime.replace(/-/, "/").replace(/-/, "/"))
+            }
+            if(data.field.mate){
+                obj.mate = data.field.mate;
+            }
+            tab.reload({
+                where: obj
+            });
+            return false;
+        });
+
+        //第一个实例
+        var tab = table.render({
+            elem: '#cashOrder'
+            , method: 'POST'
+            , url: api.cashInfo //数据接口
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.cashAccountBOs //解析数据列表
+                }
+            }
+            , page: true //开启分页
+            , cols: [[ //表头
+                {field: 'orderNum', title: '订单号', align: 'center'}
+                , {
+                    field: 'createTime', title: '支付时间', align: 'center', templet: function (data) {
+                        return DateToLStr(new Date(data.createTime.time))
+                    }
+                }
+                , {
+                    field: 'state', title: '支付方式', align: 'center', templet: function (data) {
+                        switch (data.state) {
+                            case '':
+                            case 0:
+                                return '';
+                            case 1:
+                                return '现金';
+                            case 2:
+                                return 'POS';
+                            case 3:
+                                return '其他支付';
+                            case 4:
+                                return '积分支付';
+                            case 5:
+                                return '储值支付';
+                        }
+                    }
+                }
+                , {
+                    field: 'type', title: '消费方式', align: 'center', templet: function (data) {
+                        switch (data.type) {
+                            case '':
+                            case 0:
+                                return '';
+                            case "1":
+                                return '商品';
+                            case "2":
+                                return '赔偿';
+                            case "3":
+                                return '会员卡'
+                        }
+                    }
+                }
+                , {field: 'price', title: '交易金额', align: 'center'}
+                , {field: 'operator', title: '操作员', align: 'center'}
+                , {field: 'info', title: '消费详情', align: 'center'}
+                , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barDemo'}
+            ]]
+        });
+    });
+</script>
+</body>
+</html>

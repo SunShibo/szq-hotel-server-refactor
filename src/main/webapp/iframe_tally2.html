@@ -1,0 +1,75 @@
+<!DOCTYPE html><!--  客账管理消费项目转账使用-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客账管理消费项目转账</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">房间号</label>
+        <div class="layui-input-block">
+            <input type="text" name="roomNum" required lay-verify="required" placeholder="请输入房间号" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item" style="color:#ff0000;line-height: 38px">
+        <label class="layui-form-label">提示</label>
+        <div class="layui-input-block">
+            请输入在住房间号！
+        </div>
+    </div>
+    <div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData">生效</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+            var form = layui.form, $ = layui.$;
+
+        $('#back').on('click', function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            $.ajax({
+                url: api.queryOrderByRoom,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    name: data.field.roomNum
+                },
+                success: function (rs) {
+                    if (rs.success) {
+                        sessionStorage.setItem('tallyInfo2', JSON.stringify(rs.data));
+                        var uu = 'iframe_tallyInfo2.html?v='+Date.now()+'&ids='+getUrl("ids")+"&oldId="+getUrl("oldId")
+                        parent.layer.open({
+                            type: 2,
+                            skin: 'demo-class',
+                            area: ['500px', '300px'],
+                            title: '消费项目转账',
+                            shade: 0.6,
+                            shadeClose: true,
+                            content: uu,
+                            end: function () {
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                            }
+                        });
+                    } else {
+                        showMsg(rs.errMsg, 2, false);
+                    }
+                }
+            })
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

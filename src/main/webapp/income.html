@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>营收报表</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu">
+
+
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"><img src="" class="layui-nav-img"></a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 60px;"></div>
+<form class="layui-form" style="padding-top: 10px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">起止时间</label>
+        <div class="layui-input-inline" style="width: 165px;">
+            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
+                   class="layui-input inline-input"
+                   placeholder="时间">
+        </div>
+        <div class="layui-input-inline">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
+        </div>
+    </div>
+</form>
+<div class="tab-box">
+    <table id="residentStatement" lay-filter="residentStatement" class="layui-table"></table>
+</div>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'element', 'form', 'laydate'], function () {
+        var table = layui.table, $ = layui.$, form = layui.form, state = 0, laydate = layui.laydate;
+        //监听提交
+        form.on('submit(formData)', function (data) {
+            resultInfo();
+            return false;
+        });
+        // $(function () {
+        //     state = parseInt(getUrl('s'));
+        //     resultInfo()
+        // });
+
+        //获取
+        function resultInfo() {
+            var obj = {
+                date:$("#startTime").val().replace(/-/g, "/")+" 04:00:00"
+            };
+            $.ajax({
+                url: '/statement/getBusiness',
+                type: 'POST',
+                data: obj,
+                dataType: 'json',
+                success: function (data) {
+                    formatData(data.data)
+                }
+            })
+        }
+
+        function formatData(data) {
+
+            tab.reload({data: JSON.parse(JSON.stringify(data))});
+        }
+
+        var tab = table.render({
+            elem: '#residentStatement' //指定原始表格元素选择器（推荐id选择器）
+            , limit: 10000
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.statement //解析数据列表
+                };
+            }
+            , even: true
+            , loading: true // 是否显示加载条
+            , title: '营收报表'
+            , done: function (res, curr, count) {
+                $(".layui-table-tool-temp").html('<p style="text-align: center">营收报表</p>');
+            }
+            , toolbar: true
+            , cols: [[ //标题栏
+                {field: 'project', align: 'center', title: '营业项目', rowspan: 2} //rowspan即纵向跨越的单元格数
+                ,{align: 'center', title: '本年实际情况', colspan: 4}
+                , {align: 'center', title: '去年同期', colspan: 4}
+
+            ], [
+                {field: 'thisYearThisPrice', align: 'center', title: '当日'}
+                , {field: 'thisYearThisMonth', align: 'center', title: '月累计'}
+                , {field: 'thisYearThisLastMonth', align: 'center', title: '上月累计'}
+                , {field: 'thisYearThisYear', align: 'center', title: '年累计'}
+                ,{field: 'lastYearThisMonth', align: 'center', title: '月累计'}
+                , {field: 'lastYearMonthDifferences', align: 'center', title: '月差异'}
+                , {field: 'lastYearThisYear', align: 'center', title: '年累计'}
+                , {field: 'lastYearDifferencesIn', align: 'center', title: '年差异'}
+            ]]
+        });
+
+        laydate.render({
+            elem: '#startTime',
+            type: 'date',
+            btns: ['confirm']
+        });
+    });
+
+</script>
+</body>
+</html>
