@@ -1,10 +1,15 @@
 package com.szq.hotel.entity.bo;
 
+import com.szq.hotel.entity.bo.common.base.BaseModel;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MenuBO {
+/**
+ * 菜单信息
+ */
+public class MenuBO extends BaseModel {
     private Integer id; // 菜单
 
     private String menuName; // 菜单名称

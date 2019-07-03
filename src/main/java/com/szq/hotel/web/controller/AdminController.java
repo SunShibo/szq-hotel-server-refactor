@@ -55,22 +55,14 @@ public class AdminController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-
         adminBO.setPassword("");
-        //该用户的所有菜单
-        List<MenuBO> roleMenuSuccess = adminService.getRoleMenuSuccess(adminBO.getRoleId());
-
         String uuid = UUID.randomUUID().toString();
         //登陆客户信息放入Redis缓存
         super.putLoginAdmin(uuid,adminBO);
         //uuid 存入cookie
         super.setCookie(response, SysConstants.CURRENT_LOGIN_CLIENT_ID, uuid, 60*60*24);
 
-        Map<String,Object>  resultMap=new HashMap<String, Object>();
-        resultMap.put("menu",roleMenuSuccess);
-        resultMap.put("admin",adminBO);
-
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(adminBO)) ;
         super.safeJsonPrint(response, result);
         return;
     }
@@ -132,12 +124,6 @@ public class AdminController extends BaseCotroller {
         if(loginAdmin==null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
-            return ;
-        }
-        //验证参数
-        if(userId==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
-            super.safeJsonPrint(response , result);
             return ;
         }
         //查询信息
@@ -215,7 +201,15 @@ public class AdminController extends BaseCotroller {
         //验证手机号
         Map<String,Object> map=new HashMap<String, Object>();
         map.put("userId",param.getId());
-        String oldMobile=adminService.getAdminByCond(map).get(0).getMobile();
+        map.put("pageNo",0);
+        map.put("pageSize",1);
+        List<AdminBO> adminBOS=adminService.getAdminByCond(map);
+        if(adminBOS==null||adminBOS.size()==0){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response , result);
+            return;
+        }
+        String oldMobile=adminBOS.get(0).getMobile();
         //不等于旧手机号则验证是否重复
         if(!param.getMobile().equals(oldMobile)){
             int count = adminService.selectCountByMobile(param.getMobile());
@@ -292,10 +286,13 @@ public class AdminController extends BaseCotroller {
             return ;
         }
         //创建角色 返回角色id
-        Integer roleId=adminService.addRole(roleName);
+        RoleBO roleBO=new RoleBO();
+        roleBO.setRoleName(roleName);
+        adminService.addRole(roleBO);
+        System.err.println(roleBO.getId());
         //添加权限
         Integer[] menuIdArr= JsonUtils.getIntegerArray4Json(menuIds);
-        adminService.addRoleMenu(roleId,menuIdArr);
+        adminService.addRoleMenu(roleBO.getId(),menuIdArr);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加成功")) ;
         super.safeJsonPrint(response , result);
 
@@ -406,7 +403,8 @@ public class AdminController extends BaseCotroller {
             return;
         }
         //删除成功
-        adminService.delRoleById(roleIds);
+        Integer[] roleIdArr=JsonUtils.getIntegerArray4Json(roleIds);
+        adminService.delRoleById(roleIdArr);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("删除成功")) ;
         super.safeJsonPrint(response, result);
 

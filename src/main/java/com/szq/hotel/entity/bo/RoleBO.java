@@ -1,19 +1,37 @@
 package com.szq.hotel.entity.bo;
 
 
+import com.szq.hotel.entity.bo.common.base.BaseModel;
+
 import java.util.Date;
 import java.util.List;
-
-public class RoleBO {
+/**
+ * 角色信息
+ */
+public class RoleBO extends BaseModel {
     private Integer id; // 角色
-
     private String roleName; //角色名称
     private Integer createUserId;//创建时间
     private Integer updateUserId;//修改时间
     private Date createTime; //创建时间按
     private Date updateTime; // 修改时间
-
     private List<MenuBO> menus;//该角色拥有的菜单权限
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 
     public Integer getCreateUserId() {
         return createUserId;
@@ -29,30 +47,6 @@ public class RoleBO {
 
     public void setUpdateUserId(Integer updateUserId) {
         this.updateUserId = updateUserId;
-    }
-
-    public List<MenuBO> getMenus() {
-        return menus;
-    }
-
-    public void setMenus(List<MenuBO> menus) {
-        this.menus = menus;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName == null ? null : roleName.trim();
     }
 
     public Date getCreateTime() {
@@ -71,14 +65,11 @@ public class RoleBO {
         this.updateTime = updateTime;
     }
 
+    public List<MenuBO> getMenus() {
+        return menus;
+    }
 
-    @Override
-    public String toString() {
-        return "RoleBO{" +
-                "id=" + id +
-                ", roleName='" + roleName + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                '}';
+    public void setMenus(List<MenuBO> menus) {
+        this.menus = menus;
     }
 }

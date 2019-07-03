@@ -3,7 +3,6 @@ package com.szq.hotel.dao;
 import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.MenuBO;
 import com.szq.hotel.entity.bo.RoleBO;
-import com.szq.hotel.entity.dto.AdminDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,7 +12,6 @@ public interface AdminDAO {
 
     /**
      * 通过手机号查找管理员信息
-     *
      * @param mobile
      * @return UserDO
      */
@@ -21,7 +19,6 @@ public interface AdminDAO {
 
     /**
      * 注册管理员信息
-     *
      * @param admin
      * @return
      */
@@ -29,7 +26,6 @@ public interface AdminDAO {
 
     /**
      * 判断角色名是否注册过
-     *
      * @param roleName 角色名称
      * @return
      */
@@ -37,7 +33,6 @@ public interface AdminDAO {
 
     /**
      * 查找用户手机号是否注册过
-     *
      * @param mobile
      * @return
      */
@@ -45,26 +40,24 @@ public interface AdminDAO {
 
     /**
      * 添加角色信息
-     *
-     * @param roleName
+     * @param roleBO
      * @return 返回注册后的id
      */
-    int addRole(String roleName);
+    Integer addRole(RoleBO roleBO);
 
     /**
      * 查询所有角色
-     *
      * @return 所有角色
      */
     List<RoleBO> getRoleList();
 
     /**
-     * wy根据角色id查询菜单信息
+     * 根据角色id查询菜单信息
      * @return 所有权限
      */
     List<MenuBO> getMenuByRoleId(Integer roleId);
 
-    /**wy
+    /**
      * 向角色权限表中添加数据
      * @param roleId 角色id
      * @param menuIdArr 菜单id数组
@@ -72,31 +65,27 @@ public interface AdminDAO {
      */
     int addRoleMenu(@Param("roleId") Integer roleId, @Param("menuIdArr") Integer[] menuIdArr);
     /**
-     * wy
      * 根据角色姓名 查询角色信息
      * 角色姓名为null 查询所有
      * @param roleName
      * @return
      */
-    List<RoleBO> getRoleByName(String roleName);
+    List<RoleBO> getRoleByName(@Param("roleName") String roleName);
 
     /**
-     * wy
      * 根据角色id 查询角色信息
-     * @param id
+     * @param roleId
      * @return
      */
-    RoleBO getRoleById(Integer id);
+    RoleBO getRoleById(@Param("roleId") Integer roleId);
 
     /**
      * 根据角色id删除角色信息
-     *
-     * @param roleId 角色id
+     * @param roleIds 角色id
      */
-    boolean delRoleById(Integer roleId);
+    boolean delRoleById(@Param("roleIds")Integer[] roleIds);
 
     /**
-     * wy
      * 批量删除
      * 根据用户id删除用户信息
      * @param idArr 用户id
@@ -105,22 +94,13 @@ public interface AdminDAO {
     boolean delAdminById(@Param("idArr") Integer[] idArr);
 
     /**
-     * 查询用户信息
-     *
-     * @param map
-     * @return
-     */
-    List<AdminDTO> getAdmin(Map<String, Object> map);
-
-    /**
-     * 根据角色id删除对应的权限
-     *
+     * 根据角色id删除对应的所有权限
      * @param roleId
      */
     void delRoleMenuByRoleId(Integer roleId);
 
 
-    //wy查询角色下是否有用户
+    //查询角色下是否有用户
     int checkRoleUser(Integer roleId);
 
     /**

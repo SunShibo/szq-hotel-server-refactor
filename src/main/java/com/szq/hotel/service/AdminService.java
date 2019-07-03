@@ -6,13 +6,13 @@ import com.szq.hotel.dao.AdminDAO;
 import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.MenuBO;
 import com.szq.hotel.entity.bo.RoleBO;
-import com.szq.hotel.entity.dto.AdminDTO;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.MD5Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.management.relation.Role;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +49,6 @@ public class AdminService {
         return adminBO;
     }
 
-
     /**
      * 管理员注册
      *
@@ -66,7 +65,7 @@ public class AdminService {
 
 
     /**
-     * wy
+     *
      * 判断角色名称是否注册过
      *
      * @param roleName
@@ -99,11 +98,11 @@ public class AdminService {
     /**
      * 添加角色信息
      *
-     * @param roleName
-     * @return 返回受影响的行数
+     * @param roleBO
+     * @return 返回角色id
      */
-    public int addRole(String roleName) {
-        return adminDAO.addRole(roleName);
+    public Integer addRole(RoleBO roleBO) {
+        return adminDAO.addRole(roleBO);
     }
 
     /**
@@ -114,7 +113,7 @@ public class AdminService {
         return adminDAO.getRoleList();
     }
     /**
-     * wy
+     *
      * 查询角色下是否有用户
      */
     public Integer checkRoleUser(String roleIds) {
@@ -174,24 +173,13 @@ public class AdminService {
         return adminDAO.addRoleMenu(roleId, menuIdArr);
     }
 
-
-
     /**
      * 根据角色id删除角色
      *
      * @param roleIds 角色id
      */
-    public boolean delRoleById(String roleIds) {
-        boolean status = roleIds.contains(",");
-        if (status) {
-            String[] ids = roleIds.split(",");
-            for (String id : ids) {
-                adminDAO.delRoleById(Integer.parseInt(id));
-            }
-        } else {
-            adminDAO.delRoleById(Integer.parseInt(roleIds));
-        }
-        return true;
+    public boolean delRoleById(Integer[] roleIds) {
+        return adminDAO.delRoleById(roleIds);
     }
 
 
@@ -231,20 +219,12 @@ public class AdminService {
      * @return 是否修改成功
      */
     public boolean updateAdminUser(AdminBO param) {
+        //加密密码
+        param.setPassword(MD5Util.digest(param.getPassword()));
         return adminDAO.updateAdminUser(param) > 0;
     }
 
     /**
-     * 查询admin用户信息
-     * @param map
-     * @return
-     */
-    public List<AdminDTO> getAdmin(Map<String, Object> map) {
-        return adminDAO.getAdmin(map);
-    }
-
-    /**
-     * wy
      * 根据角色id修改角色名称
      *
      * @param roleId   角色id
@@ -255,7 +235,7 @@ public class AdminService {
     }
 
     /**
-     * wy查询角色对应的菜单
+     * 查询角色对应的菜单
      * @param roleName 角色名称 为null查询所有
      * @return
      */
@@ -270,30 +250,6 @@ public class AdminService {
         return roleList;
     }
 
-
-    /**
-     * wy
-     * 根据当前登陆用户的角色id查询对应的权限
-     * @param roleId 角色id
-     * @return 登陆用户对应的权限
-     */
-    public List<MenuBO> getRoleMenuSuccess(Integer roleId) {
-        List<MenuBO> menuBOS = adminDAO.getMenuByRoleId(roleId);
-        if (menuBOS != null && menuBOS.size() > 0) {
-            for (int i = 0; i < menuBOS.size(); i++) {
-                MenuBO menuBO = menuBOS.get(i);
-                for (int x = 0; x < menuBOS.size(); x++) {
-                    if (menuBO.getPid().equals(menuBOS.get(x).getId())) {
-                        menuBOS.get(x).getCh().add(menuBO);
-                        menuBOS.remove(i);
-                        --i;
-                        break;
-                    }
-                }
-            }
-        }
-        return menuBOS;
-    }
 
 
 

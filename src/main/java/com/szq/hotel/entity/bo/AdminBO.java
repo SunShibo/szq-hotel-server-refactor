@@ -1,13 +1,12 @@
 package com.szq.hotel.entity.bo;
 
-import com.sun.jmx.snmp.SnmpInt;
 import com.szq.hotel.entity.bo.common.base.BaseModel;
 
 import java.util.Date;
 import java.util.Set;
 
 /**
- * Created by hexiaowen on 2018/11/5.
+ * 管理员信息
  */
 public class AdminBO extends BaseModel {
 
