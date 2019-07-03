@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class UserDO extends BaseModel implements Serializable {
 
-		/**冻结状态*/
+	    /**冻结状态*/
 		public static final String STATUS_FREEZE = "status_freeze" ;
 		/**正常状态*/
 		public static final String STATUS_NORMAL = "status_normal" ;
