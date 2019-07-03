@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szq.hotel.dao.HouseTypeDAO" >
+  <resultMap id="BaseResultMap" type="com.szq.hotel.entity.bo.HouseTypeBO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="time_price" property="timePrice" jdbcType="DOUBLE" />
+    <result column="type_price" property="typePrice" jdbcType="DOUBLE" />
+    <result column="hotel_id" property="hotelId" jdbcType="INTEGER" />
+    <result column="house_type_main_id" property="houseTypeMainId" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="floor" property="floor" jdbcType="VARCHAR" />
+    <result column="smoking_policy" property="smokingPolicy" jdbcType="VARCHAR" />
+    <result column="window" property="window" jdbcType="VARCHAR" />
+    <result column="tenantable" property="tenantable" jdbcType="VARCHAR" />
+    <result column="bed_type" property="bedType" jdbcType="VARCHAR" />
+    <result column="wifi" property="wifi" jdbcType="VARCHAR" />
+    <result column="meals" property="meals" jdbcType="VARCHAR" />
+    <result column="bath" property="bath" jdbcType="VARCHAR" />
+    <result column="expense_policy" property="expensePolicy" jdbcType="VARCHAR" />
+    <result column="amenities" property="amenities" jdbcType="VARCHAR" />
+    <result column="media_technology" property="mediaTechnology" jdbcType="VARCHAR" />
+    <result column="food_diet" property="foodDiet" jdbcType="VARCHAR" />
+    <result column="filtrateBedType" property="filtratebedtype" jdbcType="INTEGER" />
+    <result column="breakfast_type" property="breakfastType" jdbcType="INTEGER" />
+    <result column="broadband" property="broadband" jdbcType="INTEGER" />
+    <result column="pay_state" property="payState" jdbcType="INTEGER" />
+    <result column="sales_type" property="salesType" jdbcType="INTEGER" />
+    <result column="if_cancel" property="ifCancel" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.szq.hotel.entity.bo.HouseTypeBO" extends="BaseResultMap" >
+    <result column="policy_service" property="policyService" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, time_price, type_price, hotel_id, house_type_main_id, level, area, floor, 
+    smoking_policy, window, tenantable, bed_type, wifi, meals, bath, expense_policy, 
+    amenities, media_technology, food_diet, filtrateBedType, breakfast_type, broadband, 
+    pay_state, sales_type, if_cancel
+  </sql>
+  <sql id="Blob_Column_List" >
+    policy_service
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from hm_house_type
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hm_house_type
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.szq.hotel.entity.bo.HouseTypeBO" >
+    insert into hm_house_type (id, name, time_price, 
+      type_price, hotel_id, house_type_main_id, 
+      level, area, floor, 
+      smoking_policy, window, tenantable, 
+      bed_type, wifi, meals, 
+      bath, expense_policy, amenities, 
+      media_technology, food_diet, filtrateBedType, 
+      breakfast_type, broadband, pay_state, 
+      sales_type, if_cancel, policy_service
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{timePrice,jdbcType=DOUBLE}, 
+      #{typePrice,jdbcType=DOUBLE}, #{hotelId,jdbcType=INTEGER}, #{houseTypeMainId,jdbcType=INTEGER}, 
+      #{level,jdbcType=INTEGER}, #{area,jdbcType=VARCHAR}, #{floor,jdbcType=VARCHAR}, 
+      #{smokingPolicy,jdbcType=VARCHAR}, #{window,jdbcType=VARCHAR}, #{tenantable,jdbcType=VARCHAR}, 
+      #{bedType,jdbcType=VARCHAR}, #{wifi,jdbcType=VARCHAR}, #{meals,jdbcType=VARCHAR}, 
+      #{bath,jdbcType=VARCHAR}, #{expensePolicy,jdbcType=VARCHAR}, #{amenities,jdbcType=VARCHAR}, 
+      #{mediaTechnology,jdbcType=VARCHAR}, #{foodDiet,jdbcType=VARCHAR}, #{filtratebedtype,jdbcType=INTEGER}, 
+      #{breakfastType,jdbcType=INTEGER}, #{broadband,jdbcType=INTEGER}, #{payState,jdbcType=INTEGER}, 
+      #{salesType,jdbcType=INTEGER}, #{ifCancel,jdbcType=INTEGER}, #{policyService,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.szq.hotel.entity.bo.HouseTypeBO" >
+    insert into hm_house_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="timePrice != null" >
+        time_price,
+      </if>
+      <if test="typePrice != null" >
+        type_price,
+      </if>
+      <if test="hotelId != null" >
+        hotel_id,
+      </if>
+      <if test="houseTypeMainId != null" >
+        house_type_main_id,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="floor != null" >
+        floor,
+      </if>
+      <if test="smokingPolicy != null" >
+        smoking_policy,
+      </if>
+      <if test="window != null" >
+        window,
+      </if>
+      <if test="tenantable != null" >
+        tenantable,
+      </if>
+      <if test="bedType != null" >
+        bed_type,
+      </if>
+      <if test="wifi != null" >
+        wifi,
+      </if>
+      <if test="meals != null" >
+        meals,
+      </if>
+      <if test="bath != null" >
+        bath,
+      </if>
+      <if test="expensePolicy != null" >
+        expense_policy,
+      </if>
+      <if test="amenities != null" >
+        amenities,
+      </if>
+      <if test="mediaTechnology != null" >
+        media_technology,
+      </if>
+      <if test="foodDiet != null" >
+        food_diet,
+      </if>
+      <if test="filtratebedtype != null" >
+        filtrateBedType,
+      </if>
+      <if test="breakfastType != null" >
+        breakfast_type,
+      </if>
+      <if test="broadband != null" >
+        broadband,
+      </if>
+      <if test="payState != null" >
+        pay_state,
+      </if>
+      <if test="salesType != null" >
+        sales_type,
+      </if>
+      <if test="ifCancel != null" >
+        if_cancel,
+      </if>
+      <if test="policyService != null" >
+        policy_service,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="timePrice != null" >
+        #{timePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="typePrice != null" >
+        #{typePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="hotelId != null" >
+        #{hotelId,jdbcType=INTEGER},
+      </if>
+      <if test="houseTypeMainId != null" >
+        #{houseTypeMainId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null" >
+        #{floor,jdbcType=VARCHAR},
+      </if>
+      <if test="smokingPolicy != null" >
+        #{smokingPolicy,jdbcType=VARCHAR},
+      </if>
+      <if test="window != null" >
+        #{window,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantable != null" >
+        #{tenantable,jdbcType=VARCHAR},
+      </if>
+      <if test="bedType != null" >
+        #{bedType,jdbcType=VARCHAR},
+      </if>
+      <if test="wifi != null" >
+        #{wifi,jdbcType=VARCHAR},
+      </if>
+      <if test="meals != null" >
+        #{meals,jdbcType=VARCHAR},
+      </if>
+      <if test="bath != null" >
+        #{bath,jdbcType=VARCHAR},
+      </if>
+      <if test="expensePolicy != null" >
+        #{expensePolicy,jdbcType=VARCHAR},
+      </if>
+      <if test="amenities != null" >
+        #{amenities,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaTechnology != null" >
+        #{mediaTechnology,jdbcType=VARCHAR},
+      </if>
+      <if test="foodDiet != null" >
+        #{foodDiet,jdbcType=VARCHAR},
+      </if>
+      <if test="filtratebedtype != null" >
+        #{filtratebedtype,jdbcType=INTEGER},
+      </if>
+      <if test="breakfastType != null" >
+        #{breakfastType,jdbcType=INTEGER},
+      </if>
+      <if test="broadband != null" >
+        #{broadband,jdbcType=INTEGER},
+      </if>
+      <if test="payState != null" >
+        #{payState,jdbcType=INTEGER},
+      </if>
+      <if test="salesType != null" >
+        #{salesType,jdbcType=INTEGER},
+      </if>
+      <if test="ifCancel != null" >
+        #{ifCancel,jdbcType=INTEGER},
+      </if>
+      <if test="policyService != null" >
+        #{policyService,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szq.hotel.entity.bo.HouseTypeBO" >
+    update hm_house_type
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="timePrice != null" >
+        time_price = #{timePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="typePrice != null" >
+        type_price = #{typePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="hotelId != null" >
+        hotel_id = #{hotelId,jdbcType=INTEGER},
+      </if>
+      <if test="houseTypeMainId != null" >
+        house_type_main_id = #{houseTypeMainId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null" >
+        floor = #{floor,jdbcType=VARCHAR},
+      </if>
+      <if test="smokingPolicy != null" >
+        smoking_policy = #{smokingPolicy,jdbcType=VARCHAR},
+      </if>
+      <if test="window != null" >
+        window = #{window,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantable != null" >
+        tenantable = #{tenantable,jdbcType=VARCHAR},
+      </if>
+      <if test="bedType != null" >
+        bed_type = #{bedType,jdbcType=VARCHAR},
+      </if>
+      <if test="wifi != null" >
+        wifi = #{wifi,jdbcType=VARCHAR},
+      </if>
+      <if test="meals != null" >
+        meals = #{meals,jdbcType=VARCHAR},
+      </if>
+      <if test="bath != null" >
+        bath = #{bath,jdbcType=VARCHAR},
+      </if>
+      <if test="expensePolicy != null" >
+        expense_policy = #{expensePolicy,jdbcType=VARCHAR},
+      </if>
+      <if test="amenities != null" >
+        amenities = #{amenities,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaTechnology != null" >
+        media_technology = #{mediaTechnology,jdbcType=VARCHAR},
+      </if>
+      <if test="foodDiet != null" >
+        food_diet = #{foodDiet,jdbcType=VARCHAR},
+      </if>
+      <if test="filtratebedtype != null" >
+        filtrateBedType = #{filtratebedtype,jdbcType=INTEGER},
+      </if>
+      <if test="breakfastType != null" >
+        breakfast_type = #{breakfastType,jdbcType=INTEGER},
+      </if>
+      <if test="broadband != null" >
+        broadband = #{broadband,jdbcType=INTEGER},
+      </if>
+      <if test="payState != null" >
+        pay_state = #{payState,jdbcType=INTEGER},
+      </if>
+      <if test="salesType != null" >
+        sales_type = #{salesType,jdbcType=INTEGER},
+      </if>
+      <if test="ifCancel != null" >
+        if_cancel = #{ifCancel,jdbcType=INTEGER},
+      </if>
+      <if test="policyService != null" >
+        policy_service = #{policyService,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.szq.hotel.entity.bo.HouseTypeBO" >
+    update hm_house_type
+    set name = #{name,jdbcType=VARCHAR},
+      time_price = #{timePrice,jdbcType=DOUBLE},
+      type_price = #{typePrice,jdbcType=DOUBLE},
+      hotel_id = #{hotelId,jdbcType=INTEGER},
+      house_type_main_id = #{houseTypeMainId,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      area = #{area,jdbcType=VARCHAR},
+      floor = #{floor,jdbcType=VARCHAR},
+      smoking_policy = #{smokingPolicy,jdbcType=VARCHAR},
+      window = #{window,jdbcType=VARCHAR},
+      tenantable = #{tenantable,jdbcType=VARCHAR},
+      bed_type = #{bedType,jdbcType=VARCHAR},
+      wifi = #{wifi,jdbcType=VARCHAR},
+      meals = #{meals,jdbcType=VARCHAR},
+      bath = #{bath,jdbcType=VARCHAR},
+      expense_policy = #{expensePolicy,jdbcType=VARCHAR},
+      amenities = #{amenities,jdbcType=VARCHAR},
+      media_technology = #{mediaTechnology,jdbcType=VARCHAR},
+      food_diet = #{foodDiet,jdbcType=VARCHAR},
+      filtrateBedType = #{filtratebedtype,jdbcType=INTEGER},
+      breakfast_type = #{breakfastType,jdbcType=INTEGER},
+      broadband = #{broadband,jdbcType=INTEGER},
+      pay_state = #{payState,jdbcType=INTEGER},
+      sales_type = #{salesType,jdbcType=INTEGER},
+      if_cancel = #{ifCancel,jdbcType=INTEGER},
+      policy_service = #{policyService,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szq.hotel.entity.bo.HouseTypeBO" >
+    update hm_house_type
+    set name = #{name,jdbcType=VARCHAR},
+      time_price = #{timePrice,jdbcType=DOUBLE},
+      type_price = #{typePrice,jdbcType=DOUBLE},
+      hotel_id = #{hotelId,jdbcType=INTEGER},
+      house_type_main_id = #{houseTypeMainId,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      area = #{area,jdbcType=VARCHAR},
+      floor = #{floor,jdbcType=VARCHAR},
+      smoking_policy = #{smokingPolicy,jdbcType=VARCHAR},
+      window = #{window,jdbcType=VARCHAR},
+      tenantable = #{tenantable,jdbcType=VARCHAR},
+      bed_type = #{bedType,jdbcType=VARCHAR},
+      wifi = #{wifi,jdbcType=VARCHAR},
+      meals = #{meals,jdbcType=VARCHAR},
+      bath = #{bath,jdbcType=VARCHAR},
+      expense_policy = #{expensePolicy,jdbcType=VARCHAR},
+      amenities = #{amenities,jdbcType=VARCHAR},
+      media_technology = #{mediaTechnology,jdbcType=VARCHAR},
+      food_diet = #{foodDiet,jdbcType=VARCHAR},
+      filtrateBedType = #{filtratebedtype,jdbcType=INTEGER},
+      breakfast_type = #{breakfastType,jdbcType=INTEGER},
+      broadband = #{broadband,jdbcType=INTEGER},
+      pay_state = #{payState,jdbcType=INTEGER},
+      sales_type = #{salesType,jdbcType=INTEGER},
+      if_cancel = #{ifCancel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="queryHouseTypeList" resultType="com.szq.hotel.entity.bo.HouseTypeBO">
+    select * from hm_house_type
+    <where>
+      <if test="id != null">
+        id = #{id}
+      </if>
+      and level = '1'
+    </where>
+  </select>
+
+  <update id="updateLevel">
+    update hm_house_type set level = '0' where id = #{id}
+</update>
+</mapper>

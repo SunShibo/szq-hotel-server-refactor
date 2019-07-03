@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 public class SysConstants {
     /**所有权限*/
     public static final String ALL_PERMISSION = "all_permission";
-
     //静态资源文件夹
     public static final String OSS_FOLDER_STATIC = "static/";
     //JS文件夹
