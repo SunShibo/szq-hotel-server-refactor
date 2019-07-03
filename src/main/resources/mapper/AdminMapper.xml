@@ -6,8 +6,8 @@
 <mapper namespace="com.szq.hotel.dao.AdminDAO">
     <!--根据手机号查找管理员信息-->
     <select id="queryAdminInfoByMobile" parameterType="String" resultType="com.szq.hotel.entity.bo.AdminBO">
-        select admin.*,role.id as  roleId  ,role.role_name as roleName
-            from  admin left  join role  on  role.id=admin.role_id     where   mobile =  #{mobile}
+        select hm_admin.*,hm_role.id as  roleId
+            from  hm_admin left  join hm_role  on  hm_role.id=hm_admin.role_id where mobile =  #{mobile}
     </select>
 
     <sql id="limit">
@@ -17,7 +17,7 @@
     <!--添加管理员信息(管理員注冊)-->
     <insert id="adminRegister" parameterType="com.szq.hotel.entity.bo.AdminBO" useGeneratedKeys="true"
             keyProperty="id">
-        insert into admin  set name = #{name},
+        insert into hm_admin  set name = #{name},
         mobile = #{mobile},
         password=#{password},
         create_time=now(),
@@ -28,24 +28,24 @@
 
     <!-- 查找角色名是否注册过  -->
     <select id="selectCountByRoleName" parameterType="String" resultType="Integer">
-        select count(role_name) from role where role_name = #{roleName}
+        select count(role_name) from hm_role where role_name = #{roleName}
     </select>
     <!-- 查找手机号是否注册过  -->
     <select id="selectCountByMobile" parameterType="String" resultType="int">
-       select count(id) from admin where mobile = #{mobile}
+       select count(id) from hm_admin where mobile = #{mobile}
     </select>
 
     <!-- 添加角色信息  -->
     <insert id="addRole" parameterType="com.szq.hotel.entity.bo.RoleBO"  useGeneratedKeys="true"
             keyProperty="id">
-        insert into role  set role_name = #{roleName},
+        insert into hm_role  set role_name = #{roleName},
         create_time=now(),
         update_time=now()
     </insert>
 
     <!-- 给角色赋予权限  -->
     <insert id="addRoleMenu">
-        insert into role_menu
+        insert into hm_role_menu
         (role_id,menu_id)
         values
         <foreach collection="menuIdArr" item="menuId" separator=",">
@@ -55,7 +55,7 @@
 
     <!--  根据角色id删除角色信息  -->
     <delete id="delRoleById" parameterType="Integer">
-        delete  from  role where
+        delete  from  hm_role where
         <foreach  collection="roleIds" item="roleId" separator="OR">
             id=#{roleId}
         </foreach>
@@ -63,21 +63,21 @@
 
     <!-- 下拉框展示 查询所有角色  -->
     <select id="getRoleList" resultType="com.szq.hotel.entity.bo.RoleBO">
-        SELECT id,role_name FROM role
+        SELECT id,role_name FROM hm_role
     </select>
 
     <!-- 根据角色id删除对应的所有权限  -->
     <delete id="delRoleMenuByRoleId" parameterType="Integer">
-        DELETE FROM role_menu WHERE role_id=#{roleId}
+        DELETE FROM hm_role_menu WHERE role_id=#{roleId}
     </delete>
 
     <!--查询角色下是否存在用户-->
     <select id="checkRoleUser"   parameterType="java.lang.Integer"  resultType="int">
-           SELECT count(id) FROM admin  WHERE  role_id =#{roleId}
+           SELECT count(id) FROM hm_admin  WHERE  role_id =#{roleId}
     </select>
     <!--根据角色id修改角色名称  -->
     <select id="updateRoleNameByRoleId">
-        UPDATE role SET
+        UPDATE hm_role SET
         <if test="roleName !=null and roleName!=''">
             role_name=#{roleName},
         </if>
@@ -85,21 +85,21 @@
     </select>
     <!--根据角色名称查询角色信息  -->
     <select id="getRoleByName" resultType="com.szq.hotel.entity.bo.RoleBO" parameterType="java.lang.String">
-        select * from role
+        select * from hm_role
         <if test="roleName!=null and roleName!=''">
             where role_name like '%${roleName}%'
         </if>
     </select>
     <!--根据角色id查询角色信息  -->
     <select id="getRoleById" resultType="com.szq.hotel.entity.bo.RoleBO" parameterType="java.lang.Integer">
-        select * from role
+        select * from hm_role
         <if test="roleId!=null and roleId!=''">
             where id = #{roleId}
         </if>
     </select>
     <!--修改admin用户信息  -->
     <update id="updateAdminUser"  parameterType="com.szq.hotel.entity.bo.AdminBO" >
-        UPDATE `admin`
+        UPDATE hm_admin
         <set>
             <if test="name!=null and name!=''" >`name`=#{name},</if>
             <if test="mobile !=null and mobile!='' ">`mobile`=#{mobile},</if>
@@ -111,7 +111,7 @@
     </update>
     <!--根据用户id删除信息  -->
     <delete id="delAdminById">
-        DELETE FROM admin WHERE
+        DELETE FROM hm_admin WHERE
         <foreach  collection="idArr" item="id" separator="OR">
             id=#{id}
         </foreach>
@@ -119,8 +119,8 @@
     <!--查询角色拥有的权限-->
     <select id="getMenuByRoleId"  resultType="com.szq.hotel.entity.bo.MenuBO"  parameterType="java.lang.Integer">
         select me.*
-        from role_menu  rm
-        inner join  menu me
+        from hm_role_menu  rm
+        inner join  hm_menu me
         on rm.menu_id=me.id
         where  rm.role_id=#{roleId}
     </select>
@@ -128,7 +128,7 @@
     <!--根据 用户id\角色id\用户名 查询用户信息-->
     <select id="getAdminByCond" parameterType="java.util.Map"  resultType="com.szq.hotel.entity.bo.AdminBO">
         select admin.id,`name`,mobile,role_id,role_name
-        from admin,role
+        from hm_admin,hm_role
         where role_id=role.id
         <if test="userId!=null and userId!=''">
            and admin.id=#{userId}
@@ -149,7 +149,7 @@
     <!--根据 用户id\角色id\用户名 查询用户信息总数-->
     <select id="getAdminCountByCond" parameterType="java.util.Map"  resultType="java.lang.Integer">
         select count(*)
-        from admin,role
+        from hm_admin,hm_role
         where role_id=role.id
         <if test="id!=null and id!=''">
             and admin.id=#{id}

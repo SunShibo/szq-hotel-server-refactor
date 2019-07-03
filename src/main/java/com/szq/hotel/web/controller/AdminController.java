@@ -3,7 +3,6 @@ package com.szq.hotel.web.controller;
 
 import com.szq.hotel.common.constants.SysConstants;
 import com.szq.hotel.entity.bo.AdminBO;
-import com.szq.hotel.entity.bo.MenuBO;
 import com.szq.hotel.entity.bo.RoleBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
@@ -25,7 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * 用戶信息控制类  add  del  edit get
+ * 管理员
  */
 @Controller
 @RequestMapping("/admin")
@@ -77,7 +76,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -122,7 +121,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -157,7 +156,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -187,7 +186,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -237,7 +236,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -268,7 +267,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -310,7 +309,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -333,7 +332,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -349,7 +348,7 @@ public class AdminController extends BaseCotroller {
             // 不一致查询是否重复
             Integer nameCount = adminService.selectCountByRoleName(roleName);
             if(nameCount>0){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "该角色已存在")) ;
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000092" , "该角色已存在")) ;
                 super.safeJsonPrint(response , result);
                 return ;
             }
@@ -385,7 +384,7 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
@@ -417,14 +416,14 @@ public class AdminController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "用户未登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
         //退出登录
         String clientLoginID = super.getClientLoginID(request);
         if (StringUtils.isEmpty(clientLoginID)) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("00000001" , "没有获取到clientLoginID！")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "没有获取到clientLoginID！")) ;
             super.safeJsonPrint(response , result);
             return ;
         }
