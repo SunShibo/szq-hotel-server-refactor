@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 酒店 -->
+<mapper namespace="com.szq.hotel.dao.HotelDAO">
+
+    <!--添加酒店-->
+    <insert id="addHotel" useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.HotelBO">
+        INSERT INTO `hm_hotel` (`name`, `site`, `picture`, `phone`,`create_user_id`, `create_time`, `update_user_id`, `update_time`,status)
+                      VALUES ( #{name}, #{site},#{picture}, #{phone},#{createUserId},NOW(),#{updateUserId}, #{updateTime},'yes')
+    </insert>
+
+    <!--修改酒店-->
+    <update id="updateHotel" parameterType="com.szq.hotel.entity.bo.HotelBO">
+       UPDATE `hm_hotel`
+       <set>
+          <if test="name!=null and name !=''" >   `name`=#{name},  </if>
+          <if test="site!=null and site !=''" >   `site`=#{site},  </if>
+          <if test="picture!=null and picture !=''" >    `picture`=#{picture}, </if>
+          <if test="phone!=null and phone !=''" >   `phone`=#{phone}, </if>
+          <if test="updateUserId!=null" >`update_user_id`=#{updateUserId},</if>
+          <if test="status!=null and  status!=''" >`status`=#{status},</if>
+          `update_time`=NOW()
+       </set>
+        WHERE id=#{id}
+    </update>
+
+
+    <!--查询酒店-->
+    <select id="queryHotel"  resultType="com.szq.hotel.entity.bo.HotelBO" >
+        SELECT  *  FROM  `hm_hotel`   WHERE   status='yes'
+    </select>
+
+    <!--通过id查询酒店-->
+    <select id="queryHotelById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.HotelBO">
+        SELECT * FROM `hm_hotel` WHERE id=#{id}
+    </select>
+
+
+    <!--查询酒店名称和id-->
+    <select id="queryLoginHotel"  resultType="com.szq.hotel.entity.bo.CommonBO" >
+          SELECT id,name FROM `hm_hotel` WHERE   status='yes'
+    </select>
+
+
+    <!--查询酒店-->
+    <resultMap type="com.szq.hotel.entity.bo.HotelBO" id="hotelMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="site" property="site"/>
+        <result column="picture" property="picture"/>
+        <result column="phone" property="phone"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="status" property="status"/>
+        <collection property="floors" ofType="com.szq.hotel.entity.bo.FloorBO">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="sort" property="sort"/>
+            <result column="hotel_id" property="hotelId"/>
+        </collection>
+    </resultMap>
+
+</mapper>
