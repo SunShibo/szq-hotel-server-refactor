@@ -47,6 +47,28 @@ public class AdminService {
         }
         return adminBO;
     }
+    /**
+     * 根据当前登陆用户的角色id查询对应的权限
+     * @param roleId 角色id
+     * @return 登陆用户对应的权限
+     */
+    public  List<MenuBO>  getRoleMenuSuccess(Integer roleId){
+        List<MenuBO> menuBOS=adminDAO.getMenuByRoleId(roleId);
+        if(menuBOS!=null && menuBOS.size()>0) {
+            for (int i = 0; i < menuBOS.size(); i++) {
+                MenuBO menuBO = menuBOS.get(i);
+                for(int x=0;x<menuBOS.size();x++){
+                    if(menuBO.getPid().equals(menuBOS.get(x).getId())){
+                        menuBOS.get(x).getCh().add(menuBO);
+                        menuBOS.remove(i);
+                        --i;
+                        break;
+                    }
+                }
+            }
+        }
+        return menuBOS;
+    }
 
     /**
      * 管理员注册

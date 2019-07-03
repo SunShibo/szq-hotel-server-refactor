@@ -3,6 +3,7 @@ package com.szq.hotel.web.controller;
 
 import com.szq.hotel.common.constants.SysConstants;
 import com.szq.hotel.entity.bo.AdminBO;
+import com.szq.hotel.entity.bo.MenuBO;
 import com.szq.hotel.entity.bo.RoleBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
@@ -60,8 +61,14 @@ public class AdminController extends BaseCotroller {
         super.putLoginAdmin(uuid,adminBO);
         //uuid 存入cookie
         super.setCookie(response, SysConstants.CURRENT_LOGIN_CLIENT_ID, uuid, 60*60*24);
+        //添加至班次
+        //未完
 
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(adminBO)) ;
+        List<MenuBO> roleMenuSuccess = adminService.getRoleMenuSuccess(adminBO.getRoleId());
+        Map<String,Object>  resultMap=new HashMap<String, Object>();
+        resultMap.put("menu",roleMenuSuccess);
+        resultMap.put("admin",adminBO);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
         super.safeJsonPrint(response, result);
         return;
     }
