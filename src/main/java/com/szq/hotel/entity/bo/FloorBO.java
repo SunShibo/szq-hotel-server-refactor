@@ -16,7 +16,7 @@ public class FloorBO extends BaseModel{
     private Date  createTime;//创建时间
     private Integer updateUserId;//修改人id
     private Date updateTime;//修改时间
-
+    private String status;//状态
 
     public Integer getId() {
         return id;
@@ -82,6 +82,27 @@ public class FloorBO extends BaseModel{
         this.updateTime = updateTime;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
 
+    @Override
+    public String toString() {
+        return "FloorBO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", sort=" + sort +
+                ", hotelId=" + hotelId +
+                ", createUserId=" + createUserId +
+                ", createTime=" + createTime +
+                ", updateUserId=" + updateUserId +
+                ", updateTime=" + updateTime +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

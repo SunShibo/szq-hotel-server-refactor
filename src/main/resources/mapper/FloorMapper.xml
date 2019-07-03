@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 楼层 -->
+<mapper namespace="com.szq.hotel.dao.FloorDAO">
+
+    <!--添加楼层-->
+    <insert id="addFloor" useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.FloorBO">
+        INSERT INTO  `hm_floor` ( `name`, `sort`, `hotel_id`, `create_user_id`, `create_time`, `update_user_id`, `update_time`, `status`)
+                          VALUES ( #{name},#{sort},#{hotelId},#{createUserId},NOW(),#{updateUserId},#{updateTime},'yes');
+    </insert>
+
+    <!--修改楼层 -->
+    <update id="updateFloor" parameterType="com.szq.hotel.entity.bo.FloorBO">
+       UPDATE `hm_floor`
+       <set>
+          <if test="name!=null and name !=''" >   `name`=#{name},  </if>
+          <if test="sort!=null" >   `sort`=#{sort},  </if>
+          <if test="updateUserId!=null" >`update_user_id`=#{updateUserId},</if>
+          <if test="status!=null and  status!=''" >`status`=#{status},</if>
+          `update_time`=NOW()
+       </set>
+        WHERE id=#{id}
+    </update>
+
+    <!--查询楼层-->
+    <select id="queryFloor"  resultType="com.szq.hotel.entity.bo.FloorBO"  parameterType="java.lang.Integer" >
+        SELECT  *  FROM  `hm_floor`   WHERE   status='yes'  AND  hotel_id=#{hotelId}   ORDER BY sort  DESC
+    </select>
+
+    <!--通过id查询楼层-->
+    <select id="queryFloorById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.FloorBO">
+          SELECT  *  FROM  `hm_floor`   WHERE   id=#{floorId}
+    </select>
+</mapper>
