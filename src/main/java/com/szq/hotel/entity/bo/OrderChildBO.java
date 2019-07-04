@@ -5,15 +5,15 @@ import com.szq.hotel.common.base.BaseModel;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class orderChildBO extends BaseModel {
+public class OrderChildBO extends BaseModel {
     private Integer id;//子订单
     private Integer orderId;//订单id
-    private Date startTime;//开始时间
-    private Date endTime;//结束时间
+    private Date startTime;//实际入住时间
+    private Date endTime;//实际退房时间
     private Integer certificateTypeId;//证件类型id
     private BigDecimal payCashNum;//支付现金 金额
     private BigDecimal otherPayNum;//其他支付金额
-    private BigDecimal roomRate;//房费
+    private BigDecimal roomRate;//房费 选定时定的价格，有可能改价
     private BigDecimal otherRate;//其他费用
     private BigDecimal timeoutRate;//超时费用
     private BigDecimal freeRateNum;//免单金额
@@ -25,6 +25,15 @@ public class orderChildBO extends BaseModel {
     private Integer hotelId;//酒店id
     private String nightAuditorState;//夜审状态
     private String printState;//打印状态（备用字段）
+    private String remark;//备注
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     public Integer getId() {
         return id;

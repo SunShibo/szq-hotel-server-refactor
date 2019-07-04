@@ -16,7 +16,17 @@ public class MenuBO extends BaseModel {
 
     private Integer pid; // 父id
 
-    private String url;
+    private String url;//菜单路径
+
+    private String path;//前端跳转路径
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     private List<MenuBO> ch = new ArrayList<MenuBO>();
 

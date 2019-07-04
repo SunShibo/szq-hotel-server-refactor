@@ -41,7 +41,7 @@ public class AdminController extends BaseCotroller {
      * @param password 密码
      */
     @RequestMapping("/adminLogin")
-    public void adminLogin(HttpServletRequest request, HttpServletResponse response,String mobile,String password){
+    public void adminLogin(HttpServletRequest request, HttpServletResponse response,String mobile,String password,Integer hotelId,Integer classesId){
         //验证参数
         if(StringUtils.isEmpty(mobile) || StringUtils.isEmpty(password)){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常！")) ;
@@ -55,6 +55,7 @@ public class AdminController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
+        adminBO.setHotelId(hotelId);
         adminBO.setPassword("");
         String uuid = UUID.randomUUID().toString();
         //登陆客户信息放入Redis缓存

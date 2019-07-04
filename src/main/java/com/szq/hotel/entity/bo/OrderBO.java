@@ -2,18 +2,26 @@ package com.szq.hotel.entity.bo;
 
 import com.szq.hotel.common.base.BaseModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrderBO extends BaseModel {
     private Integer id;//订单表
     private String orderPlacer;//下单人名称
     private Integer orderNumber;//单号
+    private String checkType;//入住方式
     private String phone;//手机号
+    private Date checkTime;//入住时间
+    private Date checkOutTime;//离店时间
+    private Integer dayCount;//入住天数
+    private Integer IDNumberType;//证件类型
     private String IDNumber;//证件号码
-    private String orderType;//订单类型
-    private String remark;//备注
-    private String memberOrOrganization;//会员合作机构
+    private String orderType;//订单类型（subscribe预约入住,directly直接入住）
+    private String clerkOrderingName;//接单员姓名
+    private Integer clerkOrderingId;//接单员id
+    private Integer membersId;//会员id
     private Integer memberIdOrOrganizationId;//会员id 合作机构id
+    private BigDecimal totalPrice;//总房价
     private Date createTime;
     private Date updateTime;
 
@@ -65,28 +73,84 @@ public class OrderBO extends BaseModel {
         this.orderType = orderType;
     }
 
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getMemberOrOrganization() {
-        return memberOrOrganization;
-    }
-
-    public void setMemberOrOrganization(String memberOrOrganization) {
-        this.memberOrOrganization = memberOrOrganization;
-    }
-
     public Integer getMemberIdOrOrganizationId() {
         return memberIdOrOrganizationId;
     }
 
     public void setMemberIdOrOrganizationId(Integer memberIdOrOrganizationId) {
         this.memberIdOrOrganizationId = memberIdOrOrganizationId;
+    }
+
+    public String getCheckType() {
+        return checkType;
+    }
+
+    public void setCheckType(String checkType) {
+        this.checkType = checkType;
+    }
+
+    public Date getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(Date checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    public Date getCheckOutTime() {
+        return checkOutTime;
+    }
+
+    public void setCheckOutTime(Date checkOutTime) {
+        this.checkOutTime = checkOutTime;
+    }
+
+    public Integer getDayCount() {
+        return dayCount;
+    }
+
+    public void setDayCount(Integer dayCount) {
+        this.dayCount = dayCount;
+    }
+
+    public Integer getIDNumberType() {
+        return IDNumberType;
+    }
+
+    public void setIDNumberType(Integer IDNumberType) {
+        this.IDNumberType = IDNumberType;
+    }
+
+    public String getClerkOrderingName() {
+        return clerkOrderingName;
+    }
+
+    public void setClerkOrderingName(String clerkOrderingName) {
+        this.clerkOrderingName = clerkOrderingName;
+    }
+
+    public Integer getClerkOrderingId() {
+        return clerkOrderingId;
+    }
+
+    public void setClerkOrderingId(Integer clerkOrderingId) {
+        this.clerkOrderingId = clerkOrderingId;
+    }
+
+    public Integer getMembersId() {
+        return membersId;
+    }
+
+    public void setMembersId(Integer membersId) {
+        this.membersId = membersId;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public Date getCreateTime() {
