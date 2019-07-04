@@ -2,6 +2,7 @@ package com.szq.hotel.util;
 
 import net.sf.json.*;
 import net.sf.json.util.CycleDetectionStrategy;
+
 import net.sf.json.util.JSONUtils;
 import net.sf.json.xml.XMLSerializer;
 
@@ -454,5 +455,15 @@ public class JsonUtils {
 		json.put("msg", msg);
 		json.put("data", data);
 		return json;
+	}
+
+	//把json字符串 转换为对应类型的集合
+	public static <T> List<T> getJSONtoList(String jsonString, Class cls) {
+		List<T> list = new ArrayList<T>();
+		try {
+			list = com.alibaba.fastjson.JSON.parseArray(jsonString, cls);
+		} catch (Exception e) {
+		}
+		return list;
 	}
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 每日房价 -->
+<mapper namespace="com.szq.hotel.dao.EverydayRoomPriceDAO">
+
+    <insert id="addEverydayRoomPrice"  parameterType="com.szq.hotel.entity.bo.EverydayRoomPriceBO">
+       insert into hm_everyday_room_price
+        (order_child_id,`time`,money)
+        values
+        (#{orderChildId},#{time},#{money})
+    </insert>
+
+
+</mapper>

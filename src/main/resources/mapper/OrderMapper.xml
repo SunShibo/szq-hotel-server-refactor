@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.OrderDAO">
+
+    <!-- 添加主订单 -->
+    <insert id="addOrder" parameterType="com.szq.hotel.entity.bo.OrderBO" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into hm_order
+        (order_placer,order_number,check_type,check_time,
+        check_out_time,day_count,phone,ID_number,
+        ID_number_type,order_type,clerk_ordering_name,
+        clerk_ordering_id,members_id,
+        memberId_or_organizationId,total_price,create_time)
+        values
+        (#{orderPlacer},#{orderNumber},#{checkType},
+        #{checkTime},#{checkOutTime},#{dayCount},#{phone},#{IDNumber},
+        #{IDNumberType},#{orderType},
+        #{clerkOrderingName},#{clerkOrderingId},#{membersId},
+        #{memberIdOrOrganizationId},#{totalPrice},now())
+    </insert>
+
+    <!-- 添加子订单 -->
+    <insert id="addOrderChild" parameterType="com.szq.hotel.entity.bo.OrderChildBO" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into hm_order_child set
+        order_id=#{orderId},
+        room_rate=#{roomRate},
+        order_state=#{orderState},
+        remark=#{remark},
+        room_id=#{roomId},
+        room_type_id=#{roomTypeId},
+        al_room_code=#{alRoomCode},
+        hotel_id=#{hotelId}
+    </insert>
+
+    <!-- 修改子订单信息 -->
+    <update id="updOrderChild" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
+        update hm_order_child
+        <set>
+            <if test="orderId!=null and orderId!=''">
+                order_id=#{orderId},
+            </if>
+            <if test="startTime!=null and startTime!=''">
+                start_time=#{startTime},
+            </if>
+            <if test="endRime!=null and endRime!=''">
+                end_time=#{endRime},
+            </if>
+            <if test="payCashNum!=null and payCashNum!=''">
+                pay_cash_num=#{payCashNum},
+            </if>
+            <if test="otherPayNum!=null and otherPayNum!=''">
+                other_pay_num=#{otherPayNum},
+            </if>
+            <if test="roomRate!=null and roomRate!=''">
+                room_rate=#{roomRate},
+            </if>
+            <if test="otherRate!=null and otherRate!=''">
+                other_rate=#{otherRate},
+            </if>
+            <if test="timeoutRate!=null and timeoutRate!=''">
+                timeout_rate=#{timeoutRate},
+            </if>
+            <if test="freeRateNum!=null and freeRateNum!=''">
+                free_rate_num=#{freeRateNum},
+            </if>
+            <if test="order_state!=null and order_state!=''">
+                order_state=#{orderState},
+            </if>
+            <if test="practicalDepartureTime!=null and practicalDepartureTime!=''">
+                practical_departure_time=#{practicalDepartureTime},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark},
+            </if>
+            <if test="roomId!=null and roomId!=''">
+                room_id=#{roomId},
+            </if>
+            <if test="roomTypeId!=null and roomTypeId!=''">
+                room_type_id=#{roomTypeId},
+            </if>
+            <if test="alRoomCode!=null and alRoomCode!=''">
+                al_room_code=#{alRoomCode},
+            </if>
+            <if test="hotelId!=null and hotelId!=''">
+                hotel_id=#{hotelId},
+            </if>
+            <if test="nightAuditorState!=null and nightAuditorState!=''">
+                night_auditor_state=#{nightAuditorState},
+            </if>
+            <if test="printState!=null and printState!=''">
+                print_state=#{printState}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+</mapper>
