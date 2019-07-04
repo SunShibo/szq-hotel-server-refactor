@@ -23,8 +23,7 @@ public class MemberBO extends BaseModel {
     private Date createTime;//创建时间
     private Integer updateUserId;//修改人id
     private Date updateTime;//修改时间
-    private Integer pageSize;//分页 每页的数量
-    private Integer pageNo;//分页 页码
+
     public Integer getId() {
         return id;
     }
@@ -169,19 +168,5 @@ public class MemberBO extends BaseModel {
         this.updateTime = updateTime;
     }
 
-    public Integer getPageSize() {
-        return pageSize;
-    }
 
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Integer getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(Integer pageNo) {
-        this.pageNo = pageNo;
-    }
 }

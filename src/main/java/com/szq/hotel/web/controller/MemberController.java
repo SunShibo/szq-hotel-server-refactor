@@ -50,7 +50,7 @@ public class MemberController extends BaseCotroller {
                 return ;
             }
             //参数验证
-            if (StringUtils.isEmpty(memberBO.getName())||StringUtils.isEmpty(memberBO.getCertificateNumber())||StringUtils.isEmpty(memberBO.getCertificateType())||StringUtils.isEmpty(memberBO.getPhone())){
+            if (StringUtils.isEmpty(memberBO.getName())||StringUtils.isEmpty(memberBO.getCertificateNumber())||StringUtils.isEmpty(memberBO.getPhone())){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
@@ -156,12 +156,12 @@ public class MemberController extends BaseCotroller {
 
     /**
      * 条件分页查询会员用户信息
-     * @param memberBO
+     * @param query
      * @param request
      * @param response
      */
     @RequestMapping("/selectMember")
-    public void selectMember(MemberBO memberBO,HttpServletRequest request, HttpServletResponse response){
+    public void selectMember(String query,Integer pageNo, Integer pageSize,HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -174,24 +174,12 @@ public class MemberController extends BaseCotroller {
                 return;
             }
             Map<String,Object> map=new HashMap<String, Object>();
-            map.put("memberCardId",memberBO.getMemberCardId());
-            map.put("phone",memberBO.getPhone());
-            map.put("certificateType",memberBO.getCertificateType());
-            map.put("certificateNumber",memberBO.getCertificateNumber());
-            map.put("integral",memberBO.getIntegral());
-            map.put("storedValue",memberBO.getStoredValue());
-            map.put("createUserId",memberBO.getCreateUserId());
-            map.put("name",memberBO.getName());
-            map.put("birthday",memberBO.getBirthday());
-            map.put("gender",memberBO.getGender());
-            map.put("address",memberBO.getAddress());
-            map.put("salesman",memberBO.getSalesman());
+            map.put("query",query);
 
-
-            QueryInfo queryInfo = getQueryInfo(memberBO.getPageNo(),memberBO.getPageSize());
+            QueryInfo queryInfo = getQueryInfo(pageNo,pageSize);
             if(queryInfo != null){
                 map.put("pageSize",queryInfo.getPageSize());
-                map.put("pageIndex",queryInfo.getPageOffset());
+                map.put("pageOffset",queryInfo.getPageOffset());
             }
 
             List<MemberBO> memberBOS = memberService.selectMember(map);
