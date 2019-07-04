@@ -13,13 +13,13 @@
         check_out_time,day_count,phone,ID_number,
         ID_number_type,order_type,clerk_ordering_name,
         clerk_ordering_id,members_id,
-        memberId_or_organizationId,total_price,create_time)
+        memberId_or_organizationId,total_price,create_time,hotel_id)
         values
         (#{orderPlacer},#{orderNumber},#{checkType},
         #{checkTime},#{checkOutTime},#{dayCount},#{phone},#{IDNumber},
         #{IDNumberType},#{orderType},
         #{clerkOrderingName},#{clerkOrderingId},#{membersId},
-        #{memberIdOrOrganizationId},#{totalPrice},now())
+        #{memberIdOrOrganizationId},#{totalPrice},now(),#{hotelId})
     </insert>
 
     <!-- 添加子订单 -->
@@ -27,13 +27,14 @@
             keyProperty="id">
         insert into hm_order_child set
         order_id=#{orderId},
-        room_rate=#{roomRate},
         order_state=#{orderState},
         remark=#{remark},
-        room_id=#{roomId},
+        <if test="roomId!=null and roomId!=''">
+            room_id=#{roomId},
+        </if>
         room_type_id=#{roomTypeId},
-        al_room_code=#{alRoomCode},
-        hotel_id=#{hotelId}
+        al_room_code=#{alRoomCode}
+
     </insert>
 
     <!-- 修改子订单信息 -->

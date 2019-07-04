@@ -6,7 +6,6 @@ import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import com.szq.hotel.entity.bo.OrderBO;
 import com.szq.hotel.entity.bo.OrderChildBO;
 import com.szq.hotel.util.IDBuilder;
-import org.jaxen.expr.iter.IterableNamespaceAxis;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,32 +28,30 @@ public class OrderService {
     public Integer addOrder(OrderBO orderBO){
         //生成订单号
         IDBuilder idBuilder = new IDBuilder(10, 10);
-        Integer orderNumber = new Integer(idBuilder.nextId()+"");
+        String orderNumber = idBuilder.nextId()+"";
         orderBO.setOrderNumber(orderNumber);
         return orderDAO.addOrder(orderBO);
     }
 
     //添加子订单
-    public Integer addOrderChild(List<OrderChildBO> orderChildBOList,Integer orderId,Integer hotelId){
+    public Integer addOrderChild(List<OrderChildBO> orderChildBOList, Integer orderId, Integer hotelId){
         //联房码
         String alRoomCode= UUID.randomUUID().toString();
         for (OrderChildBO orderChild:orderChildBOList) {
-            orderChild.setOrderId(orderId);
-            orderChild.setAlRoomCode(alRoomCode);
-            orderChild.setOrderState(Constants.RESERVATION.getValue());
-            //酒店id
-            orderChild.setHotelId(hotelId);
-            //插入子订单
-            Integer orderChildId = orderDAO.addOrderChild(orderChild);
+            //添加子订单 返回订单id
+            orderChild.setOrderId(orderId);//主订单id
+            orderChild.setAlRoomCode(alRoomCode);//联房
+            orderChild.setOrderState(Constants.RESERVATION.getValue());//状态
+            orderDAO.addOrderChild(orderChild);//返回子订单id
 
-            // 插入hm_everyday_room_price没日房费信息
-            EverydayRoomPriceBO everydayRoomPriceBO=new EverydayRoomPriceBO();
-            everydayRoomPriceBO.setOrderChildId(orderChildId);
-            everydayRoomPriceService.addEverydayRoomPrice(everydayRoomPriceBO);
+            //这个房型下的每日价格
+            List<EverydayRoomPriceBO> everydayRoomPriceBOList =orderChild.getEverydayRoomPriceBOS();
+            for (EverydayRoomPriceBO everydayRoomPriceBO:everydayRoomPriceBOList) {
+                orderChild.setOrderId(orderChild.getId());
+                everydayRoomPriceService.addEverydayRoomPrice(everydayRoomPriceBO);
+            }
+
         }
-
-
-
         return 0;
     }
 }

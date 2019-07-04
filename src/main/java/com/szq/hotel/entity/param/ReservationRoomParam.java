@@ -1,55 +1,26 @@
 package com.szq.hotel.entity.param;
 
+import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class ReservationRoomParam {
-    //房间预定 需要的信息
-    //选房间号需要把房型和房间号都传过来
-    //选房型就不需要房间号了
-    private Integer roomNumber;//房间号
-    private Integer roomTypeId;//房型id
-    private Date time;//哪天
-    private BigDecimal room_rate;//选定时的价格
-    private String remark;//每间房的备注
 
-    public Integer getRoomNumber() {
-        return roomNumber;
-    }
+    private String 下单人名称;
+    private String 下单人手机号;
+    private String 下单人证件类型;
+    private String 下单人证件号码;
+    private String 入住类型;
+    private String 入住时间;//
+    private String 离店时间;//
+    private String 入住天数;//
+    private String 订单类型;//
+    private String 接单员姓名;//
+    private String 会员id;//
+    private String 合作机构id;//
 
-    public Date getTime() {
-        return time;
-    }
 
-    public void setTime(Date time) {
-        this.time = time;
-    }
 
-    public void setRoomNumber(Integer roomNumber) {
-        this.roomNumber = roomNumber;
-    }
-
-    public Integer getRoomTypeId() {
-        return roomTypeId;
-    }
-
-    public void setRoomTypeId(Integer roomTypeId) {
-        this.roomTypeId = roomTypeId;
-    }
-
-    public BigDecimal getRoom_rate() {
-        return room_rate;
-    }
-
-    public void setRoom_rate(BigDecimal room_rate) {
-        this.room_rate = room_rate;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 }

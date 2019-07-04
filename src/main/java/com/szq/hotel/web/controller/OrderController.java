@@ -9,13 +9,10 @@ import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.alibaba.fastjson.JSON;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/order")
@@ -27,12 +24,11 @@ public class OrderController extends BaseCotroller {
     /**
      * 房间预定
      * @param orderBO 预约信息
-     * @param orderChildJSON json格式的预定的房间信息
-     * @param EverydayRoomPriceJSON json格式的预定的房型的没日的价格
+     * @param OrderChildJSON json格式的预定的房间信息
      * */
     @RequestMapping("/reservationRoom")
     public void adminLogin(HttpServletRequest request, HttpServletResponse response,
-                           OrderBO orderBO,String orderChildJSON,String EverydayRoomPriceJSON) {
+                           OrderBO orderBO,String OrderChildJSON) {
         //验证管理员
         AdminBO userInfo = super.getLoginUser(request) ;
         if(userInfo == null){
@@ -41,18 +37,19 @@ public class OrderController extends BaseCotroller {
             return ;
         }
         //验证参数
-        if(orderBO== null||orderChildJSON==null){
+        if(orderBO== null||OrderChildJSON==null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
         //插入订单信息
         orderBO.setClerkOrderingId(userInfo.getId());
-        Integer orderId = orderService.addOrder(orderBO);
+        orderBO.setHotelId(userInfo.getHotelId());
+        orderService.addOrder(orderBO);
 
-        //插入子订单信息 多个房间或者房型
-        List<OrderChildBO> orderChildBOList = JsonUtils.getJSONtoList(orderChildJSON,OrderChildBO.class);
-        orderService.addOrderChild(orderChildBOList,orderId,userInfo.getHotelId());
+        //插入子订单信息 以及每日房价信息
+        List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
+        orderService.addOrderChild(list,orderBO.getId(),userInfo.getHotelId());
     }
 
 }

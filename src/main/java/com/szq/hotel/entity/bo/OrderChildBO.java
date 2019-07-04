@@ -4,6 +4,7 @@ import com.szq.hotel.common.base.BaseModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class OrderChildBO extends BaseModel {
     private Integer id;//子订单
@@ -22,10 +23,20 @@ public class OrderChildBO extends BaseModel {
     private Integer roomId;//房间id
     private Integer roomTypeId;//房型id
     private String alRoomCode;//联房识别码
-    private Integer hotelId;//酒店id
+
     private String nightAuditorState;//夜审状态
     private String printState;//打印状态（备用字段）
     private String remark;//备注
+
+    List<EverydayRoomPriceBO> everydayRoomPriceBOS;//每日房价信息
+
+    public List<EverydayRoomPriceBO> getEverydayRoomPriceBOS() {
+        return everydayRoomPriceBOS;
+    }
+
+    public void setEverydayRoomPriceBOS(List<EverydayRoomPriceBO> everydayRoomPriceBOS) {
+        this.everydayRoomPriceBOS = everydayRoomPriceBOS;
+    }
 
     public String getRemark() {
         return remark;
@@ -161,14 +172,6 @@ public class OrderChildBO extends BaseModel {
 
     public void setAlRoomCode(String alRoomCode) {
         this.alRoomCode = alRoomCode;
-    }
-
-    public Integer getHotelId() {
-        return hotelId;
-    }
-
-    public void setHotelId(Integer hotelId) {
-        this.hotelId = hotelId;
     }
 
     public String getNightAuditorState() {

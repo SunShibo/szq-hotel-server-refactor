@@ -1,17 +1,19 @@
 package com.szq.hotel.entity.bo;
 
 import com.szq.hotel.common.base.BaseModel;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrderBO extends BaseModel {
     private Integer id;//订单表
     private String orderPlacer;//下单人名称
-    private Integer orderNumber;//单号
+    private String orderNumber;//单号
     private String checkType;//入住方式
     private String phone;//手机号
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date checkTime;//入住时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date checkOutTime;//离店时间
     private Integer dayCount;//入住天数
     private Integer IDNumberType;//证件类型
@@ -19,6 +21,7 @@ public class OrderBO extends BaseModel {
     private String orderType;//订单类型（subscribe预约入住,directly直接入住）
     private String clerkOrderingName;//接单员姓名
     private Integer clerkOrderingId;//接单员id
+    private Integer hotelId;//酒店id
     private Integer membersId;//会员id
     private Integer memberIdOrOrganizationId;//会员id 合作机构id
     private BigDecimal totalPrice;//总房价
@@ -41,12 +44,20 @@ public class OrderBO extends BaseModel {
         this.orderPlacer = orderPlacer;
     }
 
-    public Integer getOrderNumber() {
+    public String getOrderNumber() {
         return orderNumber;
     }
 
-    public void setOrderNumber(Integer orderNumber) {
+    public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
+    }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
     }
 
     public String getPhone() {

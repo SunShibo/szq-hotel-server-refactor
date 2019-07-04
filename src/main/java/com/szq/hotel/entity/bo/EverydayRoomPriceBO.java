@@ -8,15 +8,6 @@ public class EverydayRoomPriceBO {
     private Integer orderChildId;//子订单id
     private Date time;//日期
     private BigDecimal money;//价格
-    private Integer roomTypeId;//房型的id
-
-    public Integer getRoomTypeId() {
-        return roomTypeId;
-    }
-
-    public void setRoomTypeId(Integer roomTypeId) {
-        this.roomTypeId = roomTypeId;
-    }
 
     public Integer getId() {
         return id;
