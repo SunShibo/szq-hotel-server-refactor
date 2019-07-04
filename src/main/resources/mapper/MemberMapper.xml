@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.MemberDAO">
+
+    <!--新增会员-->
+    <insert id="addMember" useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.MemberBO">
+        INSERT INTO `hm_member` (`member_card_id`,`phone`,`certificate_type`,`certificate_number`,
+	        `integral`,`stored_value`,`create_user_id`,`name`,`birthday`,`gender`,`address`,`remark`,
+	        `salesman`,`state`,`create_time`,`update_user_id`,`update_time`)
+        VALUES (#{memberCardId},#{phone},#{certificateType},#{certificateNumber},#{integral},#{storedValue},#{createUserId},
+            #{name},#{birthday},#{gender},#{address},#{remark},#{salesman},'yes',NOW(),#{updateUserId},#{updateTime})
+    </insert>
+
+    <!--修改会员信息-->
+    <update id="updateMember" parameterType="com.szq.hotel.entity.bo.MemberBO">
+        UPDATE `hm_member`
+<set>
+    <if test="memberCardId!=null ">`member_card_id` =#{memberCardId},</if>
+    <if test="phone!=null and phone !=''">`phone` =  #{phone},</if>
+    <if test="certificateType!=null and certificateType !=''"> `certificate_type` =  #{certificateType},</if>
+    <if test="certificateNumber!=null and certificateNumber !=''">`certificate_number` =  #{certificateNumber},</if>
+    <if test="integral!=null ">`integral` =  #{integral},</if>
+    <if test="storedValue!=null ">`stored_value` =  #{storedValue},</if>
+    <if test="name!=null and name !=''">`name` =  #{name},</if>
+    <if test="birthday!=null and birthday !=''">`birthday` =  #{birthday},</if>
+    <if test="gender!=null and gender !=''">`gender` =  #{gender},</if>
+    <if test="address!=null and address !=''">`address` =  #{address},</if>
+    <if test="remark!=null and remark !=''">`remark` =  #{remark},</if>
+    <if test="salesman!=null and salesman !=''">`salesman` =  #{salesman},</if>
+    <if test="updateUserId!=null ">`update_user_id` =  #{updateUserId},</if>
+    `update_time` = NOW()
+</set>
+WHERE id = #{id}
+    </update>
+
+    <!--查询会员级别所有信息-->
+    <select id="selectMember" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.util.Map">
+        SELECT * FROM hm_member
+        <where>
+            state = 'yes'
+            <if test="memberCardId!=null ">AND `memberCardId` LIKE concat(concat('%',#{memberCardId}),'%'),</if>
+            <if test="phone!=null and phone !='' ">AND `phone` LIKE concat(concat('%',#{phone}),'%'),</if>
+            <if test="certificateType!=null and certificateType !=''">AND `memberCardId` LIKE concat(concat('%',#{memberCardId}),'%'),</if>
+            <if test="certificateNumber!=null and certificateNumber !=''">AND `memberCardId` LIKE concat(concat('%',#{memberCardId}),'%'),</if>
+            <if test="integral!=null ">`integral` =  #{integral},</if>
+            <if test="storedValue!=null ">`stored_value` =  #{storedValue},</if>
+            <if test="createUserId!=null ">`create_user_id` =  #{createUserId},</if>
+            <if test="name!=null and name !=''">AND `name` LIKE concat(concat('%',#{name}),'%'),</if>
+            <if test="birthday!=null and birthday !=''">`birthday` =  #{birthday},</if>
+            <if test="gender!=null and gender !=''">`gender` =  #{gender},</if>
+            <if test="address!=null and address !=''">AND `address` LIKE concat(concat('%',#{address}),'%'),</if>
+            <if test="salesman!=null and salesman !=''">`salesman` =  #{salesman}</if>
+        </where>
+        order by create_time desc
+        <include refid="limit" />
+    </select>
+    <!--分页查询-->
+    <sql id="limit">
+        limit #{pageIndex},#{pageSize}
+    </sql>
+
+    <!--通过id查询会员级别-->
+    <select id="queryMemberById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberBO">
+        SELECT * FROM `hm_member` WHERE id=#{id}
+    </select>
+
+</mapper>

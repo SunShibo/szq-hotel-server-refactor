@@ -23,12 +23,12 @@ public interface MemberLevelDAO {
      * 查询所有会员级别
      * @return
      */
-    List<MemberLevelBO> selectmember();
+    List<MemberLevelBO> selectMemberLevel();
 
     /**
      * 通过id查询会员级别
      * @param memebrLevelId
      * @return
      */
-    MemberLevelBO queryMemberById(Integer memebrLevelId);
+    MemberLevelBO queryMemberLevelById(Integer memebrLevelId);
 }

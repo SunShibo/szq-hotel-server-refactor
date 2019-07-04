@@ -27,8 +27,8 @@ public class MemberLevelService {
      * 查询所有会员级别
      * @return
      */
-   public List<MemberLevelBO> selectmember(){
-       return memberLevelDAO.selectmember();
+   public List<MemberLevelBO> selectMemberLevel(){
+       return memberLevelDAO.selectMemberLevel();
     }
     /**
      * 新增会员级别
@@ -49,9 +49,9 @@ public class MemberLevelService {
      */
     public void deleteMemberLevel(Integer memberLevelId,Integer userId){
         log.info("start================deleteMemberLevel");
-        log.info("hotelId{}\tuserId{}",memberLevelId,userId);
+        log.info("memberLevelId{}\tuserId{}",memberLevelId,userId);
 
-        MemberLevelBO memberLevelBO = memberLevelDAO.queryMemberById(memberLevelId);
+        MemberLevelBO memberLevelBO = memberLevelDAO.queryMemberLevelById(memberLevelId);
         if(memberLevelBO==null){
             return;
         }

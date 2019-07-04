@@ -5,10 +5,6 @@
 <!-- 【用户】 -->
 <mapper namespace="com.szq.hotel.dao.MemberLevelDAO">
 
-    <!--查询会员所有信息-->
-    <select id="selectmember" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
-        SELECT * FROM hm_member_level WHERE state = 'yes'
-    </select>
 
     <!--新增会员级别-->
     <insert id="addMemberLevel" useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.MemberLevelBO">
@@ -16,7 +12,7 @@
         VALUES (#{name},#{state},#{type},#{createUserId},NOW())
     </insert>
 
-    <!--修改酒店-->
+    <!--修改会员级别-->
     <update id="updateMemberLevel" parameterType="com.szq.hotel.entity.bo.MemberLevelBO">
         UPDATE `hm_member_level`
         <set>
@@ -29,8 +25,13 @@
         WHERE id=#{id}
     </update>
 
+    <!--查询会员级别所有信息-->
+    <select id="selectMemberLevel" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
+        SELECT * FROM hm_member_level WHERE state = 'yes'
+    </select>
+
     <!--通过id查询会员级别-->
-    <select id="queryMemberById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberLevelBO">
+    <select id="queryMemberLevelById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberLevelBO">
         SELECT * FROM `hm_member_level` WHERE id=#{id}
     </select>
 
