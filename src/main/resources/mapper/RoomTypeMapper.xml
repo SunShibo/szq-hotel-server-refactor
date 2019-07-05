@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szq.hotel.dao.RoomTypeDAO" >
+  <resultMap id="BaseResultMap" type="com.szq.hotel.entity.bo.RoomTypeBO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="room_type_name" property="roomTypeName" jdbcType="VARCHAR" />
+    <result column="room_type_picture" property="roomTypePicture" jdbcType="VARCHAR" />
+    <result column="basic_price" property="basicPrice" jdbcType="DOUBLE" />
+    <result column="hour_room_price" property="hourRoomPrice" jdbcType="DOUBLE" />
+    <result column="floor_id" property="floorId" jdbcType="INTEGER" />
+    <result column="create_user_id" property="createUserId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_user_id" property="updateUserId" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, room_type_name, room_type_picture, basic_price, hour_room_price, floor_id, create_user_id, 
+    create_time, update_user_id, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hm_room_type
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hm_room_type
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.szq.hotel.entity.bo.RoomTypeBO" >
+    insert into hm_room_type (id, room_type_name, room_type_picture, 
+      basic_price, hour_room_price, floor_id, 
+      create_user_id, create_time, update_user_id, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{roomTypeName,jdbcType=VARCHAR}, #{roomTypePicture,jdbcType=VARCHAR}, 
+      #{basicPrice,jdbcType=DOUBLE}, #{hourRoomPrice,jdbcType=DOUBLE}, #{floorId,jdbcType=INTEGER}, 
+      #{createUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szq.hotel.entity.bo.RoomTypeBO" >
+    insert into hm_room_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="roomTypeName != null" >
+        room_type_name,
+      </if>
+      <if test="roomTypePicture != null" >
+        room_type_picture,
+      </if>
+      <if test="basicPrice != null" >
+        basic_price,
+      </if>
+      <if test="hourRoomPrice != null" >
+        hour_room_price,
+      </if>
+      <if test="floorId != null" >
+        floor_id,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUserId != null" >
+        update_user_id,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roomTypeName != null" >
+        #{roomTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="roomTypePicture != null" >
+        #{roomTypePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="basicPrice != null" >
+        #{basicPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="hourRoomPrice != null" >
+        #{hourRoomPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="floorId != null" >
+        #{floorId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null" >
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szq.hotel.entity.bo.RoomTypeBO" >
+    update hm_room_type
+    <set >
+      <if test="roomTypeName != null" >
+        room_type_name = #{roomTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="roomTypePicture != null" >
+        room_type_picture = #{roomTypePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="basicPrice != null" >
+        basic_price = #{basicPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="hourRoomPrice != null" >
+        hour_room_price = #{hourRoomPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="floorId != null" >
+        floor_id = #{floorId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null" >
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szq.hotel.entity.bo.RoomTypeBO" >
+    update hm_room_type
+    set room_type_name = #{roomTypeName,jdbcType=VARCHAR},
+      room_type_picture = #{roomTypePicture,jdbcType=VARCHAR},
+      basic_price = #{basicPrice,jdbcType=DOUBLE},
+      hour_room_price = #{hourRoomPrice,jdbcType=DOUBLE},
+      floor_id = #{floorId,jdbcType=INTEGER},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="queryRoomTypeList" resultType="com.szq.hotel.entity.bo.RoomTypeBO">
+    select * from hm_room_type
+    <where>
+      <if test="id != null">
+      and id = #{id}
+      </if>
+      and show = 'yes'
+    </where>
+  </select>
+
+  <update id="updateShow">
+    update hm_room_type
+    set show = 'no'
+    where id = #[id]
+  </update>
+</mapper>

@@ -1,29 +1,52 @@
 package com.szq.hotel.entity.bo;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 
-/**
- * 房间信息
- * */
 public class RoomBO {
-    private Integer id;//房间
-    private String roomName;//房间名称
-    private Integer roomTypeId;//房型id
-    private String roomMajorState;//房间主状态
-    private String roomState;//房间状态
-    private String remark;//备注
-    private String lockRoomState;//锁房状态
-    private Date lockRoomStartTime;//锁房开始时间
-    private Date lockRoom_endTime;//锁房结束时间
-    private String roomAuxiliaryStatus;//房间辅状态
-    private String roomAuxiliaryStatusStand;//房间辅状态(备用)
-    private String setting;//设置
-    private String character;//特性
-    private Integer createUserId;//创建人id
-    private Date createTime;//创建时间
-    private Integer updateUserId;//修改人id
-    private Date updateTime;//修改时间
+    private Integer id;
+
+    private String roomName;
+
+    private Integer roomTypeId;
+
+    private String roomMajorState;
+
+    private String roomState;
+
+    private String remark;
+
+    private String lockRoomState;
+
+    private Date lockRoomStartTime;
+
+    private Date lockRoomEndTime;
+
+    private String roomAuxiliaryStatus;
+
+    private String roomAuxiliaryStatusStand;
+
+    private String setting;
+
+    private String character;
+
+    private Integer createUserId;
+
+    private Date createTime;
+
+    private Integer updateUserId;
+
+    private Date updateTime;
+
+    private Integer floorId;
+
+    private Integer hotelId;
+    //楼栋
+    private String hotelName;
+    //房型
+    private String floorName;
+    //房型
+    private String roomType;
+
 
     public Integer getId() {
         return id;
@@ -38,7 +61,7 @@ public class RoomBO {
     }
 
     public void setRoomName(String roomName) {
-        this.roomName = roomName;
+        this.roomName = roomName == null ? null : roomName.trim();
     }
 
     public Integer getRoomTypeId() {
@@ -54,7 +77,7 @@ public class RoomBO {
     }
 
     public void setRoomMajorState(String roomMajorState) {
-        this.roomMajorState = roomMajorState;
+        this.roomMajorState = roomMajorState == null ? null : roomMajorState.trim();
     }
 
     public String getRoomState() {
@@ -62,7 +85,7 @@ public class RoomBO {
     }
 
     public void setRoomState(String roomState) {
-        this.roomState = roomState;
+        this.roomState = roomState == null ? null : roomState.trim();
     }
 
     public String getRemark() {
@@ -70,7 +93,7 @@ public class RoomBO {
     }
 
     public void setRemark(String remark) {
-        this.remark = remark;
+        this.remark = remark == null ? null : remark.trim();
     }
 
     public String getLockRoomState() {
@@ -78,7 +101,7 @@ public class RoomBO {
     }
 
     public void setLockRoomState(String lockRoomState) {
-        this.lockRoomState = lockRoomState;
+        this.lockRoomState = lockRoomState == null ? null : lockRoomState.trim();
     }
 
     public Date getLockRoomStartTime() {
@@ -89,12 +112,12 @@ public class RoomBO {
         this.lockRoomStartTime = lockRoomStartTime;
     }
 
-    public Date getLockRoom_endTime() {
-        return lockRoom_endTime;
+    public Date getLockRoomEndTime() {
+        return lockRoomEndTime;
     }
 
-    public void setLockRoom_endTime(Date lockRoom_endTime) {
-        this.lockRoom_endTime = lockRoom_endTime;
+    public void setLockRoomEndTime(Date lockRoomEndTime) {
+        this.lockRoomEndTime = lockRoomEndTime;
     }
 
     public String getRoomAuxiliaryStatus() {
@@ -102,7 +125,7 @@ public class RoomBO {
     }
 
     public void setRoomAuxiliaryStatus(String roomAuxiliaryStatus) {
-        this.roomAuxiliaryStatus = roomAuxiliaryStatus;
+        this.roomAuxiliaryStatus = roomAuxiliaryStatus == null ? null : roomAuxiliaryStatus.trim();
     }
 
     public String getRoomAuxiliaryStatusStand() {
@@ -110,7 +133,7 @@ public class RoomBO {
     }
 
     public void setRoomAuxiliaryStatusStand(String roomAuxiliaryStatusStand) {
-        this.roomAuxiliaryStatusStand = roomAuxiliaryStatusStand;
+        this.roomAuxiliaryStatusStand = roomAuxiliaryStatusStand == null ? null : roomAuxiliaryStatusStand.trim();
     }
 
     public String getSetting() {
@@ -118,7 +141,7 @@ public class RoomBO {
     }
 
     public void setSetting(String setting) {
-        this.setting = setting;
+        this.setting = setting == null ? null : setting.trim();
     }
 
     public String getCharacter() {
@@ -126,7 +149,7 @@ public class RoomBO {
     }
 
     public void setCharacter(String character) {
-        this.character = character;
+        this.character = character == null ? null : character.trim();
     }
 
     public Integer getCreateUserId() {
@@ -159,5 +182,45 @@ public class RoomBO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getFloorId() {
+        return floorId;
+    }
+
+    public void setFloorId(Integer floorId) {
+        this.floorId = floorId;
+    }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
+    }
+
+    public String getHotelName() {
+        return hotelName;
+    }
+
+    public void setHotelName(String hotelName) {
+        this.hotelName = hotelName;
+    }
+
+    public String getFloorName() {
+        return floorName;
+    }
+
+    public void setFloorName(String floorName) {
+        this.floorName = floorName;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
     }
 }
