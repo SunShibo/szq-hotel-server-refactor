@@ -5,6 +5,8 @@ import com.szq.hotel.dao.OrderDAO;
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import com.szq.hotel.entity.bo.OrderBO;
 import com.szq.hotel.entity.bo.OrderChildBO;
+import com.szq.hotel.entity.bo.OrderListBO;
+import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.util.IDBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,4 +56,23 @@ public class OrderService {
         }
         return 0;
     }
+
+
+    /**
+     * 订单列表
+     * @param param
+     * @return
+     */
+    public List<OrderListBO> queryOrderList(OrderParam param){
+        List<OrderListBO> orderListBOS = orderDAO.queryOrderList(param);
+        //每单首天房价
+        if(orderListBOS!=null && orderListBOS.size()>0) {
+            for (int i = 0, size = orderListBOS.size(); i < size; i++) {
+                OrderListBO orderListBO = orderListBOS.get(i);
+                orderListBO.setUnitPrice(orderDAO.queryUnitPrice(orderListBO.getId()));
+            }
+        }
+        return orderListBOS;
+    }
+
 }

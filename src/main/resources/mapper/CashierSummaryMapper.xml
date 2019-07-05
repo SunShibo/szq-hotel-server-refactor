@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 收银汇总 -->
+<mapper namespace="com.szq.hotel.dao.CashierSummaryDAO">
+
+    <!-- 添加 -->
+    <insert id="addData" useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.CashierSummaryBO">
+       INSERT INTO `hm_cashier_summary` ( `project`, `channel`, `passenger_source`, `OTA`, `room_name`,
+                                            `room_type_name`, `name`, `consumption`, `settlement`, `create_time`,
+                                             `remark`, `type`, `operator`, `order_number`)
+                                      VALUES (#{project}, #{channel}, #{passengerSource}, #{OTA}, #{roomName},
+                                              #{roomTypeName}, #{name}, #{consumption}, #{settlement}, NOW(),
+                                               #{remark},#{type},#{operator}, #{orderNumber})
+    </insert>
+
+
+    <!--查询-->
+    <select id="queryCashierSummary"  parameterType="com.szq.hotel.entity.bo.CashierSummaryBO"  parameterMap="com.szq.hotel.entity.bo.CashierSummaryBO" >
+        SELECT * FROM hm_cashier_summary  WHERE  create_time BETWEEN #{startTime} AND  #{endTime}
+        <if test="project!=null and project!='' " > AND project=#{project}  </if>
+        <if test="type!=null and type!='' " > AND `type`=#{type}  </if>
+        <if test="channel!=null and channel!='' " > AND `channel`=#{channel}  </if>
+        <if test="passengerSource!=null and passengerSource!='' " > AND `passenger_source`=#{passengerSource}  </if>
+        <if test="OTA!=null and OTA!='' " > AND `OTA`=#{OTA}  </if>
+        <if test="roomName!=null and roomName!='' " > AND `room_name`=#{roomName}  </if>
+        <if test="roomTypeName!=null and roomTypeName!='' " > AND `room_type_name`=#{roomTypeName}  </if>
+        <if test="name!=null and name!='' " > AND `name`=#{name}  </if>
+        <if test="consumption!=null" > AND `consumption`=#{consumption}  </if>
+        <if test="settlement!=null" > AND `settlement`=#{settlement}  </if>
+        <if test="remark!=null and remark!=''" > AND `remark`=#{remark}  </if>
+        <if test="operator!=null and operator!=''" > AND `operator`=#{operator}  </if>
+        <if test="orderNumber!=null and orderNumber!=''" > AND `order_number`=#{orderNumber}  </if>
+    </select>
+
+</mapper>

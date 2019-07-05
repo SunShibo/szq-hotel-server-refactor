@@ -14,7 +14,14 @@ public enum Constants {
     /* 主订单状态 : 直接入住*/ DIRECTLY("directly"),
     /* 主订单入住类型 : 全天房 */ DAY("day"),
     /* 主订单入住类型 : 钟点房 */ HOUR("hour"),
-    /* 主订单入住类型 : 免费房 */ FREE("free");
+    /* 主订单入住类型 : 免费房 */ FREE("free"),
+    /* 支付方式 : 现金 */ CASH("cash"),
+    /* 支付方式 : 银行卡 */ CART("cart"),
+    /* 支付方式 : 微信 */ WECHAT("wechat"),
+    /* 支付方式 : 支付宝 */ ALIPAY("alipay"),
+    /* 支付方式 : 其他支付 */ OTHER("other"),
+    /* 支付方式 : 储值 */ STORED("stored"),
+    /* 支付方式 : 积分 */ INTEGRAL("integral");
 
     Constants(String value) {
         this.value = value;
