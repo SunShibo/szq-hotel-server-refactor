@@ -33,6 +33,16 @@ public class ArrayUtils {
         return sb.toString();
     }
 
+    public static void asd(Integer st,Integer end){
+                for (int i = st; i <= end; i++) {
+                    String str = String.format("%012d", i);
+                    //0代表前面补零，3代表输出3位，根据需要修改即可。
+                    System.out.println(str);
+                }
+            }
+
+
+
     public static void main(String[] args) {
         ArrayList list = new ArrayList();
         list.add("1");
@@ -40,5 +50,6 @@ public class ArrayUtils {
         list.add("3");
         list.add("4");
         System.out.println(join(list.toArray(), ","));
+        asd(15,20);
     }
 }
