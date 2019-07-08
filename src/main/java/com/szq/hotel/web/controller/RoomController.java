@@ -6,9 +6,12 @@ import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.RoomService;
 import com.szq.hotel.util.JsonUtils;
+import com.szq.hotel.util.RedisConnectFactory;
+import com.szq.hotel.util.RedisTool;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Author: Bin Wang
@@ -24,6 +28,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/room")
 public class RoomController extends BaseCotroller {
+
+
 
     @Resource
     private RoomService roomService;
@@ -100,5 +106,32 @@ public class RoomController extends BaseCotroller {
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(roomTypeCountBOS)) ;
         super.safeJsonPrint(response, result);
         return;
+    }
+
+    @RequestMapping("/updateroomMajorState")
+    public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state){
+        Map<String,Object> map = new HashMap<String, Object>();
+       Jedis jedis = new Jedis();
+
+        UUID requestId = UUID.randomUUID();
+        System.err.println(requestId);
+        if(!(RedisTool.tryGetDistributedLock(jedis,"500",requestId.toString(),5000))){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("请重试")) ;
+            super.safeJsonPrint(response, result);
+            return;
+        }
+
+        map.put("id",id);
+        map.put("state", state);
+        roomService.updateroomMajorState(map);
+        /*try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功")) ;
+            super.safeJsonPrint(response, result);
+            return;
     }
 }

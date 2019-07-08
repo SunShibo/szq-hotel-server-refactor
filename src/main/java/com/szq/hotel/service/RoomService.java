@@ -56,4 +56,8 @@ public class RoomService {
         return roomDAO.queryRoomTypeCount(id);
     }
 
+    public void updateroomMajorState( Map<String, Object> map){
+        roomDAO.updateroomMajorState(map);
+    }
+
 }

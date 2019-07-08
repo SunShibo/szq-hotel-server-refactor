@@ -335,4 +335,13 @@
   hm_room,hm_room_type WHERE hm_room.room_type_id = hm_room_type.id
   AND hm_room.hotel_id = 1  GROUP BY hm_room.room_type_id
   </select>
+
+  <update id="updateroomMajorState" parameterType="java.util.Map">
+    UPDATE
+      hotel.hm_room
+    SET
+      room_major_state = #{state}
+    WHERE id = #{id} ;
+
+    </update>
 </mapper>

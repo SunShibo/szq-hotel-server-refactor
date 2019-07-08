@@ -37,4 +37,9 @@ public interface RoomDAO {
      */
     List<RoomTypeCountBO> queryRoomTypeCount(@Param("id")Integer id);
 
+    /**
+     * 修改房间状态
+     * @param map
+     */
+    void updateroomMajorState(Map<String, Object> map);
 }

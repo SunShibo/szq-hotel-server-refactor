@@ -22,7 +22,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/order")
 public class OrderController extends BaseCotroller {
+
     private static final Logger log = LoggerFactory.getLogger(OrderController.class);
+
     @Resource
     OrderService orderService;
 
@@ -127,7 +129,6 @@ public class OrderController extends BaseCotroller {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000004"));
             super.safeJsonPrint(response, result);
             log.error("addFloorException", e);
-        }
-
+         }
+       }
     }
-}

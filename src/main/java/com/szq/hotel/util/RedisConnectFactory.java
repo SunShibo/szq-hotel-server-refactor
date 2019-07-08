@@ -53,6 +53,8 @@ public class RedisConnectFactory {
         }
     }
 
+
+
     /**
      * 获取Jedis实例
      * @return
