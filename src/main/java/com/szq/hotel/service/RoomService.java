@@ -1,13 +1,18 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.dao.RoomDAO;
+import com.szq.hotel.dao.RoomRecordDAO;
 import com.szq.hotel.entity.bo.RoomBO;
+import com.szq.hotel.entity.bo.RoomRecordBO;
 import com.szq.hotel.entity.bo.RoomTypeCountBO;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.RoundingMode;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +27,8 @@ public class RoomService {
 
     @Resource
     private RoomDAO roomDAO;
+    @Resource
+    private RoomRecordDAO roomRecordDAO;
 
     public Map<String, Object> queryRoom(Map<String, Object> map){
         Map<String, Object> mp = new HashMap<String, Object>();
@@ -58,6 +65,14 @@ public class RoomService {
 
     public void updateroomMajorState( Map<String, Object> map){
         roomDAO.updateroomMajorState(map);
+        RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer)map.get("id"));
+        RoomRecordBO roomRecordBO = new RoomRecordBO();
+        roomRecordBO.setCreateTime(new Date());
+        roomRecordBO.setNewState((String)map.get("state"));
+        roomRecordBO.setVirginState(roomBO.getRoomState());
+        roomRecordBO.setRoomId(roomBO.getId());
+        roomRecordDAO.insertSelective(roomRecordBO);
+
     }
 
 }
