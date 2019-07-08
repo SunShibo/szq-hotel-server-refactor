@@ -119,7 +119,7 @@ var api = {
     , updateMainCommment: '/order/updateMainCommment'//首页房屋备注
     , updateCheckInComment: '/order/updateCheckInRemark'//首页入住房屋备注
     , cleanThe: '/roomDetailsController/cleanThe'//待打扫变空房
-    , hotelInfo: '/admin/hotelInfo'//权限页酒店list
+    , hotelInfo: '/hotel/queryLoginHotel'//权限页酒店list
     , hotel: '/OrderManage/hotel'//权限页酒店list
     , detail: '/admin/detail'//权限列表
     , getReport: '/room/todayPictureView?v=1'
@@ -415,11 +415,7 @@ function DateToLStr4(dt) {
 
 //判断字符是否为空的方法
 function isEmpty(obj) {
-    if (typeof obj == "undefined" || obj == null || obj == "") {
-        return true;
-    } else {
-        return false;
-    }
+    return typeof obj === "undefined" || obj == null || obj === "";
 }
 
 function renderSelect(id, key, value, url, f, callback) {
@@ -496,6 +492,33 @@ function no() {
     parent.layer.close(parent.layer.getFrameIndex(window.name));
 }
 
+//根据后台数据格式化菜单
+function formatMenu(data) {
+    return data.map(function(item) {
+        if(!item){
+            return null;
+        }
+        var path = item.index, name = item.menuName, icon = item.icon;
+
+        var result = {
+            path: path,
+            name: name,
+            icon: icon
+        };
+
+        if(item.pid > 0){
+            result.exact = true;
+        }
+
+        if(item.ch){
+            const children = formatMenuData(item.ch);
+            result.children = children;
+        }
+        return result;
+    }).filter(function (item) {return item});
+}
+
+//渲染菜单
 function renderMenu($, e) {
     var m = $("#navMenu");
     m.empty();
