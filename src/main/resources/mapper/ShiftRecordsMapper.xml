@@ -41,13 +41,15 @@
     </select>
 
     <!--找出-->
-    <select id="queryBack"  parameterType="java.lang.Map"  resultType="java.math.BigDecimal" >
-        SELECT SUM(settlement)  FROM `hm_cashier_summary` WHERE `type`=#{payType} AND
+    <select id="queryBack"  parameterType="java.util.Map"  resultType="java.math.BigDecimal" >
+        SELECT SUM(settlement)  FROM `hm_cashier_summary` su LEFT JOIN hm_admin  admin ON admin.id=su.user_id
+        WHERE  admin.id=#{userId}  AND    `type`=#{payType} AND
         create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement &lt; 0
     </select>
     <!--收入-->
-    <select id="queryIncome"  parameterType="java.lang.Map"  resultType="java.math.BigDecimal" >
-        SELECT SUM(settlement)  FROM `hm_cashier_summary` WHERE `type`=#{payType} AND
+    <select id="queryIncome"  parameterType="java.util.Map"  resultType="java.math.BigDecimal" >
+       SELECT SUM(settlement)  FROM `hm_cashier_summary` su LEFT JOIN hm_admin  admin ON admin.id=su.user_id
+        WHERE  admin.id=#{userId}  AND    `type`=#{payType} AND
         create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement > 0
     </select>
 

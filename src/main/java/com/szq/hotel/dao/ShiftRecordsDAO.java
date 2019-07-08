@@ -41,6 +41,7 @@ public interface ShiftRecordsDAO {
      *   startTime 上班时间
      *   endTime 下班时间
      *   payType 支付方式
+     *   userId  用户id
      */
     BigDecimal queryIncome(Map<String,Object> map);
     /**
@@ -48,6 +49,7 @@ public interface ShiftRecordsDAO {
      *   startTime 上班时间
      *   endTime 下班时间
      *   payType 支付方式
+     *   userId  用户id
      */
     BigDecimal  queryBack(Map<String,Object> map);
 }
