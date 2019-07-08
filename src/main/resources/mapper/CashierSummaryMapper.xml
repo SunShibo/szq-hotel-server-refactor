@@ -17,7 +17,7 @@
 
 
     <!--查询-->
-    <select id="queryCashierSummary"  parameterType="com.szq.hotel.entity.bo.CashierSummaryBO"  parameterMap="com.szq.hotel.entity.bo.CashierSummaryBO" >
+    <select id="queryCashierSummary"  parameterType="com.szq.hotel.entity.bo.CashierSummaryBO"  resultType="com.szq.hotel.entity.bo.CashierSummaryBO" >
         SELECT * FROM hm_cashier_summary  WHERE  create_time BETWEEN #{startTime} AND  #{endTime}
         <if test="project!=null and project!='' " > AND project=#{project}  </if>
         <if test="type!=null and type!='' " > AND `type`=#{type}  </if>
