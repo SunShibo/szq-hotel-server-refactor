@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.MemberCardDAO">
+    <!--批量添加会员卡-->
+    <insert id="addMemberCard" parameterType="com.szq.hotel.entity.bo.MemberCardBO">
+        INSERT INTO `hm_member_card` (`member_level_id`,`card_number`,`money`,`state`)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+        (#{memberLevelId},#{item},#{money},'unsold')
+        </foreach>
+    </insert>
+    <!--Excel导入测试-->
+    <insert id="addMemberCardTest" parameterType="com.szq.hotel.entity.bo.MemberCardBO">
+        INSERT INTO `hm_member_card` (`member_level_id`,`card_number`,`money`,`state`)
+        VALUES (#{memberLevelId},#{item},#{money},'unsold')
+    </insert>
+    <!--查询会员卡是否存在-->
+    <select id="queryCartByCartList" resultType="com.szq.hotel.entity.bo.MemberCardBO" parameterType="list">
+        SELECT  * FROM  `hm_member_card` WHERE
+        1=1
+        AND
+        <foreach item="list" collection="list" open="card_number in ("
+                 separator="," close=")">
+            #{list}
+        </foreach>
+    </select>
+    <!--修改会员卡-->
+    <update id="updateMemberCard" parameterType="com.szq.hotel.entity.bo.MemberCardBO">
+        UPDATE `hm_member_card`
+        <set>
+            <if test="memberLevelId!=null and memberLevelId !=''" >   `member_level_id`=#{memberLevelId},  </if>
+            <if test="state!=null and state !=''" >   `state`=#{state},  </if>
+            <if test="money!=null " >    `money`=#{money}, </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <!--查询会员卡信息-->
+    <select id="selectMemberCard" resultType="com.szq.hotel.entity.bo.MemberCardBO" parameterType="java.util.Map">
+        SELECT * FROM `hm_member_card`
+        <where>
+            state!='no'
+            <if test="state!=null and state!=''">AND `state`=#{state}</if>
+            <if test="memberLevelId!=null ">AND `member_level_id`=#{memberLevelId}</if>
+            <if test="money!=null ">AND `money`=#{money}</if>
+            <if test="cardNumber!=null and cardNumber!=''">AND `card_number` LIKE concat('%',#{cardNumber},'%')</if>
+        </where>
+        <include refid="limit" />
+    </select>
+    <!--查询条数-->
+    <select id="getCount"  parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM `hm_member_card`
+        <where>
+            state!='no'
+            <if test="state!=null and state!=''">AND `state`=#{state}</if>
+            <if test="memberLevelId!=null ">AND `member_level_id`=#{memberLevelId}</if>
+            <if test="money!=null ">AND `money`=#{money}</if>
+            <if test="cardNumber!=null and cardNumber!=''">AND `card_number` LIKE concat('%',#{cardNumber},'%')</if>
+        </where>
+        <include refid="limit" />
+    </select>
+    <!--分页查询-->
+    <sql id="limit">
+        limit #{pageOffset},#{pageSize}
+    </sql>
+    <!--通过id查询会员卡-->
+    <select id="queryMemberCardById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberCardBO">
+        SELECT * FROM `hm_member_card` WHERE id=#{id}
+    </select>
+
+
+</mapper>

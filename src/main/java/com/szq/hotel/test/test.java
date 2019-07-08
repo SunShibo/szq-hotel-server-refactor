@@ -1,9 +1,11 @@
 package com.szq.hotel.test;
 
 import com.alibaba.fastjson.JSON;
+import com.szq.hotel.entity.bo.CheckInPersonBO;
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import com.szq.hotel.entity.bo.OrderChildBO;
 import com.szq.hotel.util.JsonUtils;
+import com.szq.hotel.web.controller.OrderController;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,9 +29,27 @@ public class test {
         everydayRoomPriceBO2.setTime(new Date());
         everydayRoomPriceBOList.add(everydayRoomPriceBO2);
         childBO.setEverydayRoomPriceBOS(everydayRoomPriceBOList);
+
+        CheckInPersonBO checkInPersonBO=new CheckInPersonBO();
+        checkInPersonBO.setName("男1");
+        checkInPersonBO.setGender("男");
+        checkInPersonBO.setPhone("6666");
+        checkInPersonBO.setCertificateNumber("66666");
+        checkInPersonBO.setRemark("男1的备注");
+        CheckInPersonBO checkInPersonBO2=new CheckInPersonBO();
+        checkInPersonBO2.setName("女1");
+        checkInPersonBO2.setGender("女");
+        checkInPersonBO2.setPhone("55555");
+        checkInPersonBO2.setCertificateNumber("5555555");
+        checkInPersonBO2.setRemark("女1的备注");
+        List<CheckInPersonBO> checkInPersonBOS=new ArrayList<CheckInPersonBO>();
+        checkInPersonBOS.add(checkInPersonBO);
+        checkInPersonBOS.add(checkInPersonBO2);
+        childBO.setCheckInPersonBOS(checkInPersonBOS);
         OrderChildBOList.add(childBO);
 
         OrderChildBO childBO2=new OrderChildBO();
+
         childBO2.setRoomId(2);
         childBO2.setRoomTypeId(2);
         childBO2.setRemark("大床房的备注");
@@ -43,8 +63,26 @@ public class test {
         everydayRoomPriceBO4.setTime(new Date());
         everydayRoomPriceBOList2.add(everydayRoomPriceBO4);
         childBO2.setEverydayRoomPriceBOS(everydayRoomPriceBOList2);
-        OrderChildBOList.add(childBO2);
 
+
+
+        CheckInPersonBO checkInPersonBO3=new CheckInPersonBO();
+        checkInPersonBO3.setName("男3");
+        checkInPersonBO3.setGender("男");
+        checkInPersonBO3.setPhone("33333");
+        checkInPersonBO3.setCertificateNumber("33333");
+        checkInPersonBO3.setRemark("男3的备注");
+        CheckInPersonBO checkInPersonBO4=new CheckInPersonBO();
+        checkInPersonBO4.setName("女4");
+        checkInPersonBO4.setGender("女");
+        checkInPersonBO4.setPhone("55555");
+        checkInPersonBO4.setCertificateNumber("5555555");
+        checkInPersonBO4.setRemark("女4的备注");
+        List<CheckInPersonBO> checkInPersonBOS2=new ArrayList<CheckInPersonBO>();
+        checkInPersonBOS2.add(checkInPersonBO3);
+        checkInPersonBOS2.add(checkInPersonBO4);
+        childBO2.setCheckInPersonBOS(checkInPersonBOS2);
+        OrderChildBOList.add(childBO2);
         String json= JSON.toJSONString(OrderChildBOList);
         System.err.println(json);
 
@@ -61,5 +99,10 @@ public class test {
             }
 
         }
+    }
+
+    public static void main2(String args[]){
+        OrderController orderController=new OrderController();
+        //System.err.println(orderController.getDate());
     }
 }

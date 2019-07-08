@@ -246,6 +246,7 @@ public class BaseCotroller {
     public AdminBO getLoginAdmin (HttpServletRequest request ) {
         AdminBO adminBO = new AdminBO();
         adminBO.setId(1);
+        adminBO.setHotelId(1);
         return adminBO;
        // return (AdminBO) this.getSession(request, SysConstants.CURRENT_LOGIN_USER) ;
     }

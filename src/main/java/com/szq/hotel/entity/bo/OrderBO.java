@@ -4,6 +4,7 @@ import com.szq.hotel.common.base.BaseModel;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class OrderBO extends BaseModel {
     private Integer id;//订单表
@@ -27,6 +28,16 @@ public class OrderBO extends BaseModel {
     private BigDecimal totalPrice;//总房价
     private Date createTime;
     private Date updateTime;
+
+    private List<OrderChildBO> orderChildBOS;
+
+    public List<OrderChildBO> getOrderChildBOS() {
+        return orderChildBOS;
+    }
+
+    public void setOrderChildBOS(List<OrderChildBO> orderChildBOS) {
+        this.orderChildBOS = orderChildBOS;
+    }
 
     public Integer getId() {
         return id;

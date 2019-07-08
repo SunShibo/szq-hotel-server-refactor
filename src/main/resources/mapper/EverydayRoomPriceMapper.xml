@@ -5,6 +5,7 @@
 <!-- 每日房价 -->
 <mapper namespace="com.szq.hotel.dao.EverydayRoomPriceDAO">
 
+    <!-- 添加房价 -->
     <insert id="addEverydayRoomPrice"  parameterType="com.szq.hotel.entity.bo.EverydayRoomPriceBO">
        insert into hm_everyday_room_price
         (order_child_id,`time`,money)
@@ -12,5 +13,14 @@
         (#{orderChildId},#{time},#{money})
     </insert>
 
+    <!-- 根据订单查询每日房价 -->
+    <select id="getEverydayRoomById" resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO" parameterType="java.lang.Integer">
+        select * from hm_everyday_room_price where order_child_id=#{id}
+    </select>
+
+    <!--  根据子订单删除每日房价 -->
+    <delete id="delEverydayRoomById" parameterType="java.lang.Integer">
+        delete from hm_everyday_room_price where order_child_id=#{id}
+    </delete>
 
 </mapper>

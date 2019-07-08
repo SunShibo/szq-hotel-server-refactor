@@ -21,14 +21,41 @@ public class OrderChildBO extends BaseModel {
     private String orderState;//订单状态
     private Date practicalDepartureTime;//实际离店时间
     private Integer roomId;//房间id
+    private String roomName;//房间号
     private Integer roomTypeId;//房型id
+    private String roomTypeName;//房型名字
     private String alRoomCode;//联房识别码
-
     private String nightAuditorState;//夜审状态
     private String printState;//打印状态（备用字段）
     private String remark;//备注
+    private List<EverydayRoomPriceBO> everydayRoomPriceBOS;//每日房价信息
+    private List<CheckInPersonBO> checkInPersonBOS;//入住人员信息
 
-    List<EverydayRoomPriceBO> everydayRoomPriceBOS;//每日房价信息
+    public List<CheckInPersonBO> getCheckInPersonBOS() {
+        return checkInPersonBOS;
+    }
+
+    public void setCheckInPersonBOS(List<CheckInPersonBO> checkInPersonBOS) {
+        this.checkInPersonBOS = checkInPersonBOS;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public String getRoomTypeName() {
+        return roomTypeName;
+    }
+
+    public void setRoomTypeName(String roomTypeName) {
+        this.roomTypeName = roomTypeName;
+    }
+
+
 
     public List<EverydayRoomPriceBO> getEverydayRoomPriceBOS() {
         return everydayRoomPriceBOS;
