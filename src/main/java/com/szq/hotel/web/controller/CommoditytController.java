@@ -73,7 +73,7 @@ public class CommoditytController extends BaseCotroller {
 
             commodiryService.addCommodiry(payType,consumptionType,money,info,orderNumber,loginAdmin.getId(),loginAdmin.getHotelId());
             //判断支付类型
-            cashierSummaryService.addCommodity(payType,money,info,consumptionType,orderNumber,loginAdmin.getName());
+            cashierSummaryService.addCommodity(payType,money,info,consumptionType,orderNumber,loginAdmin.getId());
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);

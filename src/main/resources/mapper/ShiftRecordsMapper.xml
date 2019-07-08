@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 交班 -->
+<mapper namespace="com.szq.hotel.dao.ShiftRecordsDAO">
+
+    <!--查询是否存在-->
+    <select id="queryIsExist"  parameterType="java.lang.Integer" resultType="java.lang.Integer" >
+        SELECT id  FROM `hm_shift_records` WHERE admin_id=#{userId}  AND closing_time IS NULL  ORDER BY id limt 0,1
+    </select>
+
+    <!--上班-->
+    <insert id="addShiftRecords" parameterType="com.szq.hotel.entity.bo.ShiftRecordsBO" >
+        INSERT INTO`hm_shift_records` ( `classes_id`, `admin_id`, `general_income`, `cash_income`, `cash_back`,
+                                        `cash_amount`, `bank_card_income`, `bank_card_back`, `bank_card_amount`, `wechat_income`,
+                                         `wechat_back`, `wechat_amount`, `alipay_income`, `alipay_back`, `alipay_amount`,
+                                         `integral_income`, `integral_spend`, `integral_amount`, `stored_value_income`, `stored_value_back`,
+                                          `stored_value_amount`, `member_card_sell_count`, `attendance_time`, `closing_time`)
+                                VALUES (#{classesId}, #{adminId},#{generalIncome}, #{cashIncome}, #{cashBack},
+                                         #{cashAmount},#{bankCardIncome}, #{bankCardBack}, #{bankCardAmount}, #{wechatIncome},
+                                         #{wechatBack}, #{wechatAmount}, #{alipayIncome}, #{alipayBack}, #{alipayAmount},
+                                          #{integralIncome}, #{integralSpend}, #{integralAmount}, #{storedValueIncome}, #{storedValueBack},
+                                           #{storedValueAmount}, #{memberCardSellCount},NOW(),#{closingTime})
+    </insert>
+
+    <!--交班-->
+    <update id="updateShiftRecords"  parameterType="com.szq.hotel.entity.bo.ShiftRecordsBO"  >
+        UPDATE `hm_shift_records` SET  `general_income`=#{generalIncome}, `cash_income`=#{cashIncome}, `cash_back`=#{cashBack}, `cash_amount`=#{cashAmount},
+                                        `bank_card_income`=#{bankCardIncome}, `bank_card_back`=#{bankCardBack}, `bank_card_amount`=#{bankCardAmount}, `wechat_income`=#{wechatIncome},
+                                        `wechat_back`=#{wechatBack},`integral_income`=#{integralIncome},`stored_value_amount`=#{storedValueAmount},
+                                         `wechat_amount`=#{wechatAmount}, `alipay_income`=#{alipayIncome}, `alipay_back`=#{alipayBack}, `alipay_amount`=#{alipayAmount},
+                                         `integral_spend`=#{integralSpend}, `integral_amount`=#{integralAmount}, `stored_value_income`=#{storedValueIncome}, `stored_value_back`=#{storedValueBack},
+                                          `member_card_sell_count`=#{memberCardSellCount},  `closing_time`=NOW()
+                                    WHERE `id`= #{id}
+    </update>
+
+    <!--通过id查询交班记录-->
+    <select id="queryShiftRecordsById"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.ShiftRecordsBO" >
+        SELECT *  FROM `hm_shift_records` WHERE id=#{id}
+    </select>
+
+    <!--找出-->
+    <select id="queryBack"  parameterType="java.lang.Map"  resultType="java.math.BigDecimal" >
+        SELECT SUM(settlement)  FROM `hm_cashier_summary` WHERE `type`=#{payType} AND
+        create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement &lt; 0
+    </select>
+    <!--收入-->
+    <select id="queryIncome"  parameterType="java.lang.Map"  resultType="java.math.BigDecimal" >
+        SELECT SUM(settlement)  FROM `hm_cashier_summary` WHERE `type`=#{payType} AND
+        create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement > 0
+    </select>
+
+
+
+</mapper>

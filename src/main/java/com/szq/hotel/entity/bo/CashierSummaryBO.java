@@ -23,11 +23,11 @@ public class CashierSummaryBO  extends BaseModel{
     private BigDecimal settlement=new BigDecimal("0");//结算
     private Date createTime;//发生日期
     private String remark;//备注
-    private String operator;//操作员
+    private Integer userId;//操作员
     private String orderNumber;//订单号
     private Date startTime;//查询条件
     private Date endTime;//
-
+    private String operator;
 
     public Date getStartTime() {
         return startTime;
@@ -149,12 +149,13 @@ public class CashierSummaryBO  extends BaseModel{
         this.type = type;
     }
 
-    public String getOperator() {
-        return operator;
+
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setOperator(String operator) {
-        this.operator = operator;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getOrderNumber() {
@@ -165,5 +166,11 @@ public class CashierSummaryBO  extends BaseModel{
         this.orderNumber = orderNumber;
     }
 
+    public String getOperator() {
+        return operator;
+    }
 
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
 }

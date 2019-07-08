@@ -247,6 +247,7 @@ public class BaseCotroller {
         AdminBO adminBO = new AdminBO();
         adminBO.setId(1);
         adminBO.setHotelId(1);
+        adminBO.setName("系统");
         return adminBO;
        // return (AdminBO) this.getSession(request, SysConstants.CURRENT_LOGIN_USER) ;
     }
