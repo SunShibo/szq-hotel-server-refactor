@@ -329,4 +329,10 @@
       #{item}
     </foreach>
   </update>
+
+  <select id="queryRoomTypeCount" resultType="com.szq.hotel.entity.bo.RoomTypeCountBO">
+      SELECT  COUNT(1) AS `count` ,room_type_id, room_type_name FROM
+  hm_room,hm_room_type WHERE hm_room.room_type_id = hm_room_type.id
+  AND hm_room.hotel_id = 1  GROUP BY hm_room.room_type_id
+  </select>
 </mapper>

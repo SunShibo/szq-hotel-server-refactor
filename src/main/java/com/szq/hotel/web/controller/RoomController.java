@@ -1,6 +1,7 @@
 package com.szq.hotel.web.controller;
 
 import com.szq.hotel.entity.bo.RoomBO;
+import com.szq.hotel.entity.bo.RoomTypeCountBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.RoomService;
@@ -13,6 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -92,5 +94,11 @@ public class RoomController extends BaseCotroller {
         return;
     }
 
-
+    @RequestMapping("/queryRoomTypeCount")
+    public void queryRoomTypeCount(HttpServletRequest request, HttpServletResponse response, Integer id){
+        List<RoomTypeCountBO> roomTypeCountBOS = roomService.queryRoomTypeCount(id);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(roomTypeCountBOS)) ;
+        super.safeJsonPrint(response, result);
+        return;
+    }
 }

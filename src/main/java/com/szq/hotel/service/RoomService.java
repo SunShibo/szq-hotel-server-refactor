@@ -2,6 +2,8 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.dao.RoomDAO;
 import com.szq.hotel.entity.bo.RoomBO;
+import com.szq.hotel.entity.bo.RoomTypeCountBO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +50,10 @@ public class RoomService {
 
     public void updatelockRoomOpen(Integer[] idArr){
         roomDAO.updatelockRoomState(idArr);
+    }
+
+    public List<RoomTypeCountBO> queryRoomTypeCount(Integer id){
+        return roomDAO.queryRoomTypeCount(id);
     }
 
 }
