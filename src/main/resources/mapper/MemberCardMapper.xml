@@ -81,6 +81,19 @@
     <select id="queryMemberCardById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberCardBO">
         SELECT * FROM `hm_member_card` WHERE id=#{id}
     </select>
+    <!--导出会员卡-->
+    <select id="exportMemberCard" resultType="com.szq.hotel.entity.bo.MemberCardResultBO" parameterType="java.util.Map">
+        SELECT mc.card_number,mc.money,mc.selling_time,mc.state,ml.`name`
+        FROM hm_member_card mc
+        LEFT JOIN hm_member_level ml ON mc.member_level_id = ml.id
+        <where>
+            mc.state!='no'
+            <if test="state!=null and state!=''">AND mc.`state`=#{state}</if>
+            <if test="name!=null ">AND ml.`name`=#{name}</if>
+            <if test="money!=null ">AND mc.`money`=#{money}</if>
+            <if test="cardNumber!=null and cardNumber!=''">AND mc.`card_number` LIKE concat('%',#{cardNumber},'%')</if>
+        </where>
+    </select>
 
 
 </mapper>

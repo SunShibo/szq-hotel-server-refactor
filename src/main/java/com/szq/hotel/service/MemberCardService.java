@@ -3,6 +3,7 @@ package com.szq.hotel.service;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberCardDAO;
 import com.szq.hotel.entity.bo.MemberCardBO;
+import com.szq.hotel.entity.bo.MemberCardResultBO;
 import com.szq.hotel.util.ObjectUtil;
 import com.szq.hotel.util.ReadExcelUtil;
 import com.szq.hotel.web.controller.MemberCardController;
@@ -77,6 +78,12 @@ public class MemberCardService {
      */
     public List<MemberCardBO> conditionSelectMemberCard(Map<String,Object> map){
         return memberCardDAO.conditionSelectMemberCard(map);
+    }
+    /*
+        导出会员卡
+     */
+    public List<MemberCardResultBO> exportMemberCard(Map<String,Object> map){
+        return memberCardDAO.exportMemberCard(map);
     }
     /*
         查询条数

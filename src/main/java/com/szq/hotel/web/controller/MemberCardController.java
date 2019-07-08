@@ -1,6 +1,7 @@
 package com.szq.hotel.web.controller;
 import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.MemberCardBO;
+import com.szq.hotel.entity.bo.MemberCardResultBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.MemberCardService;
@@ -278,7 +279,7 @@ public class MemberCardController extends BaseCotroller {
      * @return
      */
     @RequestMapping("/exportMemberCard")
-    public void download(Integer memberLevelId,BigDecimal money,Integer cardNumber,String state,HttpServletResponse response, HttpServletRequest request){
+    public void download(String name,BigDecimal money,Integer cardNumber,String state,HttpServletResponse response, HttpServletRequest request){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -301,7 +302,7 @@ public class MemberCardController extends BaseCotroller {
             }
 
             String[] titles = { "卡号", "价格", "会员卡级别id", "卡状态" ,"售出时间"};
-            export(titles, out,state,memberLevelId,money,cardNumber);
+            export(titles, out,state,name,money,cardNumber);
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             safeTextPrint(response, json);
         } catch (Exception e) {
@@ -313,7 +314,7 @@ public class MemberCardController extends BaseCotroller {
     }
 
 
-    public void export(String[] titles, ServletOutputStream out,String state,Integer memberLevelId,BigDecimal money,Integer cardNumber) throws Exception{
+    public void export(String[] titles, ServletOutputStream out,String state,String name,BigDecimal money,Integer cardNumber) throws Exception{
 
         try{
             // 第一步，创建一个workbook，对应一个Excel文件
@@ -340,11 +341,11 @@ public class MemberCardController extends BaseCotroller {
             // 第五步，写入实体数据 从数据库查出来大的集合
             Map<String,Object> map=new HashMap<String, Object>();
             map.put("state",state);
-            map.put("memberLevelId",memberLevelId);
+            map.put("name",name);
             map.put("money",money);
             map.put("cardNumber",cardNumber);
 
-            List<MemberCardBO> list = memberCardService.conditionSelectMemberCard(map);
+            List<MemberCardResultBO> list = memberCardService.exportMemberCard(map);
 
             if(list==null){
                 return;
@@ -354,40 +355,40 @@ public class MemberCardController extends BaseCotroller {
             for (int i = 0; i < list.size(); i++) {
                 row = hssfSheet.createRow(i+1);
                 //  Vehicle vehicle = list.get(i);
-                MemberCardBO memberCardBO =list.get(i);
+                MemberCardResultBO memberCardResultBO =list.get(i);
                 // 第六步，创建单元格，并设置值
                 //卡号
                 String  cartNumber = "";
-                if(memberCardBO.getCardNumber()!= null){
-                    cartNumber= memberCardBO.getCardNumber();
+                if(memberCardResultBO.getCardNumber()!= null){
+                    cartNumber= memberCardResultBO.getCardNumber();
                 }
                 row.createCell(0).setCellValue(cartNumber);
 
                 //价格
                 String Money = "";
-                if( memberCardBO.getMoney()!= null){
+                if( memberCardResultBO.getMoney()!= null){
 
-                    Money= memberCardBO.getMoney().toString();
+                    Money= memberCardResultBO.getMoney().toString();
                 }
                 row.createCell(1).setCellValue(Money);
 
-                //会员卡级别id
-                String memberCardLevelId = "";
-                if( memberCardBO.getMemberLevelId() != null){
-                    memberCardLevelId= memberCardBO.getMemberLevelId() .toString();
+                //会员卡级别名称
+                String Name = "";
+                if( memberCardResultBO.getName() != null){
+                    Name= memberCardResultBO.getName() .toString();
                 }
-                row.createCell(2).setCellValue(memberCardLevelId);
+                row.createCell(2).setCellValue(Name);
 
                 //卡状态
                 String cardState = "";
-                if( memberCardBO.getState() != null){
-                    if ("unsold".equals(memberCardBO.getState())){
+                if( memberCardResultBO.getState() != null){
+                    if ("unsold".equals(memberCardResultBO.getState())){
                         cardState="未售出";
                     }
-                    if ("use".equals(memberCardBO.getState())){
+                    if ("use".equals(memberCardResultBO.getState())){
                         cardState="使用中";
                     }
-                    if ("freeze".equals(memberCardBO.getState())){
+                    if ("freeze".equals(memberCardResultBO.getState())){
                         cardState="冻结";
                     }
                 }
@@ -396,8 +397,8 @@ public class MemberCardController extends BaseCotroller {
 
                 //会员卡售出时间
                 String sellingTime = "";
-                if( memberCardBO.getSellingTime() != null){
-                    Date date= memberCardBO.getSellingTime();
+                if( memberCardResultBO.getSellingTime() != null){
+                    Date date= memberCardResultBO.getSellingTime();
                     SimpleDateFormat simp=new SimpleDateFormat("yyyy-MM-dd");
                     sellingTime=simp.format(date);
 

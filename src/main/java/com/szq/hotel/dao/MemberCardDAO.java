@@ -2,6 +2,7 @@ package com.szq.hotel.dao;
 
 
 import com.szq.hotel.entity.bo.MemberCardBO;
+import com.szq.hotel.entity.bo.MemberCardResultBO;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,10 @@ public interface MemberCardDAO {
         条件查询会员卡
      */
     List<MemberCardBO> conditionSelectMemberCard(Map<String,Object> map);
+    /*
+        导出会员卡
+     */
+    List<MemberCardResultBO> exportMemberCard(Map<String,Object> map);
     /*
         查询条数
      */
