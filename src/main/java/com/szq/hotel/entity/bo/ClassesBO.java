@@ -14,6 +14,7 @@ public class ClassesBO {
     private Date createTime;//创建时间
     private Integer updateUserId;//修改人id
     private Date updateTime;//修改时间
+    private Integer hotelId;//酒店id
 
     public Integer getId() {
         return id;
@@ -77,5 +78,13 @@ public class ClassesBO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
     }
 }

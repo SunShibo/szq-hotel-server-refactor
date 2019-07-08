@@ -10,25 +10,26 @@ public class CommodityBO {
     private Integer id;
     private String orderNumber;//订单号
     private Date createTime;//创建时间
-    private String payStpe;//支付方式
+    private String payType;//支付方式
     private String consumeType;//消费方式
     private BigDecimal money;//金额
     private Integer createUserId;//操作员id
     private String consumptionDetails;//交易详情
     private Integer hotelId;//酒店id
-    private Integer name;//操作员名字
+    private String name;//操作员名字
     public CommodityBO() {}
 
 
-    public CommodityBO( String orderNumber, String payStpe, String consumeType, BigDecimal money, Integer createUserId, String consumptionDetails,Integer hotelId) {
+    public CommodityBO( String orderNumber, String payType, String consumeType, BigDecimal money, Integer createUserId, String consumptionDetails,Integer hotelId) {
         this.orderNumber = orderNumber;
-        this.payStpe = payStpe;
+        this.payType = payType;
         this.consumeType = consumeType;
         this.money = money;
         this.createUserId = createUserId;
         this.consumptionDetails = consumptionDetails;
         this.hotelId=hotelId;
     }
+
 
     public Integer getId() {
         return id;
@@ -54,12 +55,12 @@ public class CommodityBO {
         this.createTime = createTime;
     }
 
-    public String getPayStpe() {
-        return payStpe;
+    public String getPayType() {
+        return payType;
     }
 
-    public void setPayStpe(String payStpe) {
-        this.payStpe = payStpe;
+    public void setPayType(String payType) {
+        this.payType = payType;
     }
 
     public String getConsumeType() {
@@ -102,11 +103,11 @@ public class CommodityBO {
         this.hotelId = hotelId;
     }
 
-    public Integer getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(Integer name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -116,11 +117,13 @@ public class CommodityBO {
                 "id=" + id +
                 ", orderNumber='" + orderNumber + '\'' +
                 ", createTime=" + createTime +
-                ", payStpe='" + payStpe + '\'' +
+                ", payType='" + payType + '\'' +
                 ", consumeType='" + consumeType + '\'' +
                 ", money=" + money +
                 ", createUserId=" + createUserId +
                 ", consumptionDetails='" + consumptionDetails + '\'' +
+                ", hotelId=" + hotelId +
+                ", name=" + name +
                 '}';
     }
 }

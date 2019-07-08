@@ -126,8 +126,14 @@ public class CommoditytController extends BaseCotroller {
             queryMap.put("condition", condition);
             queryMap.put("hotelId", loginAdmin.getHotelId());
 
+
+
             List<CommodityBO> commodityBOS = commodiryService.queryCommodiry(queryMap);
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(commodityBOS));
+            int count = commodiryService.queryCommodiryCount(queryMap);
+            Map<String,Object>  resultMap=new HashMap<String, Object>();
+            resultMap.put("data",commodityBOS);
+            resultMap.put("count",count);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;

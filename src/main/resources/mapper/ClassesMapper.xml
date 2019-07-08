@@ -2,11 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- 【用户】 -->
+<!-- 班次 -->
 <mapper namespace="com.szq.hotel.dao.ClassesDAO">
-    <select id="getAllClassesBO" resultType="com.szq.hotel.entity.bo.ClassesBO">
-        select * from hm_classes
-    </select>
 
+    <!--添加班次-->
+    <insert id="addClasses"  parameterType="com.szq.hotel.entity.bo.ClassesBO" >
+      INSERT INTO `hm_classes` ( `classes_name`, `start_time`, `end_time`, `create_user_id`, `create_time`,
+                                  `update_user_id`, `update_time`, `hotel_id`)
+                         VALUES ( #{classesName} ,#{startTime},#{endTime}, #{createUserId},NOW(), #{updateUserId}, #{updateTime}, #{hotelId});
+    </insert>
+    <!--修改班次-->
+    <update id="updateClasses"  parameterType="com.szq.hotel.entity.bo.ClassesBO">
+        UPDATE .`hm_classes` SET  `classes_name`=#{classesName}, `start_time`=#{startTime}, `end_time`=#{endTime},
+                 `update_user_id`=#{updateUserId}, `update_time`=NOW()
+         WHERE  id =#{id}
+    </update>
+    <!--删除班次-->
+    <insert id="deleteClasses"  parameterType="map" >
+        DELETE  FROM  `hm_classes`  where id=#{id}
+    </insert>
+
+    <!--查询班次-->
+    <select id="queryClasses"  resultType="com.szq.hotel.entity.bo.ClassesBO">
+        SELECT *  FROM  hm_classes
+        <where>
+            <if test="hotelId!=null">
+               hotel_id = #{hotelId}
+            </if>
+        </where>
+        ORDER BY start_time  ASC
+    </select>
 
 </mapper>

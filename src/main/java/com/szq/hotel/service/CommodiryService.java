@@ -1,9 +1,7 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.dao.CommodiryDAO;
-import com.szq.hotel.dao.FloorDAO;
 import com.szq.hotel.entity.bo.CommodityBO;
-import com.szq.hotel.entity.bo.FloorBO;
 import com.szq.hotel.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +48,16 @@ public class CommodiryService {
         List<CommodityBO> commodityBOS = commodiryDAO.queryCommodiry(map);
         log.info("end queryCommodiry..........................");
         return commodityBOS;
+    }
+
+    /**
+     * 查询记录数
+     * @param map
+     * @return
+     */
+    public  int queryCommodiryCount(Map<String,Object> map){
+        return commodiryDAO.queryCommodiryCount(map);
+
     }
 
 }

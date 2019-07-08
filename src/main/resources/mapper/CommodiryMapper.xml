@@ -21,7 +21,7 @@
         WHERE
           hotel_id = #{hotelId}
           <if test="startTime !=null and endTime!=null " >
-              com.create_time  BETWEEN #{startTime}  AND  #{endTime}
+             AND   com.create_time  BETWEEN #{startTime}  AND  #{endTime}
           </if>
          <if test="condition!=null and condition!=''" >
              AND  (consume_type LIKE '%${condition}%'
@@ -32,9 +32,24 @@
          ORDER BY com.create_time  DESC  <include refid="limit" />
     </select>
 
-    <sql id="limit">
-        limit #{pageNo},#{pageSize}
-    </sql>
+    <!--查询商品交易-->
+    <select id="queryCommodiryCount"  parameterType="java.util.Map"  resultType="int" >
+        SELECT count(com.id)   FROM `hm_commodity_transaction` com LEFT JOIN hm_admin admin ON   admin.id=com.create_user_id
+        WHERE
+        hotel_id = #{hotelId}
+        <if test="startTime !=null and endTime!=null " >
+            AND   com.create_time  BETWEEN #{startTime}  AND  #{endTime}
+        </if>
+        <if test="condition!=null and condition!=''" >
+            AND  (consume_type LIKE '%${condition}%'
+            OR  admin.`name` LIKE '%${condition}%'
+            OR  order_number  LIKE '%${condition}%'
+            OR  consumption_details  LIKE '${condition}%' )
+        </if>
+    </select>
 
+    <sql id="limit">
+        limit #{pageOffset},#{pageSize}
+    </sql>
 
 </mapper>

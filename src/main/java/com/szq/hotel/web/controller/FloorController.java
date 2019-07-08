@@ -100,7 +100,7 @@ public class FloorController extends BaseCotroller {
 
         }catch (Exception e){
             log.error("deleteHotelException",e);
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;
@@ -141,7 +141,7 @@ public class FloorController extends BaseCotroller {
 
         }catch (Exception e){
             e.getStackTrace();
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
             log.error("updateHotel",e);
         }
@@ -179,7 +179,7 @@ public class FloorController extends BaseCotroller {
 
         }catch (Exception e){
             e.getStackTrace();
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
             log.error("addHotelException",e);
         }
