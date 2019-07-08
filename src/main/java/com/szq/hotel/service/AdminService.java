@@ -8,6 +8,7 @@ import com.szq.hotel.entity.bo.MenuBO;
 import com.szq.hotel.entity.bo.RoleBO;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.MD5Util;
+import com.szq.hotel.util.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +37,12 @@ public class AdminService {
             List<MenuBO> urls=adminDAO.getMenuByRoleId(adminBO.getRoleId());
             Set<String> set=new HashSet<String>();
             if(urls!=null && urls.size()>0){
-                for(MenuBO menuBO:urls){
-                    String[] split = menuBO.getUrl().split(",");
-                    for(String str:split){
-                        set.add(str);
+                for(MenuBO menuBO:urls) {
+                    if (menuBO.getUrl() != null&& !StringUtils.isEmpty(menuBO.getUrl())) {
+                        String[] split = menuBO.getUrl().split(",");
+                        for (String str : split) {
+                            set.add(str);
+                        }
                     }
                 }
             }
