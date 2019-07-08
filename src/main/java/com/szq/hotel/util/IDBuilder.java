@@ -133,14 +133,9 @@ public class IDBuilder {
         return System.currentTimeMillis();
     }
 
-    //==============================Test=============================================
-    /** 测试 */
-   /* public static void main(String[] args) {
-        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0,0);
-        for (int i = 0; i < 1000; i++) {
-            long id = idWorker.nextId();
-            System.out.println(Long.toBinaryString(id));
-            System.out.println(id);
-        }
-    }*/
+   //生成一个单号
+   public static String  getOrderNumber() {
+        IDBuilder idWorker = new IDBuilder(0,0);
+        return new Long(idWorker.nextId()).toString();
+   }
 }

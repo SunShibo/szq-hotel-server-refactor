@@ -122,7 +122,7 @@ public class MemberCardService {
     }
     //会员级别解析
     private String analysisMemberLevelId(Cell cell) throws Exception {
-        cell.setCellType(CellType.STRING);
+   //     cell.setCellType(CellType.STRING);
         String stage = cell.getStringCellValue().trim();
         List<Integer> list = new ArrayList<Integer>();
         String[] split = stage.split("\\)");
@@ -139,7 +139,7 @@ public class MemberCardService {
 
     //卡号解析
     private String analysisCardNumber(Cell cell) throws Exception {
-        cell.setCellType(CellType.STRING);
+     //   cell.setCellType(CellType.STRING);
         String stage = cell.getStringCellValue().trim();
         List<Integer> list = new ArrayList<Integer>();
         String[] split = stage.split("\\)");
@@ -155,7 +155,7 @@ public class MemberCardService {
     }
     //售价解析
     private String analysisMoney(Cell cell) throws Exception {
-        cell.setCellType(CellType.STRING);
+   //     cell.setCellType(CellType.STRING);
         String stage = cell.getStringCellValue().trim();
         List<Integer> list = new ArrayList<Integer>();
         String[] split = stage.split("\\)");

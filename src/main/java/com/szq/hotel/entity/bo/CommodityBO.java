@@ -15,16 +15,19 @@ public class CommodityBO {
     private BigDecimal money;//金额
     private Integer createUserId;//操作员id
     private String consumptionDetails;//交易详情
+    private Integer hotelId;//酒店id
+    private Integer name;//操作员名字
     public CommodityBO() {}
 
 
-    public CommodityBO( String orderNumber, String payStpe, String consumeType, BigDecimal money, Integer createUserId, String consumptionDetails) {
+    public CommodityBO( String orderNumber, String payStpe, String consumeType, BigDecimal money, Integer createUserId, String consumptionDetails,Integer hotelId) {
         this.orderNumber = orderNumber;
         this.payStpe = payStpe;
         this.consumeType = consumeType;
         this.money = money;
         this.createUserId = createUserId;
         this.consumptionDetails = consumptionDetails;
+        this.hotelId=hotelId;
     }
 
     public Integer getId() {
@@ -89,6 +92,22 @@ public class CommodityBO {
 
     public void setConsumptionDetails(String consumptionDetails) {
         this.consumptionDetails = consumptionDetails;
+    }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
+    }
+
+    public Integer getName() {
+        return name;
+    }
+
+    public void setName(Integer name) {
+        this.name = name;
     }
 
     @Override

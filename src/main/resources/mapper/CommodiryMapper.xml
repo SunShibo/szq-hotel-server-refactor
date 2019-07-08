@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 商品交易 -->
+<mapper namespace="com.szq.hotel.dao.CommodiryDAO">
+
+    <!--添加商品交易-->
+    <insert id="addCommodiry"  parameterType="com.szq.hotel.entity.bo.CommodityBO">
+          INSERT INTO `hm_commodity_transaction` ( `order_number`, `create_time`, `pay_type`, `consume_type`, `money`,
+                                                      `create_user_id`, `consumption_details`,`hotel_id`)
+                                            VALUES (#{orderNumber}, NOW(),#{payType},#{consumeType},#{money},
+                                                      #{createUserId}, #{consumptionDetails},#{hotelId});
+    </insert>
+
+
+
+    <!--查询商品交易-->
+    <select id="queryCommodiry"  parameterType="java.util.Map"  resultType="com.szq.hotel.entity.bo.CommodityBO" >
+       SELECT com.*,admin.`name` FROM `hm_commodity_transaction` com LEFT JOIN hm_admin admin ON   admin.id=com.create_user_id
+        WHERE
+          hotel_id = #{hotelId}
+          <if test="startTime !=null and endTime!=null " >
+              com.create_time  BETWEEN #{startTime}  AND  #{endTime}
+          </if>
+         <if test="condition!=null and condition!=''" >
+             AND  (consume_type LIKE '%${condition}%'
+              OR  admin.`name` LIKE '%${condition}%'
+              OR  order_number  LIKE '%${condition}%'
+              OR  consumption_details  LIKE '${condition}%' )
+         </if>
+         ORDER BY com.create_time  DESC  <include refid="limit" />
+    </select>
+
+    <sql id="limit">
+        limit #{pageNo},#{pageSize}
+    </sql>
+
+
+</mapper>

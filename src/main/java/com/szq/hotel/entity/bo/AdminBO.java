@@ -127,4 +127,23 @@ public class AdminBO extends BaseModel {
     public void setUrl(Set<String> url) {
         this.url = url;
     }
+
+    @Override
+    public String toString() {
+        return "AdminBO{" +
+                "id=" + id +
+                ", mobile='" + mobile + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", status='" + status + '\'' +
+                ", roleId=" + roleId +
+                ", createTime=" + createTime +
+                ", createUserId=" + createUserId +
+                ", updateTime=" + updateTime +
+                ", updateUserId=" + updateUserId +
+                ", roleName='" + roleName + '\'' +
+                ", url=" + url +
+                ", hotelId=" + hotelId +
+                '}';
+    }
 }
