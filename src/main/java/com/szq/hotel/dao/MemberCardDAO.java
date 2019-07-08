@@ -34,6 +34,10 @@ public interface MemberCardDAO {
      */
     List<MemberCardBO> selectMemberCard(Map<String,Object> map);
     /*
+        条件查询会员卡
+     */
+    List<MemberCardBO> conditionSelectMemberCard(Map<String,Object> map);
+    /*
         查询条数
      */
     Integer getCount(Map<String,Object> map);

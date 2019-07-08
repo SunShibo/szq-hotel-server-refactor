@@ -3,6 +3,7 @@ package com.szq.hotel.service;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberCardDAO;
 import com.szq.hotel.entity.bo.MemberCardBO;
+import com.szq.hotel.util.ObjectUtil;
 import com.szq.hotel.util.ReadExcelUtil;
 import com.szq.hotel.web.controller.MemberCardController;
 import org.slf4j.Logger;
@@ -72,6 +73,12 @@ public class MemberCardService {
         return memberCardDAO.selectMemberCard(map);
     }
     /*
+        条件查询会员卡
+     */
+    public List<MemberCardBO> conditionSelectMemberCard(Map<String,Object> map){
+        return memberCardDAO.conditionSelectMemberCard(map);
+    }
+    /*
         查询条数
      */
     public Integer getCount(Map<String,Object> map){
@@ -94,8 +101,8 @@ public class MemberCardService {
         List<String> list = new ArrayList<String>();
         for(Map<String, Object> memberCard:memberCardList) {
             memberCardBO.setCardNumber(memberCard.get("cardNumber").toString());
-            memberCardBO.setMoney(getBigDecimal(memberCard.get("money")));
-            memberCardBO.setMemberLevelId(getIntegerByObject(memberCard.get("memberLevelId")));
+            memberCardBO.setMoney(ObjectUtil.getBigDecimal(memberCard.get("money")));
+            memberCardBO.setMemberLevelId(ObjectUtil.getIntegerByObject(memberCard.get("memberLevelId")));
             list.add(memberCardBO.getCardNumber());
         }
         List<MemberCardBO> memberCardBOS = memberCardDAO.queryCartByCartList(list);
@@ -106,8 +113,8 @@ public class MemberCardService {
             for (Map<String, Object> memberCard : memberCardList) {
 
                 memberCardBO.setCardNumber(memberCard.get("cardNumber").toString());
-                memberCardBO.setMoney(getBigDecimal(memberCard.get("money")));
-                memberCardBO.setMemberLevelId(getIntegerByObject(memberCard.get("memberLevelId")));
+                memberCardBO.setMoney(ObjectUtil.getBigDecimal(memberCard.get("money")));
+                memberCardBO.setMemberLevelId(ObjectUtil.getIntegerByObject(memberCard.get("memberLevelId")));
 
                 list.add(memberCardBO.getCardNumber());
                 int ret = memberCardDAO.addMemberCardTest(memberCardBO);
@@ -125,45 +132,8 @@ public class MemberCardService {
 
         return result;
     }
-    /*
-        将object对象转换为BigDecimal
-     */
-    public static BigDecimal getBigDecimal(Object value) {
-        BigDecimal ret = null;
-        if (value != null) {
-            if (value instanceof BigDecimal) {
-                ret = (BigDecimal) value;
-            } else if (value instanceof String) {
-                ret = new BigDecimal((String) value);
-            } else if (value instanceof BigInteger) {
-                ret = new BigDecimal((BigInteger) value);
-            } else if (value instanceof Number) {
-                ret = new BigDecimal(((Number) value).doubleValue());
-            } else {
-                throw new ClassCastException("Not possible to coerce [" + value + "] from class " + value.getClass() + " into a BigDecimal.");
-            }
-        }
-        return ret;
-    }
-    /*
-        将object对象转换为Integer
-     */
-    public static Integer getIntegerByObject(Object object){
-        Integer in = null;
 
-        if(object!=null){
-            if(object instanceof Integer){
-                in = (Integer)object;
-            }else if(object instanceof String){
-                in = Integer.parseInt((String)object);
-            }else if(object instanceof BigDecimal){
-                in = ((BigDecimal)object).intValue();
-            }else if(object instanceof Long){
-                in = ((Long)object).intValue();
-            }
-        }
 
-        return in;
-    }
+
 
 }
