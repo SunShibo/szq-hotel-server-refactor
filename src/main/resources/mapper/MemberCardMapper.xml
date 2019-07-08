@@ -15,7 +15,7 @@
     <!--Excel导入测试-->
     <insert id="addMemberCardTest" parameterType="com.szq.hotel.entity.bo.MemberCardBO">
         INSERT INTO `hm_member_card` (`member_level_id`,`card_number`,`money`,`state`)
-        VALUES (#{memberLevelId},#{item},#{money},'unsold')
+        VALUES (#{memberLevelId},#{cardNumber},#{money},'unsold')
     </insert>
     <!--查询会员卡是否存在-->
     <select id="queryCartByCartList" resultType="com.szq.hotel.entity.bo.MemberCardBO" parameterType="list">

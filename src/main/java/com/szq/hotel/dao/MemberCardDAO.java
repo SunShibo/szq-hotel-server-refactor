@@ -14,7 +14,7 @@ public interface MemberCardDAO {
     /*
         Excel导入会员卡
      */
-    void addMemberCardTest(MemberCardBO memberCardBO);
+    Integer addMemberCardTest(MemberCardBO memberCardBO);
     /*
         查询会员卡存在
      */

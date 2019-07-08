@@ -4,6 +4,7 @@ import com.szq.hotel.entity.bo.MemberCardBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.MemberCardService;
+import com.szq.hotel.util.IntegerUtil;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.StringUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -33,7 +35,7 @@ public class MemberCardController extends BaseCotroller {
         批量添加会员卡
     */
     @RequestMapping("/addMemberCard")
-    public void  addMemberCard(Integer memberLevelId, String[] cardNumber, BigDecimal money,HttpServletRequest request, HttpServletResponse response){
+    public void  addMemberCard(Integer memberLevelId, String cardNumber, BigDecimal money,HttpServletRequest request, HttpServletResponse response){
         try{
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -46,23 +48,24 @@ public class MemberCardController extends BaseCotroller {
                 return;
             }
             //验证参数
-            if (memberLevelId==null ||cardNumber.length==0|| money==null) {
+            if (memberLevelId==null ||StringUtils.isEmpty(cardNumber)|| money==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;
             }
 
-            //String[] value =cardNumber.split(",");
+            String[] value =cardNumber.split(",");
 
-            List<String> productSkuId = new ArrayList<String>();
-
-
-            for (int i = 0; i <cardNumber.length; i++)
+            List<String> list = new ArrayList<String>();
+            for (int i = 0; i <value.length; i++)
             {
-                productSkuId.add(cardNumber[i]);
+                list.add((value[i]));
             }
-            boolean isRepeat = productSkuId.size() != new HashSet<String>(productSkuId).size();
+
+
+
+            boolean isRepeat = list.size() != new HashSet<String>(list).size();
             if (isRepeat){
                 String result=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response,result);
@@ -70,7 +73,7 @@ public class MemberCardController extends BaseCotroller {
                 return;
             }
 
-            List<MemberCardBO> memberCardBOS = memberCardService.queryCartByCartList(productSkuId);
+            List<MemberCardBO> memberCardBOS = memberCardService.queryCartByCartList(list);
             if (!memberCardBOS.isEmpty()){
                 String result=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000007"));
                 super.safeJsonPrint(response,result);
@@ -81,7 +84,7 @@ public class MemberCardController extends BaseCotroller {
             HashMap<String,Object> map =new HashMap<String, Object>();
             map.put("money",money);
             map.put("memberLevelId",memberLevelId);
-            map.put("list",productSkuId);
+            map.put("list",list);
             memberCardService.addMemberCard(map);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("批量添加会员卡成功！"));
@@ -230,7 +233,7 @@ public class MemberCardController extends BaseCotroller {
      * Excel导入会员卡
      */
     @RequestMapping("/importMemberCard")
-    public void importMemberCard(MultipartFile file, HttpServletRequest  request, HttpServletResponse  response) {
+    public void importMemberCard(@RequestParam(value="file",required = false)MultipartFile file, HttpServletRequest  request, HttpServletResponse  response) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -249,26 +252,10 @@ public class MemberCardController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            String name = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            if (".xlsx".equals(name) || ".xls".equals(name) ) {
-                Integer row = memberCardService.importMemberCard(file);
 
-                if(row==null){
-                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
-                    super.safeJsonPrint(response, result);
-                }else if(row==-1){
-                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000010"));
-                    super.safeJsonPrint(response, result);
-                    return;
-                }
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
-
-                super.safeJsonPrint(response, result);
-
-            }
-
-
-
+           String json = memberCardService.readExcelFile(file);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(json));
+            super.safeJsonPrint(response, result);
 
         } catch (Exception e) {
             e.getStackTrace();

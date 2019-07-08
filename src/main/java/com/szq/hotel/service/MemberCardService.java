@@ -3,11 +3,8 @@ package com.szq.hotel.service;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberCardDAO;
 import com.szq.hotel.entity.bo.MemberCardBO;
+import com.szq.hotel.util.ReadExcelUtil;
 import com.szq.hotel.web.controller.MemberCardController;
-import net.sf.json.JSONArray;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 
@@ -46,7 +44,7 @@ public class MemberCardService {
         log.info("start================deleteMemberCard");
         log.info("id{}",id);
 
-       MemberCardBO memberCardBO = memberCardDAO.queryMemberCardById(id);
+        MemberCardBO memberCardBO = memberCardDAO.queryMemberCardById(id);
         if(memberCardBO==null){
             return;
         }
@@ -83,91 +81,89 @@ public class MemberCardService {
     /**
      * Excel 导入会员卡
      *
-     * @param file
+     * @param
      */
-    public Integer importMemberCard(MultipartFile file) {
-        int rows = 1;
-        try {
-            Workbook wb;
-            try {
-                wb = new XSSFWorkbook(file.getInputStream());
-            }catch (Exception e){
-                try {
-                    wb = new HSSFWorkbook(file.getInputStream());
-                }catch (Exception e1){
-                    return -1;
-                }
-            }
-            //开始解析
-            Sheet sheet = wb.getSheetAt(0);     //读取sheet 0
-            for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
-                rows++;
-                Row row = sheet.getRow(i);// 每一行
-                if(row==null){
-                    break;
-                }
-                MemberCardBO memberCardBO = new MemberCardBO();
-                memberCardBO.setCardNumber(this.analysisCardNumber(row.getCell(0)));
-                BigDecimal bigDecimal = new BigDecimal(this.analysisMoney(row.getCell(1)));
-                memberCardBO.setMoney(bigDecimal);
-                memberCardBO.setMemberLevelId(Integer.parseInt(this.analysisMemberLevelId(row.getCell(2))));
+    public String readExcelFile(MultipartFile file) {
+        String result = "";
+        //创建处理EXCEL的类
+        ReadExcelUtil readExcelUtil = new ReadExcelUtil();
+        //解析excel，获取上传的事件单
+        List<Map<String, Object>> memberCardList = readExcelUtil.getExcelInfo(file);
+        //至此已经将excel中的数据转换到list里面了,接下来就可以操作list,可以进行保存到数据库,或者其他操作,
+        MemberCardBO memberCardBO = new MemberCardBO();
+        List<String> list = new ArrayList<String>();
+        for(Map<String, Object> memberCard:memberCardList) {
+            memberCardBO.setCardNumber(memberCard.get("cardNumber").toString());
+            memberCardBO.setMoney(getBigDecimal(memberCard.get("money")));
+            memberCardBO.setMemberLevelId(getIntegerByObject(memberCard.get("memberLevelId")));
+            list.add(memberCardBO.getCardNumber());
+        }
+        List<MemberCardBO> memberCardBOS = memberCardDAO.queryCartByCartList(list);
 
-                memberCardDAO.addMemberCardTest(memberCardBO);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return rows;
-        }
-        return null;
-    }
-    //会员级别解析
-    private String analysisMemberLevelId(Cell cell) throws Exception {
-   //     cell.setCellType(CellType.STRING);
-        String stage = cell.getStringCellValue().trim();
-        List<Integer> list = new ArrayList<Integer>();
-        String[] split = stage.split("\\)");
-        for (String str : split) {
-            String[] memberLevelIds = str.trim().split("\\(");
-            for (String memberLevelId : memberLevelIds) {
-                if (memberLevelId != null && memberLevelId.length() > 0) {
-                    list.add(Integer.parseInt(memberLevelId));
-                }
-            }
-        }
-        return JSONArray.fromObject(list).toString();
-    }
+        if (memberCardBOS.size()!=0){
+            result = "会员卡已经存在";
+        }else {
+            for (Map<String, Object> memberCard : memberCardList) {
 
-    //卡号解析
-    private String analysisCardNumber(Cell cell) throws Exception {
-     //   cell.setCellType(CellType.STRING);
-        String stage = cell.getStringCellValue().trim();
-        List<Integer> list = new ArrayList<Integer>();
-        String[] split = stage.split("\\)");
-        for (String str : split) {
-            String[] cardNumbers = str.trim().split("\\(");
-            for (String cardNumber : cardNumbers) {
-                if (cardNumber != null && cardNumber.length() > 0) {
-                    list.add(Integer.parseInt(cardNumber));
+                memberCardBO.setCardNumber(memberCard.get("cardNumber").toString());
+                memberCardBO.setMoney(getBigDecimal(memberCard.get("money")));
+                memberCardBO.setMemberLevelId(getIntegerByObject(memberCard.get("memberLevelId")));
+
+                list.add(memberCardBO.getCardNumber());
+                int ret = memberCardDAO.addMemberCardTest(memberCardBO);
+                if (ret == 0) {
+                    result = "插入数据库失败";
                 }
+
+            }
+            if (memberCardList != null && !memberCardList.isEmpty()) {
+                result = "上传成功！";
+            } else {
+                result = "上传失败！";
             }
         }
-        return JSONArray.fromObject(list).toString();
+
+        return result;
     }
-    //售价解析
-    private String analysisMoney(Cell cell) throws Exception {
-   //     cell.setCellType(CellType.STRING);
-        String stage = cell.getStringCellValue().trim();
-        List<Integer> list = new ArrayList<Integer>();
-        String[] split = stage.split("\\)");
-        for (String str : split) {
-            String[] moneys = str.trim().split("\\(");
-            for (String money : moneys) {
-                if (money != null && money.length() > 0) {
-                    list.add(Integer.parseInt(money));
-                }
+    /*
+        将object对象转换为BigDecimal
+     */
+    public static BigDecimal getBigDecimal(Object value) {
+        BigDecimal ret = null;
+        if (value != null) {
+            if (value instanceof BigDecimal) {
+                ret = (BigDecimal) value;
+            } else if (value instanceof String) {
+                ret = new BigDecimal((String) value);
+            } else if (value instanceof BigInteger) {
+                ret = new BigDecimal((BigInteger) value);
+            } else if (value instanceof Number) {
+                ret = new BigDecimal(((Number) value).doubleValue());
+            } else {
+                throw new ClassCastException("Not possible to coerce [" + value + "] from class " + value.getClass() + " into a BigDecimal.");
             }
         }
-        return JSONArray.fromObject(list).toString();
+        return ret;
+    }
+    /*
+        将object对象转换为Integer
+     */
+    public static Integer getIntegerByObject(Object object){
+        Integer in = null;
+
+        if(object!=null){
+            if(object instanceof Integer){
+                in = (Integer)object;
+            }else if(object instanceof String){
+                in = Integer.parseInt((String)object);
+            }else if(object instanceof BigDecimal){
+                in = ((BigDecimal)object).intValue();
+            }else if(object instanceof Long){
+                in = ((Long)object).intValue();
+            }
+        }
+
+        return in;
     }
 
 }
