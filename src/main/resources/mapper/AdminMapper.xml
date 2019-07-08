@@ -5,7 +5,7 @@
 <!-- 【管理员】 -->
 <mapper namespace="com.szq.hotel.dao.AdminDAO">
     <!--根据手机号查找管理员信息-->
-    <select id="queryAdminInfoByMobile" parameterType="String" resultType="com.szq.hotel.entity.bo.AdminBO">
+    <select id="queryAdminInfoByMobile" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.AdminBO">
         select hm_admin.*,hm_role.id as  roleId
             from  hm_admin left  join hm_role  on  hm_role.id=hm_admin.role_id where mobile =  #{mobile}
     </select>

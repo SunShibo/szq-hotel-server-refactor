@@ -15,6 +15,8 @@ public enum Constants {
     /* 主订单入住类型 : 全天房 */ DAY("day"),
     /* 主订单入住类型 : 钟点房 */ HOUR("hour"),
     /* 主订单入住类型 : 免费房 */ FREE("free"),
+    /* 入住人状态 : 已经离店 */ CHECKOUT("checkout"),
+    /* 入住人状态 : 正在入住*/ CHECKIN("checkin"),
     /* 支付方式 : 现金 */ CASH("cash"),
     /* 支付方式 : 银行卡 */ CART("cart"),
     /* 支付方式 : 微信 */ WECHAT("wechat"),

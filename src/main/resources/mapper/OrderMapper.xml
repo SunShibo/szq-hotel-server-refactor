@@ -29,6 +29,8 @@
         order_id=#{orderId},
         order_state=#{orderState},
         remark=#{remark},
+        start_time=#{startTime},
+        end_time=#{endTime},
         <if test="roomId!=null and roomId!=''">
             room_id=#{roomId},
         </if>
@@ -99,35 +101,101 @@
         where id=#{id}
     </update>
 
+    <!-- 根据手机号 身份证号 查询订单信息 -->
+    <select id="getOrderByIdOrMobile" resultType="com.szq.hotel.entity.bo.OrderBO">
+        select * from hm_order where
+        check_time &lt;= #{date}
+        and (phone=#{mobile} or ID_number=#{idNumber})
+    </select>
+
+    <!-- 根据订单id查询子订单 -->
+    <select id="getOrderChildById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
+        from hm_order_child,hm_room,hm_room_type
+        where
+        hm_order_child.room_id=hm_room.id
+        and
+        hm_order_child.room_type_id=hm_room_type.id
+        and
+        order_id=#{id}
+    </select>
+
+    <!-- 修改主订单信息 -->
+    <update id="updOrder" parameterType="com.szq.hotel.entity.bo.OrderBO">
+        update hm_order
+        <set>
+            <if test="orderPlacer!=null and orderPlacer!=''">
+                order_placer=#{orderPlacer},
+            </if>
+            <if test="phone!=null and phone!=''">
+                phone=#{phone},
+            </if>
+            <if test="IDNumberType!=null and IDNumberType!=''">
+                ID_number_type=#{IDNumberType},
+            </if>
+            <if test="IDNumber!=null and IDNumber!=''">
+                ID_number=#{IDNumber},
+            </if>
+            <if test="checkType!=null and checkType!=''">
+                check_type=#{checkType},
+            </if>
+            <if test="checkTime!=null and checkTime!=''">
+                check_time=#{checkTime},
+            </if>
+            <if test="checkOutTime!=null and checkOutTime!=''">
+                check_out_time=#{checkOutTime},
+            </if>
+            <if test="dayCount!=null and dayCount!=''">
+                day_count=#{dayCount},
+            </if>
+            <if test="clerkOrderingName!=null and clerkOrderingName!=''">
+                clerk_ordering_name=#{clerkOrderingName},
+            </if>
+            <if test="totalPrice!=null and totalPrice!=''">
+                total_price=#{totalPrice},
+            </if>
+            update_time=now()
+        </set>
+        where id=#{id}
+    </update>
+    <!-- 删除订单信息 -->
+    <delete id="delOrderChild" parameterType="java.lang.Integer">
+    delete from hm_order_child where order_id=#{id}
+    </delete>
 
 
     <!--订单列表-->
-    <select id="queryOrderList"  parameterType="com.szq.hotel.entity.param.OrderParam"    resultType="com.szq.hotel.entity.bo.OrderListBO"  >
+    <select id="queryOrderList" parameterType="com.szq.hotel.entity.param.OrderParam"
+            resultType="com.szq.hotel.entity.bo.OrderListBO">
         SELECT child.id ,der.check_time ,der.check_out_time ,room.room_name ,type.room_type_name ,
         der.order_placer,der.phone ,der.order_type ,der.OTA ,der.channel,der.check_type,
         child.remark,child.order_state
         FROM hm_order der LEFT JOIN hm_order_child child ON der.id=child.order_id
-        INNER JOIN hm_room_type type ON type.id=child.room_type_id  INNER JOIN  hm_room room ON room.id=child.room_id
+        INNER JOIN hm_room_type type ON type.id=child.room_type_id INNER JOIN hm_room room ON room.id=child.room_id
         <where>
-            <if test="hotelId!=null" > der.hotel_id=#{hotelId} </if>
-            <if test="orderState!=null and orderState!=''" > and  child.order_state=#{orderState} </if>
-            <if test="admissionsStartTime!=null and admissionsEndTime!=null" > and  der.check_time  BETWEEN  #{admissionsStartTime}  and #{admissionsEndTime} </if>
-            <if test="departureStartTime!=null and departureEndTime!=null" > and  der.check_out_time  BETWEEN  #{departureStartTime}  and #{departureEndTime} </if>
-            <if test="roomName!=null and roomName!=''" > and  room.room_name =#{roomName}</if>
-            <if test="checkType!=null and checkType!=''" > and  der.check_type =#{checkType}</if>
-            <if test="orderPlacer!=null and orderPlacer!=''" > and  der.order_placer  LIKE  '%${orderPlacer}%'</if>
-            <if test="phone!=null and phone!=''" > and  der.phone  LIKE  '%${phone}%'</if>
-            <if test="roomTypeId!=null " > and  child.room_type_id  =#{roomType} </if>
-            <if test="roomName!=null and roomName!='' " > and  room.room_name   LIKE  '%${roomName}%' </if>
-            <if test="channel!=null and channel!=''" > and  der.channel  LIKE  '%${channel}%' </if>
-            <if test="OTA!=null and OTA!=''" > and  der.OTA  LIKE  '%${OTA}%' </if>
+            <if test="hotelId!=null">der.hotel_id=#{hotelId}</if>
+            <if test="orderState!=null and orderState!=''">and child.order_state=#{orderState}</if>
+            <if test="admissionsStartTime!=null and admissionsEndTime!=null">and der.check_time BETWEEN
+                #{admissionsStartTime} and #{admissionsEndTime}
+            </if>
+            <if test="departureStartTime!=null and departureEndTime!=null">and der.check_out_time BETWEEN
+                #{departureStartTime} and #{departureEndTime}
+            </if>
+            <if test="roomName!=null and roomName!=''">and room.room_name =#{roomName}</if>
+            <if test="checkType!=null and checkType!=''">and der.check_type =#{checkType}</if>
+            <if test="orderPlacer!=null and orderPlacer!=''">and der.order_placer LIKE '%${orderPlacer}%'</if>
+            <if test="phone!=null and phone!=''">and der.phone LIKE '%${phone}%'</if>
+            <if test="roomTypeId!=null ">and child.room_type_id =#{roomType}</if>
+            <if test="roomName!=null and roomName!='' ">and room.room_name LIKE '%${roomName}%'</if>
+            <if test="channel!=null and channel!=''">and der.channel LIKE '%${channel}%'</if>
+            <if test="OTA!=null and OTA!=''">and der.OTA LIKE '%${OTA}%'</if>
         </where>
 
-        <include refid="orderLimit" />
+        <include refid="orderLimit"/>
     </select>
 
     <!--找查首日房价-->
-    <select id="queryUnitPrice" parameterType="java.lang.Integer"  resultType="java.math.BigDecimal" >
+    <select id="queryUnitPrice" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
         SELECT  money  FROM `hm_everyday_room_price` where order_child_id =#{id}  limt 0,1
     </select>
 

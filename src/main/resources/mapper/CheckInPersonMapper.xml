@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 入住人 -->
+<mapper namespace="com.szq.hotel.dao.CheckInPersonDAO">
+
+    <!-- 根据子订单id查询入住人-->
+    <select id="getCheckInPersonById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
+        select * from hm_check_in_person
+        where order_child_id=#{id}
+    </select>
+
+    <!-- 添加入住人-->
+    <insert id="addCheckInPerson" parameterType="com.szq.hotel.entity.bo.CheckInPersonBO">
+        insert into hm_check_in_person
+        (order_child_id,`name`,gender,phone,
+        certificate_number,certificate_type,`status`,remark)
+        values
+        (#{orderChildId},#{name},#{gender},#{phone},
+        #{certificateNumber},#{certificateType},
+        #{status},#{remark})
+    </insert>
+
+    <!-- 删除入住人 -->
+    <delete id="delCheckInPersonById" parameterType="java.lang.Integer">
+        delete from hm_check_in_person where order_child_id=#{id}
+    </delete>
+
+
+</mapper>
