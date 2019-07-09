@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 @Service("storedValueRecordService")
 @Transactional
@@ -26,6 +28,19 @@ public class StoredValueRecordService {
         storedValueRecordBO.setCreateUserId(userId);
         storedValueRecordDAO.addStoredValueRecord(storedValueRecordBO);
         log.info("end===================addStoredValueRecord");
+    }
+
+    /*
+       获取储值记录列表
+    */
+    public List<StoredValueRecordBO> getStoredValueRecord(Map<String,Object> map){
+        return storedValueRecordDAO.getStoredValueRecord(map);
+    }
+    /*
+        获取储值记录数量
+     */
+    public Integer getStoredValueRecordCount(Map<String,Object> map){
+        return storedValueRecordDAO.getStoredValueRecordCount(map);
     }
 
 }

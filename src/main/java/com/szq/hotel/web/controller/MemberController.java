@@ -213,7 +213,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/integralChange")
-    public void integralChange(Integer id,BigDecimal integralChange,String remark, HttpServletRequest request, HttpServletResponse response){
+    public void integralChange(Integer id,BigDecimal integralChange,String remark,String type,BigDecimal currentBalance, HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -236,17 +236,11 @@ public class MemberController extends BaseCotroller {
             memberBO.setIntegral(integralChange);
             memberService.integralChange(memberBO,loginAdmin.getId());
 
-
             MemberBO memberBO1 = memberService.queryMemberById(id);
-            IntegralRecordBO integralRecordBO = new IntegralRecordBO();
-            integralRecordBO.setCheckInMemberId(id);
-            integralRecordBO.setType("手动添加");
-            integralRecordBO.setOddNumbers(IDBuilder.getOrderNumber());
-            integralRecordBO.setIntegralChange(integralChange);
-            integralRecordBO.setCurrentBalance(memberBO1.getIntegral());
-            integralRecordBO.setRemark(remark);
+            type="手动添加";
+            currentBalance = memberBO1.getIntegral();
 
-            integralRecordService.addIntegralRecord(integralRecordBO,loginAdmin.getId());
+            integralRecordService.addIntegralRecord(id,integralChange,remark,type,currentBalance,loginAdmin.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("积分增减成功！"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
