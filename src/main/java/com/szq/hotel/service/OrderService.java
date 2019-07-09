@@ -6,7 +6,6 @@ import com.szq.hotel.dao.EverydayRoomPriceDAO;
 import com.szq.hotel.dao.OrderDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
-import com.szq.hotel.pop.Constant;
 import com.szq.hotel.util.IDBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -274,7 +273,7 @@ public class OrderService {
         if (orderListBOS != null && orderListBOS.size() > 0) {
             for (int i = 0, size = orderListBOS.size(); i < size; i++) {
                 OrderListBO orderListBO = orderListBOS.get(i);
-                orderListBO.setUnitPrice(orderDAO.queryUnitPrice(orderListBO.getId()));
+                //orderListBO.setUnitPrice(orderDAO.queryUnitPrice(orderListBO.getId()));
             }
         }
         return orderListBOS;

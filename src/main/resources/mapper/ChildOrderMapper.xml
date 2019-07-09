@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.ChildOrderDAO">
+
+    <!-- 根据订单id查询子订单 -->
+    <select id="queryOrderChildById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.ChildOrderBO">
+       SELECT child.id,child.start_time,child.end_time ,child.pay_cash_num,,child.other_pay_num,child.other_rate,child.timeoutRate,
+        child.free_rate_num ,child.order_state,room.room_name,`type`.room_type_room,child.al_room_code,child.night_auditor_state,
+        child.print_state,child.remark,per.name,oder.channel,oder.oder_type as passengerSource,oder.OTA,oder.order_number
+
+        FROM hm_order oder  LEFT JOIN hm_order_child child ON child.order_id=oder.id
+        LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type
+        ON type.id=child.room_type_id  LEFT JOIN hm_check_in_person  per ON per.order_child_id = child.id
+
+        WHERE per.`status`='yes'       LIMIT 0,1
+    </select>
+
+
+    <!-- 增加子订单现金押金 -->
+    <update id="increaseCashCashPledge" >
+        UPDATE  hm_order_child SET  pay_cash_num=pay_cash_num+#{money}  WHERE  id= #{id}
+    </update>
+    <!-- 增加子订单其他押金 -->
+    <update id="increaseOtherCashPledge" >
+         UPDATE  hm_order_child  SET  other_pay_num=other_pay_num+#{money}  WHERE  id= #{id}
+    </update>
+
+
+    <!-- 增加子订单房费 -->
+    <update id="increaseRoomRate" >
+        UPDATE  hm_order_child SET  room_rate=room_rate+#{money}  WHERE  id= #{id}
+    </update>
+    <!-- 增加子订单其费用 -->
+    <update id="increaseOtherRate" >
+        UPDATE  hm_order_child  SET  other_rate=other_rate+#{money}  WHERE  id= #{id}
+    </update>
+
+    <!--查询挂账信息-->
+    <select id="querySuspend" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.BuyerBuyingBO" >
+       SELECT 	per.`name`,per.phone,per.create_time,room.room_name
+               FROM  hm_order_child child LEFT JOIN hm_room  room ON room.id=child.room_id
+                 LEFT JOIN hm_check_in_person  per ON per.order_child_id = child.id
+        WHERE per.`status`='yes' AND child.order_state='admissions'  AND room.room_name=#{roomName}
+    </select>
+
+    <!--免单-->
+    <update id="free"  >
+        UPDATE  hm_order_child  SET  free_rate_num=free_rate_num+#{money}  WHERE  id= #{id}
+    </update>
+</mapper>
