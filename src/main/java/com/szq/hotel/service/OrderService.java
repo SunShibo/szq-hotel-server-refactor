@@ -273,7 +273,7 @@ public class OrderService {
         if (orderListBOS != null && orderListBOS.size() > 0) {
             for (int i = 0, size = orderListBOS.size(); i < size; i++) {
                 OrderListBO orderListBO = orderListBOS.get(i);
-                //orderListBO.setUnitPrice(orderDAO.queryUnitPrice(orderListBO.getId()));
+                orderListBO.setUnitPrice(orderDAO.queryUnitPrice(orderListBO.getId()));
             }
         }
         return orderListBOS;
