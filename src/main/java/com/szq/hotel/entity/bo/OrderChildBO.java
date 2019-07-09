@@ -1,6 +1,7 @@
 package com.szq.hotel.entity.bo;
 
 import com.szq.hotel.common.base.BaseModel;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -9,7 +10,9 @@ import java.util.List;
 public class OrderChildBO extends BaseModel {
     private Integer id;//子订单
     private Integer orderId;//订单id
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;//入住时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;//退房时间
     private Integer certificateTypeId;//证件类型id
     private BigDecimal payCashNum;//支付现金 金额
@@ -19,6 +22,7 @@ public class OrderChildBO extends BaseModel {
     private BigDecimal timeoutRate;//超时费用
     private BigDecimal freeRateNum;//免单金额
     private String orderState;//订单状态
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date practicalDepartureTime;//实际退房时间
     private Integer roomId;//房间id
     private String roomName;//房间号

@@ -1,11 +1,14 @@
 package com.szq.hotel.entity.bo;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class EverydayRoomPriceBO {
-    private Integer id;//没日房价 与子订单相关联
+    private Integer id;//每日房价 与子订单相关联
     private Integer orderChildId;//子订单id
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date time;//日期
     private BigDecimal money;//价格
 

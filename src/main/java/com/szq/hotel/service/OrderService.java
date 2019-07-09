@@ -31,15 +31,15 @@ public class OrderService {
     EverydayRoomPriceService everydayRoomPriceService;
 
     //添加主订单 携带订单id
-    public Integer addOrder(OrderBO orderBO) {
+    public void addOrder(OrderBO orderBO) {
         //生成订单号
         IDBuilder idBuilder = new IDBuilder(10, 10);
         String orderNumber = idBuilder.nextId() + "";
         orderBO.setOrderNumber(orderNumber);
-        return orderDAO.addOrder(orderBO);
+        orderDAO.addOrder(orderBO);
     }
 
-    //删除旧子订单 旧价格 旧入住人
+    //删除旧信息 重新插入新子订单 价格 入住人， 返回订单编号
     public String updOrderInfo(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
         //修改主订单信息
         orderDAO.updOrder(orderBO);
@@ -101,8 +101,6 @@ public class OrderService {
                     checkInPersonDAO.addCheckInPerson(person);
                 }
             }
-
-
         }
         //修改总房价
         OrderBO order=new OrderBO();

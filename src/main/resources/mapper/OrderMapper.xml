@@ -170,7 +170,7 @@
 </delete>
 
     <!-- 查询一个人身份证号是否正在入住 -->
-    <select id="checkId" resultType="java.lang.String" parameterType="java.lang.String">
+    <select id="checkId" resultType="java.lang.Integer" parameterType="java.lang.String">
     select count(certificate_number)
     from hm_check_in_person
     where status='checkin' and certificate_number=#{certificateNumber}
