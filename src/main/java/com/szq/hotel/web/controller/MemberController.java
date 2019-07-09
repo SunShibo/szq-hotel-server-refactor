@@ -261,7 +261,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/storedValueChange")
-    public void storedValueChange(Integer id,BigDecimal storedValueChange,String remark,String type, BigDecimal presenterMoney,HttpServletRequest request, HttpServletResponse response){
+    public void storedValueChange(Integer id,BigDecimal storedValueChange,String remark,String type, BigDecimal presenterMoney,BigDecimal currentBalance,HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -286,16 +286,9 @@ public class MemberController extends BaseCotroller {
 
 
             MemberBO memberBO1 = memberService.queryMemberById(id);
-            StoredValueRecordBO storedValueRecordBO = new StoredValueRecordBO();
-            storedValueRecordBO.setCheckInMemberId(id);
-            storedValueRecordBO.setType(type);
-            storedValueRecordBO.setOddNumbers(IDBuilder.getOrderNumber());
-            storedValueRecordBO.setStoredValueMoney(storedValueChange);
-            storedValueRecordBO.setCurrentBalance(memberBO1.getIntegral());
-            storedValueRecordBO.setRemark(remark);
-            storedValueRecordBO.setPresenterMoney(presenterMoney);
+            currentBalance = memberBO1.getStoredValue();
 
-            storedValueRecordService.addStoredValueRecord(storedValueRecordBO,loginAdmin.getId());
+            storedValueRecordService.addStoredValueRecord(id,storedValueChange,remark,type,presenterMoney,currentBalance,loginAdmin.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("储值调整成功！"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
