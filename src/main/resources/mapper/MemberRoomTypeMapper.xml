@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.MemberRoomTypeDAO">
+
+    <!--添加会员房型折扣-->
+    <insert id="addMemberRoomType" parameterType="com.szq.hotel.entity.bo.MemberRoomTypeBO">
+        INSERT INTO `hm_member_room_type` (
+	      `member_level_id`,`room_type_id`,`price`,`discount`,`create_user_id`,
+	      `create_time`,`update_user_id`,`update_time`)
+        VALUES(#{memberLevelId},#{roomTypeId},#{price},#{discount},#{createUserId},
+                NOW(),#{updateUserId},#{updateTime});
+    </insert>
+
+    <!--修改会员房型折扣-->
+    <update id="updateMemberRoomType" parameterType="com.szq.hotel.entity.bo.MemberRoomTypeBO">
+        UPDATE `hm_member_room_type` SET `discount` = #{discount},`update_time` = NOW(),
+        `update_user_id` =#{updateUserId}
+        WHERE `member_level_id` = #{memberLevelId} AND `room_type_id` = #{roomTypeId}
+    </update>
+
+    <!--查询会员房型折扣-->
+    <select id="selectMemberRoomType" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        SELECT discount FROM `hm_member_room_type` WHERE member_level_id = #{memberLevelId} AND room_type_id =#{roomTypeId}
+    </select>
+
+</mapper>
