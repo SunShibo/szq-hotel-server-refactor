@@ -2,20 +2,14 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.dao.RoomDAO;
 import com.szq.hotel.dao.RoomRecordDAO;
-import com.szq.hotel.entity.bo.RoomBO;
-import com.szq.hotel.entity.bo.RoomRecordBO;
-import com.szq.hotel.entity.bo.RoomTypeCountBO;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.jdbc.core.RowMapperResultSetExtractor;
+import com.szq.hotel.entity.bo.*;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.math.RoundingMode;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: Bin Wang
@@ -30,49 +24,123 @@ public class RoomService {
     @Resource
     private RoomRecordDAO roomRecordDAO;
 
-    public Map<String, Object> queryRoom(Map<String, Object> map){
+    public Map<String, Object> queryRoom(Map<String, Object> map) {
         Map<String, Object> mp = new HashMap<String, Object>();
         List<RoomBO> list = roomDAO.queryRoom(map);
         Integer count = roomDAO.queryRoomCount(map);
-        mp.put("list",list);
-        mp.put("count",count);
+        mp.put("list", list);
+        mp.put("count", count);
         return mp;
     }
 
-    public int insertSelective(RoomBO record){
+    public int insertSelective(RoomBO record) {
         return roomDAO.insertSelective(record);
     }
 
-    public int updateByPrimaryKeySelective(RoomBO record){
+    public int updateByPrimaryKeySelective(RoomBO record) {
         return roomDAO.updateByPrimaryKeySelective(record);
     }
 
-    public void deleteByPrimaryKey(Integer[] id){
-         roomDAO.updateShow(id);
+    public void deleteByPrimaryKey(Integer[] id) {
+        roomDAO.updateShow(id);
     }
 
-    public void updatelockRoomClose(Integer[] idArr){
-        roomDAO.updatelockRoomState(idArr);
+    public void updatelockRoomClose(Map<String, Object> map) {
+        roomDAO.updatelockRoomState(map);
     }
 
-    public void updatelockRoomOpen(Integer[] idArr){
-        roomDAO.updatelockRoomState(idArr);
+    public void updatelockRoomOpen(Map<String, Object> map) {
+        roomDAO.updatelockRoomState2(map);
     }
 
-    public List<RoomTypeCountBO> queryRoomTypeCount(Integer id){
+    public List<RoomTypeCountBO> queryRoomTypeCount(Integer id) {
         return roomDAO.queryRoomTypeCount(id);
     }
 
-    public void updateroomMajorState( Map<String, Object> map){
+    public void updateroomMajorState(Map<String, Object> map) {
         roomDAO.updateroomMajorState(map);
-        RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer)map.get("id"));
+        RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
         RoomRecordBO roomRecordBO = new RoomRecordBO();
         roomRecordBO.setCreateTime(new Date());
-        roomRecordBO.setNewState((String)map.get("state"));
+        roomRecordBO.setNewState((String) map.get("state"));
         roomRecordBO.setVirginState(roomBO.getRoomState());
         roomRecordBO.setRoomId(roomBO.getId());
         roomRecordDAO.insertSelective(roomRecordBO);
-
     }
 
+    /**
+     * 预约入住选择房间
+     */
+    public Map<String, Object> queryRm(Map<String, Object> map) {
+        //获取符合条件的房间集合
+        List<RmBO> list = roomDAO.queryRm(map);
+        List<Integer> ls = new ArrayList<Integer>();
+        //获取出房间的id
+        if (!CollectionUtils.isEmpty(list)) {
+            for (RmBO id : list) {
+                ls.add(id.getId());
+            }
+        }
+        //根据房间id获取符合条件的订单
+        List<OcBO> l = roomDAO.queryOc(ls);
+        //获取预入住时间
+        Date dt = (Date) map.get("checkTime");
+
+        List<Integer> reId = new ArrayList<Integer>();
+        if (!CollectionUtils.isEmpty(l)) {
+            for (OcBO c : l) {
+                //判断客人选择的预入住时间是否在其他符合条件订单之间
+                if (belongCalendar(dt, c.getStartTime(), c.getEndTime())) {
+                    reId.add(c.getRoomId());
+                }
+            }
+        }
+
+        //去重
+        for (int i = 0; i < reId.size() - 1; i++) {
+            for (int j = reId.size() - 1; j > i; j--) {
+                if (reId.get(j).equals(reId.get(i))) {
+                    reId.remove(j);
+                }
+            }
+        }
+
+        //去掉不能预约入住的房间的房间
+        Iterator<RmBO> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            RmBO rmBO = iterator.next();
+            for (Integer id : reId){
+               rmBO.getId().equals(id);
+                iterator.remove();//使用迭代器的删除方法删除
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
+     * 判断时间是否在某一区间内
+     *
+     * @param nowTime
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    public static boolean belongCalendar(Date nowTime, Date beginTime, Date endTime) {
+        Calendar date = Calendar.getInstance();
+        date.setTime(nowTime);
+
+        Calendar begin = Calendar.getInstance();
+        begin.setTime(beginTime);
+
+        Calendar end = Calendar.getInstance();
+        end.setTime(endTime);
+
+        if (date.after(begin) && date.before(end)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.szq.hotel.web.controller;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.szq.hotel.entity.bo.RoomBO;
 import com.szq.hotel.entity.bo.RoomTypeCountBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
@@ -9,6 +10,7 @@ import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.RedisConnectFactory;
 import com.szq.hotel.util.RedisTool;
 import com.szq.hotel.web.controller.base.BaseCotroller;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import redis.clients.jedis.Jedis;
@@ -29,14 +31,12 @@ import java.util.UUID;
 @RequestMapping("/room")
 public class RoomController extends BaseCotroller {
 
-
-
     @Resource
     private RoomService roomService;
 
     @RequestMapping("/queryRoom")
     public void queryRoom(HttpServletRequest request, HttpServletResponse response, Integer pageNo,
-                          Integer pageSize, Integer floorId, Integer roomId, Integer roomTypeId, Integer hotelId){
+                          Integer pageSize, Integer floorId, Integer roomId, Integer roomTypeId, Integer hotelId) {
         QueryInfo queryInfo = getQueryInfo(pageNo, pageSize);
         //创建一个用于封装sql条件的map集合
         Map<String, Object> condition = new HashMap<String, Object>();
@@ -46,82 +46,95 @@ public class RoomController extends BaseCotroller {
             condition.put("pageSize", queryInfo.getPageSize());
         }
 
-        condition.put("floorId",floorId);
+        condition.put("floorId", floorId);
         condition.put("roomId", roomId);
         condition.put("roomTypeId", roomTypeId);
         condition.put("hotelId", hotelId);
 
         Map<String, Object> map = roomService.queryRoom(condition);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map)) ;
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
         super.safeJsonPrint(response, result);
         return;
     }
 
     @RequestMapping("/insertSelective")
-    public void insertSelective(HttpServletRequest request, HttpServletResponse response, RoomBO record){
+    public void insertSelective(HttpServletRequest request, HttpServletResponse response, RoomBO record) {
         roomService.insertSelective(record);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加成功")) ;
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加成功"));
         super.safeJsonPrint(response, result);
         return;
     }
 
     @RequestMapping("/updateByPrimaryKeySelective")
-    public void updateByPrimaryKeySelective(HttpServletRequest request, HttpServletResponse response, RoomBO record){
+    public void updateByPrimaryKeySelective(HttpServletRequest request, HttpServletResponse response, RoomBO record) {
         roomService.updateByPrimaryKeySelective(record);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改成功")) ;
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改成功"));
         super.safeJsonPrint(response, result);
         return;
     }
 
     @RequestMapping("/deleteByPrimaryKey")
-    public void deleteByPrimaryKey(HttpServletRequest request, HttpServletResponse response, String byId){
+    public void deleteByPrimaryKey(HttpServletRequest request, HttpServletResponse response, String byId) {
         Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
         roomService.deleteByPrimaryKey(idArr);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("删除成功")) ;
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("删除成功"));
         super.safeJsonPrint(response, result);
         return;
     }
 
     @RequestMapping("/updatelockRoomClose")
-    public void updatelockRoomClose(HttpServletRequest request, HttpServletResponse response, String byId){
+    public void updatelockRoomClose(HttpServletRequest request, HttpServletResponse response, String byId, String startTime,
+                                    String endTime, String state, String remark) {
         Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
-        roomService.updatelockRoomClose(idArr);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("锁房成功")) ;
+        Map<String, Object>  map = new HashMap<String, Object>();
+        map.put("state", state);
+        map.put("startTime", startTime);
+        map.put("endTime", endTime);
+        map.put("remark", remark);
+        map.put("ids", idArr);
+
+
+        roomService.updatelockRoomClose(map);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("锁房成功"));
         super.safeJsonPrint(response, result);
         return;
     }
 
     @RequestMapping("/updatelockRoomOpen")
-    public void updatelockRoomOpen(HttpServletRequest request, HttpServletResponse response, String byId){
+    public void updatelockRoomOpen(HttpServletRequest request, HttpServletResponse response, String byId, String state) {
+        Map map = new HashMap<String, Object>();
         Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
-        roomService.updatelockRoomOpen(idArr);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("解锁成功")) ;
+        map.put("state", state);
+        map.put("ids", idArr);
+
+        roomService.updatelockRoomOpen(map);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("解锁成功"));
         super.safeJsonPrint(response, result);
         return;
     }
 
     @RequestMapping("/queryRoomTypeCount")
-    public void queryRoomTypeCount(HttpServletRequest request, HttpServletResponse response, Integer id){
+    public void queryRoomTypeCount(HttpServletRequest request, HttpServletResponse response, Integer id) {
         List<RoomTypeCountBO> roomTypeCountBOS = roomService.queryRoomTypeCount(id);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(roomTypeCountBOS)) ;
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(roomTypeCountBOS));
         super.safeJsonPrint(response, result);
         return;
     }
 
     @RequestMapping("/updateroomMajorState")
-    public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state){
-        Map<String,Object> map = new HashMap<String, Object>();
-       Jedis jedis = new Jedis();
+    public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Jedis jedis = new Jedis();
 
         UUID requestId = UUID.randomUUID();
         System.err.println(requestId);
-        if(!(RedisTool.tryGetDistributedLock(jedis,"500",requestId.toString(),5000))){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("请重试")) ;
+        if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId.toString(), 5000))) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("请重试"));
             super.safeJsonPrint(response, result);
             return;
         }
 
-        map.put("id",id);
+        map.put("id", id);
         map.put("state", state);
         roomService.updateroomMajorState(map);
         /*try {
@@ -130,8 +143,8 @@ public class RoomController extends BaseCotroller {
             e.printStackTrace();
         }*/
 
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功")) ;
-            super.safeJsonPrint(response, result);
-            return;
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
+        super.safeJsonPrint(response, result);
+        return;
     }
 }

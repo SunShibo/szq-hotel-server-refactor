@@ -29,7 +29,8 @@ public enum Constants {
     /* 房态 : 脏房 */ DIRTY("dirty"),
     /* 房态 : 门店锁房 */ SHOP("shop"),
     /* 房态 : 网络锁 */ NETWORK("network"),
-    /* 房态 : 全部锁 */ ALL("all");
+    /* 房态 : 全部锁 */ ALL("all"),
+    /* 房态 : 未锁房 */ OPE("ope");
 
     Constants(String value) {
         this.value = value;
