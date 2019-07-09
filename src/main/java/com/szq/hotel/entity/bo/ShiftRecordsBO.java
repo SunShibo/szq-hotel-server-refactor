@@ -24,24 +24,32 @@ public class ShiftRecordsBO extends BaseModel {
     private BigDecimal alipayBack;//支付宝退
     private BigDecimal alipayAmount;//支付宝合计
     private BigDecimal integralIncome;//积分进
-    private BigDecimal integralSpend;//积分出
+    private BigDecimal integralBack;//积分出
     private BigDecimal integralAmount;//积分合计
     private BigDecimal storedValueIncome;//储值收
     private BigDecimal storedValueBack;//储值退
     private BigDecimal storedValueAmount;//储值合计
-    private BigDecimal memberCardSellCount;//会员卡售出数量
+    private BigDecimal otherIncome;//其他支付
+    private BigDecimal otherBack;//其他支出
+    private BigDecimal otherAmount;//其他总计
+
+    private Integer memberCardSellCount;//会员卡售出数量
+
     private Date attendanceTime;//上班时间
     private Date closingTime;//下班时间
     private String name;//操作员名字
     private String startTime;//班次开始时间
     private String endTime;//班次结束时间
     private String classesName;//班次名称
+    private Integer hotelId;
 
-    public ShiftRecordsBO() { }
+    public ShiftRecordsBO() {
+    }
 
-    public ShiftRecordsBO(Integer classesId, Integer adminId) {
+    public ShiftRecordsBO(Integer classesId, Integer adminId, Integer hotelId) {
         this.classesId = classesId;
         this.adminId = adminId;
+        this.hotelId = hotelId;
     }
 
     public Integer getId() {
@@ -69,8 +77,8 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getGeneralIncome() {
-        if(generalIncome!=null)
-             return generalIncome;
+        if (generalIncome != null)
+            return generalIncome;
         else
             return new BigDecimal("0");
     }
@@ -80,7 +88,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getCashIncome() {
-        if(cashIncome!=null)
+        if (cashIncome != null)
             return cashIncome;
         else
             return new BigDecimal("0");
@@ -91,7 +99,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getCashBack() {
-        if(cashBack!=null)
+        if (cashBack != null)
             return cashBack;
         else
             return new BigDecimal("0");
@@ -102,7 +110,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getCashAmount() {
-        if(cashAmount!=null)
+        if (cashAmount != null)
             return cashAmount;
         else
             return new BigDecimal("0");
@@ -113,7 +121,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getBankCardIncome() {
-        if(bankCardIncome!=null)
+        if (bankCardIncome != null)
             return bankCardIncome;
         else
             return new BigDecimal("0");
@@ -124,7 +132,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getBankCardBack() {
-        if(bankCardBack!=null)
+        if (bankCardBack != null)
             return bankCardBack;
         else
             return new BigDecimal("0");
@@ -135,7 +143,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getBankCardAmount() {
-        if(bankCardAmount!=null)
+        if (bankCardAmount != null)
             return bankCardAmount;
         else
             return new BigDecimal("0");
@@ -146,7 +154,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getWechatIncome() {
-        if(wechatIncome!=null)
+        if (wechatIncome != null)
             return wechatIncome;
         else
             return new BigDecimal("0");
@@ -157,7 +165,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getWechatBack() {
-        if(wechatBack!=null)
+        if (wechatBack != null)
             return wechatBack;
         else
             return new BigDecimal("0");
@@ -168,7 +176,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getWechatAmount() {
-        if(wechatAmount!=null)
+        if (wechatAmount != null)
             return wechatAmount;
         else
             return new BigDecimal("0");
@@ -179,7 +187,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getAlipayIncome() {
-        if(alipayIncome!=null)
+        if (alipayIncome != null)
             return alipayIncome;
         else
             return new BigDecimal("0");
@@ -190,7 +198,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getAlipayBack() {
-        if(alipayBack!=null)
+        if (alipayBack != null)
             return alipayBack;
         else
             return new BigDecimal("0");
@@ -201,7 +209,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getAlipayAmount() {
-        if(alipayAmount!=null)
+        if (alipayAmount != null)
             return alipayAmount;
         else
             return new BigDecimal("0");
@@ -212,7 +220,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getIntegralIncome() {
-        if(integralIncome!=null)
+        if (integralIncome != null)
             return integralIncome;
         else
             return new BigDecimal("0");
@@ -222,19 +230,19 @@ public class ShiftRecordsBO extends BaseModel {
         this.integralIncome = integralIncome;
     }
 
-    public BigDecimal getIntegralSpend() {
-        if(integralSpend!=null)
-            return integralSpend;
+    public BigDecimal getIntegralBack() {
+        if (integralBack != null)
+            return integralBack;
         else
             return new BigDecimal("0");
     }
 
-    public void setIntegralSpend(BigDecimal integralSpend) {
-        this.integralSpend = integralSpend;
+    public void setIntegralBack(BigDecimal integralBack) {
+        this.integralBack = integralBack;
     }
 
     public BigDecimal getIntegralAmount() {
-        if(integralAmount!=null)
+        if (integralAmount != null)
             return integralAmount;
         else
             return new BigDecimal("0");
@@ -245,7 +253,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getStoredValueIncome() {
-        if(storedValueIncome!=null)
+        if (storedValueIncome != null)
             return storedValueIncome;
         else
             return new BigDecimal("0");
@@ -256,7 +264,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getStoredValueBack() {
-        if(storedValueBack!=null)
+        if (storedValueBack != null)
             return storedValueBack;
         else
             return new BigDecimal("0");
@@ -267,7 +275,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public BigDecimal getStoredValueAmount() {
-        if(storedValueAmount!=null)
+        if (storedValueAmount != null)
             return storedValueAmount;
         else
             return new BigDecimal("0");
@@ -277,14 +285,13 @@ public class ShiftRecordsBO extends BaseModel {
         this.storedValueAmount = storedValueAmount;
     }
 
-    public BigDecimal getMemberCardSellCount() {
-        if(memberCardSellCount!=null)
-            return memberCardSellCount;
-        else
-            return new BigDecimal("0");
+    public Integer getMemberCardSellCount() {
+        if(memberCardSellCount==null)
+            return 0;
+        return memberCardSellCount;
     }
 
-    public void setMemberCardSell_count(BigDecimal memberCardSellCount) {
+    public void setMemberCardSell_count(Integer memberCardSellCount) {
         this.memberCardSellCount = memberCardSellCount;
     }
 
@@ -336,6 +343,51 @@ public class ShiftRecordsBO extends BaseModel {
         this.classesName = classesName;
     }
 
+    public BigDecimal getOtherIncome() {
+        if (otherIncome != null)
+            return otherIncome;
+        else
+            return new BigDecimal("0");
+    }
+
+    public void setOtherIncome(BigDecimal otherIncome) {
+        this.otherIncome = otherIncome;
+    }
+
+    public BigDecimal getOtherBack() {
+        if (otherBack != null)
+            return otherBack;
+        else
+            return new BigDecimal("0");
+    }
+
+    public void setOtherBack(BigDecimal otherBack) {
+        this.otherBack = otherBack;
+    }
+
+    public BigDecimal getOtherAmount() {
+        if (otherAmount != null)
+            return otherAmount;
+        else
+            return new BigDecimal("0");
+    }
+
+    public void setOtherAmount(BigDecimal otherAmount) {
+        this.otherAmount = otherAmount;
+    }
+
+    public void setMemberCardSellCount(Integer memberCardSellCount) {
+        this.memberCardSellCount = memberCardSellCount;
+    }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
+    }
+
     @Override
     public String toString() {
         return "ShiftRecordsBO{" +
@@ -356,11 +408,14 @@ public class ShiftRecordsBO extends BaseModel {
                 ", alipayBack=" + alipayBack +
                 ", alipayAmount=" + alipayAmount +
                 ", integralIncome=" + integralIncome +
-                ", integralSpend=" + integralSpend +
+                ", integralBack=" + integralBack +
                 ", integralAmount=" + integralAmount +
                 ", storedValueIncome=" + storedValueIncome +
                 ", storedValueBack=" + storedValueBack +
                 ", storedValueAmount=" + storedValueAmount +
+                ", otherIncome=" + otherIncome +
+                ", otherBack=" + otherBack +
+                ", otherAmount=" + otherAmount +
                 ", memberCardSellCount=" + memberCardSellCount +
                 ", attendanceTime=" + attendanceTime +
                 ", closingTime=" + closingTime +
@@ -368,6 +423,7 @@ public class ShiftRecordsBO extends BaseModel {
                 ", startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +
                 ", classesName='" + classesName + '\'' +
+                ", hotelId=" + hotelId +
                 '}';
     }
 }

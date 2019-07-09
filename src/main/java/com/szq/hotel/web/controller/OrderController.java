@@ -129,7 +129,7 @@ public class OrderController extends BaseCotroller {
      * @param cs 报表信息
      * @param id 子订单id
      * */
-    @RequestMapping("/pay")
+    @RequestMapping("/pay")//FIXME 王洋接口有问题
     public void pay(CashierSummaryBO cs, Integer id, HttpServletRequest request, HttpServletResponse response){
         //验证管理员
         AdminBO userInfo = super.getLoginUser(request) ;
@@ -144,17 +144,17 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        //添加报表记录
+     /*   //添加报表记录
         cashierSummaryService.addCheck(cs.getMoney(),cs.getPayType(),cs.getOrderNumber(),
                 userInfo.getId(),cs.getName(),cs.getOTA(),cs.getChannel(),cs.getPassengerSource(),
-                cs.getRoomName(),cs.getRoomTypeName(),cs.getRemark());
+                cs.getRoomName(),cs.getRoomTypeName(),cs.getRemark(),userInfo.getHotelId());
         //修改子订单信息
         OrderChildBO orderChildBO=new OrderChildBO();
         orderChildBO.setId(id);
         orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
         orderChildBO.setRoomRate(cs.getMoney());
 
-        orderService.updOrderChild(orderChildBO);
+        orderService.updOrderChild(orderChildBO);*/
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("支付成功")) ;
         super.safeJsonPrint(response, result);
     }

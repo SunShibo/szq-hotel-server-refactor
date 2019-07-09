@@ -30,10 +30,11 @@ public class CashierSummaryService {
      * @param type    消费类型 商品/赔偿
      * @param orderNumber   单号
      * @param userId   操作员名字
+     * @param hotelId            酒店id
      */
-    public void addCommodity(String payType, BigDecimal money,String info,String type,String orderNumber,Integer  userId){
+    public void addCommodity(String payType, BigDecimal money,String info,String type,String orderNumber,Integer  userId,Integer hotelId){
         log.info("start addCommodity...........................................");
-        log.info("payType:{}\tmoney:{}\tinfo:{}\ttype:{}\torderNumber:{}\tuserId:{}",payType,money,info,type,orderNumber,userId);
+        log.info("payType:{}\tmoney:{}\tinfo:{}\ttype:{}\torderNumber:{}\tuserId:{}\thotelId:{}",payType,money,info,type,orderNumber,userId,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject(type);
         cashierSummaryBO.setType(payType);
@@ -41,6 +42,7 @@ public class CashierSummaryService {
         cashierSummaryBO.setSettlement(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);
+        cashierSummaryBO.setHotelId(hotelId);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end  addCommodity...........................................");
     }
@@ -53,10 +55,11 @@ public class CashierSummaryService {
      * @param payType 支付方式
      * @param orderNumber 订单号
      * @param userId   操作员名字
+     * @param hotelId            酒店id
      */
-    public void addCard(String name, BigDecimal money,String payType,String orderNumber,Integer userId) {
+    public void addCard(String name, BigDecimal money,String payType,String orderNumber,Integer userId,Integer hotelId) {
         log.info("start addCard...........................................");
-        log.info("name:{}\tmoney:{}\tpayType:{}\torderNumber:{}\tuserId:{}",name,money,payType,orderNumber,userId);
+        log.info("name:{}\tmoney:{}\tpayType:{}\torderNumber:{}\tuserId:{}\thotelId:{}",name,money,payType,orderNumber,userId,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject("办卡"); //TODO  应该定义为常量
         cashierSummaryBO.setType(payType);
@@ -64,6 +67,7 @@ public class CashierSummaryService {
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);
         cashierSummaryBO.setName(name);
+        cashierSummaryBO.setHotelId(hotelId);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end addCard...........................................");
     }
@@ -76,10 +80,11 @@ public class CashierSummaryService {
      * @param payType 支付方式
      * @param orderNumber 订单号
      * @param userId    操作员名字
+     * @param hotelId            酒店id
      */
-    public void addStored(String name, BigDecimal money,String payType,String orderNumber,Integer userId) {
+    public void addStored(String name, BigDecimal money,String payType,String orderNumber,Integer userId,Integer hotelId) {
         log.info("start addStored...........................................");
-        log.info("name:{}\tmoney:{}\tpayType:{}\torderNumber:{}\tuserId:{}",name,money,payType,orderNumber,userId);
+        log.info("name:{}\tmoney:{}\tpayType:{}\torderNumber:{}\tuserId:{}\thotelId:{}",name,money,payType,orderNumber,userId,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject("储值"); //TODO  应该定义为常量
         cashierSummaryBO.setType(payType);
@@ -87,6 +92,7 @@ public class CashierSummaryService {
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);
         cashierSummaryBO.setName(name);
+        cashierSummaryBO.setHotelId(hotelId);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end addStored...........................................");
     }
@@ -105,12 +111,13 @@ public class CashierSummaryService {
      * @param roomName         房间名字
      * @param roomType         房间类型
      * @param remark           备注
+     * @param hotelId            酒店id
      */
     public void addCheck(BigDecimal money,String payType,String orderNumber,Integer userId,String name,String OTA,
-                         String channel,String passengerSource,String roomName,String roomType,String remark) {
+                         String channel,String passengerSource,String roomName,String roomType,String remark,Integer hotelId) {
         log.info("start addCheck...........................................");
-        log.info("money:{}\tpayType:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tremark:{}",
-               money,payType,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark);
+        log.info("money:{}\tpayType:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tremark:{}\thotelId{}",
+               money,payType,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject("押金"); //TODO  应该定义为常量
         cashierSummaryBO.setType(payType);
@@ -124,6 +131,7 @@ public class CashierSummaryService {
         cashierSummaryBO.setRoomName(roomName);
         cashierSummaryBO.setRoomTypeName(roomType);
         cashierSummaryBO.setRemark(remark);
+        cashierSummaryBO.setHotelId(hotelId);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end addCheck...........................................");
     }
@@ -141,15 +149,16 @@ public class CashierSummaryService {
      * @param passengerSource  客源
      * @param roomName         房间名字
      * @param roomType         房间类型
+     * @param hotelId            酒店id
      * @param designation      费用名称
      */
     public void addAccount(String project,BigDecimal money,String orderNumber,Integer userId,String name,String OTA,
-                         String channel,String passengerSource,String roomName,String roomType,String designation) {
+                         String channel,String passengerSource,String roomName,String roomType,String designation,Integer hotelId) {
         log.info("start addAccount...........................................");
-        log.info("project:{}\tmoney:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tdesignation:{}",
-                project,money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,designation);
+        log.info("project:{}\tmoney:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tdesignation:{}\thotelId:{}",
+                project,money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,designation,hotelId);
 
-                CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
+        CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject(project);
         cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
@@ -161,6 +170,7 @@ public class CashierSummaryService {
         cashierSummaryBO.setRoomName(roomName);
         cashierSummaryBO.setRoomTypeName(roomType);
         cashierSummaryBO.setRemark(designation);
+        cashierSummaryBO.setHotelId(hotelId);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("start addAccount...........................................");
 
@@ -179,12 +189,14 @@ public class CashierSummaryService {
      * @param passengerSource  客源
      * @param roomName         房间名字
      * @param roomType         房间类型
-     * @param remark          备注
+     * @param hotelId            酒店id
      */
     public void addRoomRate(BigDecimal money,String orderNumber,Integer userId,String name,String OTA,
-                           String channel,String passengerSource,String roomName,String roomType,String remark) {
-
-        CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
+                           String channel,String passengerSource,String roomName,String roomType,Integer hotelId) {
+        log.info("start addRoomRate...........................................");
+        log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tdesignation:{}\thotelId:{}",
+                money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,hotelId);
+                CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject("房费"); //TODO 定义常量
         cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
@@ -195,9 +207,9 @@ public class CashierSummaryService {
         cashierSummaryBO.setPassengerSource(passengerSource);
         cashierSummaryBO.setRoomName(roomName);
         cashierSummaryBO.setRoomTypeName(roomType);
-        cashierSummaryBO.setRemark(remark);
+        cashierSummaryBO.setHotelId(hotelId);
         cashierSummaryDAO.addData(cashierSummaryBO);
-
+        log.info("end addRoomRate...........................................");
     }
 
     /**
@@ -212,12 +224,13 @@ public class CashierSummaryService {
      * @param roomName         房间名字
      * @param roomType         房间类型
      * @param cause            原因
+     * @param hotelId            酒店id
      */
     public void addFree(BigDecimal money,String orderNumber,Integer userId,String name,String OTA,
-                            String channel,String passengerSource,String roomName,String roomType,String cause) {
+                            String channel,String passengerSource,String roomName,String roomType,String cause,Integer hotelId) {
         log.info("start addFree...........................................");
-        log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tcause:{}",
-                 money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,cause);
+        log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tcause:{}\thotelId:{}",
+                 money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,cause,hotelId);
 
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject("房费调整"); //TODO 定义常量
@@ -231,6 +244,7 @@ public class CashierSummaryService {
         cashierSummaryBO.setRoomName(roomName);
         cashierSummaryBO.setRoomTypeName(roomType);
         cashierSummaryBO.setRemark(cause);
+        cashierSummaryBO.setHotelId(hotelId);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end addFree...........................................");
     }
@@ -248,12 +262,13 @@ public class CashierSummaryService {
      * @param roomName         房间名字
      * @param roomType         房间类型
      * @param remark            原因
+     * @param hotelId            酒店id
      */
     public void addAccounts(BigDecimal money,String orderNumber,Integer userId,String name,String OTA,
-                        String channel,String passengerSource,String roomName,String roomType,String remark) {
+                        String channel,String passengerSource,String roomName,String roomType,String remark,Integer hotelId) {
         log.info("start addAccounts...........................................");
-        log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tremark:{}",
-                money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark);
+        log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tremark:{}\thotelId:{}",
+                money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark,hotelId);
 
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject("结账"); //TODO 定义常量
@@ -267,6 +282,7 @@ public class CashierSummaryService {
         cashierSummaryBO.setRoomName(roomName);
         cashierSummaryBO.setRoomTypeName(roomType);
         cashierSummaryBO.setRemark(remark);
+        cashierSummaryBO.setHotelId(hotelId);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end addAccounts...........................................");
     }

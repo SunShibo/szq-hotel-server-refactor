@@ -8,6 +8,7 @@ import com.szq.hotel.entity.bo.RoleBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.AdminService;
+import com.szq.hotel.service.ShiftRecordsService;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.MD5Util;
 import com.szq.hotel.util.StringUtils;
@@ -32,7 +33,8 @@ import java.util.UUID;
 public class AdminController extends BaseCotroller {
     @Resource
     private AdminService adminService ;
-
+    @Resource
+    private ShiftRecordsService shiftRecordsService;
     /**
      * 管理员登录
      * @param request
@@ -57,13 +59,15 @@ public class AdminController extends BaseCotroller {
         }
         adminBO.setHotelId(hotelId);
         adminBO.setPassword("");
+
+        //添加至交班
+        shiftRecordsService.beOnDuty(adminBO.getId(),classesId,adminBO.getHotelId());
+
         String uuid = UUID.randomUUID().toString();
         //登陆客户信息放入Redis缓存
         super.putLoginAdmin(uuid,adminBO);
         //uuid 存入cookie
         super.setCookie(response, SysConstants.CURRENT_LOGIN_CLIENT_ID, uuid, 60*60*24);
-        //添加至班次
-        //未完
 
         List<MenuBO> roleMenuSuccess = adminService.getRoleMenuSuccess(adminBO.getRoleId());
         Map<String,Object>  resultMap=new HashMap<String, Object>();

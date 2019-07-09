@@ -9,10 +9,10 @@
     <insert id="addData" useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.CashierSummaryBO">
        INSERT INTO `hm_cashier_summary` ( `project`, `channel`, `passenger_source`, `OTA`, `room_name`,
                                             `room_type_name`, `name`, `consumption`, `settlement`, `create_time`,
-                                             `remark`, `type`, `user_id`, `order_number`)
+                                             `remark`, `type`, `user_id`, `order_number`,hotel_id)
                                       VALUES (#{project}, #{channel}, #{passengerSource}, #{OTA}, #{roomName},
                                               #{roomTypeName}, #{name}, #{consumption}, #{settlement}, NOW(),
-                                               #{remark},#{type},#{userId}, #{orderNumber})
+                                               #{remark},#{type},#{userId}, #{orderNumber},#{hotelId})
     </insert>
 
 
@@ -20,6 +20,7 @@
     <select id="queryCashierSummary"  parameterType="com.szq.hotel.entity.bo.CashierSummaryBO"  resultType="com.szq.hotel.entity.bo.CashierSummaryBO" >
         SELECT su.*,admin.name as operator FROM hm_cashier_summary su LEFT JOIN  hm_admin admin ON su.user_id=admin.id
         WHERE
+        su.hotel_id=#{hotelId}  AND
         su.create_time BETWEEN #{startTime} AND  #{endTime}
         <if test="project!=null and project!='' " > AND su.project=#{project}  </if>
         <if test="type!=null and type!='' " > AND su.`type`=#{type}  </if>
@@ -29,8 +30,6 @@
         <if test="roomName!=null and roomName!='' " > AND su.`room_name`=#{roomName}  </if>
         <if test="roomTypeName!=null and roomTypeName!='' " > AND su.`room_type_name`=#{roomTypeName}  </if>
         <if test="name!=null and name!='' " > AND su.`name`=#{name}  </if>
-        <if test="consumption!=null" > AND su.`consumption`=#{consumption}  </if>
-        <if test="settlement!=null" > AND su.`settlement`=#{settlement}  </if>
         <if test="remark!=null and remark!=''" > AND su.`remark`=#{remark}  </if>
         <if test="operator!=null and operator!=''" > AND admin.`name`=#{operator}</if>
         <if test="orderNumber!=null and orderNumber!=''" > AND su.`order_number`=#{orderNumber}  </if>

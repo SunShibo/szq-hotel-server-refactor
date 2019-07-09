@@ -16,7 +16,7 @@ public class CashierSummaryBO  extends BaseModel{
     private String channel;//渠道
     private String passengerSource;//客源
     private String OTA;//OTA
-    private String roomName;//房间信息
+    private String roomName;//房间名字
     private String roomTypeName;//房间类型
     private String name;//姓名
     private BigDecimal consumption=new BigDecimal("0");//消费
@@ -28,28 +28,15 @@ public class CashierSummaryBO  extends BaseModel{
     private Date startTime;//查询条件
     private Date endTime;//
     private String operator;
+    private Integer hotelId;
 
-    private String payType;//支付类型
-    private BigDecimal money;//实付金额
-
-
-    public String getPayType() {
-        return payType;
+    public Integer getHotelId() {
+        return hotelId;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
     }
-
-
-    public void setPayType(String payType) {
-        this.payType = payType;
-    }
-
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-
 
     public Date getStartTime() {
         return startTime;

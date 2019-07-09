@@ -52,6 +52,7 @@ public class StatementController extends BaseCotroller {
                 return;
             }
 
+            param.setHotelId(loginAdmin.getHotelId());
             List<CashierSummaryBO> cashierSummaryBOS = cashierSummaryService.queryCashierSummary(param);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(cashierSummaryBOS));

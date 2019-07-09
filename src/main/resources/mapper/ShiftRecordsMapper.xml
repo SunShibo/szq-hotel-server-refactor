@@ -7,7 +7,7 @@
 
     <!--查询是否存在-->
     <select id="queryIsExist"  parameterType="java.lang.Integer" resultType="java.lang.Integer" >
-        SELECT id  FROM `hm_shift_records` WHERE admin_id=#{userId}  AND closing_time IS NULL  ORDER BY id limt 0,1
+        SELECT id  FROM `hm_shift_records` WHERE admin_id=#{userId}  AND closing_time IS NULL  ORDER BY id LIMIT 0,1
     </select>
 
     <!--上班-->
@@ -15,13 +15,15 @@
         INSERT INTO`hm_shift_records` ( `classes_id`, `admin_id`, `general_income`, `cash_income`, `cash_back`,
                                         `cash_amount`, `bank_card_income`, `bank_card_back`, `bank_card_amount`, `wechat_income`,
                                          `wechat_back`, `wechat_amount`, `alipay_income`, `alipay_back`, `alipay_amount`,
-                                         `integral_income`, `integral_spend`, `integral_amount`, `stored_value_income`, `stored_value_back`,
-                                          `stored_value_amount`, `member_card_sell_count`, `attendance_time`, `closing_time`)
+                                         `integral_income`, `integral_back`, `integral_amount`, `stored_value_income`, `stored_value_back`,
+                                          `stored_value_amount`, `member_card_sell_count`, `attendance_time`, `closing_time`,
+                                          `other_income`,`other_back`,`other_amount`,hotel_id)
                                 VALUES (#{classesId}, #{adminId},#{generalIncome}, #{cashIncome}, #{cashBack},
                                          #{cashAmount},#{bankCardIncome}, #{bankCardBack}, #{bankCardAmount}, #{wechatIncome},
                                          #{wechatBack}, #{wechatAmount}, #{alipayIncome}, #{alipayBack}, #{alipayAmount},
-                                          #{integralIncome}, #{integralSpend}, #{integralAmount}, #{storedValueIncome}, #{storedValueBack},
-                                           #{storedValueAmount}, #{memberCardSellCount},NOW(),#{closingTime})
+                                          #{integralIncome}, #{integralBack}, #{integralAmount}, #{storedValueIncome}, #{storedValueBack},
+                                           #{storedValueAmount}, #{memberCardSellCount},NOW(),#{closingTime},
+                                           #{otherIncome},#{otherBack},#{otherAmount},#{hotelId})
     </insert>
 
     <!--交班-->
@@ -30,29 +32,70 @@
                                         `bank_card_income`=#{bankCardIncome}, `bank_card_back`=#{bankCardBack}, `bank_card_amount`=#{bankCardAmount}, `wechat_income`=#{wechatIncome},
                                         `wechat_back`=#{wechatBack},`integral_income`=#{integralIncome},`stored_value_amount`=#{storedValueAmount},
                                          `wechat_amount`=#{wechatAmount}, `alipay_income`=#{alipayIncome}, `alipay_back`=#{alipayBack}, `alipay_amount`=#{alipayAmount},
-                                         `integral_spend`=#{integralSpend}, `integral_amount`=#{integralAmount}, `stored_value_income`=#{storedValueIncome}, `stored_value_back`=#{storedValueBack},
-                                          `member_card_sell_count`=#{memberCardSellCount},  `closing_time`=NOW()
+                                         `integral_back`=#{integralBack}, `integral_amount`=#{integralAmount}, `stored_value_income`=#{storedValueIncome}, `stored_value_back`=#{storedValueBack},
+                                          `member_card_sell_count`=#{memberCardSellCount},  `closing_time`=NOW() ,`other_income`=#{otherIncome},`other_back`=#{otherBack},`other_amount`=#{otherAmount}
                                     WHERE `id`= #{id}
     </update>
 
     <!--通过id查询交班记录-->
     <select id="queryShiftRecordsById"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.ShiftRecordsBO" >
-        SELECT *  FROM `hm_shift_records` WHERE id=#{id}
+       SELECT sr.*,cal.classes_name,cal.start_time,cal.end_time,admin.`name`  FROM `hm_shift_records` sr LEFT JOIN hm_classes  cal ON sr.classes_id=cal.id
+       LEFT JOIN hm_admin admin ON admin.id=sr.admin_id
+       WHERE sr.id=#{userId}
     </select>
 
     <!--找出-->
     <select id="queryBack"  parameterType="java.util.Map"  resultType="java.math.BigDecimal" >
         SELECT SUM(settlement)  FROM `hm_cashier_summary` su LEFT JOIN hm_admin  admin ON admin.id=su.user_id
-        WHERE  admin.id=#{userId}  AND    `type`=#{payType} AND
-        create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement &lt; 0
+        WHERE  admin.id=#{userId}  AND    su.`type`=#{payType} AND
+        su.create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement &lt; 0
     </select>
     <!--收入-->
     <select id="queryIncome"  parameterType="java.util.Map"  resultType="java.math.BigDecimal" >
        SELECT SUM(settlement)  FROM `hm_cashier_summary` su LEFT JOIN hm_admin  admin ON admin.id=su.user_id
-        WHERE  admin.id=#{userId}  AND    `type`=#{payType} AND
-        create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement > 0
+        WHERE  admin.id=#{userId}  AND    su.`type`=#{payType} AND
+        su.create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement > 0
+    </select>
+    <!--办卡数-->
+    <select id="queryServizioCount" parameterType="java.util.Map" resultType="int" >
+        SELECT COUNT(su.id)  FROM `hm_cashier_summary` su LEFT JOIN hm_admin  admin ON admin.id=su.user_id
+        WHERE  admin.id=#{userId}  AND
+        su.create_time  BETWEEN #{startTime}  AND #{endTime}  AND project ='办卡'
+    </select>
+    <!--交班记录列表页-->
+    <select id="queryShiftRecordList"  parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.ShiftRecordsBO" >
+        SELECT shift.*,cla.classes_name,cla.start_time,cla.end_time,admin.`name` FROM
+               `hm_shift_records` shift  LEFT JOIN hm_classes  cla ON cla.id=shift.classes_id
+               LEFT JOIN hm_admin admin ON shift.admin_id=admin.id
+               <where>
+                   shift.hotel_id=#{hotelId}
+                   <if test="name!=null and name!=''" >
+                      AND admin.name  LIKE  '%${name}%'
+                    </if>
+                   <if test="startTime!=null and endTime!=null" >
+                     AND  shift.attendance_time BETWEEN #{startTime}  AND  #{endTime}
+                   </if>
+               </where>
+              ORDER BY  shift.attendance_time  DESC
+        <include refid="limit" />
+    </select>
+    <!--交班列表页数量-->
+    <select id="queryShiftRecordCount"  parameterType="java.util.Map" resultType="int" >
+        SELECT  COUNT(shift.id)  FROM `hm_shift_records` shift  LEFT JOIN hm_classes  cla ON cla.id=shift.classes_id
+        LEFT JOIN hm_admin admin ON shift.admin_id=admin.id
+        <where>
+            shift.hotel_id=#{hotelId}
+            <if test="name!=null and name!=''" >
+              AND   admin.name  LIKE  '%${name}%'
+            </if>
+            <if test="startTime!=null and endTime!=null" >
+                AND  shift.attendance_time BETWEEN #{startTime}  AND  #{endTime}
+            </if>
+        </where>
     </select>
 
-
+    <sql id="limit">
+        limit #{pageOffset},#{pageSize}
+    </sql>
 
 </mapper>
