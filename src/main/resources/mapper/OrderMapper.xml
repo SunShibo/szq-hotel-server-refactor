@@ -127,7 +127,7 @@
 </select>
 
     <!-- 修改主订单信息 -->
-    <update id="updOrder" parameterType="com.szq.hotel.entity.bo.OrderBO">
+    <update id="updOrder" parameterType="com.szq.hotel.entity.bo.OrderBO" >
         update hm_order
         <set>
             <if test="orderPlacer!=null and orderPlacer!=''">
@@ -169,12 +169,7 @@
     delete from hm_order_child where order_id=#{id}
 </delete>
 
-    <!-- 查询一个人身份证号是否正在入住 -->
-    <select id="checkId" resultType="java.lang.Integer" parameterType="java.lang.String">
-    select count(certificate_number)
-    from hm_check_in_person
-    where status='checkin' and certificate_number=#{certificateNumber}
-</select>
+
 
 
     <!--订单列表-->

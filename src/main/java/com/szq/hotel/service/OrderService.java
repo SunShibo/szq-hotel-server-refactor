@@ -2,9 +2,11 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.CheckInPersonDAO;
+import com.szq.hotel.dao.EverydayRoomPriceDAO;
 import com.szq.hotel.dao.OrderDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
+import com.szq.hotel.pop.Constant;
 import com.szq.hotel.util.IDBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service("OrderService")
 @Transactional
@@ -28,7 +27,10 @@ public class OrderService {
     CheckInPersonDAO checkInPersonDAO;
 
     @Resource
-    EverydayRoomPriceService everydayRoomPriceService;
+    EverydayRoomPriceDAO everydayRoomPriceDAO;
+
+    @Resource
+    RoomService roomService;
 
     //添加主订单 携带订单id
     public void addOrder(OrderBO orderBO) {
@@ -39,24 +41,82 @@ public class OrderService {
         orderDAO.addOrder(orderBO);
     }
 
-    //删除旧信息 重新插入新子订单 价格 入住人， 返回订单编号
-    public String updOrderInfo(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
+    //预定入住
+    public void updOrderInfo(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
         //修改主订单信息
         orderDAO.updOrder(orderBO);
-
-        //删除旧入住人 旧价格
-        List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildById(orderBO.getId());
-
-        for (OrderChildBO orderChildBO : orderChildBOS) {
-            everydayRoomPriceService.delEverydayRoomById(orderChildBO.getId());
-            checkInPersonDAO.delCheckInPersonById(orderChildBO.getId());
+        //修改子订单信息
+        List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildById(orderBO.getId());//旧的子订单信息
+        for (OrderChildBO orderChildBONew : orderChildBOList) {
+            if(orderChildBONew.getId()==null){
+                //新选的房间或者修改了房间的房型 id传过来为null 代表子订单
+                orderDAO.addOrderChild(orderChildBONew);
+                List<CheckInPersonBO> checkInPersonBOS=orderChildBONew.getCheckInPersonBOS();
+                List<EverydayRoomPriceBO> everydayRoomPriceBOList=orderChildBONew.getEverydayRoomPriceBOS();
+                if(checkInPersonBOS!=null){
+                    for (CheckInPersonBO person:checkInPersonBOS) {
+                        checkInPersonDAO.addCheckInPerson(person);
+                    }
+                }
+                if(everydayRoomPriceBOList!=null){
+                    for (EverydayRoomPriceBO roomPrice:everydayRoomPriceBOList) {
+                        everydayRoomPriceDAO.addEverydayRoomPrice(roomPrice);
+                    }
+                }
+                //房间状态修改为在住状态
+                Map<String,Object> map = new HashMap<String, Object>();
+                map.put("id",orderChildBONew.getRoomId());
+                map.put("state", Constants.VACANT.getValue());
+                roomService.updateroomMajorState(map);
+                continue;
+            }
+            for (OrderChildBO orderChildOld : orderChildBOS) {
+                if(orderChildOld.getId()!=orderChildBONew.getId()){
+                    //原本预定的被删除了，或者因为修改了房型，id没有传过来 代表已经取消
+                    OrderChildBO orderChildCancel=new OrderChildBO();
+                    orderChildCancel.setId(orderChildOld.getId());
+                    orderChildCancel.setOrderState(Constants.CANCEL.getValue());
+                    orderDAO.updOrderChild(orderChildCancel);
+                    //删除那个房间的入住人
+                    checkInPersonDAO.delCheckInPersonById(orderChildOld.getId());
+                    //房间状态修改为空房 还是脏房
+                    Map<String,Object> map = new HashMap<String, Object>();
+                    map.put("id",orderChildBONew.getRoomId());
+                    map.put("state", Constants.VACANT.getValue());
+                    roomService.updateroomMajorState(map);
+                    continue;
+                }
+                if(orderChildOld.getId()==orderChildBONew.getId()){
+                    //原本的子订单id和新传过来的子订单id一样 代表没有换房间房型 还作为同一个子订单 修改一边其他信息
+                    orderDAO.updOrderChild(orderChildBONew);
+                    //修改房价信息
+                    List<EverydayRoomPriceBO> everydayRoomPriceBOList=orderChildBONew.getEverydayRoomPriceBOS();
+                    if(everydayRoomPriceBOList!=null){
+                        for (EverydayRoomPriceBO roomPrice:everydayRoomPriceBOList) {
+                            everydayRoomPriceDAO.updEverydayRoomPrice(roomPrice);
+                        }
+                    }
+                    //添加一遍入住人
+                    List<CheckInPersonBO> checkInPersonBOS=orderChildBONew.getCheckInPersonBOS();
+                    if(checkInPersonBOS!=null){
+                        for (CheckInPersonBO person:checkInPersonBOS) {
+                            checkInPersonDAO.addCheckInPerson(person);
+                        }
+                    }
+                    //房间状态修改为在住状态！！！！！
+//                    Map<String,Object> map = new HashMap<String, Object>();
+//                    map.put("id",orderChildBONew.getRoomId());
+//                    map.put("state", Constants.VACANT.getValue());
+//                    roomService.updateroomMajorState(map);
+                    continue;
+                }
+            }
         }
 
-        //删除 旧子订单以
-        orderDAO.delOrderChild(orderBO.getId());
-
-        //重新插入新子订单 新价格 入住人的信息
-        return this.addOrderAllInfo(orderChildBOList, orderBO);
+        //传给我json的房间时把子订单id也传给我
+        //原本预定的子订单会有订单id，我就可以把这个子订单信息全都修改一边
+        //原本预定的子订单被删除了，把状态改变为已关闭
+        //新增的子订单没有订单id，重新添加子订单
     }
 
     //添加子订单 入住人 每日价格
@@ -85,16 +145,23 @@ public class OrderService {
 
             //这个房型下的每日价格
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChild.getEverydayRoomPriceBOS();
-            for (EverydayRoomPriceBO everydayRoomPriceBO : everydayRoomPriceBOList) {
-                everydayRoomPriceBO.setOrderChildId(orderChild.getId());
-                everydayRoomPriceService.addEverydayRoomPrice(everydayRoomPriceBO);
+            if(everydayRoomPriceBOList != null && everydayRoomPriceBOList.size()!=0){
+                for (EverydayRoomPriceBO everydayRoomPriceBO : everydayRoomPriceBOList) {
+                    everydayRoomPriceBO.setOrderChildId(orderChild.getId());
+                    everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
 
-                //叠加总房价
-                totalPrice=totalPrice.add(everydayRoomPriceBO.getMoney());
+                    //叠加总房价
+                    totalPrice=totalPrice.add(everydayRoomPriceBO.getMoney());
+                }
             }
             //这个房间的入住人 预约的时候为null 或者稍后入住为null
             List<CheckInPersonBO> checkInPersonBOS = orderChild.getCheckInPersonBOS();
-            if (checkInPersonBOS != null) {
+            if (checkInPersonBOS != null && checkInPersonBOS.size()!=0) {
+                //房间状态修改为在住状态
+                Map<String,Object> map = new HashMap<String, Object>();
+                map.put("id",orderChild.getRoomId());
+                map.put("state", Constants.VACANT.getValue());
+                roomService.updateroomMajorState(map);
                 for (CheckInPersonBO person : checkInPersonBOS) {
                     person.setOrderChildId(orderChild.getId());
                     person.setStatus(Constants.CHECKIN.getValue());
@@ -107,6 +174,7 @@ public class OrderService {
         order.setId(orderBO.getId());
         order.setTotalPrice(totalPrice);
         orderDAO.updOrder(order);
+
         return orderBO.getOrderNumber();
     }
 
@@ -121,7 +189,7 @@ public class OrderService {
         for (OrderChildBO orderChild : orderChildBOS) {
             //查询房间信息 计算房价
             List<EverydayRoomPriceBO> everydayList =
-                    everydayRoomPriceService.getEverydayRoomById(orderChild.getId());
+                    everydayRoomPriceDAO.getEverydayRoomById(orderChild.getId());
             BigDecimal money = new BigDecimal(0);
             for (EverydayRoomPriceBO every : everydayList) {
                 money = money.add(every.getMoney());
@@ -193,10 +261,7 @@ public class OrderService {
         orderBO.setOrderChildBOS(this.getOrderChildById(orderBO));
         return orderBO;
     }
-    //检查身份证号是否在住
-    public Integer checkId(String certificateNumber){
-        return orderDAO.checkId(certificateNumber);
-    }
+
     /**
      * 订单列表
      *

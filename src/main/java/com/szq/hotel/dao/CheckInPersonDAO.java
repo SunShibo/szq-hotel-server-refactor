@@ -1,6 +1,7 @@
 package com.szq.hotel.dao;
 
 import com.szq.hotel.entity.bo.CheckInPersonBO;
+import org.apache.ibatis.annotations.Param;
 
 import javax.print.DocFlavor;
 import java.util.List;
@@ -12,4 +13,8 @@ public interface CheckInPersonDAO {
     Integer addCheckInPerson(CheckInPersonBO checkInPersonBO);
     //根据子订单删除入住人
     Integer delCheckInPersonById(Integer id);
+
+    //检查身份证号是否在住
+    Integer checkId(@Param("certificateNumber") String certificateNumber,@Param("orderId") Integer orderId);
+
 }

@@ -14,4 +14,7 @@ public interface EverydayRoomPriceDAO {
 
     //根据子订单删除每日房价
     Integer delEverydayRoomById(Integer id);
+
+    //修改每日房价
+    Integer updEverydayRoomPrice(EverydayRoomPriceBO everydayRoomPriceBO);
 }

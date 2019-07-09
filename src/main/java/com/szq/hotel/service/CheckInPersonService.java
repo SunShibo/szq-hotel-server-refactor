@@ -22,4 +22,10 @@ public class CheckInPersonService {
     public List<CheckInPersonBO> getCheckInPersonById(Integer id){
         return checkInPersonDAO.getCheckInPersonById(id);
     }
+
+    //检查身份证号是否在住
+    public Integer checkId(String certificateNumber,Integer orderId){
+        return checkInPersonDAO.checkId(certificateNumber,orderId);
+    }
+
 }

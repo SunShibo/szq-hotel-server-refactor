@@ -33,9 +33,6 @@ public interface OrderDAO {
     Integer updOrder(OrderBO orderBO);
     //删除旧子订单
     Integer delOrderChild(Integer id);
-    //检查身份证号是否在住
-    Integer checkId(String certificateNumber);
-
 
     /**
      * 订单列表
