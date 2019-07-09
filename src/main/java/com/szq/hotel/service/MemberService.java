@@ -64,4 +64,30 @@ public class MemberService {
     }
 
 
+    /*
+        通过id查询会员信息
+     */
+    public MemberBO queryMemberById(Integer id){
+        return memberDAO.queryMemberById(id);
+    }
+        /*
+            积分增减
+         */
+    public void integralChange(MemberBO memberBO,Integer userId){
+        log.info("start================integralChange");
+        log.info("param{}\tUserId{}",memberBO,userId);
+        memberBO.setUpdateUserId(userId);
+        memberDAO.integralChange(memberBO);
+        log.info("end===================integralChange");
+    }
+    /*
+        储值调整
+     */
+    public void storedValueChange(MemberBO memberBO,Integer userId){
+        log.info("start================storedValueChange");
+        log.info("param{}\tUserId{}",memberBO,userId);
+        memberBO.setUpdateUserId(userId);
+        memberDAO.storedValueChange(memberBO);
+        log.info("end===================storedValueChange");
+    }
 }

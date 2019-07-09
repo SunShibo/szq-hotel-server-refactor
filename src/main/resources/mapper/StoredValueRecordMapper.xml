@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.StoredValueRecordDAO">
+<!--添加储值记录-->
+<insert id="addStoredValueRecord" parameterType="com.szq.hotel.entity.bo.StoredValueRecordBO">
+        INSERT INTO `hm_stored_value_record` (
+	        `check_in_member_id`,`type`,`odd_numbers`,
+	        `stored_value_money`,`presenter_money`,
+	      `current_balance`,`create_user_id`,
+	      `create_time`,`remark`
+)VALUES (#{checkInMemberId},#{type},#{oddNumbers},#{storedValueMoney},#{presenterMoney},
+        #{currentBalance},#{createUserId},NOW(),#{remark});
+</insert>
+
+
+</mapper>

@@ -1,9 +1,14 @@
 package com.szq.hotel.web.controller;
 import com.szq.hotel.entity.bo.AdminBO;
+import com.szq.hotel.entity.bo.IntegralRecordBO;
 import com.szq.hotel.entity.bo.MemberBO;
+import com.szq.hotel.entity.bo.StoredValueRecordBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
+import com.szq.hotel.service.IntegralRecordService;
 import com.szq.hotel.service.MemberService;
+import com.szq.hotel.service.StoredValueRecordService;
+import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.StringUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +33,10 @@ public class MemberController extends BaseCotroller {
 
     @Resource
     private MemberService memberService;
+    @Resource
+    private IntegralRecordService integralRecordService;
+    @Resource
+    private StoredValueRecordService storedValueRecordService;
 
     /**
      * 新增会员
@@ -196,6 +206,114 @@ public class MemberController extends BaseCotroller {
         }
     }
 
+    /**
+     * 积分增减
+     * @param integralChange
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/integralChange")
+    public void integralChange(Integer id,BigDecimal integralChange,String remark, HttpServletRequest request, HttpServletResponse response){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}",loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            if (integralChange == null||id==null||StringUtils.isEmpty(remark)) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
+            MemberBO memberBO = memberService.queryMemberById(id);
+            memberBO.setIntegral(integralChange);
+            memberService.integralChange(memberBO,loginAdmin.getId());
+
+
+            MemberBO memberBO1 = memberService.queryMemberById(id);
+            IntegralRecordBO integralRecordBO = new IntegralRecordBO();
+            integralRecordBO.setCheckInMemberId(id);
+            integralRecordBO.setType("手动添加");
+            integralRecordBO.setOddNumbers(IDBuilder.getOrderNumber());
+            integralRecordBO.setIntegralChange(integralChange);
+            integralRecordBO.setCurrentBalance(memberBO1.getIntegral());
+            integralRecordBO.setRemark(remark);
+
+            integralRecordService.addIntegralRecord(integralRecordBO,loginAdmin.getId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("积分增减成功！"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.error("integralChangeException",e);
+        }
+
+    }
+
+    /**
+     * 储值调整
+     * @param storedValueChange
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/storedValueChange")
+    public void storedValueChange(Integer id,BigDecimal storedValueChange,String remark,String type, BigDecimal presenterMoney,HttpServletRequest request, HttpServletResponse response){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}",loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            if (id==null||storedValueChange == null||remark==null||StringUtils.isEmpty(type)) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
+            MemberBO memberBO = memberService.queryMemberById(id);
+            memberBO.setStoredValue(storedValueChange);
+            memberService.storedValueChange(memberBO,loginAdmin.getId());
+
+
+            MemberBO memberBO1 = memberService.queryMemberById(id);
+            StoredValueRecordBO storedValueRecordBO = new StoredValueRecordBO();
+            storedValueRecordBO.setCheckInMemberId(id);
+            storedValueRecordBO.setType(type);
+            storedValueRecordBO.setOddNumbers(IDBuilder.getOrderNumber());
+            storedValueRecordBO.setStoredValueMoney(storedValueChange);
+            storedValueRecordBO.setCurrentBalance(memberBO1.getIntegral());
+            storedValueRecordBO.setRemark(remark);
+            storedValueRecordBO.setPresenterMoney(presenterMoney);
+
+            storedValueRecordService.addStoredValueRecord(storedValueRecordBO,loginAdmin.getId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("储值调整成功！"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.error("storedValueChangeException",e);
+        }
+
+    }
 
 }
 

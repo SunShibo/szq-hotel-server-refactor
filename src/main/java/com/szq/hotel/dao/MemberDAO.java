@@ -24,4 +24,14 @@ public interface MemberDAO {
         通过id查询会员信息
      */
     MemberBO queryMemberById(Integer id);
+    /*
+        积分增减
+     */
+    void integralChange(MemberBO memberBO);
+
+    /*
+        储值调整
+     */
+    void storedValueChange(MemberBO memberBO);
+
 }

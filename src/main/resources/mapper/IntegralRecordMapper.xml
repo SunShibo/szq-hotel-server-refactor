@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.IntegralRecordDAO">
+
+<insert id="addIntegralRecord" parameterType="com.szq.hotel.entity.bo.IntegralRecordBO">
+    INSERT INTO `hm_integral_record` (
+	  `check_in_member_id`,`type`,`odd_numbers`,
+	  `integral_change`,`presenter_money`,`current_balance`,
+	  `create_user_id`,`create_time`,`remark`)
+    VALUES (#{checkInMemberId},#{type},#{oddNumbers},#{integralChange},#{presenterMoney},
+          #{currentBalance},#{createUserId},NOW(),#{remark});
+</insert>
+
+
+</mapper>

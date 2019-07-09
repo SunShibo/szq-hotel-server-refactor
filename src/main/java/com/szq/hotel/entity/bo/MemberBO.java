@@ -2,6 +2,7 @@ package com.szq.hotel.entity.bo;
 
 import com.szq.hotel.common.base.BaseModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class MemberBO extends BaseModel {
@@ -10,8 +11,8 @@ public class MemberBO extends BaseModel {
     private String phone;//手机号
     private String certificateType;//证件类型
     private String certificateNumber;//证件号
-    private Integer integral;//积分
-    private Integer storedValue;//储值
+    private BigDecimal integral;//积分
+    private BigDecimal storedValue;//储值
     private Integer createUserId;//操作人id
     private String name;//会员名字
     private String birthday;//生日
@@ -64,19 +65,19 @@ public class MemberBO extends BaseModel {
         this.certificateNumber = certificateNumber;
     }
 
-    public Integer getIntegral() {
+    public BigDecimal getIntegral() {
         return integral;
     }
 
-    public void setIntegral(Integer integral) {
+    public void setIntegral(BigDecimal integral) {
         this.integral = integral;
     }
 
-    public Integer getStoredValue() {
+    public BigDecimal getStoredValue() {
         return storedValue;
     }
 
-    public void setStoredValue(Integer storedValue) {
+    public void setStoredValue(BigDecimal storedValue) {
         this.storedValue = storedValue;
     }
 

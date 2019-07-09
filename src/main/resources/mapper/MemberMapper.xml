@@ -62,5 +62,12 @@ WHERE id = #{id}
     <select id="queryMemberById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberBO">
         SELECT * FROM `hm_member` WHERE id=#{id}
     </select>
-
+    <!--积分增减-->
+    <update id="integralChange" parameterType="com.szq.hotel.entity.bo.MemberBO">
+        UPDATE hm_member SET integral = (integral+#{integral}) WHERE id = #{id}
+    </update>
+    <!--储值调整-->
+    <update id="storedValueChange" parameterType="com.szq.hotel.entity.bo.MemberBO">
+        UPDATE hm_member SET stored_value = (stored_value+#{storedValue}) WHERE id = #{id}
+    </update>
 </mapper>
