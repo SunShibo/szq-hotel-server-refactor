@@ -9,8 +9,8 @@ import java.util.List;
 public class OrderChildBO extends BaseModel {
     private Integer id;//子订单
     private Integer orderId;//订单id
-    private Date startTime;//实际入住时间
-    private Date endTime;//实际退房时间
+    private Date startTime;//入住时间
+    private Date endTime;//退房时间
     private Integer certificateTypeId;//证件类型id
     private BigDecimal payCashNum;//支付现金 金额
     private BigDecimal otherPayNum;//其他支付金额
@@ -19,7 +19,7 @@ public class OrderChildBO extends BaseModel {
     private BigDecimal timeoutRate;//超时费用
     private BigDecimal freeRateNum;//免单金额
     private String orderState;//订单状态
-    private Date practicalDepartureTime;//实际离店时间
+    private Date practicalDepartureTime;//实际退房时间
     private Integer roomId;//房间id
     private String roomName;//房间号
     private Integer roomTypeId;//房型id

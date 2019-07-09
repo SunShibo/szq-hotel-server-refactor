@@ -1,12 +1,11 @@
 package com.szq.hotel.web.controller;
 
-import com.szq.hotel.entity.bo.AdminBO;
-import com.szq.hotel.entity.bo.OrderBO;
-import com.szq.hotel.entity.bo.OrderChildBO;
-import com.szq.hotel.entity.bo.OrderListBO;
+import com.szq.hotel.common.constants.Constants;
+import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.query.QueryInfo;
+import com.szq.hotel.service.CashierSummaryService;
 import com.szq.hotel.service.OrderService;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
@@ -28,8 +27,10 @@ public class OrderController extends BaseCotroller {
     @Resource
     OrderService orderService;
 
+    @Resource
+    CashierSummaryService cashierSummaryService;
     /**
-     * 房间预定 或者 预约入住
+     * 房间预定 预约入住 直接入住 修改
      * @param orderBO 预约信息
      * @param OrderChildJSON json格式的预定的房间信息
      * @param type 预约 或者 预约入住 或者 直接入住
@@ -50,20 +51,25 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        if(type.equals("reservation")){
-            //插入订单信息
+        if(type.equals("roomReservation")){
+            //房间预约
             orderBO.setClerkOrderingId(userInfo.getId());
             orderBO.setHotelId(userInfo.getHotelId());
             orderService.addOrder(orderBO);
 
             //插入子订单信息 以及每日房价信息
             List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
-            orderService.addOrderChild(list,orderBO);
-        }else{
+            orderService.addOrderAllInfo(list,orderBO);
+        }else if(type.equals("reservation")){
             //预约入住 修改订单 子订单 房价 入住人 等信息
             List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
             orderService.updOrderInfo(list,orderBO);
 
+        }else if(type.equals("directly")){
+            //直接入住
+            orderService.addOrder(orderBO);
+            List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
+            orderService.addOrderAllInfo(list,orderBO);
         }
     }
 
@@ -76,12 +82,12 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getReservationRoomInfo")
     public void getReservationRoomInfo(HttpServletRequest request, HttpServletResponse response,String idNumber,String mobile){
         //验证管理员
-//        AdminBO userInfo = super.getLoginUser(request) ;
-//        if(userInfo == null){
-//            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
-//            super.safeJsonPrint(response, result);
-//            return ;
-//        }
+        AdminBO userInfo = super.getLoginUser(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
         //验证参数
         if((idNumber== null||idNumber.length()==0)&&(mobile==null||mobile.length()==0)){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
@@ -94,6 +100,94 @@ public class OrderController extends BaseCotroller {
         super.safeJsonPrint(response, result);
     }
 
+    /**
+     * 通过订单id获取订单的信息
+     * @param orderId 订单号
+     * */
+    @RequestMapping("/getOrderById")
+    public void getOrderById(Integer orderId,HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginUser(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(orderId== null||orderId.equals("")){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        OrderBO orderBO=orderService.getOrderById(orderId);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
+        super.safeJsonPrint(response, result);
+    }
+
+    /**
+     * 入住支付
+     * @param cs 报表信息
+     * @param id 子订单id
+     * */
+    @RequestMapping("/pay")
+    public void pay(CashierSummaryBO cs, Integer id, HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginUser(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(cs== null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //添加报表记录
+        cashierSummaryService.addCheck(cs.getMoney(),cs.getPayType(),cs.getOrderNumber(),
+                userInfo.getId(),cs.getName(),cs.getOTA(),cs.getChannel(),cs.getPassengerSource(),
+                cs.getRoomName(),cs.getRoomTypeName(),cs.getRemark());
+        //修改子订单信息
+        OrderChildBO orderChildBO=new OrderChildBO();
+        orderChildBO.setId(id);
+        orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
+        orderChildBO.setRoomRate(cs.getMoney());
+
+        orderService.updOrderChild(orderChildBO);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("支付成功")) ;
+        super.safeJsonPrint(response, result);
+    }
+
+    /**
+     * 入住支付
+     * @param id 身份证号
+     * */
+    @RequestMapping("/checkId")
+    public void checkId(String id,HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginUser(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(id== null||id.length()==0){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        Integer count=orderService.checkId(id);
+        if(count>0){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094","身份证信息为在住状态")) ;
+            super.safeJsonPrint(response, result);
+        }else{
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("未在住")) ;
+            super.safeJsonPrint(response, result);
+        }
+
+    }
 
     /**
      * 订单列表

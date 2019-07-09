@@ -29,6 +29,28 @@ public class CashierSummaryBO  extends BaseModel{
     private Date endTime;//
     private String operator;
 
+    private String payType;//支付类型
+    private BigDecimal money;//实付金额
+
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
+
+
     public Date getStartTime() {
         return startTime;
     }

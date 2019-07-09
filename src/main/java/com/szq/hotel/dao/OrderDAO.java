@@ -23,6 +23,9 @@ public interface OrderDAO {
     //根据手机号 身份证号 查询主订单预约信息
     OrderBO getOrderByIdOrMobile(@Param("idNumber")String idNumber, @Param("mobile")String mobile, @Param("date") String date);
 
+    //根据订单id查询订单信息
+    OrderBO getOrderById(Integer orderId);
+
     //根据订单id查询子订单
     List<OrderChildBO> getOrderChildById(Integer id);
 
@@ -30,6 +33,9 @@ public interface OrderDAO {
     Integer updOrder(OrderBO orderBO);
     //删除旧子订单
     Integer delOrderChild(Integer id);
+    //检查身份证号是否在住
+    Integer checkId(String certificateNumber);
+
 
     /**
      * 订单列表

@@ -49,8 +49,8 @@
             <if test="startTime!=null and startTime!=''">
                 start_time=#{startTime},
             </if>
-            <if test="endRime!=null and endRime!=''">
-                end_time=#{endRime},
+            <if test="endTime!=null and endTime!=''">
+                end_time=#{endTime},
             </if>
             <if test="payCashNum!=null and payCashNum!=''">
                 pay_cash_num=#{payCashNum},
@@ -70,7 +70,7 @@
             <if test="freeRateNum!=null and freeRateNum!=''">
                 free_rate_num=#{freeRateNum},
             </if>
-            <if test="order_state!=null and order_state!=''">
+            <if test="orderState!=null and orderState!=''">
                 order_state=#{orderState},
             </if>
             <if test="practicalDepartureTime!=null and practicalDepartureTime!=''">
@@ -88,9 +88,6 @@
             <if test="alRoomCode!=null and alRoomCode!=''">
                 al_room_code=#{alRoomCode},
             </if>
-            <if test="hotelId!=null and hotelId!=''">
-                hotel_id=#{hotelId},
-            </if>
             <if test="nightAuditorState!=null and nightAuditorState!=''">
                 night_auditor_state=#{nightAuditorState},
             </if>
@@ -103,22 +100,31 @@
 
     <!-- 根据手机号 身份证号 查询订单信息 -->
     <select id="getOrderByIdOrMobile" resultType="com.szq.hotel.entity.bo.OrderBO">
-        select * from hm_order where
-        check_time &lt;= #{date}
-        and (phone=#{mobile} or ID_number=#{idNumber})
-    </select>
+    select * from hm_order where
+    check_time &lt;= #{date}
+    and (phone=#{mobile} or ID_number=#{idNumber})
+    order by update_time desc
+    limit 1
+</select>
+
+    <!-- 根据订单id查询订单信息 -->
+    <select id="getOrderById" resultType="com.szq.hotel.entity.bo.OrderBO">
+    select * from hm_order where
+    id = #{orderId}
+</select>
+
 
     <!-- 根据订单id查询子订单 -->
     <select id="getOrderChildById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
-        select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
-        from hm_order_child,hm_room,hm_room_type
-        where
-        hm_order_child.room_id=hm_room.id
-        and
-        hm_order_child.room_type_id=hm_room_type.id
-        and
-        order_id=#{id}
-    </select>
+    select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
+    from hm_order_child,hm_room,hm_room_type
+    where
+    hm_order_child.room_id=hm_room.id
+    and
+    hm_order_child.room_type_id=hm_room_type.id
+    and
+    order_id=#{id}
+</select>
 
     <!-- 修改主订单信息 -->
     <update id="updOrder" parameterType="com.szq.hotel.entity.bo.OrderBO">
@@ -161,7 +167,14 @@
     <!-- 删除订单信息 -->
     <delete id="delOrderChild" parameterType="java.lang.Integer">
     delete from hm_order_child where order_id=#{id}
-    </delete>
+</delete>
+
+    <!-- 查询一个人身份证号是否正在入住 -->
+    <select id="checkId" resultType="java.lang.String" parameterType="java.lang.String">
+    select count(certificate_number)
+    from hm_check_in_person
+    where status='checkin' and certificate_number=#{certificateNumber}
+</select>
 
 
     <!--订单列表-->

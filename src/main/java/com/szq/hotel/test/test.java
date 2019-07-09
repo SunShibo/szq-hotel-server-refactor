@@ -16,32 +16,36 @@ public class test {
     public  static  void main(String args[]){
         List<OrderChildBO> OrderChildBOList=new ArrayList<OrderChildBO>();//每日房价信息
         OrderChildBO childBO=new OrderChildBO();
-        childBO.setRoomId(1);
-        childBO.setRoomTypeId(2);
-        childBO.setRemark("豪华房的备注");
+        childBO.setRoomId(6);
+        childBO.setRoomTypeId(6);
+        childBO.setRemark("房型2换为房型6/房间6");
         List<EverydayRoomPriceBO> everydayRoomPriceBOList=new ArrayList<EverydayRoomPriceBO>();
         EverydayRoomPriceBO everydayRoomPriceBO=new EverydayRoomPriceBO();
-        everydayRoomPriceBO.setMoney(new BigDecimal(100));
+        everydayRoomPriceBO.setMoney(new BigDecimal(150));
         everydayRoomPriceBO.setTime(new Date());
         everydayRoomPriceBOList.add(everydayRoomPriceBO);
         EverydayRoomPriceBO everydayRoomPriceBO2=new EverydayRoomPriceBO();
-        everydayRoomPriceBO2.setMoney(new BigDecimal(200));
+        everydayRoomPriceBO2.setMoney(new BigDecimal(150));
         everydayRoomPriceBO2.setTime(new Date());
         everydayRoomPriceBOList.add(everydayRoomPriceBO2);
+        EverydayRoomPriceBO everydayRoomPriceBO3=new EverydayRoomPriceBO();
+        everydayRoomPriceBO3.setMoney(new BigDecimal(50));
+        everydayRoomPriceBO3.setTime(new Date());
+        everydayRoomPriceBOList.add(everydayRoomPriceBO3);
         childBO.setEverydayRoomPriceBOS(everydayRoomPriceBOList);
 
         CheckInPersonBO checkInPersonBO=new CheckInPersonBO();
-        checkInPersonBO.setName("男1");
+        checkInPersonBO.setName("王洋");
         checkInPersonBO.setGender("男");
         checkInPersonBO.setPhone("6666");
         checkInPersonBO.setCertificateNumber("66666");
-        checkInPersonBO.setRemark("男1的备注");
+        checkInPersonBO.setRemark("买瓶水");
         CheckInPersonBO checkInPersonBO2=new CheckInPersonBO();
-        checkInPersonBO2.setName("女1");
+        checkInPersonBO2.setName("张茜");
         checkInPersonBO2.setGender("女");
         checkInPersonBO2.setPhone("55555");
         checkInPersonBO2.setCertificateNumber("5555555");
-        checkInPersonBO2.setRemark("女1的备注");
+        checkInPersonBO2.setRemark("我要奶茶");
         List<CheckInPersonBO> checkInPersonBOS=new ArrayList<CheckInPersonBO>();
         checkInPersonBOS.add(checkInPersonBO);
         checkInPersonBOS.add(checkInPersonBO2);
@@ -54,14 +58,18 @@ public class test {
         childBO2.setRoomTypeId(2);
         childBO2.setRemark("大床房的备注");
         List<EverydayRoomPriceBO> everydayRoomPriceBOList2=new ArrayList<EverydayRoomPriceBO>();
-        EverydayRoomPriceBO everydayRoomPriceBO3=new EverydayRoomPriceBO();
-        everydayRoomPriceBO3.setMoney(new BigDecimal(100));
-        everydayRoomPriceBO3.setTime(new Date());
-        everydayRoomPriceBOList2.add(everydayRoomPriceBO3);
+        EverydayRoomPriceBO everydayRoomPriceBO5=new EverydayRoomPriceBO();
+        everydayRoomPriceBO5.setMoney(new BigDecimal(100));
+        everydayRoomPriceBO5.setTime(new Date());
+        everydayRoomPriceBOList2.add(everydayRoomPriceBO5);
         EverydayRoomPriceBO everydayRoomPriceBO4=new EverydayRoomPriceBO();
         everydayRoomPriceBO4.setMoney(new BigDecimal(200));
         everydayRoomPriceBO4.setTime(new Date());
         everydayRoomPriceBOList2.add(everydayRoomPriceBO4);
+        EverydayRoomPriceBO everydayRoomPriceBO6=new EverydayRoomPriceBO();
+        everydayRoomPriceBO6.setMoney(new BigDecimal(200));
+        everydayRoomPriceBO6.setTime(new Date());
+        everydayRoomPriceBOList2.add(everydayRoomPriceBO6);
         childBO2.setEverydayRoomPriceBOS(everydayRoomPriceBOList2);
 
 
@@ -81,7 +89,7 @@ public class test {
         List<CheckInPersonBO> checkInPersonBOS2=new ArrayList<CheckInPersonBO>();
         checkInPersonBOS2.add(checkInPersonBO3);
         checkInPersonBOS2.add(checkInPersonBO4);
-        childBO2.setCheckInPersonBOS(checkInPersonBOS2);
+        //childBO2.setCheckInPersonBOS(checkInPersonBOS2);
         OrderChildBOList.add(childBO2);
         String json= JSON.toJSONString(OrderChildBOList);
         System.err.println(json);
