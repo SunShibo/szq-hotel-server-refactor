@@ -9,6 +9,7 @@ var PAYJSON = {
     "amt": "0.01",
     "orderNo": "201712011721520"
 };
+
 var OUTPAYJSON = {
     "msgTp": "0200",
     "procTp": "00",
@@ -494,450 +495,76 @@ function no() {
 
 //根据后台数据格式化菜单
 function formatMenu(data) {
-    return data.map(function(item) {
-        if(!item){
+    return data.map(function (item) {
+        if (!item) {
             return null;
         }
-        var path = item.index, name = item.menuName, icon = item.icon;
+        var path = item.path, name = item.menuName, id = item.id;
 
         var result = {
             path: path,
             name: name,
-            icon: icon
+            id: id
         };
 
-        if(item.pid > 0){
+        if (item.pid > 0) {
             result.exact = true;
         }
-
-        if(item.ch){
-            const children = formatMenuData(item.ch);
+        if (item.ch) {
+            var children = formatMenu(item.ch);
             result.children = children;
         }
         return result;
-    }).filter(function (item) {return item});
+    }).filter(function (item) {
+        return item
+    });
 }
 
 //渲染菜单
 function renderMenu($, e) {
     var m = $("#navMenu");
     m.empty();
-    var info = localStorage.hotelUserInfo
-    if (!!info) {
-        info = JSON.parse(info);
-        // console.log(info)
-        var d = [];
-        if (info.admin) {
-            d = ['<li class="layui-nav-item">',
-                '<a href="home.html">首页</a>',
-                '</li>',
-                '<li class="layui-nav-item">',
-                '<a href="appoint.html">预定中心</a>',
-                '<dl class="layui-nav-child">',
-                '<dd>',
-                '<a href="appoint.html">预约入住</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="schedule.html">房间预订</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="chart.html">统计图表</a>',
-                '</dd>',
-                '</dl>',
-                '</li>',
-                '<li class="layui-nav-item">',
-                '<a href="checkIn.html">直接入住</a>',
-                '</li>',
-                '<li class="layui-nav-item">',
-                '<a href="member.html">会员管理</a>',
-                '<dl class="layui-nav-child">',
-                '<dd>',
-                '<a href="member.html">会员基本信息</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="membershipCard.html">会员卡信息</a>',
-                '</dd>',
-                '</dl>',
-                '</li>',
-                '<li class="layui-nav-item">',
-                '<a href="roomType.html">酒店管理</a>',
-                '<dl class="layui-nav-child">',
-                '<dd>',
-                '<a href="roomType.html">房型管理</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="room.html">客房管理</a>',
-                '</dd>',
-                '</dl>',
-                '</li>',
-                '<li class="layui-nav-item">',
-                '<a href="order.html">订单管理</a>',
-                '<dl class="layui-nav-child">',
-                '<dd>',
-                '<a href="order.html">客房订单管理</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="cashOrder.html">现金订单管理</a>',
-                '</dd>',
-                '</dl>',
-                '</li>',
-                ' <li class="layui-nav-item">',
-                '<a>报表</a>',
-                '<dl class="layui-nav-child">',
-                '<dd>',
-                '<a href="residentStatement.html?s=0">在住报表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="residentStatement.html?s=1">预离店报表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="management_layer.html">管理层报表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="cashier_account.html">收银入账信息表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="agreementUnits.html">协议单位收银汇总报表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="IntermediaryEntryDetails.html">中介收银汇总报表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="income.html">营业收入报表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="cashSum.html">收银汇总报表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="managerReport.html">经理日报表</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="daily_recharge.html">充值日报</a>',
-                '</dd>',
-                '</dl>',
-                '</li>',
-                '<li class="layui-nav-item">',
-                '<a>设置</a>',
-                '<dl class="layui-nav-child">',
-                '<dd>',
-                '<a href="hotelManage.html">酒店设置</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="permission.html">权限设置</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="scheduleSetting.html">班次设置</a>',
-                '</dd>',
-                '<dd>',
-                '<dd>',
-                '<a href="spare_gold.html">备用金增减</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="member_discount.html">会员折扣设置</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="channel_discount.html">渠道折扣设置</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="javascript:showPosPort()">pos机端口</a>',
-                '</dd>',
-                '</dl>',
-                '</li>',
-                '<li class="layui-nav-item">',
-                '<a>交班</a>',
-                '<dl class="layui-nav-child">',
-                '<dd>',
-                '<a href="javascript:showConfirm(1)">预交班</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="javascript:showConfirm(2)">交班结账</a>',
-                '</dd>',
-                '<dd>',
-                '<a href="handoverList.html">交班记录</a>',
-                '</dd>',
-                '</dl>',
-                '</li>',
-                ' <li class="layui-nav-item">',
-                '<a onclick="shopAdd()">商品交易</a>',
-                '</li>',
-                ' <li class="layui-nav-item">',
-                '<a href="residentStatement.html?s=0">在住报表</a>',
-                '</li>',
-                ' <li class="layui-nav-item">',
-                '<a href="residentStatement.html?s=1">预离店报表</a>',
-                '</li>'].join(" ");
-            m.append(d);
-        } else {
-            if (info.homePermissions) {
-                d.push(['<li class="layui-nav-item">',
-                    '<a href="home.html">首页</a>',
-                    '</li>'].join(''))
+    if (!!localStorage.hotelMenu) {
+        //格式化菜单
+        var n = formatMenu(JSON.parse(localStorage.hotelMenu));
+        if (!!n) {
+            var d = [];
+            for (var i = 0, len = n.length; i < len; i++) {
+                var z = n[i];
+                if (z.children.length > 0) { //有二级菜单
+                    //先拼接一级菜单
+                    d.push([
+                        '<li class="layui-nav-item">',
+                        '<a href="' + z.path + '">' + z.name + '</a>',
+                        '<dl class="layui-nav-child">'].join(''));
+                    //再循环拼接二级菜单
+                    for (var j = 0, jLen = z.children.length; j < jLen; j++) {
+                        var l = z.children[j];
+                        d.push([
+                            '<dd>',
+                            '<a href="' + l.path + '">' + l.name + '</a>',
+                            '</dd>'
+                        ].join(''))
+                    }
+                    //闭合标签
+                    d.push(['</dl></li>'].join(''));
+                } else {// 没有二级菜单
+                    //直接拼接标签
+                    d.push([
+                        '<li class="layui-nav-item">',
+                        '<a href="' + z.path + '">' + z.name + '</a>',
+                        '</li>'].join(''));
+                }
             }
-            if (info.checkInPermissions) {
-                d.push(['<li class="layui-nav-item">',
-                    '<a href="appoint.html">预定中心</a>',
-                    '<dl class="layui-nav-child" id="checkInNav">',
-                    '</dl>',
-                    '</li>'].join(''));
-
+            m.append(d.join(' '));
+            m.parent().css('z-index', '999');
+            try {
+                $("#hotelusername").html(" " + JSON.parse(localStorage.User).name + '')
+            } catch (e) {
+                console.info("获取用户名失败")
             }
-            if (info.directly) {
-                d.push([
-                    '<li class="layui-nav-item">',
-                    '<a href="checkIn.html">直接入住</a>',
-                    '</li>'
-                ].join(' '));
-            }
-            if (info.memberPermissions) {
-                d.push(['<li class="layui-nav-item">',
-                    '<a href="member.html">会员管理</a>',
-                    '<dl class="layui-nav-child" id="memberNav">',
-                    '</dl>',
-                    '</li>'].join(''));
-            }
-            if (info.hotelPermissions) {
-                d.push(['<li class="layui-nav-item">',
-                    '<a href="roomType.html">酒店管理</a>',
-                    '<dl class="layui-nav-child" id="hotelNav">',
-                    '</dl>',
-                    '</li>'].join(''));
-            }
-            if (info.orderPermissions) {
-                d.push(['<li class="layui-nav-item">',
-                    '<a href="order.html">订单管理</a>',
-                    '<dl class="layui-nav-child" id="orderNav">',
-                    '</dl>',
-                    '</li>'].join(''))
-            }
-            if (info.formsPermissions) {
-                d.push([' <li class="layui-nav-item">',
-                    '<a>报表</a>',
-                    '<dl class="layui-nav-child" id="formsNav">',
-                    '</dl>',
-                    '</li>'].join(''));
-            }
-            if (info.setPermissions) {
-                d.push(['<li class="layui-nav-item">',
-                    '<a>设置</a>',
-                    '<dl class="layui-nav-child" id="setNav">',
-                    '</dl>',
-                    '</li>'].join(''));
-            }
-            if (info.handPermissions) {
-                d.push(['<li class="layui-nav-item">',
-                    '<a>交班</a>',
-                    '<dl class="layui-nav-child" id="handNav">',
-                    '</dl>',
-                    '</li>'].join(''));
-            }
-            if (info.productPermissions) {
-                d.push([' <li class="layui-nav-item">',
-                    '<a href="javascript:;" onclick="shopAdd()">商品交易</a>',
-                    '</li>',
-                    '<li class="layui-nav-item">',
-                    '<a href="residentStatement.html?s=0">在住报表</a>',
-                    '</li>',
-                    ' <li class="layui-nav-item">',
-                    '<a href="residentStatement.html?s=1">预离店报表</a>',
-                    '</li>'].join(''));
-            }
-            m.append(d);
-            setTimeout(function () {
-                if (info.roomOccupancy) {
-                    $('#checkInNav').append([
-                        '<dd>',
-                        '<a href="appoint.html">预约入住</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.roomReservation) {
-                    $('#checkInNav').append([
-                        '<dd>',
-                        '<a href="schedule.html">房间预订</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.systemDiagram) {
-                    $('#checkInNav').append([
-                        '<dd>',
-                        '<a href="chart.html">统计图表</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.memberInformation) {
-                    $('#memberNav').append([
-                        '<dd>',
-                        '<a href="member.html">会员基本信息</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.membershipCard) {
-                    $('#memberNav').append([
-                        '<dd>',
-                        '<a href="membershipCard.html">会员卡信息</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.roomManagement) {
-                    $('#hotelNav').append([
-                        '<dd>',
-                        '<a href="roomType.html">房型管理</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.guestroomManagement) {
-                    $('#hotelNav').append([
-                        '<dd>',
-                        '<a href="room.html">客房管理</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.roomorderManagement) {
-                    $('#orderNav').append([
-                        '<dd>',
-                        '<a href="order.html">客房订单管理</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.cashorderManagement) {
-                    $('#orderNav').append([
-                        '<dd>',
-                        '<a href="cashOrder.html">现金订单管理</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.liveReport) {
-                    $('#formsNav').append([
-                        '<dd>',
-                        '<a href="residentStatement.html?s=0">在住报表</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.predepartureStatement) {
-                    $('#formsNav').append([
-                        '<dd>',
-                        '<a href="residentStatement.html?s=1">预离店报表</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.managementDaily) {
-                    $('#formsNav').append([
-                        '<dd>',
-                        '<a href="management_layer.html">管理层日报表</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.detailsbankReceiptentry) {
-                    $('#formsNav').append([
-                        '<dd>',
-                        '<a href="cashier_account.html">收银入账明细报表</a>',
-                        '</dd>',
-                        '<dd>',
-                        '<a href="agreementUnits.html">协议单位收银汇总报表</a>',
-                        '</dd>',
-                        '<dd>',
-                        '<a href="IntermediaryEntryDetails.html">中介收银汇总报表</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.operatingIncome) {
-                    $('#formsNav').append([
-                        '<dd>',
-                        '<a href="income.html">营业收入报表</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.cashierAlways) {
-                    $('#formsNav').append([
-                        '<dd>',
-                        '<a href="cashSum.html">收银汇总报表</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.managerDaily) {
-                    $('#formsNav').append([
-                        '<dd>',
-                        '<a href="managerReport.html">经理日报表</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.hotelmanger) {
-                    $('#setNav').append([
-                        '<dd>',
-                        '<a href="permission.html">酒店设置</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.permissions) {
-                    $('#setNav').append([
-                        '<dd>',
-                        '<a href="permission.html">权限设置</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.shiftsSetting) {
-                    $('#setNav').append([
-                        '<dd>',
-                        '<a href="scheduleSetting.html">班次设置</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.changesinReserves) {
-                    $('#setNav').append([
-                        '<dd>',
-                        '<a href="spare_gold.html">备用金增减</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.memberdiscountSetting) {
-                    $('#setNav').append([
-                        '<dd>',
-                        '<a href="member_discount.html">会员折扣设置</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.channeldiscountSetting) {
-                    $('#setNav').append([
-                        '<dd>',
-                        '<a href="channel_discount.html">渠道折扣设置</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                $('#setNav').append([
-                    '<dd>',
-                    '<a href="javascript:showPosPort()">pos机端口</a>',
-                    '</dd>',
-                ].join(' '));
-                if (info.includingtheInvoicing) {
-                    $('#handNav').append([
-                        '<dd>',
-                        '<a href="javascript:showConfirm(1)">预交班</a>',
-                        '</dd>',
-                        '<dd>',
-                        '<a href="javascript:showConfirm(2)">交班结账</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-                if (info.logRecords) {
-                    $('#handNav').append([
-                        '<dd>',
-                        '<a href="handoverList.html">交班记录</a>',
-                        '</dd>',
-                    ].join(' '));
-                }
-            }, 10)
+            e.render();
         }
-        m.parent().css('z-index', '999');
-        try {
-            // debugger;
-            // console.info(JSON.parse( localStorage.hotelUserInfo).name)
-            var aa = JSON.parse(localStorage.hotelUserInfo);
-            // debugger;
-            $("#hotelusername").html(" " + JSON.parse(localStorage.hotelUserInfo).name + '')
-        } catch (e) {
-            console.info("获取用户名失败")
-        }
-        e.render();
     }
 }
 
@@ -1267,12 +894,13 @@ function checkPayState(_p) {
 
 //身份证验证并查询会员信息
 function handleInput() {
-    var val = $('#card').val(), flag = new RegExp(IDREG).test(val) || new RegExp(HMPASSCHECK).test(val) || new RegExp(TAIWANPASS).test(val) || new RegExp(PASSPORT).test(val) || new RegExp(OFFICERS).test(val);
+    var val = $('#card').val(),
+        flag = new RegExp(IDREG).test(val) || new RegExp(HMPASSCHECK).test(val) || new RegExp(TAIWANPASS).test(val) || new RegExp(PASSPORT).test(val) || new RegExp(OFFICERS).test(val);
     //再进行正则判断
     if (flag) {
         //获取用户会员信息
         setUserInfo(val, function (res, success) {
-            if(success){
+            if (success) {
                 $('.integral').text(res.integral);
                 $('.prepaidCard').text(res.streValue);
                 //存储会员信息
@@ -1280,7 +908,7 @@ function handleInput() {
                     payValue[item] = res[item];
                 }
                 $('.optional_1').show();
-            }else {
+            } else {
                 layer.msg(res);
                 //重新初始化信息
                 for (var item in payValue) {

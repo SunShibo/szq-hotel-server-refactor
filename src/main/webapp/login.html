@@ -295,10 +295,11 @@
              //    return;
             // }
 			$.post("/admin/adminLogin",data.field, function(r){
-                console.log(r)
+                console.log(r);
 				if(r.success){
-                    localStorage.hotelUserInfo = JSON.stringify(r.data.menu);
-                    // location.href=HOME;
+                    localStorage.hotelMenu = JSON.stringify(r.data.menu);
+                    localStorage.User = JSON.stringify(r.data.admin);
+                    location.href=HOME;
 					return false;
 				}else{
                     layer.alert(r.errMsg);
