@@ -23,7 +23,13 @@ public enum Constants {
     /* 支付方式 : 支付宝 */ ALIPAY("alipay"),
     /* 支付方式 : 其他支付 */ OTHER("other"),
     /* 支付方式 : 储值 */ STORED("stored"),
-    /* 支付方式 : 积分 */ INTEGRAL("integral");
+    /* 支付方式 : 积分 */ INTEGRAL("integral"),
+    /* 房态 : 空房 */ VACANT("vacant"),
+    /* 房态 : 在住 */ INTHE("inthe"),
+    /* 房态 : 脏房 */ DIRTY("dirty"),
+    /* 房态 : 门店锁房 */ SHOP("shop"),
+    /* 房态 : 网络锁 */ NETWORK("network"),
+    /* 房态 : 全部锁 */ ALL("all");
 
     Constants(String value) {
         this.value = value;
