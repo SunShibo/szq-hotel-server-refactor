@@ -106,7 +106,12 @@ public class MemberRoomTypeController extends BaseCotroller {
             }
 
             MemberLevelBO memberLevelBO = memberRoomTypeService.selectMemberRoomType(memberLevelId);
-
+            if (memberLevelBO==null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(memberLevelBO.getDiscount()));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
