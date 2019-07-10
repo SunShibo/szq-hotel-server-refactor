@@ -167,4 +167,9 @@
     set show = 'no'
     where id = #[id]
   </update>
+  <!--查询所有房型-->
+  <select id="getRoomTypeList" resultType="java.lang.Integer">
+    select id from hm_room_type
+    where `show` = 'yes'
+  </select>
 </mapper>

@@ -23,6 +23,12 @@ public class RoomTypeService {
     public List<RoomTypeBO> queryRoomTypeList(Integer id){
         return roomTypeDAO.queryRoomTypeList(id);
     }
+    /*
+       查询所有房型
+   */
+    public List<Integer> getRoomTypeList(){
+        return roomTypeDAO.getRoomTypeList();
+    }
 
     public int insertSelective(RoomTypeBO record){
         return roomTypeDAO.insertSelective(record);
