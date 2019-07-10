@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 子订单详情 -->
+<mapper namespace="com.szq.hotel.dao.OrderRecordDAO">
+
+    <!--添加子订单详情-->
+    <insert id="addOrderRecord" parameterType="com.szq.hotel.entity.bo.OrderRecoredBO"  >
+      INSERT INTO `hm_order_record` ( `order_child_id`, `info`, `create_user_id`, `pay_type`, `money`,
+                                        `state`, `project`, `number`, `create_time`)
+                              VALUES (#{orderChildId}, #{info}, #{createUserId}, #{payType}, #{money},
+                                      #{state}, #{project}, #{number},NOW());
+    </insert>
+
+    <!--查询子订单详情-->
+    <select id="queryOrderRecord"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.OrderRecoredBO">
+        SELECT * FROM `hm_order_record` WHERE  order_child_id =#{id}
+    </select>
+</mapper>

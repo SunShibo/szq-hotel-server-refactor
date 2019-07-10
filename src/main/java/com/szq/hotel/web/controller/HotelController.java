@@ -41,7 +41,7 @@ public class HotelController extends BaseCotroller {
             AdminBO loginAdmin = super.getLoginAdmin(request);
             log.info("user{}",loginAdmin);
             if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;
@@ -63,7 +63,7 @@ public class HotelController extends BaseCotroller {
 
         }catch (Exception e){
             e.getStackTrace();
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000004"));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
             log.error("addHotelException",e);
         }
@@ -143,7 +143,7 @@ public class HotelController extends BaseCotroller {
 
         }catch (Exception e){
             e.getStackTrace();
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
             log.error("addHotelException",e);
         }
@@ -175,7 +175,7 @@ public class HotelController extends BaseCotroller {
 
         }catch (Exception e){
             e.getStackTrace();
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
             log.error("addHotelException",e);
         }

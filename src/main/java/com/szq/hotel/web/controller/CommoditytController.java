@@ -1,10 +1,12 @@
 package com.szq.hotel.web.controller;
 
 import com.szq.hotel.entity.bo.AdminBO;
+import com.szq.hotel.entity.bo.BuyerBuyingBO;
 import com.szq.hotel.entity.bo.CommodityBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.CashierSummaryService;
+import com.szq.hotel.service.ChildOrderService;
 import com.szq.hotel.service.CommodiryService;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
@@ -37,7 +39,8 @@ public class CommoditytController extends BaseCotroller {
     private CashierSummaryService  cashierSummaryService;
     @Resource
     private CommodiryService commodiryService;
-
+    @Resource
+    private ChildOrderService childOrderService;
     /**
      * 添加商品交易
      * @param request
@@ -48,7 +51,7 @@ public class CommoditytController extends BaseCotroller {
      * @param info       详情
      */
     @RequestMapping("/addCommodity")
-    public void addHotel(HttpServletRequest request, HttpServletResponse response, String payType, String consumptionType, BigDecimal money,String info){
+    public void addCommodity(HttpServletRequest request, HttpServletResponse response, String payType, String consumptionType, BigDecimal money,String info){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -126,8 +129,6 @@ public class CommoditytController extends BaseCotroller {
             queryMap.put("condition", condition);
             queryMap.put("hotelId", loginAdmin.getHotelId());
 
-
-
             List<CommodityBO> commodityBOS = commodiryService.queryCommodiry(queryMap);
             int count = commodiryService.queryCommodiryCount(queryMap);
             Map<String,Object>  resultMap=new HashMap<String, Object>();
@@ -146,5 +147,102 @@ public class CommoditytController extends BaseCotroller {
         }
 
     }
+
+
+    /**
+     * 查询挂账信息
+     *  @param roomName  房间名称
+     */
+    @RequestMapping("/querySuspend")
+    public void querySuspend(HttpServletRequest request, HttpServletResponse response,String roomName) {
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}", loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            if (StringUtils.isEmpty(roomName)) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            List<BuyerBuyingBO> data=childOrderService.querySuspend(roomName);
+            if(data==null|| data.size()<1){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000008"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(data));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("querySuspendException", e);
+        }
+    }
+
+
+
+    /**
+     * 挂账
+     * @param request
+     * @param response
+     * @param consumptionType  消费类型
+     * @param money      金额
+     * @param info       详情
+     */
+    @RequestMapping("/suspend")
+    public void suspend(HttpServletRequest request, HttpServletResponse response, String consumptionType, BigDecimal money,String info,Integer childId){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}",loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
+            //验证参数
+            if ( StringUtils.isEmpty(consumptionType) || StringUtils.isEmpty(info) || money==null || money.doubleValue() < 0 || childId==null  ) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
+            childOrderService.recorded(childId,money,info,consumptionType,loginAdmin.getId(),loginAdmin.getHotelId());
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("suspendException",e);
+        }
+
+    }
+
+
 
 }
