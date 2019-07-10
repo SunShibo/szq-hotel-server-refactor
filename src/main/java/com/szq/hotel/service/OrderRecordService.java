@@ -2,6 +2,7 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.OrderRecordDAO;
+import com.szq.hotel.entity.bo.ChildOrderBO;
 import com.szq.hotel.entity.bo.OrderRecoredBO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,8 @@ public class OrderRecordService {
 
     @Resource
     private OrderRecordDAO orderRecordDAO;
-
+    @Resource
+    private ChildOrderService childOrderService;
 
     /**
      * 查询子订单详情
@@ -41,15 +43,26 @@ public class OrderRecordService {
      * @param userId  用户id
      * @param number  数量
      */
+    //FIXME 生成记录应在主订单中
     public void addOrderRecord(Integer orderChildId , String info, String payType, BigDecimal money,String project,Integer userId,String number){
         log.info("star addOrderRecord..................................");
         log.info("orderChildId:{}\tinfo:{}\tpayType:{}\tmoney:{}\tproject:{}\tuserId:{}\tnumber:{}",
                 orderChildId,info,payType,money,project,userId,number);
 
+        //查询子订单
+        ChildOrderBO childOrderBO = childOrderService.queryOrderChildById(orderChildId);
         OrderRecoredBO orderRecoredBO=new OrderRecoredBO();
         orderRecoredBO.setCreateUserId(userId);
-        orderRecoredBO.setOrderChildId(orderChildId);
-        orderRecoredBO.setInfo(info);
+        //此间房就是主账房
+        if(Constants.YES.getValue().equals(childOrderBO.getMain())) {
+            orderRecoredBO.setOrderChildId(orderChildId);
+            orderRecoredBO.setInfo(info);
+        }else{
+            //查询主账房
+            Integer mainId=childOrderService.queryOrderChildMain(childOrderBO.getAlRoomCode());
+            orderRecoredBO.setOrderChildId(mainId);
+            orderRecoredBO.setInfo(info+"("+  childOrderBO.getRoomName()+"转入)");
+        }
         orderRecoredBO.setPayType(payType);
         orderRecoredBO.setMoney(money);
         orderRecoredBO.setProject(project);
@@ -58,6 +71,7 @@ public class OrderRecordService {
         orderRecordDAO.addOrderRecord(orderRecoredBO);
         log.info("end addOrderRecord..................................");
     }
+
 
 
 }

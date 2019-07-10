@@ -74,11 +74,11 @@ public class CommoditytController extends BaseCotroller {
 
             String orderNumber = IDBuilder.getOrderNumber();
 
-            commodiryService.addCommodiry(payType,consumptionType,money,info,orderNumber,loginAdmin.getId(),loginAdmin.getHotelId());
+            Integer id=commodiryService.addCommodiry(payType,consumptionType,money,info,orderNumber,loginAdmin.getId(),loginAdmin.getHotelId());
             //判断支付类型
             cashierSummaryService.addCommodity(payType,money,info,consumptionType,orderNumber,loginAdmin.getId(),loginAdmin.getHotelId());
 
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(id));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;
@@ -91,6 +91,11 @@ public class CommoditytController extends BaseCotroller {
         }
 
     }
+
+
+
+
+
 
     /**
      * 查询商品交易
@@ -147,6 +152,50 @@ public class CommoditytController extends BaseCotroller {
         }
 
     }
+
+
+
+    /**
+     * 商品交易打印
+     * @Param id
+     * @param request
+     */
+    @RequestMapping("/queryCommodiryById")
+    public void queryCommodiryById(HttpServletRequest request, HttpServletResponse response, Integer id) {
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}", loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            if (id == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            CommodityBO commodityBO= commodiryService.queryCommodiryById(id);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(commodityBO));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("queryCommodiryByIdException", e);
+        }
+
+    }
+
 
 
     /**

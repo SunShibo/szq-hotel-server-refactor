@@ -49,4 +49,6 @@ public interface ChildOrderDAO {
      * @param money
      */
     void free(@Param("id") Integer id,@Param("money") BigDecimal money);
+
+    Integer queryOrderChildMain(String code);
 }

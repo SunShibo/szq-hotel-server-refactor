@@ -28,11 +28,14 @@ public class CommodiryService {
     /**
      * 添加商品交易
      */
-    public void addCommodiry(String payType, String consumptionType, BigDecimal money, String info,String orderNumber,Integer userId,Integer hotelId){
+    public Integer addCommodiry(String payType, String consumptionType, BigDecimal money, String info,String orderNumber,Integer userId,Integer hotelId){
         log.info("start addFloor..........................");
         log.info("payType:{}\tconsumptionType:{}\tmoney:{}\tinfo:{}\torderNumber:{}\tuserId:{}\thotelId:{}",payType,consumptionType,money,info,orderNumber,userId,hotelId);
-        commodiryDAO.addCommodiry(new  CommodityBO(orderNumber,payType,consumptionType,money,userId,info,hotelId));
+        CommodityBO commodityBO = new CommodityBO(orderNumber, payType, consumptionType, money, userId, info, hotelId);
+        commodiryDAO.addCommodiry(commodityBO);
         log.info("end  addFloor..........................");
+        return commodityBO.getId();
+
     }
 
     /**
@@ -60,4 +63,7 @@ public class CommodiryService {
 
     }
 
+    public CommodityBO queryCommodiryById(Integer id) {
+        return commodiryDAO.queryCommodiryById(id);
+    }
 }
