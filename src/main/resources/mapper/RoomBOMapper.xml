@@ -381,10 +381,12 @@
     </if>
     AND hm_room.lock_room_state
     IN ('ope','network') AND hm_room.show = 'yes'
-    HAVING hm_room.lock_room_end_time &lt; #{checkTime} &gt; hm_room.lock_room_start_time
+    HAVING
+    #{checkTime} [NOT]BETWEEN hm_room.lock_room_start_time AND hm_room.lock_room_end_time
+
     OR hm_room.lock_room_end_time IS NULL
   </select>
-
+  <!--hm_room.lock_room_end_time &lt; #{checkTime} &gt; hm_room.lock_room_start_time-->
   <select id="queryOc"  resultType="com.szq.hotel.entity.bo.OcBO">
     SELECT * FROM hm_order_child WHERE room_id IN
     <foreach item="item" collection="id" open="(" separator="," close=")">

@@ -160,13 +160,12 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-
   <select id="queryRoomTypeList" resultType="com.szq.hotel.entity.bo.RoomTypeBO">
     select * from hm_room_type
     <where>
       and hotel_id = #{hotelId}
       <if test="id != null">
-      and id = #{id}
+        and id = #{id}
       </if>
       and `show` = 'yes'
     </where>
