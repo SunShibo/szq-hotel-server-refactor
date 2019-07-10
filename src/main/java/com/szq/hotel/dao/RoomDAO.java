@@ -56,7 +56,9 @@ public interface RoomDAO {
      * @param id
      * @return
      */
-    List<OcBO> queryOc(@Param("id") List<Integer> id);
+    List<OcBO> queryOc(@Param("id") List<Integer> id,
+                       @Param("checkTime")String checkTime,
+                       @Param("endTime")String endTime);
 
 
     /**
@@ -67,5 +69,5 @@ public interface RoomDAO {
     List<RtBO> queryRt(@Param("hotelId")Integer hotelId);
 
 
-
+  //  List<Integer>
 }

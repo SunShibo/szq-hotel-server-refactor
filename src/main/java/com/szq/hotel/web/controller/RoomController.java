@@ -48,7 +48,7 @@ public class RoomController extends BaseCotroller {
         Map<String, Object> condition = new HashMap<String, Object>();
         if (queryInfo != null) {
             //把pageOffset 页数,pageSize每页的条数放入map集合中
-            condition.put("pageOffset", queryInfo.getPageOffset());
+            condition.put("pageNo", queryInfo.getPageOffset());
             condition.put("pageSize", queryInfo.getPageSize());
         }
 
@@ -154,13 +154,24 @@ public class RoomController extends BaseCotroller {
 
 
     @RequestMapping("/quertRm")
-    public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime){
+    public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime,
+                        String endTime, String roomTypeId, String roomAuxiliaryStatus,
+                        String roomAuxiliaryStatusStand){
         AdminBO loginUser = super.getLoginAdmin(request);
         log.info("进入此方法");
         Map map = new HashMap<String,Object>();
         log.info("checkTime:{}",checkTime);
+        log.info("endTime:{}",endTime);
+        log.info("roomTypeId:{}",roomTypeId);
+        log.info("roomAuxiliaryStatus:{}",roomAuxiliaryStatus);
+        log.info("roomAuxiliaryStatusStand:{}",roomAuxiliaryStatusStand);
+
         map.put("checkTime", checkTime);
         map.put("hotelId", loginUser.getHotelId());
+        map.put("endTime", endTime);
+        map.put("roomTypeId", roomTypeId);
+        map.put("roomAuxiliaryStatus", roomAuxiliaryStatus);
+        map.put("roomAuxiliaryStatusStand", roomAuxiliaryStatusStand);
         Map mp = null;
         try {
             mp = roomService.queryRm(map);

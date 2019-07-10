@@ -88,6 +88,8 @@ public class RoomService {
         //获取预入住时间
         String dt =  (String) map.get("checkTime");
         log.info("获取预约入住的时间:{}",dt);
+        String et =  (String) map.get("endTime");
+        log.info("获取结束入住的时间:{}",et);
         //获取符合条件的房间集合
         List<RmBO> list = roomDAO.queryRm(map);
 
@@ -102,25 +104,14 @@ public class RoomService {
         }
         log.info("获取符合条件房间的id:{}",ls);
         //根据房间id获取符合条件的订单
-        List<OcBO> l = roomDAO.queryOc(ls);
+        List<OcBO> l = roomDAO.queryOc(ls,dt,et);
+        List<Integer> reId = new ArrayList<Integer>();
         for (OcBO oc : l){
             log.info("获取符合条件房间的订单:{}",oc.getRoomId());
+            reId.add(oc.getRoomId());
         }
 
 
-       SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd ");
-
-       Date   date = formatter.parse(dt);
-        log.info("String 转换 date :{}",date);
-        List<Integer> reId = new ArrayList<Integer>();
-        if (!CollectionUtils.isEmpty(l)) {
-            for (OcBO c : l) {
-                //判断客人选择的预入住时间是否在其他符合条件订单之间
-                if (!belongCalendar(date, c.getStartTime(), c.getEndTime())) {
-                    reId.add(c.getRoomId());
-                }
-            }
-        }
         log.info("判断客人选择的预入住时间是否在其他符合条件订单之间的id:{}",reId);
         //去重
         for (int i = 0; i < reId.size() - 1; i++) {
