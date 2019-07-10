@@ -103,11 +103,6 @@ public class OrderService {
                             checkInPersonDAO.addCheckInPerson(person);
                         }
                     }
-                    //房间状态修改为在住状态！！！！！
-//                    Map<String,Object> map = new HashMap<String, Object>();
-//                    map.put("id",orderChildBONew.getRoomId());
-//                    map.put("state", Constants.VACANT.getValue());
-//                    roomService.updateroomMajorState(map);
                     continue;
                 }
             }
