@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.CheckInPersonDAO;
 import com.szq.hotel.dao.EverydayRoomPriceDAO;
 import com.szq.hotel.dao.OrderDAO;
+import com.szq.hotel.dao.OrderRecordDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.util.IDBuilder;
@@ -31,6 +32,9 @@ public class OrderService {
     @Resource
     RoomService roomService;
 
+    @Resource
+    OrderRecordDAO orderRecordDAO;
+
     //添加主订单 携带订单id
     public void addOrder(OrderBO orderBO) {
         //生成订单号
@@ -44,7 +48,7 @@ public class OrderService {
     public void updOrderInfo(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
 
         //旧的子订单信息
-        List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildById(orderBO.getId());
+        List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildByOrderId(orderBO.getId());
         //新选的房间或者修改了房间的房型 id传过来为null 代表子订单
         for (OrderChildBO orderChildBONew : orderChildBOList) {
             if (orderChildBONew.getId() == null) {
@@ -217,7 +221,7 @@ public class OrderService {
     //根据订单id查询子订单 以及子订单房价信息 入住人员信息
     public List<OrderChildBO> getOrderChildById(OrderBO orderBO) {
         //查询子订单信息
-        List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildById(orderBO.getId());
+        List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildByOrderId(orderBO.getId());
         if (orderChildBOS.size() == 0) {
             return null;
         }
@@ -296,6 +300,20 @@ public class OrderService {
         OrderBO orderBO = orderDAO.getOrderById(orderId);
         orderBO.setOrderChildBOS(this.getOrderChildById(orderBO));
         return orderBO;
+    }
+    //根据主订单id查询房间信息（客帐管理）
+    public OrderChildBO getRoomInfoById(Integer orderId){
+        return orderDAO.getRoomInfoById(orderId);
+    }
+    //根据子订单id查询房间信息消费信息(客帐管理)
+    public OrderChildBO getOrderInfoById(Integer id){
+        //消费金额
+        OrderChildBO orderChildBO=orderDAO.getOrderChildById(id);
+        //消费记录
+        List<OrderRecoredBO> recoredBOS=orderRecordDAO.queryOrderRecord(id);
+
+        orderChildBO.setOrderRecoredBOS(recoredBOS);
+        return orderChildBO;
     }
 
     /**

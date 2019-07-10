@@ -34,6 +34,43 @@ public class OrderChildBO extends BaseModel {
     private String remark;//备注
     private List<EverydayRoomPriceBO> everydayRoomPriceBOS;//每日房价信息
     private List<CheckInPersonBO> checkInPersonBOS;//入住人员信息
+    private List<OrderRecoredBO> orderRecoredBOS;//消费记录信息
+    private String createUserName;//操作员姓名
+    private String name;//第一个入住人员姓名
+    private String createTime;//第一个入住人员入住时间
+
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
+
+    public List<OrderRecoredBO> getOrderRecoredBOS() {
+        return orderRecoredBOS;
+    }
+
+    public void setOrderRecoredBOS(List<OrderRecoredBO> orderRecoredBOS) {
+        this.orderRecoredBOS = orderRecoredBOS;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
 
     public List<CheckInPersonBO> getCheckInPersonBOS() {
         return checkInPersonBOS;
