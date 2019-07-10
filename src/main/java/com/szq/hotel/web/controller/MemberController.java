@@ -284,11 +284,16 @@ public class MemberController extends BaseCotroller {
             }
 
             MemberBO memberBO = memberService.queryMemberById(id);
-            memberBO.setStoredValue(storedValueChange);
+            if (presenterMoney==null){
+                memberBO.setStoredValue(storedValueChange);
+            }else {
+                memberBO.setStoredValue(storedValueChange.add(presenterMoney));
+            }
             memberService.storedValueChange(memberBO,loginAdmin.getId());
 
 
             MemberBO memberBO1 = memberService.queryMemberById(id);
+            //当前余额=余额+赠送金额
             currentBalance = memberBO1.getStoredValue();
             //添加储值记录
             storedValueRecordService.addStoredValueRecord(id,storedValueChange,remark,type,presenterMoney,currentBalance,loginAdmin.getId());

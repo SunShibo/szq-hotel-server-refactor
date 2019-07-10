@@ -27,6 +27,13 @@ public class StoredValueRecordController extends BaseCotroller{
     @Resource
     private StoredValueRecordService storedValueRecordService;
 
+    /**
+     * 查询储值记录
+     * @param pageNo
+     * @param pageSize
+     * @param request
+     * @param response
+     */
     @RequestMapping("/getStoredValueRecord")
     public void getStoredValueRecord(Integer pageNo, Integer pageSize, HttpServletRequest request, HttpServletResponse response) {
         try {
