@@ -1,9 +1,8 @@
 package com.szq.hotel.dao;
 
+import com.szq.hotel.entity.bo.MemberLevelBO;
 import com.szq.hotel.entity.bo.MemberRoomTypeBO;
-import org.apache.ibatis.annotations.Param;
 
-import java.math.BigDecimal;
 
 public interface MemberRoomTypeDAO {
     /*
@@ -11,11 +10,11 @@ public interface MemberRoomTypeDAO {
      */
     void addMemberRoomType(MemberRoomTypeBO memberRoomTypeBO);
     /*
-        修改会员房型折扣
+        修改会员折扣
      */
-    void updateMemberRoomType(MemberRoomTypeBO memberRoomTypeBO);
+    void updateMemberRoomType(MemberLevelBO memberLevelBO);
     /*
         查询会员房型折扣
      */
-    BigDecimal selectMemberRoomType(@Param("memberLevelId") Integer memberLevelId, @Param("roomTypeId")Integer roomTypeId);
+    MemberLevelBO selectMemberRoomType(Integer id);
 }

@@ -1,8 +1,11 @@
 package com.szq.hotel.web.controller;
 import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.MemberLevelBO;
+import com.szq.hotel.entity.bo.MemberRoomTypeBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.service.MemberLevelService;
+import com.szq.hotel.service.MemberRoomTypeService;
+import com.szq.hotel.service.RoomTypeService;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.StringUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -24,6 +28,10 @@ public class MemberLevelController extends BaseCotroller {
 
     @Resource
     private MemberLevelService memberLevelService;
+    @Resource
+    private MemberRoomTypeService memberRoomTypeService;
+    @Resource
+    private RoomTypeService roomTypeService;
 
     /**
      * 新增会员级别
@@ -46,14 +54,15 @@ public class MemberLevelController extends BaseCotroller {
             return ;
         }
             //参数验证
-            if (StringUtils.isEmpty(memberLevelBO.getName())||StringUtils.isEmpty(memberLevelBO.getState())||StringUtils.isEmpty(memberLevelBO.getType())){
+            if (StringUtils.isEmpty(memberLevelBO.getName())||StringUtils.isEmpty(memberLevelBO.getType())){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;
             }
-
-        memberLevelService.addMemberLevel(memberLevelBO,loginAdmin.getId());
+            //设置默认折扣
+            memberLevelBO.setDiscount(new BigDecimal(1));
+            memberLevelService.addMemberLevel(memberLevelBO,loginAdmin.getId());
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员级别成功！"));
             super.safeJsonPrint(response, result);

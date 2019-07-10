@@ -14,16 +14,19 @@
                 NOW(),#{updateUserId},#{updateTime});
     </insert>
 
-    <!--修改会员房型折扣-->
-    <update id="updateMemberRoomType" parameterType="com.szq.hotel.entity.bo.MemberRoomTypeBO">
-        UPDATE `hm_member_room_type` SET `discount` = #{discount},`update_time` = NOW(),
+    <!--修改会员折扣-->
+    <update id="updateMemberRoomType" parameterType="com.szq.hotel.entity.bo.MemberLevelBO">
+        UPDATE `hm_member_level` SET `discount` = #{discount},`update_time` = NOW(),
         `update_user_id` =#{updateUserId}
-        WHERE `member_level_id` = #{memberLevelId} AND `room_type_id` = #{roomTypeId}
+        WHERE `id` = #{id}
     </update>
 
-    <!--查询会员房型折扣-->
-    <select id="selectMemberRoomType" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
-        SELECT discount FROM `hm_member_room_type` WHERE member_level_id = #{memberLevelId} AND room_type_id =#{roomTypeId}
+    <!--查询会员折扣-->
+    <select id="selectMemberRoomType"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
+        SELECT *  FROM `hm_member_level`
+        where id = #{id}
+
     </select>
+
 
 </mapper>

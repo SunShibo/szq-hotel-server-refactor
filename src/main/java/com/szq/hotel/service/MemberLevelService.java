@@ -30,6 +30,13 @@ public class MemberLevelService {
    public List<MemberLevelBO> selectMemberLevel(){
        return memberLevelDAO.selectMemberLevel();
     }
+    /*
+        根据名称查询级别信息
+     */
+    public MemberLevelBO selectMemberLevelByName(String name){
+        return memberLevelDAO.selectMemberLevelByName(name);
+    }
+
     /**
      * 新增会员级别
      * @param memberLevelBO

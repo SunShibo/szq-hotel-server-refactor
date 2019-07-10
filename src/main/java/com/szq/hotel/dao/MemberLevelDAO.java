@@ -24,7 +24,10 @@ public interface MemberLevelDAO {
      * @return
      */
     List<MemberLevelBO> selectMemberLevel();
-
+    /*
+        根据名称查询级别信息
+     */
+    MemberLevelBO selectMemberLevelByName(String name);
     /**
      * 通过id查询会员级别
      * @param memebrLevelId

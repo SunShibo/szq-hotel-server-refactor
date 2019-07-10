@@ -12,6 +12,7 @@
         VALUES (#{name},#{state},#{type},#{createUserId},NOW())
     </insert>
 
+
     <!--修改会员级别-->
     <update id="updateMemberLevel" parameterType="com.szq.hotel.entity.bo.MemberLevelBO">
         UPDATE `hm_member_level`
@@ -29,7 +30,10 @@
     <select id="selectMemberLevel" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
         SELECT * FROM hm_member_level WHERE state = 'yes'
     </select>
-
+    <!--根据名称查询级别信息-->
+    <select id="selectMemberLevelByName" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
+        SELECT * FROM hm_member_level WHERE state = 'yes' AND name = #{name}
+    </select>
     <!--通过id查询会员级别-->
     <select id="queryMemberLevelById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberLevelBO">
         SELECT * FROM `hm_member_level` WHERE id=#{id}

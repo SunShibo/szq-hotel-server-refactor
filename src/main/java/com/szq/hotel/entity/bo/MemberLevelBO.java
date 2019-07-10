@@ -2,6 +2,7 @@ package com.szq.hotel.entity.bo;
 
 import com.szq.hotel.common.base.BaseModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class MemberLevelBO extends BaseModel {
@@ -9,10 +10,19 @@ public class MemberLevelBO extends BaseModel {
     private String name;//会员级别名称
     private String state;//状态（yes/no）
     private String type;//能否储值（yes/no）
+    private BigDecimal discount;//折扣
     private Integer createUserId;//创建人id
     private Date createTime;//创建时间
     private Integer updateUserId;//修改人id
     private Date updateTime;//修改时间
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
 
     public Integer getId() {
         return id;

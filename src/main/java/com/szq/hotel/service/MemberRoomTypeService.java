@@ -1,9 +1,9 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.dao.MemberRoomTypeDAO;
+import com.szq.hotel.entity.bo.MemberLevelBO;
 import com.szq.hotel.entity.bo.MemberRoomTypeBO;
 import com.szq.hotel.web.controller.MemberRoomTypeController;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service("memberRoomTypeService")
 @Transactional
@@ -30,19 +31,19 @@ public class MemberRoomTypeService {
     }
 
     /*
-        修改会员房型折扣
+        修改会员折扣
      */
-    public void updateMemberRoomType(MemberRoomTypeBO memberRoomTypeBO,Integer userId){
+    public void updateMemberRoomType(MemberLevelBO memberLevelBO, Integer userId){
         log.info("start================updateMemberRoomType");
-        memberRoomTypeBO.setUpdateUserId(userId);
-        memberRoomTypeDAO.updateMemberRoomType(memberRoomTypeBO);
+        memberLevelBO.setUpdateUserId(userId);
+        memberRoomTypeDAO.updateMemberRoomType(memberLevelBO);
         log.info("end================updateMemberRoomType");
     }
 
     /*
         查询会员房型折扣
      */
-    public BigDecimal selectMemberRoomType( Integer memberLevelId, Integer roomTypeId){
-        return memberRoomTypeDAO.selectMemberRoomType(memberLevelId,roomTypeId);
+    public MemberLevelBO selectMemberRoomType(Integer id){
+        return memberRoomTypeDAO.selectMemberRoomType(id);
     }
 }
