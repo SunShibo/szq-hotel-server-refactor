@@ -58,6 +58,7 @@ public class RoomService {
     }
 
     public void updateroomMajorState(Map<String, Object> map) {
+
         roomDAO.updateroomMajorState(map);
         RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
         RoomRecordBO roomRecordBO = new RoomRecordBO();
@@ -72,6 +73,7 @@ public class RoomService {
      * 预约入住选择房间
      */
     public Map<String, Object> queryRm(Map<String, Object> map) {
+        Map<String, Object> mp = new HashMap<String, Object>();
         //获取符合条件的房间集合
         List<RmBO> list = roomDAO.queryRm(map);
         List<Integer> ls = new ArrayList<Integer>();
@@ -114,8 +116,8 @@ public class RoomService {
                 iterator.remove();//使用迭代器的删除方法删除
             }
         }
-
-        return null;
+            map.put("list",list);
+        return  mp;
     }
 
 

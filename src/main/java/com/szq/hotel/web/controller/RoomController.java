@@ -11,6 +11,8 @@ import com.szq.hotel.util.RedisConnectFactory;
 import com.szq.hotel.util.RedisTool;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.omg.CORBA.OBJ_ADAPTER;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import redis.clients.jedis.Jedis;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
 /**
  * @Author: Bin Wang
  * @date: Created in 13:03 2019/7/5
@@ -30,6 +33,8 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/room")
 public class RoomController extends BaseCotroller {
+
+    static final Logger log = LoggerFactory.getLogger(RoomController.class);
 
     @Resource
     private RoomService roomService;
@@ -125,7 +130,6 @@ public class RoomController extends BaseCotroller {
     public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state) {
         Map<String, Object> map = new HashMap<String, Object>();
         Jedis jedis = new Jedis();
-
         UUID requestId = UUID.randomUUID();
         System.err.println(requestId);
         if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId.toString(), 5000))) {
@@ -133,7 +137,6 @@ public class RoomController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return;
         }
-
         map.put("id", id);
         map.put("state", state);
         roomService.updateroomMajorState(map);
@@ -144,6 +147,17 @@ public class RoomController extends BaseCotroller {
         }*/
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
+        super.safeJsonPrint(response, result);
+        return;
+    }
+
+
+    @RequestMapping("/quertRm")
+    public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime){
+        Map map = new HashMap<String,Object>();
+        map.put("checkTime", checkTime);
+        Map mp = roomService.queryRm(map);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
         super.safeJsonPrint(response, result);
         return;
     }

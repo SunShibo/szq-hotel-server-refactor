@@ -25,7 +25,7 @@
   <sql id="Base_Column_List" >
     id, room_name, room_type_id, room_major_state, room_state, remark, lock_room_state, 
     lock_room_start_time, lock_room_end_time, room_auxiliary_status, room_auxiliary_status_stand, 
-    setting, character, create_user_id, create_time, update_user_id, update_time, floor_id, 
+    setting, `character`, create_user_id, create_time, update_user_id, update_time, floor_id,
     hotel_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
