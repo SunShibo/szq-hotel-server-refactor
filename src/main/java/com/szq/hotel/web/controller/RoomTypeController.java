@@ -34,7 +34,7 @@ public class RoomTypeController extends BaseCotroller {
 
     @RequestMapping("/queryRoomType")
     public void queryRoomType(HttpServletRequest request, HttpServletResponse response, Integer id){
-        AdminBO loginUser = super.getLoginUser(request);
+        AdminBO loginUser = super.getLoginAdmin(request);
         log.info("id:{}",loginUser.getHotelId());
         List<RoomTypeBO> list = roomTypeService.queryRoomTypeList(id,loginUser.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(list)) ;

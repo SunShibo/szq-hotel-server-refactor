@@ -1,9 +1,6 @@
 package com.szq.hotel.dao;
 
-import com.szq.hotel.entity.bo.OcBO;
-import com.szq.hotel.entity.bo.RmBO;
-import com.szq.hotel.entity.bo.RoomBO;
-import com.szq.hotel.entity.bo.RoomTypeCountBO;
+import com.szq.hotel.entity.bo.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -61,6 +58,13 @@ public interface RoomDAO {
      */
     List<OcBO> queryOc(@Param("id") List<Integer> id);
 
+
+    /**
+     * 查询酒店下面的房型
+     * @param hotelId
+     * @return
+     */
+    List<RtBO> queryRt(@Param("hotelId")Integer hotelId);
 
 
 

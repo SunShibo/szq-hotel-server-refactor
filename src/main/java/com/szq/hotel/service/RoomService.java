@@ -7,6 +7,7 @@ import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.web.controller.RoomController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.velocity.runtime.log.LogChute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,5 +172,15 @@ public class RoomService {
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * 查询酒店下面的房型
+     * @param hotelId
+     * @return
+     */
+    public List<RtBO> queryRt(Integer hotelId){
+        return  roomDAO.queryRt(hotelId);
     }
 }

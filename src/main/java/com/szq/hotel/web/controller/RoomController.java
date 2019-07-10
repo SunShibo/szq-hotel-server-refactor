@@ -4,6 +4,7 @@ import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.RoomBO;
 import com.szq.hotel.entity.bo.RoomTypeCountBO;
+import com.szq.hotel.entity.bo.RtBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.RoomService;
@@ -40,7 +41,8 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/queryRoom")
     public void queryRoom(HttpServletRequest request, HttpServletResponse response, Integer pageNo,
-                          Integer pageSize, Integer floorId, Integer roomId, Integer roomTypeId, Integer hotelId) {
+                          Integer pageSize, Integer floorId, Integer roomName, Integer roomTypeId, Integer hotelId) {
+        AdminBO loginAdmin = super.getLoginAdmin(request);
         QueryInfo queryInfo = getQueryInfo(pageNo, pageSize);
         //创建一个用于封装sql条件的map集合
         Map<String, Object> condition = new HashMap<String, Object>();
@@ -51,9 +53,9 @@ public class RoomController extends BaseCotroller {
         }
 
         condition.put("floorId", floorId);
-        condition.put("roomId", roomId);
+        condition.put("roomName", roomName);
         condition.put("roomTypeId", roomTypeId);
-        condition.put("hotelId", hotelId);
+        condition.put("hotelId", loginAdmin.getHotelId());
 
         Map<String, Object> map = roomService.queryRoom(condition);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
@@ -153,7 +155,7 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/quertRm")
     public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime){
-        AdminBO loginUser = super.getLoginUser(request);
+        AdminBO loginUser = super.getLoginAdmin(request);
         log.info("进入此方法");
         Map map = new HashMap<String,Object>();
         log.info("checkTime:{}",checkTime);
@@ -166,6 +168,18 @@ public class RoomController extends BaseCotroller {
             e.printStackTrace();
         }
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
+        super.safeJsonPrint(response, result);
+        return;
+    }
+
+
+    @RequestMapping("/queryRt")
+    public void queryRt(HttpServletRequest request, HttpServletResponse response){
+        AdminBO loginUser = super.getLoginAdmin(request);
+        log.info("loginUser:{}",loginUser);
+        log.info("loginUser:{}",loginUser.getHotelId());
+        List<RtBO> list =  roomService.queryRt(loginUser.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(list));
         super.safeJsonPrint(response, result);
         return;
     }
