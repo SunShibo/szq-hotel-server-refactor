@@ -2,36 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>酒店管理</title>
+    <title>楼层编辑</title>
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
 <form class="layui-form">
     <fieldset class="layui-elem-field">
-        <legend>酒店信息</legend>
+        <legend>楼层信息</legend>
         <div class="layui-field-box">
             <div class="layui-form-item">
-                <label class="layui-form-label">酒店名称</label>
+                <label class="layui-form-label">楼层名称</label>
                 <div class="layui-input-block">
                     <input type="hidden" name="id" id="id">
                     <input type="text" name="name" autocomplete="off" class="layui-input" id="name"
-                           placeholder="请输入酒店名称">
+                           placeholder="请输入楼层名称">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">酒店地址</label>
+                <label class="layui-form-label">排序码</label>
                 <div class="layui-input-block">
-                    <input type="text" name="site" autocomplete="off" class="layui-input" id="site"
-                           placeholder="请输入酒店地址">
+                    <input type="number" name="sort" autocomplete="off" class="layui-input" id="sort"
+                           placeholder="请输入排序码">
                 </div>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">酒店电话</label>
-                <div class="layui-input-block">
-                    <input type="number" name="phone" autocomplete="off" class="layui-input" id="phone"
-                           placeholder="请输入酒店电话">
-                </div>
-            </div>
+
         </div>
     </fieldset>
 
@@ -58,7 +52,7 @@
         $(function () {
             s = getUrl('s');
             if (s == "0") {
-                updateInfo(JSON.parse(sessionStorage.getItem('hm')));
+                updateInfo(JSON.parse(sessionStorage.getItem('hotel_floor')));
             } else {
                 // add();
             }
@@ -68,51 +62,20 @@
                 $('#' + item).val(data[item]);
             }
         }
-        function formatData(data) {
-            var floorInfo = [], dataObj = {};
-            for (var i = 1; i <= n; i++) {
-                if (data['floorName' + i] == '' || data['sort' + i] == '') return null;
-                var obj = {
-                    id: !!data['id' + i] ? data['id' + i] : '',
-                    floorName: data['floorName' + i],
-                    sort: data['sort' + i]
-                }
-                floorInfo.push(obj);
-            }
-            dataObj.name = data['name'];
-            dataObj.site = data['site'];
-            dataObj.phone = data['phone'];
-            dataObj.floorInfo = floorInfo;
-            if (s != "1") {
-                dataObj.id = parseInt(data['id']);
-            }
-            for (var i in dataObj) {
-                if (dataObj[i] == null || dataObj[i] == "null" || dataObj[i] == undefined || dataObj[i] == "") {
-                    return null;
-                }
-            }
-
-            return dataObj;
-        }
 
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {
             var obj = {};
             if (s === "1") {//新增
-                // obj = formatData(data.field);
-                // if (!obj) {
-                //     showMsg('输入不能有空', 2, false);
-                //     return false;
-                // }
+
                 $.ajax({
-                    url: api.addHotel,
+                    url: api.addFloor,
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        // hotelInfo: JSON.stringify(obj)
                         name:document.getElementById("name").value.trim(),
-                        site:document.getElementById("site").value.trim(),
-                        phone:document.getElementById("phone").value.trim(),
+                        sort:document.getElementById("sort").value.trim(),
+                        hotelId:getUrl("hotelId")
                     },
                     success: function (rs) {
                         if (rs.success) {
@@ -130,13 +93,12 @@
                 //     return false;
                 // }
                 $.ajax({
-                    url: api.updateHotelInfo,
+                    url: api.updateFloor,
                     type: 'POST',
                     dataType: 'json',
                     data: {
                         name:document.getElementById("name").value.trim(),
-                        site:document.getElementById("site").value.trim(),
-                        phone:document.getElementById("phone").value.trim(),
+                        sort:document.getElementById("sort").value.trim(),
                         id:document.getElementById("id").value.trim(),
                     },
                     success: function (rs) {

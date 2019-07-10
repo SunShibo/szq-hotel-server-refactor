@@ -181,10 +181,14 @@ var api = {
     , deleteHouseType: '/room/deleteHouseType'//删除房型
     , join: '/OrderManage/join'//加入联房
     , dismiss: '/OrderManage/dismiss'//解散联房
-    , addHotel: 'room/addHotel'//添加酒店
-    , queryHotelInfo: 'room/queryHotelInfo'//查询酒店
-    , updateHotelInfo: 'room/updateHotelInfo'//编辑酒店
+    , addHotel: 'hotel/addHotel'//添加酒店
+    , queryHotelInfo: 'hotel/queryHotel'//查询酒店
+    , updateHotelInfo: 'hotel/updateHotel'//编辑酒店
     , queryStoreValue: '/checkin/queryStoreValue'//查询会员积分和储值
+    , queryFloor:'floor/queryFloor'//查询楼层
+    , addFloor:'floor/addFloor'//添加楼层
+    , updateFloor:'floor/updateFloor'//修改楼层
+    , deleteFloor:'floor/deleteFloor'//删除楼层
 }
 layui.use(['jquery', 'element'], function () {
     $ = layui.jquery;
