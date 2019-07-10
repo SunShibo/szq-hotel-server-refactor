@@ -164,10 +164,11 @@
   <select id="queryRoomTypeList" resultType="com.szq.hotel.entity.bo.RoomTypeBO">
     select * from hm_room_type
     <where>
+      and hotel_id = #{hotelId}
       <if test="id != null">
       and id = #{id}
       </if>
-      and show = 'yes'
+      and `show` = 'yes'
     </where>
   </select>
 

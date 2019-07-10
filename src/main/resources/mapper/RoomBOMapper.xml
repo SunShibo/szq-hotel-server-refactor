@@ -43,7 +43,7 @@
       room_major_state, room_state, remark, 
       lock_room_state, lock_room_start_time, lock_room_end_time, 
       room_auxiliary_status, room_auxiliary_status_stand, 
-      setting, character, create_user_id, 
+      setting, `character`, create_user_id,
       create_time, update_user_id, update_time, 
       floor_id, hotel_id)
     values (#{id,jdbcType=INTEGER}, #{roomName,jdbcType=VARCHAR}, #{roomTypeId,jdbcType=INTEGER}, 
@@ -94,7 +94,7 @@
         setting,
       </if>
       <if test="character != null" >
-        character,
+        `character`,
       </if>
       <if test="createUserId != null" >
         create_user_id,
@@ -385,7 +385,7 @@
     OR hm_room.lock_room_end_time IS NULL
   </select>
 
-  <select id="queryOc" parameterType="Integer[]" resultType="com.szq.hotel.entity.bo.OcBO">
+  <select id="queryOc"  resultType="com.szq.hotel.entity.bo.OcBO">
     SELECT * FROM hm_order_child WHERE room_id IN
     <foreach item="item" collection="id" open="(" separator="," close=")">
       #{item}

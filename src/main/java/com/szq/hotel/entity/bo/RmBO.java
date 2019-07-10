@@ -97,4 +97,19 @@ public class RmBO extends BaseModel {
     public void setRoomTypeId(Integer roomTypeId) {
         this.roomTypeId = roomTypeId;
     }
+
+    @Override
+    public String toString() {
+        return "RmBO{" +
+                "id=" + id +
+                ", roomName='" + roomName + '\'' +
+                ", hotelName='" + hotelName + '\'' +
+                ", hotelId=" + hotelId +
+                ", floorName='" + floorName + '\'' +
+                ", floorId=" + floorId +
+                ", roomMajorState='" + roomMajorState + '\'' +
+                ", roomType='" + roomType + '\'' +
+                ", roomTypeId=" + roomTypeId +
+                '}';
+    }
 }

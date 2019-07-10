@@ -59,6 +59,6 @@ public interface RoomDAO {
      * @param id
      * @return
      */
-    List<OcBO> queryOc(List<Integer> id);
+    List<OcBO> queryOc(@Param("id") List<Integer> id);
 
 }

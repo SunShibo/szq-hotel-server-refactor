@@ -18,6 +18,7 @@ public interface RoomTypeDAO {
 
     int updateByPrimaryKey(RoomTypeBO record);
 
-    List<RoomTypeBO> queryRoomTypeList(@Param("id")Integer id);
+    List<RoomTypeBO> queryRoomTypeList(@Param("id")Integer id, @Param("hotelId")Integer hotelId);
+
     void updateShow(@Param("id") Integer id);
 }

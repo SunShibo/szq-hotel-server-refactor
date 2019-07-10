@@ -3,8 +3,13 @@ package com.szq.hotel.service;
 import com.szq.hotel.dao.RoomDAO;
 import com.szq.hotel.dao.RoomRecordDAO;
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.util.DateUtils;
+import com.szq.hotel.web.controller.RoomController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.velocity.runtime.log.LogChute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +23,8 @@ import java.util.*;
 @Service
 @Transactional
 public class RoomService {
+
+    static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
     @Resource
     private RoomDAO roomDAO;
@@ -74,8 +81,15 @@ public class RoomService {
      */
     public Map<String, Object> queryRm(Map<String, Object> map) {
         Map<String, Object> mp = new HashMap<String, Object>();
+
+        //获取预入住时间
+        String dt =  (String) map.get("checkTime");
+        log.info("获取预约入住的时间:{}",dt);
         //获取符合条件的房间集合
         List<RmBO> list = roomDAO.queryRm(map);
+
+        log.info("获取符合条件的房间集合:{}",list);
+
         List<Integer> ls = new ArrayList<Integer>();
         //获取出房间的id
         if (!CollectionUtils.isEmpty(list)) {
@@ -83,21 +97,22 @@ public class RoomService {
                 ls.add(id.getId());
             }
         }
+        log.info("获取符合条件房间的id:{}",ls);
         //根据房间id获取符合条件的订单
         List<OcBO> l = roomDAO.queryOc(ls);
-        //获取预入住时间
-        Date dt = (Date) map.get("checkTime");
+        log.info("获取符合条件房间的订单:{}",l);
+
 
         List<Integer> reId = new ArrayList<Integer>();
         if (!CollectionUtils.isEmpty(l)) {
             for (OcBO c : l) {
                 //判断客人选择的预入住时间是否在其他符合条件订单之间
-                if (belongCalendar(dt, c.getStartTime(), c.getEndTime())) {
+                if (belongCalendar(DateUtils.parseDate(dt,"yyyy-MM-dd HH:mm::ss"), c.getStartTime(), c.getEndTime())) {
                     reId.add(c.getRoomId());
                 }
             }
         }
-
+        log.info("判断客人选择的预入住时间是否在其他符合条件订单之间的id:{}",reId);
         //去重
         for (int i = 0; i < reId.size() - 1; i++) {
             for (int j = reId.size() - 1; j > i; j--) {
@@ -106,6 +121,7 @@ public class RoomService {
                 }
             }
         }
+        log.info("去重后:{}",reId);
 
         //去掉不能预约入住的房间的房间
         Iterator<RmBO> iterator = list.iterator();
@@ -116,7 +132,8 @@ public class RoomService {
                 iterator.remove();//使用迭代器的删除方法删除
             }
         }
-            map.put("list",list);
+        log.info("去掉不能预约入住的房间的房间:{}",list);
+        map.put("list",list);
         return  mp;
     }
 

@@ -20,10 +20,7 @@ import redis.clients.jedis.Jedis;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -153,9 +150,12 @@ public class RoomController extends BaseCotroller {
 
 
     @RequestMapping("/quertRm")
-    public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime){
+    public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime, Integer hotelId){
+        log.info("进入此方法");
         Map map = new HashMap<String,Object>();
+        log.info("checkTime:{}",checkTime);
         map.put("checkTime", checkTime);
+        map.put("hotelId", hotelId);
         Map mp = roomService.queryRm(map);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
         super.safeJsonPrint(response, result);
