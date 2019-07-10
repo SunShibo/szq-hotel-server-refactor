@@ -30,6 +30,7 @@ public enum Constants {
     /* 房态 : 门店锁房 */ SHOP("shop"),
     /* 房态 : 网络锁 */ NETWORK("network"),
     /* 房态 : 全部锁 */ ALL("all"),
+    /* 房态 : 未锁 */ OPE("ope"),
     /* 项目 : 押金 */ CASHPLEDGE("押金"),
     /* 项目 : 房费 */ ROOMRATE("房费"),
     /* 项目 : 商品 */ COMMODITY("商品"),
