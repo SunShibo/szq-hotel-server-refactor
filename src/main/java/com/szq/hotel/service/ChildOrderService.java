@@ -117,4 +117,21 @@ public class ChildOrderService {
                 order.getPassengerSource(),order.getRoomName(),order.getRoomTypeName(),remark,hotelId);
         log.info("end  free..........................................");
     }
+
+    /**
+     * 查询子订单
+     * @param childId
+     * @return
+     */
+    public ChildOrderBO queryOrderChildById(Integer childId){
+        return childOrderDAO.queryOrderChildById(childId);
+    }
+
+    /**
+     * 通过联房码查询主账房
+     */
+    public Integer queryOrderChildMain(String code){
+        log.info("queryOrderChildMain.......................................................");
+        return  childOrderDAO.queryOrderChildMain(code);
+    }
 }

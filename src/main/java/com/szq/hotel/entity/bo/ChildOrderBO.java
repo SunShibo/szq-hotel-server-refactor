@@ -27,7 +27,7 @@ public class ChildOrderBO extends BaseModel {
     private String passengerSource;//客源
     private String OTA;
     private String orderNumer;//订单
-
+    private String main;//主账房
     public Integer getId() {
         return id;
     }
@@ -195,5 +195,13 @@ public class ChildOrderBO extends BaseModel {
 
     public void setOrderNumer(String orderNumer) {
         this.orderNumer = orderNumer;
+    }
+
+    public String getMain() {
+        return main;
+    }
+
+    public void setMain(String main) {
+        this.main = main;
     }
 }

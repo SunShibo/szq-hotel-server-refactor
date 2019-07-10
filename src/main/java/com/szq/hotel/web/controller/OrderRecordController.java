@@ -33,7 +33,7 @@ public class OrderRecordController extends BaseCotroller {
      * 查询
      */
     @RequestMapping("/queryOrderRecord")
-    public void addHotel(HttpServletRequest request, HttpServletResponse response,Integer orderChildId){
+    public void queryOrderRecord(HttpServletRequest request, HttpServletResponse response,Integer orderChildId){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));

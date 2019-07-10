@@ -9,9 +9,19 @@ import java.util.Date;
  */
 public class BuyerBuyingBO extends BaseModel{
     private Integer id;
+    private String roomName;
     private String name;
     private String phone;
     private Date  createTime;
+
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
 
     public Integer getId() {
         return id;

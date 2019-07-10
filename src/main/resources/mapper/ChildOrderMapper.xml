@@ -7,9 +7,9 @@
 
     <!-- 根据订单id查询子订单 -->
     <select id="queryOrderChildById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.ChildOrderBO">
-       SELECT child.id,child.start_time,child.end_time ,child.pay_cash_num,,child.other_pay_num,child.other_rate,child.timeoutRate,
-        child.free_rate_num ,child.order_state,room.room_name,`type`.room_type_room,child.al_room_code,child.night_auditor_state,
-        child.print_state,child.remark,per.name,oder.channel,oder.oder_type as passengerSource,oder.OTA,oder.order_number
+       SELECT child.id,child.start_time,child.end_time ,child.pay_cash_num,child.other_pay_num,child.other_rate,child.timeout_rate,
+        child.free_rate_num ,child.order_state,room.room_name,`type`.room_type_name,child.al_room_code,child.night_auditor_state,
+        child.print_state,child.remark,per.name,oder.channel,oder.order_type as passengerSource,oder.OTA,oder.order_number,child.main
 
         FROM hm_order oder  LEFT JOIN hm_order_child child ON child.order_id=oder.id
         LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type
@@ -40,7 +40,7 @@
 
     <!--查询挂账信息-->
     <select id="querySuspend" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.BuyerBuyingBO" >
-       SELECT 	per.`name`,per.phone,per.create_time,room.room_name
+       SELECT 	per.`name`,per.phone,per.create_time,room.room_name ,child.id
                FROM  hm_order_child child LEFT JOIN hm_room  room ON room.id=child.room_id
                  LEFT JOIN hm_check_in_person  per ON per.order_child_id = child.id
         WHERE per.`status`='yes' AND child.order_state='admissions'  AND room.room_name=#{roomName}
@@ -50,4 +50,9 @@
     <update id="free"  >
         UPDATE  hm_order_child  SET  free_rate_num=free_rate_num+#{money}  WHERE  id= #{id}
     </update>
+
+    <!--查询主账房id-->
+    <select id="queryOrderChildMain"  parameterType="java.lang.String" resultType="java.lang.Integer" >
+        SELECT id  FROM `hm_order_child` WHERE al_room_code =#{code}  AND main='yes'
+    </select>
 </mapper>

@@ -17,4 +17,7 @@ public interface CommodiryDAO {
     List<CommodityBO> queryCommodiry(Map<String,Object> map);
 
     int queryCommodiryCount(Map<String,Object> map);
+
+    CommodityBO queryCommodiryById(Integer id);
+
 }
