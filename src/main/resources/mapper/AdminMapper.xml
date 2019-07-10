@@ -53,6 +53,16 @@
         </foreach>
     </insert>
 
+    <!-- 给角色赋予权限  -->
+    <insert id="addRoleHotel">
+        insert into hm_role_hotel
+        (role_id,hotel_id)
+        values
+        <foreach collection="hotelIdArr" item="hotelId" separator=",">
+            (#{roleId},#{hotelId})
+        </foreach>
+    </insert>
+
     <!--  根据角色id删除角色信息  -->
     <delete id="delRoleById" parameterType="Integer">
         delete  from  hm_role where
@@ -69,6 +79,11 @@
     <!-- 根据角色id删除对应的所有权限  -->
     <delete id="delRoleMenuByRoleId" parameterType="Integer">
         DELETE FROM hm_role_menu WHERE role_id=#{roleId}
+    </delete>
+
+    <!-- 根据角色id删除对应的所有权限  -->
+    <delete id="delRoleHotelByRoleId" parameterType="Integer">
+        DELETE FROM hm_role_hotel WHERE role_id=#{roleId}
     </delete>
 
     <!--查询角色下是否存在用户-->
@@ -124,6 +139,17 @@
         on rm.menu_id=me.id
         where  rm.role_id=#{roleId}
     </select>
+
+    <!--查询角色拥有的权限-->
+    <select id="getHotelByRoleId"  resultType="com.szq.hotel.entity.bo.MenuBO"  parameterType="java.lang.Integer">
+        select h.*
+        from hm_role_hotel as  rh
+        inner join  hm_hotel as h
+        on rh.hotel_id=h.id
+        where  rh.role_id=#{roleId}
+    </select>
+
+
 
     <!--根据 用户id\角色id\用户名 查询用户信息-->
     <select id="getAdminByCond" parameterType="java.util.Map"  resultType="com.szq.hotel.entity.bo.AdminBO">

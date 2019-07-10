@@ -17,4 +17,6 @@ public interface CheckInPersonDAO {
     //检查身份证号是否在住
     Integer checkId(@Param("certificateNumber") String certificateNumber,@Param("orderId") Integer orderId);
 
+    //修改入住人信息
+    Integer updCheckInPerson(CheckInPersonBO checkInPersonBO);
 }

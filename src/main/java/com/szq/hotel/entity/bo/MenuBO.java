@@ -28,11 +28,7 @@ public class MenuBO extends BaseModel {
         this.path = path;
     }
 
-    private List<MenuBO> ch = new ArrayList<MenuBO>();
 
-    public List<MenuBO> getCh() {
-        return ch;
-    }
 
     public String getMenuName() {
         return menuName;
@@ -46,9 +42,6 @@ public class MenuBO extends BaseModel {
         this.pid = pid;
     }
 
-    public void setCh(List<MenuBO> ch) {
-        this.ch = ch;
-    }
 
     public Integer getId() {
         return id;

@@ -1,6 +1,7 @@
 package com.szq.hotel.dao;
 
 import com.szq.hotel.entity.bo.AdminBO;
+import com.szq.hotel.entity.bo.HotelBO;
 import com.szq.hotel.entity.bo.MenuBO;
 import com.szq.hotel.entity.bo.RoleBO;
 import org.apache.ibatis.annotations.Param;
@@ -58,12 +59,27 @@ public interface AdminDAO {
     List<MenuBO> getMenuByRoleId(Integer roleId);
 
     /**
+     * 根据角色id查询酒店信息
+     * @return 所有权限
+     */
+    List<HotelBO> getHotelByRoleId(Integer roleId);
+
+    /**
      * 向角色权限表中添加数据
      * @param roleId 角色id
      * @param menuIdArr 菜单id数组
      * @return
      */
     int addRoleMenu(@Param("roleId") Integer roleId, @Param("menuIdArr") Integer[] menuIdArr);
+
+    /**
+     * 向角色权限表中添加数据
+     * @param roleId 角色id
+     * @param hotelIdArr 酒店id数组
+     * @return
+     */
+    int addRoleHotel(@Param("roleId") Integer roleId, @Param("hotelIdArr") Integer[] hotelIdArr);
+
     /**
      * 根据角色姓名 查询角色信息
      * 角色姓名为null 查询所有
@@ -99,6 +115,13 @@ public interface AdminDAO {
      */
     void delRoleMenuByRoleId(Integer roleId);
 
+    /**
+     * 根据角色id删除对应的所有权限
+     * @param roleId
+     */
+    void delRoleHotelByRoleId(Integer roleId);
+
+
 
     //查询角色下是否有用户
     int checkRoleUser(Integer roleId);
@@ -130,7 +153,6 @@ public interface AdminDAO {
 
     /**
      * 根据条件查询用户信息总数
-     * wy
      * userId 用户id
      * roleId 角色id
      * userName 用户名

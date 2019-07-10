@@ -39,7 +39,7 @@ public class OrderController extends BaseCotroller {
     public void reservationRoom(HttpServletRequest request, HttpServletResponse response,
                                 OrderBO orderBO,String OrderChildJSON,String type) {
         //验证管理员
-        AdminBO userInfo = super.getLoginUser(request) ;
+        AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
             super.safeJsonPrint(response, result);
@@ -47,14 +47,13 @@ public class OrderController extends BaseCotroller {
         }
         //验证参数
         if(orderBO== null||OrderChildJSON==null||type==null||type.length()==0){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" )) ;
             super.safeJsonPrint(response, result);
             return ;
         }
 
         orderBO.setClerkOrderingId(userInfo.getId());
         orderBO.setHotelId(userInfo.getHotelId());
-        System.err.println("userInfo.getHotelId()"+userInfo.getHotelId());
         List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
 
         Map<String,Object> resultMap=new HashMap<String, Object>();
@@ -115,7 +114,7 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getReservationRoomInfo")
     public void getReservationRoomInfo(HttpServletRequest request, HttpServletResponse response,String idNumber,String mobile){
         //验证管理员
-        AdminBO userInfo = super.getLoginUser(request) ;
+        AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
             super.safeJsonPrint(response, result);
@@ -128,7 +127,7 @@ public class OrderController extends BaseCotroller {
             return ;
         }
         //查询信息
-        OrderBO orderBO = orderService.getOrderInfo(idNumber,mobile);
+        OrderBO orderBO = orderService.getOrderInfo(idNumber,mobile,userInfo.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
         super.safeJsonPrint(response, result);
     }
@@ -140,7 +139,7 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getOrderById")
     public void getOrderById(Integer orderId,HttpServletRequest request, HttpServletResponse response){
         //验证管理员
-        AdminBO userInfo = super.getLoginUser(request) ;
+        AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
             super.safeJsonPrint(response, result);
@@ -165,7 +164,7 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/pay")//FIXME 王洋接口有问题
     public void pay(CashierSummaryBO cs, Integer id, HttpServletRequest request, HttpServletResponse response){
         //验证管理员
-        AdminBO userInfo = super.getLoginUser(request) ;
+        AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
             super.safeJsonPrint(response, result);
@@ -199,7 +198,7 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/checkId")
     public void checkId(String id,HttpServletRequest request, HttpServletResponse response){
         //验证管理员
-        AdminBO userInfo = super.getLoginUser(request) ;
+        AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
             super.safeJsonPrint(response, result);

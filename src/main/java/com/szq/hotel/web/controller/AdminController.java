@@ -3,6 +3,7 @@ package com.szq.hotel.web.controller;
 
 import com.szq.hotel.common.constants.SysConstants;
 import com.szq.hotel.entity.bo.AdminBO;
+import com.szq.hotel.entity.bo.HotelBO;
 import com.szq.hotel.entity.bo.MenuBO;
 import com.szq.hotel.entity.bo.RoleBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
@@ -70,9 +71,11 @@ public class AdminController extends BaseCotroller {
         super.setCookie(response, SysConstants.CURRENT_LOGIN_CLIENT_ID, uuid, 60*60*24);
 
         List<MenuBO> roleMenuSuccess = adminService.getRoleMenuSuccess(adminBO.getRoleId());
+        List<HotelBO> hotelBOS=adminService.getRoleHotelSuccess(adminBO.getRoleId());
         Map<String,Object>  resultMap=new HashMap<String, Object>();
         resultMap.put("menu",roleMenuSuccess);
         resultMap.put("admin",adminBO);
+        resultMap.put("hotel",hotelBOS);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
         super.safeJsonPrint(response, result);
         return;
@@ -275,7 +278,7 @@ public class AdminController extends BaseCotroller {
      */
     @RequestMapping("/addRoleGrantAuthority")
     public void addRoleGrantAuthority(HttpServletRequest request,HttpServletResponse response,
-                 String roleName,String menuIds){
+                 String roleName,String menuIds,String hotelIds){
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
@@ -303,7 +306,9 @@ public class AdminController extends BaseCotroller {
         System.err.println(roleBO.getId());
         //添加权限
         Integer[] menuIdArr= JsonUtils.getIntegerArray4Json(menuIds);
+        Integer[] hotelIdArr= JsonUtils.getIntegerArray4Json(hotelIds);
         adminService.addRoleMenu(roleBO.getId(),menuIdArr);
+        adminService.addRoleHotel(roleBO.getId(),hotelIdArr);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加成功")) ;
         super.safeJsonPrint(response , result);
 
@@ -340,7 +345,7 @@ public class AdminController extends BaseCotroller {
      * @param menuIds  权限id
      */
     @RequestMapping("/grantAuthority")
-    public void grantAuthority(HttpServletRequest request,HttpServletResponse response,Integer roleId,String menuIds,String roleName){
+    public void grantAuthority(HttpServletRequest request,HttpServletResponse response,Integer roleId,String menuIds,String hotelIds,String roleName){
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
         if(loginAdmin==null){
@@ -370,6 +375,7 @@ public class AdminController extends BaseCotroller {
 
         //修改角色的权限
         adminService.updRoleToMenu(roleBO,menuIds);
+        adminService.updRoleToHotel(roleBO,hotelIds);
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改成功")) ;
         super.safeJsonPrint(response, result);

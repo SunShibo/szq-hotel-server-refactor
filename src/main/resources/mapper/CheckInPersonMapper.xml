@@ -15,11 +15,11 @@
     <insert id="addCheckInPerson" parameterType="com.szq.hotel.entity.bo.CheckInPersonBO">
         insert into hm_check_in_person
         (order_child_id,`name`,gender,phone,
-        certificate_number,certificate_type,`status`,remark)
+        certificate_number,certificate_type,`status`,remark,create_time)
         values
         (#{orderChildId},#{name},#{gender},#{phone},
         #{certificateNumber},#{certificateType},
-        #{status},#{remark})
+        #{status},#{remark},now())
     </insert>
 
     <!-- 删除入住人 -->
@@ -38,5 +38,35 @@
         and status='checkin'
         and certificate_number=#{certificateNumber}
     </select>
+
+    <!--修改入住人信息-->
+    <update id="updCheckInPerson" parameterType="com.szq.hotel.entity.bo.CheckInPersonBO">
+        update hm_check_in_person
+        <set>
+            <if test="name!=null and name!=''">
+                `name`=#{name},
+            </if>
+            <if test="gender!=null and gender!=''">
+                `gender`=#{gender},
+            </if>
+            <if test="phone!=null and phone!=''">
+                `phone`=#{phone},
+            </if>
+            <if test="certificateNumber!=null and certificateNumber!=''">
+                `certificate_number`=#{certificateNumber},
+            </if>
+            <if test="certificateType!=null and certificateType!=''">
+                `certificate_type`=#{certificateType},
+            </if>
+            <if test="status!=null and status!=''">
+                `status`=#{status},
+            </if>
+            <if test="remark!=null and remark!=''">
+                `remark`=#{remark}
+            </if>
+        </set>
+            where
+            id=#{id}
+    </update>
 
 </mapper>

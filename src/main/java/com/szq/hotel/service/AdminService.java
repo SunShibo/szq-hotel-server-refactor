@@ -4,6 +4,7 @@ package com.szq.hotel.service;
 import com.szq.hotel.common.constants.LanguageTalentConstants;
 import com.szq.hotel.dao.AdminDAO;
 import com.szq.hotel.entity.bo.AdminBO;
+import com.szq.hotel.entity.bo.HotelBO;
 import com.szq.hotel.entity.bo.MenuBO;
 import com.szq.hotel.entity.bo.RoleBO;
 import com.szq.hotel.util.JsonUtils;
@@ -28,17 +29,18 @@ public class AdminService {
     /**
      * 根据手机号查找管理员信息
      * 管理员登录
+     *
      * @param mobile
      * @return
      */
     public AdminBO queryAdminInfoByMobile(String mobile) {
         AdminBO adminBO = adminDAO.queryAdminInfoByMobile(mobile);
-        if(adminBO!=null){
-            List<MenuBO> urls=adminDAO.getMenuByRoleId(adminBO.getRoleId());
-            Set<String> set=new HashSet<String>();
-            if(urls!=null && urls.size()>0){
-                for(MenuBO menuBO:urls) {
-                    if (menuBO.getUrl() != null&& !StringUtils.isEmpty(menuBO.getUrl())) {
+        if (adminBO != null) {
+            List<MenuBO> urls = adminDAO.getMenuByRoleId(adminBO.getRoleId());
+            Set<String> set = new HashSet<String>();
+            if (urls != null && urls.size() > 0) {
+                for (MenuBO menuBO : urls) {
+                    if (menuBO.getUrl() != null && !StringUtils.isEmpty(menuBO.getUrl())) {
                         String[] split = menuBO.getUrl().split(",");
                         for (String str : split) {
                             set.add(str);
@@ -47,31 +49,68 @@ public class AdminService {
                 }
             }
             adminBO.setUrl(set);
+
+
+            List<HotelBO> HotelBOS = adminDAO.getHotelByRoleId(adminBO.getRoleId());
+            Set<Integer> hotelSet = new HashSet<Integer>();
+            if (HotelBOS != null && HotelBOS.size() > 0) {
+                for (HotelBO hotelBO : HotelBOS) {
+                    hotelSet.add(hotelBO.getId());
+                }
+            }
+            adminBO.setHotels(hotelSet);
         }
+
         return adminBO;
     }
+
+
     /**
      * 根据当前登陆用户的角色id查询对应的权限
+     *
      * @param roleId 角色id
      * @return 登陆用户对应的权限
      */
-    public  List<MenuBO>  getRoleMenuSuccess(Integer roleId){
-        List<MenuBO> menuBOS=adminDAO.getMenuByRoleId(roleId);
-        if(menuBOS!=null && menuBOS.size()>0) {
-            for (int i = 0; i < menuBOS.size(); i++) {
-                MenuBO menuBO = menuBOS.get(i);
-                for(int x=0;x<menuBOS.size();x++){
-                    if(menuBO.getPid().equals(menuBOS.get(x).getId())){
-                        menuBOS.get(x).getCh().add(menuBO);
-                        menuBOS.remove(i);
-                        --i;
-                        break;
-                    }
-                }
-            }
-        }
+    public List<MenuBO> getRoleMenuSuccess(Integer roleId) {
+        List<MenuBO> menuBOS = adminDAO.getMenuByRoleId(roleId);
+//        if (menuBOS != null && menuBOS.size() > 0) {
+//            for (int i = 0; i < menuBOS.size(); i++) {
+//                MenuBO menuBO = menuBOS.get(i);
+//                for (int x = 0; x < menuBOS.size(); x++) {
+//                    if (menuBO.getPid().equals(menuBOS.get(x).getId())) {
+//                        menuBOS.remove(i);
+//                        --i;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
         return menuBOS;
     }
+
+    /**
+     * 根据当前登陆用户的角色id查询对应的权限
+     *
+     * @param roleId 角色id
+     * @return 登陆用户对应的权限
+     */
+    public List<HotelBO> getRoleHotelSuccess(Integer roleId) {
+        List<HotelBO> hotelBOS = adminDAO.getHotelByRoleId(roleId);
+//        if (hotelBOS != null && hotelBOS.size() > 0) {
+//            for (int i = 0; i < hotelBOS.size(); i++) {
+//                HotelBO hotelBO = hotelBOS.get(i);
+//                for (int x = 0; x < hotelBOS.size(); x++) {
+//                    if (hotelBO.getId().equals(hotelBOS.get(x).getId())) {
+//                        hotelBOS.remove(i);
+//                        --i;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+        return hotelBOS;
+    }
+
 
     /**
      * 管理员注册
@@ -89,7 +128,6 @@ public class AdminService {
 
 
     /**
-     *
      * 判断角色名称是否注册过
      *
      * @param roleName
@@ -131,17 +169,18 @@ public class AdminService {
 
     /**
      * wy查询所有的角色信息
+     *
      * @return 角色集合
      */
     public List<RoleBO> getRoleList() {
         return adminDAO.getRoleList();
     }
+
     /**
-     *
      * 查询角色下是否有用户
      */
     public Integer checkRoleUser(String roleIds) {
-        Integer[] idArr= JsonUtils.getIntegerArray4Json(roleIds);
+        Integer[] idArr = JsonUtils.getIntegerArray4Json(roleIds);
         for (int i = 0; i < idArr.length; i++) {
             int count = adminDAO.checkRoleUser(new Integer(idArr[i]));
             if (count > 0) {
@@ -150,6 +189,7 @@ public class AdminService {
         }
         return null;
     }
+
     /**
      * 根据条件分页查询用户信息
      * wy
@@ -179,6 +219,7 @@ public class AdminService {
     /**
      * wy
      * 根据角色id查询角色信息
+     *
      * @param roleId
      * @return
      */
@@ -198,6 +239,18 @@ public class AdminService {
     }
 
     /**
+     * 向角色权限表中添加数据
+     *
+     * @param roleId     角色id
+     * @param hotelIdArr 酒店id数组
+     * @return
+     */
+    public int addRoleHotel(Integer roleId, Integer[] hotelIdArr) {
+        return adminDAO.addRoleHotel(roleId, hotelIdArr);
+    }
+
+
+    /**
      * 根据角色id删除角色
      *
      * @param roleIds 角色id
@@ -207,12 +260,9 @@ public class AdminService {
     }
 
 
-
-
-
     /**
-     * wy
-     * 修改一个角色的权限信息
+     * 修改一个角色的菜单权限信息
+     *
      * @param roleBO    这个角色的信息
      * @param menuIdArr 菜单id
      */
@@ -221,7 +271,21 @@ public class AdminService {
         //删除这个角色所有权限
         adminDAO.delRoleMenuByRoleId(roleBO.getId());
         //添加权限
-        return adminDAO.addRoleMenu(roleBO.getId(),menuIds)>0;
+        return adminDAO.addRoleMenu(roleBO.getId(), menuIds) > 0;
+    }
+
+    /**
+     * 修改一个角色的酒店权限信息
+     *
+     * @param roleBO     这个角色的信息
+     * @param hotelIdArr 菜单id
+     */
+    public boolean updRoleToHotel(RoleBO roleBO, String hotelIdArr) {
+        Integer[] hotelIds = JsonUtils.getIntegerArray4Json(hotelIdArr);
+        //删除这个角色所有权限
+        adminDAO.delRoleHotelByRoleId(roleBO.getId());
+        //添加权限
+        return adminDAO.addRoleHotel(roleBO.getId(), hotelIds) > 0;
     }
 
 
@@ -260,6 +324,7 @@ public class AdminService {
 
     /**
      * 查询角色对应的菜单
+     *
      * @param roleName 角色名称 为null查询所有
      * @return
      */
@@ -271,10 +336,13 @@ public class AdminService {
             List<MenuBO> menus = adminDAO.getMenuByRoleId(role.getId());
             role.setMenus(menus);
         }
+        //循环查询角色拥有的酒店
+        for (RoleBO role : roleList) {
+            List<HotelBO> hotelBOS = adminDAO.getHotelByRoleId(role.getId());
+            role.setHotels(hotelBOS);
+        }
         return roleList;
     }
-
-
 
 
 }

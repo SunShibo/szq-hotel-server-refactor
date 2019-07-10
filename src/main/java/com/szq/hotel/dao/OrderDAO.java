@@ -21,7 +21,7 @@ public interface OrderDAO {
     Integer updOrderChild(OrderChildBO orderChildBO);
 
     //根据手机号 身份证号 查询主订单预约信息
-    OrderBO getOrderByIdOrMobile(@Param("idNumber")String idNumber, @Param("mobile")String mobile, @Param("date") String date);
+    OrderBO getOrderByIdOrMobile(@Param("idNumber")String idNumber, @Param("mobile")String mobile, @Param("date") String date,@Param("hotelId")Integer hotelId);
 
     //根据订单id查询订单信息
     OrderBO getOrderById(Integer orderId);

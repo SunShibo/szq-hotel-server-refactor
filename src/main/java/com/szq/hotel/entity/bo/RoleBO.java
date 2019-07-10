@@ -16,6 +16,15 @@ public class RoleBO extends BaseModel {
     private Date createTime; //创建时间按
     private Date updateTime; // 修改时间
     private List<MenuBO> menus;//该角色拥有的菜单权限
+    private List<HotelBO> hotels;//该角色拥有的酒店权限
+
+    public List<HotelBO> getHotels() {
+        return hotels;
+    }
+
+    public void setHotels(List<HotelBO> hotels) {
+        this.hotels = hotels;
+    }
 
     public Integer getId() {
         return id;

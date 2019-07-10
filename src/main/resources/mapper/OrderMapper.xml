@@ -43,9 +43,6 @@
     <update id="updOrderChild" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
         update hm_order_child
         <set>
-            <if test="orderId!=null and orderId!=''">
-                order_id=#{orderId},
-            </if>
             <if test="startTime!=null and startTime!=''">
                 start_time=#{startTime},
             </if>
@@ -103,6 +100,7 @@
     select * from hm_order where
     check_time &lt;= #{date}
     and (phone=#{mobile} or ID_number=#{idNumber})
+    and hotel_id=#{hotelId}
     order by update_time desc
     limit 1
 </select>
