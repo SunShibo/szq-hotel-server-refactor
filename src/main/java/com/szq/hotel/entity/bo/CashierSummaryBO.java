@@ -30,6 +30,7 @@ public class CashierSummaryBO  extends BaseModel{
     private String operator;
     private Integer hotelId;
 
+
     public Integer getHotelId() {
         return hotelId;
     }

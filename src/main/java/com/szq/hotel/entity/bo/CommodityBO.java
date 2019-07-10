@@ -17,6 +17,9 @@ public class CommodityBO {
     private String consumptionDetails;//交易详情
     private Integer hotelId;//酒店id
     private String name;//操作员名字
+    private String hotelName;
+    private String site;//酒店地址
+    private String phone;
     public CommodityBO() {}
 
 
@@ -30,6 +33,29 @@ public class CommodityBO {
         this.hotelId=hotelId;
     }
 
+    public String getHotelName() {
+        return hotelName;
+    }
+
+    public void setHotelName(String hotelName) {
+        this.hotelName = hotelName;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public Integer getId() {
         return id;

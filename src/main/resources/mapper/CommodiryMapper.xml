@@ -52,7 +52,9 @@
     </sql>
 
     <select id="queryCommodiryById" parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.CommodityBO" >
-         SELECT com.*,admin.`name` FROM `hm_commodity_transaction` com LEFT JOIN hm_admin admin ON   admin.id=com.create_user_id
+          SELECT com.*,admin.`name` ,ht.`name` hotelName,ht.site,ht.phone
+          FROM `hm_commodity_transaction` com LEFT JOIN hm_admin admin ON   admin.id=com.create_user_id  LEFT JOIN hm_hotel ht
+           ON ht.id=com.hotel_id
          WHERE  com.id=#{id}
     </select>
 </mapper>
