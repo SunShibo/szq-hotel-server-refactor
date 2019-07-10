@@ -8,8 +8,8 @@
 
     <!--新增会员级别-->
     <insert id="addMemberLevel" useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.MemberLevelBO">
-        INSERT INTO `hm_member_level` (`name`, `state`, `type`, `create_user_id`, `create_time`)
-        VALUES (#{name},#{state},#{type},#{createUserId},NOW())
+        INSERT INTO `hm_member_level` (`name`, `state`, `type`,`discount`, `create_user_id`, `create_time`)
+        VALUES (#{name},#{state},#{type},#{discount},#{createUserId},NOW())
     </insert>
 
 

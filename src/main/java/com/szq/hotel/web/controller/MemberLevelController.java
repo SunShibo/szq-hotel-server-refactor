@@ -61,7 +61,7 @@ public class MemberLevelController extends BaseCotroller {
                 return ;
             }
             //设置默认折扣
-            memberLevelBO.setDiscount(new BigDecimal(1));
+            memberLevelBO.setDiscount(BigDecimal.valueOf((int)1));
             memberLevelService.addMemberLevel(memberLevelBO,loginAdmin.getId());
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员级别成功！"));
