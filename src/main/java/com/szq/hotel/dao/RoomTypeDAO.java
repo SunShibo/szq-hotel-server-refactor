@@ -19,9 +19,5 @@ public interface RoomTypeDAO {
     int updateByPrimaryKey(RoomTypeBO record);
 
     List<RoomTypeBO> queryRoomTypeList(@Param("id")Integer id);
-    /*
-        查询所有房型
-    */
-    List<Integer> getRoomTypeList();
     void updateShow(@Param("id") Integer id);
 }

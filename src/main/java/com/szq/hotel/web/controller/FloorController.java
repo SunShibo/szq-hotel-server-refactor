@@ -30,7 +30,7 @@ public class FloorController extends BaseCotroller {
     private FloorService  floorService;
 
     /**
-     * 添加酒店
+     * 添加楼层
      */
     @RequestMapping("/addFloor")
     public void addHotel(HttpServletRequest request, HttpServletResponse response,FloorBO floorBO){
@@ -40,7 +40,7 @@ public class FloorController extends BaseCotroller {
             AdminBO loginAdmin = super.getLoginAdmin(request);
             log.info("user{}",loginAdmin);
             if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;

@@ -23,4 +23,10 @@
         delete from hm_everyday_room_price where order_child_id=#{id}
     </delete>
 
+    <!-- 修改每日房价信息 -->
+    <delete id="updEverydayRoomPrice" parameterType="com.szq.hotel.entity.bo.EverydayRoomPriceBO">
+        update hm_everyday_room_price set `time`=#{time},money=#{money}  where order_child_id=#{id}
+    </delete>
+
+
 </mapper>

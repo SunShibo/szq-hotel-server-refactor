@@ -25,7 +25,7 @@
   <sql id="Base_Column_List" >
     id, room_name, room_type_id, room_major_state, room_state, remark, lock_room_state, 
     lock_room_start_time, lock_room_end_time, room_auxiliary_status, room_auxiliary_status_stand, 
-    setting, character, create_user_id, create_time, update_user_id, update_time, floor_id, 
+    setting, `character`, create_user_id, create_time, update_user_id, update_time, floor_id,
     hotel_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -43,7 +43,7 @@
       room_major_state, room_state, remark, 
       lock_room_state, lock_room_start_time, lock_room_end_time, 
       room_auxiliary_status, room_auxiliary_status_stand, 
-      setting, character, create_user_id, 
+      setting, `character`, create_user_id,
       create_time, update_user_id, update_time, 
       floor_id, hotel_id)
     values (#{id,jdbcType=INTEGER}, #{roomName,jdbcType=VARCHAR}, #{roomTypeId,jdbcType=INTEGER}, 
@@ -94,7 +94,7 @@
         setting,
       </if>
       <if test="character != null" >
-        character,
+        `character`,
       </if>
       <if test="createUserId != null" >
         create_user_id,
@@ -263,12 +263,13 @@
     </sql>
 
   <select id="queryRoom" resultType="com.szq.hotel.entity.bo.RoomBO" parameterType="java.util.Map">
-  SELECT hm_room.* , hm_hotel.name as hotelName, hm_floor.name as floorName, hm_room_type.room_type_name as roomType
-  FROM hm_floor, hm_hotel, hm_room_type, hm_room
+  SELECT hm_room.* , hm_hotel.name as hotelName, hm_floor.name as floorName, hm_room_type.room_type_name as roomType,
+    hm_room_type.basic_price as basicPrice, hm_room_type.hour_room_price as hourRoomPrice
+    FROM hm_floor, hm_hotel, hm_room_type, hm_room
   WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
   AND hm_room.hotel_id = hm_hotel.id
-  <if test="roomId != null">
-   and hm_room.id = #{roomId}
+  <if test="roomName != null">
+   and hm_room.room_name = #{roomName}
   </if>
   <if test="floorId != null">
     and hm_room.floor_id = #{floorId}
@@ -312,11 +313,25 @@
     </foreach>
   </update>
 
-  <update id="updatelockRoomState" parameterType="Integer[]">
+  <update id="updatelockRoomState" parameterType="java.util.Map">
     update hm_room
     set
-    lock_room_state = 'close'
-    <foreach item="item" collection="array" open="(" separator="," close=")">
+    lock_room_state = #{state},
+    remark = #{remark},
+    lock_room_start_time = #{startTime},
+    lock_room_end_time = #{endTime}
+    where id in
+    <foreach item="item" collection="ids" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <update id="updatelockRoomState2" parameterType="java.util.Map">
+    update hm_room
+    set
+    lock_room_state = #{state}
+    where id in
+    <foreach item="item" collection="ids" open="(" separator="," close=")">
       #{item}
     </foreach>
   </update>
@@ -325,6 +340,7 @@
     update hm_room
     set
     lock_room_state = 'open'
+    where is
     <foreach item="item" collection="array" open="(" separator="," close=")">
       #{item}
     </foreach>
@@ -344,4 +360,41 @@
     WHERE id = #{id} ;
 
     </update>
+
+
+  <select id="queryRm" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
+    SELECT hm_room.* , hm_hotel.name AS hotelName,
+    hm_floor.name AS floorName,
+    hm_room_type.room_type_name AS roomType,
+    hm_room_type.basic_price AS basicPrice,
+    hm_room_type.hour_room_price AS hourRoomPrice
+    FROM hm_floor,
+    hm_hotel,
+    hm_room_type,
+    hm_room
+    WHERE hm_room.room_type_id = hm_room_type.id
+    AND hm_room.floor_id = hm_floor.id
+    AND hm_room.hotel_id = hm_hotel.id AND
+    hm_room.hotel_id = #{hotelId}
+    <if test="roomTypeId != null">
+      hm_room.room_type_id = #{roomTypeId}
+    </if>
+    AND hm_room.lock_room_state
+    IN ('ope','network') AND hm_room.show = 'yes'
+    HAVING hm_room.lock_room_end_time &lt; #{checkTime} &gt; hm_room.lock_room_start_time
+    OR hm_room.lock_room_end_time IS NULL
+  </select>
+
+  <select id="queryOc"  resultType="com.szq.hotel.entity.bo.OcBO">
+    SELECT * FROM hm_order_child WHERE room_id IN
+    <foreach item="item" collection="id" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    and  order_state IN ('reservation','notpay','admissions')
+  </select>
+
+
+  <select id="queryRt" resultType="com.szq.hotel.entity.bo.RtBO">
+    SELECT room_type_name,id FROM hm_room_type WHERE hotel_id  = #{hotelId}  AND `show` = 'yes'
+  </select>
 </mapper>

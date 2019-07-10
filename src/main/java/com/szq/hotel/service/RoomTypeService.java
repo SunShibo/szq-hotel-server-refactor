@@ -20,8 +20,8 @@ public class RoomTypeService {
     @Resource
     private RoomTypeDAO roomTypeDAO;
 
-    public List<RoomTypeBO> queryRoomTypeList(Integer id){
-        return roomTypeDAO.queryRoomTypeList(id);
+    public List<RoomTypeBO> queryRoomTypeList(Integer id,Integer hotelId){
+        return roomTypeDAO.queryRoomTypeList(id, hotelId);
     }
     /*
        查询所有房型

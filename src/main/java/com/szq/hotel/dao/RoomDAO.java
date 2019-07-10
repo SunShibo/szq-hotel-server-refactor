@@ -1,7 +1,6 @@
 package com.szq.hotel.dao;
 
-import com.szq.hotel.entity.bo.RoomBO;
-import com.szq.hotel.entity.bo.RoomTypeCountBO;
+import com.szq.hotel.entity.bo.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -26,7 +25,9 @@ public interface RoomDAO {
 
     void updateShow(Integer[] idArr);
 
-    void updatelockRoomState(Integer[] idArr);
+    void updatelockRoomState(Map<String,Object> map);
+
+    void updatelockRoomState2(Map<String,Object> map);
 
     void updatelockRoom(Integer[] idArr);
 
@@ -42,4 +43,29 @@ public interface RoomDAO {
      * @param map
      */
     void updateroomMajorState(Map<String, Object> map);
+
+    /**
+     * 预定入住选房型
+     * @param map
+     * @return
+     */
+    List<RmBO> queryRm(Map<String, Object> map);
+
+    /**
+     * 根据房间id查询订单
+     * @param id
+     * @return
+     */
+    List<OcBO> queryOc(@Param("id") List<Integer> id);
+
+
+    /**
+     * 查询酒店下面的房型
+     * @param hotelId
+     * @return
+     */
+    List<RtBO> queryRt(@Param("hotelId")Integer hotelId);
+
+
+
 }

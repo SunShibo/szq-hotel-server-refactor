@@ -25,6 +25,8 @@ public class RoomTypeBO extends BaseModel {
 
     private Date updateTime;
 
+    private Integer hotelId;
+
 
     public Integer getId() {
         return id;
@@ -104,5 +106,13 @@ public class RoomTypeBO extends BaseModel {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
     }
 }
