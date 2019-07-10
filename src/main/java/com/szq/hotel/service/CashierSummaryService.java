@@ -1,5 +1,6 @@
 package com.szq.hotel.service;
 
+import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.CashierSummaryDAO;
 import com.szq.hotel.entity.bo.CashierSummaryBO;
 import org.slf4j.Logger;
@@ -61,7 +62,7 @@ public class CashierSummaryService {
         log.info("start addCard...........................................");
         log.info("name:{}\tmoney:{}\tpayType:{}\torderNumber:{}\tuserId:{}\thotelId:{}",name,money,payType,orderNumber,userId,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject("办卡"); //TODO  应该定义为常量
+        cashierSummaryBO.setProject(Constants.APPLYCARD.getValue()); //TODO  应该定义为常量
         cashierSummaryBO.setType(payType);
         cashierSummaryBO.setSettlement(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
@@ -86,7 +87,7 @@ public class CashierSummaryService {
         log.info("start addStored...........................................");
         log.info("name:{}\tmoney:{}\tpayType:{}\torderNumber:{}\tuserId:{}\thotelId:{}",name,money,payType,orderNumber,userId,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject("储值"); //TODO  应该定义为常量
+        cashierSummaryBO.setProject(Constants.STOREDVALUE.getValue()); //TODO  应该定义为常量
         cashierSummaryBO.setType(payType);
         cashierSummaryBO.setSettlement(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
@@ -119,7 +120,7 @@ public class CashierSummaryService {
         log.info("money:{}\tpayType:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tremark:{}\thotelId{}",
                money,payType,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject("押金"); //TODO  应该定义为常量
+        cashierSummaryBO.setProject(Constants.CASHPLEDGE.getValue()); //TODO  应该定义为常量
         cashierSummaryBO.setType(payType);
         cashierSummaryBO.setSettlement(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
@@ -197,7 +198,7 @@ public class CashierSummaryService {
         log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tdesignation:{}\thotelId:{}",
                 money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,hotelId);
                 CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject("房费"); //TODO 定义常量
+        cashierSummaryBO.setProject(Constants.ROOMRATE.getValue()); //TODO 定义常量
         cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);
@@ -233,7 +234,7 @@ public class CashierSummaryService {
                  money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,cause,hotelId);
 
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject("房费调整"); //TODO 定义常量
+        cashierSummaryBO.setProject(Constants.ADJUSTMENT.getValue()); //TODO 定义常量
         cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);
@@ -271,7 +272,7 @@ public class CashierSummaryService {
                 money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark,hotelId);
 
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject("结账"); //TODO 定义常量
+        cashierSummaryBO.setProject(Constants.SETTLE.getValue());
         cashierSummaryBO.setSettlement(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);

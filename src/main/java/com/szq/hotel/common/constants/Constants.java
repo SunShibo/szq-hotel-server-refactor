@@ -29,7 +29,17 @@ public enum Constants {
     /* 房态 : 脏房 */ DIRTY("dirty"),
     /* 房态 : 门店锁房 */ SHOP("shop"),
     /* 房态 : 网络锁 */ NETWORK("network"),
-    /* 房态 : 全部锁 */ ALL("all");
+    /* 房态 : 全部锁 */ ALL("all"),
+    /* 项目 : 押金 */ CASHPLEDGE("押金"),
+    /* 项目 : 房费 */ ROOMRATE("房费"),
+    /* 项目 : 商品 */ COMMODITY("商品"),
+    /* 项目 : 赔偿 */ COMPENSATE("赔偿"),
+    /* 项目 : 免单 */ FREEORDER("免单"),
+    /* 项目 : 超时费减免 */ MITIGATE("超时费减免"),
+    /* 项目 : 房费调整 */ ADJUSTMENT("房费调整"),
+    /* 项目 : 结账 */ SETTLE("结账"),
+    /* 项目 : 储值 */ STOREDVALUE("储值"),
+    /* 项目 : 办卡 */ APPLYCARD("办卡");
 
     Constants(String value) {
         this.value = value;

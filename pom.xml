@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.szq</groupId>
   <artifactId>szq-hotel-server-refactor</artifactId>
@@ -97,54 +97,54 @@
 
     <!--<dependency>-->
 
-      <!--<groupId>org.apache.poi</groupId>-->
+    <!--<groupId>org.apache.poi</groupId>-->
 
-      <!--<artifactId>poi</artifactId>-->
+    <!--<artifactId>poi</artifactId>-->
 
-      <!--<version>3.15</version>-->
+    <!--<version>3.15</version>-->
 
-      <!--<exclusions>-->
+    <!--<exclusions>-->
 
-        <!--<exclusion>-->
+    <!--<exclusion>-->
 
-          <!--<artifactId>commons-codec</artifactId>-->
+    <!--<artifactId>commons-codec</artifactId>-->
 
-          <!--<groupId>commons-codec</groupId>-->
+    <!--<groupId>commons-codec</groupId>-->
 
-        <!--</exclusion>-->
+    <!--</exclusion>-->
 
-      <!--</exclusions>-->
+    <!--</exclusions>-->
 
     <!--</dependency>-->
     <!--&lt;!&ndash;poi&ndash;&gt;-->
     <!--<dependency>-->
-      <!--<groupId>org.apache.poi</groupId>-->
-      <!--<artifactId>poi</artifactId>-->
-      <!--<version>3.15</version>-->
+    <!--<groupId>org.apache.poi</groupId>-->
+    <!--<artifactId>poi</artifactId>-->
+    <!--<version>3.15</version>-->
     <!--</dependency>-->
     <!--<dependency>-->
-      <!--<groupId>org.apache.poi</groupId>-->
-      <!--<artifactId>poi-ooxml</artifactId>-->
-      <!--<version>3.15</version>-->
+    <!--<groupId>org.apache.poi</groupId>-->
+    <!--<artifactId>poi-ooxml</artifactId>-->
+    <!--<version>3.15</version>-->
     <!--</dependency>-->
+
+
 
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
       <version>3.17</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml-schemas</artifactId>
-      <version>3.17</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>3.17</version>
-    </dependency>
-
-
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml-schemas</artifactId>
+        <version>3.17</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>3.17</version>
+      </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
@@ -314,11 +314,11 @@
     </dependency>
 
     <!-- java readis客户端 -->
-   <!-- <dependency>
-      <groupId>redis.clients</groupId>
-      <artifactId>jedis</artifactId>
-      <version>2.0.0</version>
-    </dependency>-->
+    <!-- <dependency>
+       <groupId>redis.clients</groupId>
+       <artifactId>jedis</artifactId>
+       <version>2.0.0</version>
+     </dependency>-->
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
@@ -428,9 +428,9 @@
       <version>2.3.1</version>
     </dependency>
     <!--<dependency>-->
-      <!--<groupId>org.apache.poi</groupId>-->
-      <!--<artifactId>poi-ooxml</artifactId>-->
-      <!--<version>3.9</version>-->
+    <!--<groupId>org.apache.poi</groupId>-->
+    <!--<artifactId>poi-ooxml</artifactId>-->
+    <!--<version>3.9</version>-->
     <!--</dependency>-->
     <dependency>
       <groupId>commons-collections</groupId>
@@ -514,7 +514,7 @@
   </build>
 
   <profiles>
-  <profile>
+    <profile>
       <id>test</id>
       <properties>
         <jdbc.url.ip>wisewin-tech.com:3306/hotel</jdbc.url.ip>
@@ -528,19 +528,19 @@
       </properties>
     </profile>
 
-<!--    <profile>
-      <id>xsszq</id>
-      <properties>
-        <jdbc.url.ip>60.205.226.180:3306/szq</jdbc.url.ip>
-        <jdbc.username>root</jdbc.username>
-        <jdbc.password>root</jdbc.password>
+    <!--    <profile>
+          <id>xsszq</id>
+          <properties>
+            <jdbc.url.ip>60.205.226.180:3306/szq</jdbc.url.ip>
+            <jdbc.username>root</jdbc.username>
+            <jdbc.password>root</jdbc.password>
 
-        <system.cfg.imageBaeUrl>http://39.107.224.185:8080/</system.cfg.imageBaeUrl>
-        <system.cfg.uploadBaseUrl>/home/zlftFiles/image</system.cfg.uploadBaseUrl>
-        <system.cfg.webProjectUrl>http://client.test.urbanfit.cn/</system.cfg.webProjectUrl>
-        <system.cfg.wapProjectUrl>http://wap.test.urbanfit.cn/</system.cfg.wapProjectUrl>
-      </properties>
-    </profile>-->
+            <system.cfg.imageBaeUrl>http://39.107.224.185:8080/</system.cfg.imageBaeUrl>
+            <system.cfg.uploadBaseUrl>/home/zlftFiles/image</system.cfg.uploadBaseUrl>
+            <system.cfg.webProjectUrl>http://client.test.urbanfit.cn/</system.cfg.webProjectUrl>
+            <system.cfg.wapProjectUrl>http://wap.test.urbanfit.cn/</system.cfg.wapProjectUrl>
+          </properties>
+        </profile>-->
 
 
 

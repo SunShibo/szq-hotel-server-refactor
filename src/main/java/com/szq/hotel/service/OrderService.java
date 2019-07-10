@@ -6,7 +6,6 @@ import com.szq.hotel.dao.EverydayRoomPriceDAO;
 import com.szq.hotel.dao.OrderDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
-import com.szq.hotel.pop.Constant;
 import com.szq.hotel.util.IDBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
