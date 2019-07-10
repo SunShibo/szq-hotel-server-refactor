@@ -157,6 +157,51 @@ public class OrderController extends BaseCotroller {
     }
 
     /**
+     * 根据主订单id查询房间信息（客帐管理）
+     * @param orderId 订单号
+     * */
+    @RequestMapping("/getRoomInfoById")
+    public void getRoomInfoById(Integer orderId,HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(orderId== null||orderId.equals("")){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        OrderChildBO orderBO=orderService.getRoomInfoById(orderId);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
+        super.safeJsonPrint(response, result);
+    }
+
+    //根据子订单id查询房间信息消费信息（客帐管理）【王洋】
+    @RequestMapping("/getOrderInfoById")
+    public void getOrderInfoById(Integer orderChildId,HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(orderChildId== null||orderChildId.equals("")){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        OrderChildBO orderBO=orderService.getOrderInfoById(orderChildId);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
+        super.safeJsonPrint(response, result);
+    }
+
+    /**
      * 入住支付
      * @param cs 报表信息
      * @param id 子订单id

@@ -16,5 +16,6 @@ public interface OrderRecordDAO {
 
     void addOrderRecord(OrderRecoredBO orderRecoredBO);
 
+    //查询消费记录
     List<OrderRecoredBO> queryOrderRecord(Integer id);
 }

@@ -113,7 +113,7 @@
 
 
     <!-- 根据订单id查询子订单 -->
-    <select id="getOrderChildById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getOrderChildByOrderId" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
     select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
     from hm_order_child,hm_room,hm_room_type
     where
@@ -125,7 +125,7 @@
 </select>
 
     <!-- 修改主订单信息 -->
-    <update id="updOrder" parameterType="com.szq.hotel.entity.bo.OrderBO" >
+    <update id="updOrder" parameterType="com.szq.hotel.entity.bo.OrderBO">
         update hm_order
         <set>
             <if test="orderPlacer!=null and orderPlacer!=''">
@@ -167,8 +167,22 @@
     delete from hm_order_child where order_id=#{id}
 </delete>
 
+    <!--根据主订单id查询房间信息（客帐管理）-->
+    <select id="getRoomInfoById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select oc.id,r.room_name as roomName,cp.name as name,cp.create_time as createTime
+        from hm_order_child as oc,hm_check_in_person as cp,hm_room as r
+        where oc.order_id=#{orderId}
+        and oc.room_id=r.id
+        and cp.order_child_id=oc.id
+        and cp.status='checkin'
+        order by cp.create_time
+        limit 1
+    </select>
 
-
+    <!--根据子订单id查询子订单-->
+    <select id="getOrderChildById"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select * from hm_order_child where id=#{id}
+    </select>
 
     <!--订单列表-->
     <select id="queryOrderList" parameterType="com.szq.hotel.entity.param.OrderParam"

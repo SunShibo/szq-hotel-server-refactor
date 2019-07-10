@@ -27,13 +27,18 @@ public interface OrderDAO {
     OrderBO getOrderById(Integer orderId);
 
     //根据订单id查询子订单
-    List<OrderChildBO> getOrderChildById(Integer id);
+    List<OrderChildBO> getOrderChildByOrderId(Integer id);
+
+    //根据子订单id查询子订单
+    OrderChildBO getOrderChildById(Integer id);
 
     //修改主订单
     Integer updOrder(OrderBO orderBO);
     //删除旧子订单
     Integer delOrderChild(Integer id);
 
+    //根据主订单id查询房间信息（客帐管理）
+    OrderChildBO getRoomInfoById(Integer orderId);
     /**
      * 订单列表
      * @param param
