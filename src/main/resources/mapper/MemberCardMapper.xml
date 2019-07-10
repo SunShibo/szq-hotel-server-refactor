@@ -51,13 +51,14 @@
     </select>
     <!--条件分页查询会员卡信息-->
     <select id="selectMemberCard" resultType="com.szq.hotel.entity.bo.MemberCardBO" parameterType="java.util.Map">
-        SELECT * FROM `hm_member_card`
+        SELECT card.*,le.`name` FROM `hm_member_card` card
+        LEFT JOIN hm_member_level le ON card.member_level_id = le.id
         <where>
-            state!='no'
-            <if test="state!=null and state!=''">AND `state`=#{state}</if>
-            <if test="memberLevelId!=null ">AND `member_level_id`=#{memberLevelId}</if>
-            <if test="money!=null ">AND `money`=#{money}</if>
-            <if test="cardNumber!=null and cardNumber!=''">AND `card_number` LIKE concat('%',#{cardNumber},'%')</if>
+            card.state!='no'
+            <if test="state!=null and state!=''">AND card.`state`=#{state}</if>
+            <if test="memberLevelId!=null ">AND card.`member_level_id`=#{memberLevelId}</if>
+            <if test="money!=null ">AND card.`money`=#{money}</if>
+            <if test="cardNumber!=null and cardNumber!=''">AND card.`card_number` LIKE concat('%',#{cardNumber},'%')</if>
         </where>
         <include refid="limit" />
     </select>

@@ -8,6 +8,7 @@ import java.util.Date;
 public class MemberCardBO extends BaseModel {
     private Integer id;//
     private Integer memberLevelId;//会员级别id
+    private String name;//会员名称
     private String cardNumber;//卡号
     private BigDecimal money;//金额
     private String state;//状态（未售出/使用中/冻结）
@@ -27,6 +28,14 @@ public class MemberCardBO extends BaseModel {
 
     public void setMemberLevelId(Integer memberLevelId) {
         this.memberLevelId = memberLevelId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCardNumber() {
