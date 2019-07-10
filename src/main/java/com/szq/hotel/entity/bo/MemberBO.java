@@ -21,6 +21,8 @@ public class MemberBO extends BaseModel {
     private String remark;//备注
     private String salesman;//销售员
     private String state;//状态
+    private String memberLevelName;//会员级别名称
+    private String type;//会员卡能否充值
     private Date createTime;//创建时间
     private Integer updateUserId;//修改人id
     private Date updateTime;//修改时间
@@ -143,6 +145,22 @@ public class MemberBO extends BaseModel {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getMemberLevelName() {
+        return memberLevelName;
+    }
+
+    public void setMemberLevelName(String memberLevelName) {
+        this.memberLevelName = memberLevelName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Date getCreateTime() {

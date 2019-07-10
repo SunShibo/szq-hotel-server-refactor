@@ -5,6 +5,7 @@ import com.szq.hotel.entity.bo.MemberBO;
 import com.szq.hotel.entity.bo.StoredValueRecordBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
+import com.szq.hotel.service.CashierSummaryService;
 import com.szq.hotel.service.IntegralRecordService;
 import com.szq.hotel.service.MemberService;
 import com.szq.hotel.service.StoredValueRecordService;
@@ -37,6 +38,8 @@ public class MemberController extends BaseCotroller {
     private IntegralRecordService integralRecordService;
     @Resource
     private StoredValueRecordService storedValueRecordService;
+    @Resource
+    private CashierSummaryService cashierSummaryService;
 
     /**
      * 新增会员
@@ -287,8 +290,12 @@ public class MemberController extends BaseCotroller {
 
             MemberBO memberBO1 = memberService.queryMemberById(id);
             currentBalance = memberBO1.getStoredValue();
-
+            //添加储值记录
             storedValueRecordService.addStoredValueRecord(id,storedValueChange,remark,type,presenterMoney,currentBalance,loginAdmin.getId());
+            //收银汇总
+            cashierSummaryService.addStored(memberBO1.getName(),storedValueChange,type,IDBuilder.getOrderNumber(),
+                    loginAdmin.getId(),loginAdmin.getHotelId());
+
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("储值调整成功！"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);

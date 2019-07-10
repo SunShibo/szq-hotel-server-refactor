@@ -40,14 +40,16 @@ WHERE id = #{id}
 
     <!--查询会员级别所有信息-->
     <select id="selectMember" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.util.Map">
-        SELECT * FROM hm_member
+        SELECT me.*,le.`name` memberLevelName,le.type
+        FROM `hm_member` me LEFT JOIN hm_member_card card ON me.member_card_id = card.id
+        LEFT JOIN hm_member_level le ON card.member_level_id = le.id
         <where>
-            state = 'yes'
+            me.state = 'yes'
 
             <if test="query!=null  ">
-                AND (`phone` LIKE concat('%',#{query},'%')
-                OR `certificate_number` LIKE concat('%',#{query},'%')
-                OR `name` LIKE concat('%',#{query},'%'))
+                AND (me.`phone` LIKE concat('%',#{query},'%')
+                OR me.`certificate_number` LIKE concat('%',#{query},'%')
+                OR me.`name` LIKE concat('%',#{query},'%'))
             </if>
 
         </where>
