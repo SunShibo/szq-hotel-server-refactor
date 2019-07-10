@@ -381,7 +381,7 @@
     </if>
     AND hm_room.lock_room_state
     IN ('ope','network') AND hm_room.show = 'yes'
-    HAVING hm_room.lock_room_end_time &lt; #{checkTime}
+    HAVING hm_room.lock_room_end_time &lt; #{checkTime} &gt; hm_room.lock_room_start_time
     OR hm_room.lock_room_end_time IS NULL
   </select>
 

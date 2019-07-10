@@ -1,6 +1,7 @@
 package com.szq.hotel.web.controller;
 
 import com.sun.xml.internal.bind.v2.model.core.ID;
+import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.RoomBO;
 import com.szq.hotel.entity.bo.RoomTypeCountBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
@@ -20,6 +21,7 @@ import redis.clients.jedis.Jedis;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 import java.util.*;
 
 
@@ -150,13 +152,19 @@ public class RoomController extends BaseCotroller {
 
 
     @RequestMapping("/quertRm")
-    public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime, Integer hotelId){
+    public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime){
+        AdminBO loginUser = super.getLoginUser(request);
         log.info("进入此方法");
         Map map = new HashMap<String,Object>();
         log.info("checkTime:{}",checkTime);
         map.put("checkTime", checkTime);
-        map.put("hotelId", hotelId);
-        Map mp = roomService.queryRm(map);
+        map.put("hotelId", loginUser.getHotelId());
+        Map mp = null;
+        try {
+            mp = roomService.queryRm(map);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
         super.safeJsonPrint(response, result);
         return;

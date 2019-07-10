@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -79,7 +81,7 @@ public class RoomService {
     /**
      * 预约入住选择房间
      */
-    public Map<String, Object> queryRm(Map<String, Object> map) {
+    public Map<String, Object> queryRm(Map<String, Object> map) throws ParseException {
         Map<String, Object> mp = new HashMap<String, Object>();
 
         //获取预入住时间
@@ -100,14 +102,20 @@ public class RoomService {
         log.info("获取符合条件房间的id:{}",ls);
         //根据房间id获取符合条件的订单
         List<OcBO> l = roomDAO.queryOc(ls);
-        log.info("获取符合条件房间的订单:{}",l);
+        for (OcBO oc : l){
+            log.info("获取符合条件房间的订单:{}",oc.getRoomId());
+        }
 
 
+       SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd ");
+
+       Date   date = formatter.parse(dt);
+        log.info("String 转换 date :{}",date);
         List<Integer> reId = new ArrayList<Integer>();
         if (!CollectionUtils.isEmpty(l)) {
             for (OcBO c : l) {
                 //判断客人选择的预入住时间是否在其他符合条件订单之间
-                if (belongCalendar(DateUtils.parseDate(dt,"yyyy-MM-dd HH:mm::ss"), c.getStartTime(), c.getEndTime())) {
+                if (!belongCalendar(date, c.getStartTime(), c.getEndTime())) {
                     reId.add(c.getRoomId());
                 }
             }
@@ -128,12 +136,14 @@ public class RoomService {
         while (iterator.hasNext()) {
             RmBO rmBO = iterator.next();
             for (Integer id : reId){
-               rmBO.getId().equals(id);
-                iterator.remove();//使用迭代器的删除方法删除
+                if(rmBO.getId().equals(id)){
+                    iterator.remove();//使用迭代器的删除方法删除
+                }
             }
         }
         log.info("去掉不能预约入住的房间的房间:{}",list);
-        map.put("list",list);
+        mp.put("list",list);
+
         return  mp;
     }
 
