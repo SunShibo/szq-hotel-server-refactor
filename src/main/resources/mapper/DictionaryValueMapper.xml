@@ -14,8 +14,6 @@
             <if test="kid!=null ">
                 and kid=#{kid}
             </if>
-
-        order by sort desc
     </select>
     <update id="updDic" parameterType="com.szq.hotel.entity.bo.DictionaryValueBO">
         update hm_dictionaries_value
