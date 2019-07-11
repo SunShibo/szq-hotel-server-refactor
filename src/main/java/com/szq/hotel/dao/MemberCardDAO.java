@@ -46,4 +46,8 @@ public interface MemberCardDAO {
         查询条数
      */
     Integer getCount(Map<String,Object> map);
+    /*
+        通过会员id查找会员卡信息
+     */
+    MemberCardBO getCardByMemberId(Integer memberId);
 }

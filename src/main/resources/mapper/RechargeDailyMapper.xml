@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.RechargeDailyDAO">
+
+    <!--添加充值日报-->
+    <insert id="insertRechargeDaily" parameterType="com.szq.hotel.entity.bo.RechargeDailyBO">
+        INSERT INTO `hm_recharge_daily` (
+	      `hotel_id`,`member_card_number`,`name`,
+	      `member_id`,`pay_type`,`recharge_money`,
+	      `presenter_money`,`create_user_id`,`create_time`)
+        VALUES (#{hotelId},#{memberCardNumber},#{name},
+                #{memberId},#{payType},#{rechargeMoney},
+                #{presenterMoney},#{createUserId},NOW())
+    </insert>
+
+    <select id="getRechargeDaily" resultType="com.szq.hotel.entity.bo.RechargeDailyBO">
+        SELECT ho.id hotelId,ho.`name` hotelName,rd.member_card_number memberCardNumber,
+        rd.`name`,le.`name` levelName,me.certificate_type certificateType,
+            me.certificate_number certificateNumber,rd.pay_type payType,rd.recharge_money rechargeMoney,
+            rd.presenter_money presenterMoney,rd.create_time createTime,ad.`name` adminName,re.remark
+        FROM hm_recharge_daily rd
+        LEFT JOIN hm_hotel ho ON rd.hotel_id = ho.id
+        LEFT JOIN hm_member me ON rd.member_id =me.id
+        LEFT JOIN hm_member_card card ON card.id = me.member_card_id
+        LEFT JOIN hm_member_level le ON card.member_level_id = le.id
+        LEFT JOIN hm_stored_value_record re ON me.id = re.check_in_member_id
+        LEFT JOIN hm_admin ad ON ad.id = re.create_user_id
+        <where>
+        rd.create_time BETWEEN #{}AND #{}
+            <if test="begin != null and begin != ''">AND rd.create_time <![CDATA[>=]]> #{begin}</if>
+            <if test="end != null and end != ''">AND rd.create_time <![CDATA[<=]]>#{end}</if>
+        </where>
+        GROUP BY rd.id
+    </select>
+
+
+</mapper>
