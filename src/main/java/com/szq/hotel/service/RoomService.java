@@ -268,7 +268,7 @@ public class RoomService {
             System.err.println("时间"+roomService.lDate(d, i+1));
         }*/
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = sdf.parse("2019-07-11 01:00:00");
+        Date d = sdf.parse("2019-07-11 05:59:59");
         roomService.timeDate(d);
 
     }
@@ -317,14 +317,14 @@ public class RoomService {
         //从开始天使的下一天结束时间
         Date d   = lDate(dat,0);
         //从明天开始的下一天开始时间
-        Date dad  = lDate(lDate(da,1),1);
+        Date dad  = lDate(da,1);
         //从明天开始的下一天结束时间
-        Date dadd  = lDate(lDate(dat,1),1);
+        Date dadd  = lDate(dat,1);
         //判断当前时间是否在凌晨零点到凌晨六点之间
         //如果是那么获取今天6点后开始的之后的十五天的时间段
-        if(belongCalendar(date,quDate(0,0,0),quDate(5,59,59))){
+        if(belongCalendar(date,quDate(0,0,0),quDate(05,59,59))){
             System.err.println("start if");
-            for (int i = 0 ; i<=15 ; i++){
+            for (int i = 0 ; i<15 ; i++){
                 //Time time = new Time();
                 // time.setStartTime(lDate(dad, i));
                 System.err.println(lDate(dd, i));
