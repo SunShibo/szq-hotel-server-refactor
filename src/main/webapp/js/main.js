@@ -48,7 +48,7 @@ var api = {
     , queryMember: '/member/selectMember'//会员查询?query=张三      已修改
     , addMember: '/member/add?v=1'//会员信息添加?
     , updateMember: '/member/update?v=1'//会员信息修改?userId
-    , memberLevel: '/memberLevel/selectmemberLevel'//获取会员级别
+    , memberLevel: '/memberLevel/selectmemberLevel?v=1'//获取会员级别000
     , certificate: '/certificateType/queryAll?v=1'//获取证件
     , getMemberByCre: '/user/queryByCredentialNumber?credentialNumber='//根据证件号码获取会员信息
     , getHouseType: '/room/houseType'//获取房屋类型
@@ -121,8 +121,8 @@ var api = {
     , operationLog: '/roomDetailsController/operationLog'//首页弹出层操作记录
     , checkIdentify: '/checkin/isCheckinByIdNumber?idNumber='//查看这个证件号码是否有在住信息
     , homeRoomType: '/roomMain/homePageHouse'//首页获取房间类型信息
-    , cashInfo: '/cashAccount/info'//现金订单
-    , cashAdd: '/cashAccount/add'//商品交易添加
+    , cashInfo: '/commodity/queryCommodiry'//现金订单000
+    , cashAdd: '/commodity/addCommodity'//商品交易添加000
     , stayOver: '/roomDetailsController/stayOver'//续住
     , stayOverPay: '/roomDetailsController/stayOverPay'//续住后支付
     , updateRoomComment: '/room/updateRoomComment'//首页房屋备注
@@ -155,17 +155,17 @@ var api = {
     , getScheduleById: '/order/queryOrderMsg'//根据订单号码查询预订信息
     , updateFixRoomState: '/room/updateFixRoomState'//更改维修状态
     , queryStatement: '/order/queryStatement'//在住报表和预离店报表
-    , addMemberLev: '/MemberPrice/add?v=1'//添加会员级别
+    , addMemberLev: '/memberLevel/addMemberLevel?v=1'//添加会员级别000
     , getEditScheduleRoom: '/room/UpdateOrderInfoBySelectRoom?v=1'//修改预定房间模块获取房间信息
     , getEditScheduleRoomType: '/room/houseTypeAndPhoneAndNet?v=1'//修改预定房间类型模块获取房间信息
-    , queryClassess: '/classes/queryClassess'//查询当前酒店下的所有班次
-    , deleteClasses: '/classes/deleteClasses'//删除班次
-    , addClasses: 'classes/addClasses'//添加班次
+    , queryClassess: '/classes/queryClasses'//查询当前酒店下的所有班次000
+    , deleteClasses: '/classes/deleteClasses'//删除班次000
+    , addClasses: 'classes/addClasses'//添加班次000
     , addRoomPerson: '/roomDetailsController/addRoomPerson'//添加同来人
-    , updateClasses: '/classes/updateClasses'//修改班次
+    , updateClasses: '/classes/updateClasses'//修改班次000
     , queryClassessByHotelId: '/classes/getClasses'//按酒店查班次      已修改
     , cartLogout: '/Cart/logout'//会员卡注销
-    , cashStamp: 'cashAccount/stamp'//打印
+    , cashStamp: 'commodity/queryCommodiryById'//打印000
     , addMaseTo: '/roomDetailsController/addMaseTo'//添加同来
     , waitIn: '/checkin/laterCheckIn?v=1'//稍后入住
     , jointHousingt: '/OrderManage/jointHousing '//联房按钮
@@ -174,7 +174,7 @@ var api = {
     , scheduleUpdate: '/subcribe/updateSub?v=1'//选房确定后需要调用算价格
     , otherView: '/room/otherView'//数据表格
     , orderInfoHistory: 'OrderManage/orderInfoHistory'//消费明细
-    , queryOrderByRoom: 'OrderManage/queryOrderByRoom'//商品交易挂账
+    , queryOrderByRoom: 'commodity/querySuspend'//商品交易挂账000
     , buying: 'OrderManage/buying'//挂账
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
     , FormManangeResponse: '/FormAccountDetailController/FormManangeResponse'//管理层报表
@@ -188,14 +188,14 @@ var api = {
     , updateRoomPerson: '/roomDetailsController/updateRoomPerson'//修改同来人
     , join: '/OrderManage/join'//加入联房
     , dismiss: '/OrderManage/dismiss'//解散联房
-    , addHotel: 'hotel/addHotel'//添加酒店
-    , queryHotelInfo: '/hotel/queryHotel'//查询酒店      已修改
-    , updateHotelInfo: 'hotel/updateHotel'//编辑酒店
+    , addHotel: 'hotel/addHotel'//添加酒店000
+    , queryHotelInfo: 'hotel/queryHotel'//查询酒店000
+    , updateHotelInfo: 'hotel/updateHotel'//编辑酒店000
     , queryStoreValue: '/checkin/queryStoreValue'//查询会员积分和储值
-    , queryFloor:'/floor/queryFloor'//查询楼层
-    , addFloor:'floor/addFloor'//添加楼层
-    , updateFloor:'floor/updateFloor'//修改楼层
-    , deleteFloor:'floor/deleteFloor'//删除楼层
+    , queryFloor:'floor/queryFloor'//查询楼层000
+    , addFloor:'floor/addFloor'//添加楼层000
+    , updateFloor:'floor/updateFloor'//修改楼层000
+    , deleteFloor:'floor/deleteFloor'//删除楼层000
 }
 layui.use(['jquery', 'element'], function () {
     $ = layui.jquery;

@@ -21,10 +21,10 @@
         $(function () {
             tally = JSON.parse(sessionStorage.getItem('tally'));
             tallyInfo = JSON.parse(sessionStorage.getItem('tallyInfo'));
+            // tab.reload({data: tallyInfo});
+            // debugger;
             setTimeout(function () {
-                var arr = []
-                arr.push(tallyInfo);
-                tab.reload({data: arr});
+                tab.reload({data: tallyInfo});
             }, 200)
         });
 
@@ -60,13 +60,10 @@
             elem: '#tallyInfo'
             , limit: 10000
             , cols: [[ //表头
-                {field: 'roomName', title: '房号', align: 'center', width: 90}
-                , {field: 'name', title: '姓名', align: 'center', width: 100}
-                , {
-                    field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
-                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
-                    }
-                }
+                {field: 'name', title: '姓名', align: 'center', }
+                , {field: 'phone', title: '电话', align: 'center', }
+
+
             ]]
         });
     });

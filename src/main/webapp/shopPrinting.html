@@ -62,12 +62,14 @@
                     id: id
                 },
                 success: function (data) {
-                    $('#addr').html(data.data.hotelBO.address);
-                    $('#phone').html(data.data.hotelBO.phoneNumber);
-                    $('#time').html(DateToLStr(new Date(data.data.time.time)));
-                    var arr = [];
-                    arr.push(data.data.lst);
-                    tab.reload({data: JSON.parse(JSON.stringify(arr))});
+                    // debugger;
+                    $("#time").html(DateToLStr(new Date()));
+                    $("#addr").text(data.data.site);
+                    $("#phone").text(data.data.phone);
+                     var arr = [];
+                     arr.push(data.data);
+
+                    tab.reload({data:arr});
                 }
             })
         }
@@ -77,33 +79,23 @@
             , even: true
             , loading: true // 是否显示加载条
             , cols: [[ //标题栏
-                {field: 'orderNum', title: '订单号'},
-                {field: 'price', title: '消费金额'},
-                {field: 'info', title: '消费详情'},
+                {field: 'orderNumber', title: '订单号'},
+                {field: 'money', title: '消费金额'},
+                {field: 'consumptionDetails', title: '消费详情'},
+                {field: 'consumeType', title: '消费类型'},
+
                 {
-                    field: 'type', title: '消费类型', templet: function (data) {
-                        switch (data.type) {
-                            case "1":
-                                return '商品';
-                            case "2":
-                                return '赔偿';
-                            case "3":
-                                return '办卡';
-                        }
-                    }
-                },
-                {
-                    field: 'state', title: '支付方式', templet: function (data) {
-                        switch (data.state) {
-                            case 1:
+                    field: 'payType', title: '支付方式', templet: function (data) {
+                        switch (data.payType) {
+                            case 'cash ':
                                 return '现金';
-                            case 2:
+                            case 'cart':
                                 return 'POS';
-                            case 3:
-                                return '其他支付';
-                            case 4:
-                                return '积分支付';
-                            case 5:
+                            case 'wechat':
+                                return '微信';
+                            case 'alipay':
+                                return '支付宝';
+                            case 'stored':
                                 return '储值支付';
                         }
                     }
