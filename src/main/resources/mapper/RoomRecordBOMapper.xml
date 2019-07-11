@@ -121,7 +121,7 @@
     select room.*,ad.name
     from hm_room_record room LEFT JOIN hm_admin `ad`
     ON room.create_user_id = ad.id
-    where room_id = #{id,jdbcType=INTEGER}
+    where room_id = #{id,jdbcType=INTEGER} ORDER BY create_time DESC
     <include refid="limit" />
   </select>
   <!--查询房间记录数量-->
