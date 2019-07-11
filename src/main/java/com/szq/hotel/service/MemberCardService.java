@@ -140,7 +140,12 @@ public class MemberCardService {
         return result;
     }
 
-
+    /*
+            通过会员id查找会员卡信息
+         */
+    public MemberCardBO getCardByMemberId(Integer memberId){
+        return memberCardDAO.getCardByMemberId(memberId);
+    }
 
 
 }

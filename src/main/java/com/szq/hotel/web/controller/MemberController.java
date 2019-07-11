@@ -1,14 +1,8 @@
 package com.szq.hotel.web.controller;
-import com.szq.hotel.entity.bo.AdminBO;
-import com.szq.hotel.entity.bo.IntegralRecordBO;
-import com.szq.hotel.entity.bo.MemberBO;
-import com.szq.hotel.entity.bo.StoredValueRecordBO;
+import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
-import com.szq.hotel.service.CashierSummaryService;
-import com.szq.hotel.service.IntegralRecordService;
-import com.szq.hotel.service.MemberService;
-import com.szq.hotel.service.StoredValueRecordService;
+import com.szq.hotel.service.*;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.StringUtils;
@@ -40,6 +34,10 @@ public class MemberController extends BaseCotroller {
     private StoredValueRecordService storedValueRecordService;
     @Resource
     private CashierSummaryService cashierSummaryService;
+    @Resource
+    private RechargeDailyService rechargeDailyService;
+    @Resource
+    private MemberCardService memberCardService;
 
     /**
      * 新增会员
@@ -290,7 +288,7 @@ public class MemberController extends BaseCotroller {
                 memberBO.setStoredValue(storedValueChange.add(presenterMoney));
             }
             memberService.storedValueChange(memberBO,loginAdmin.getId());
-
+            MemberCardBO memberCardBO = memberCardService.getCardByMemberId(id);
 
             MemberBO memberBO1 = memberService.queryMemberById(id);
             //当前余额=余额+赠送金额
@@ -298,8 +296,9 @@ public class MemberController extends BaseCotroller {
             //添加储值记录
             storedValueRecordService.addStoredValueRecord(id,storedValueChange,remark,type,presenterMoney,currentBalance,loginAdmin.getId());
             //收银汇总
-            cashierSummaryService.addStored(memberBO1.getName(),storedValueChange,type,IDBuilder.getOrderNumber(),
-                    loginAdmin.getId(),loginAdmin.getHotelId());
+            cashierSummaryService.addStored(memberBO1.getName(),storedValueChange,type,IDBuilder.getOrderNumber(),loginAdmin.getId(),loginAdmin.getHotelId());
+            //充值日报
+            rechargeDailyService.insertRechargeDaily(loginAdmin.getHotelId(),memberCardBO.getCardNumber(),memberBO1.getName(),id,type,storedValueChange,presenterMoney,loginAdmin.getId());
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("储值调整成功！"));
             super.safeJsonPrint(response, result);
