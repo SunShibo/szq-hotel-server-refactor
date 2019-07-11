@@ -72,4 +72,9 @@ WHERE id = #{id}
     <update id="storedValueChange" parameterType="com.szq.hotel.entity.bo.MemberBO">
         UPDATE hm_member SET stored_value = (stored_value+#{storedValue}) WHERE id = #{id}
     </update>
+    <!--储值消费-->
+    <update id="storedValueSubtract" parameterType="com.szq.hotel.entity.bo.MemberBO">
+        UPDATE hm_member SET stored_value = (stored_value-#{storedValue}) WHERE id = #{id}
+    </update>
+
 </mapper>

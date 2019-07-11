@@ -3,6 +3,7 @@ package com.szq.hotel.service;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberDAO;
 import com.szq.hotel.entity.bo.MemberBO;
+import com.szq.hotel.entity.bo.StoredValueRecordBO;
 import com.szq.hotel.web.controller.MemberController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,8 @@ public class MemberService {
 
     @Resource
     private MemberDAO memberDAO;
+    @Resource
+    private StoredValueRecordService storedValueRecordService;
 
     /*
         新增会员
@@ -89,5 +93,25 @@ public class MemberService {
         memberBO.setUpdateUserId(userId);
         memberDAO.storedValueChange(memberBO);
         log.info("end===================storedValueChange");
+    }
+
+    /**
+     * 储值消费
+     * @param id 会员id
+     * @param subtractMoney 消费金额
+     * @param remark 备注
+     * @param type 类型
+     * @param presenterMoney 赠送金额
+     * @param currentBalance  当前余额
+     * @param userId 操作人id
+     */
+    public void storedValueSubtract(Integer id,BigDecimal subtractMoney,String remark,String type,BigDecimal presenterMoney,BigDecimal currentBalance, Integer userId){
+        MemberBO memberBO = new MemberBO();
+        memberBO.setId(id);
+        memberBO.setStoredValue(subtractMoney);
+        memberDAO.storedValueSubtract(memberBO);
+
+        storedValueRecordService.addStoredValueRecord(id,subtractMoney,remark,type,presenterMoney,currentBalance,userId);
+
     }
 }

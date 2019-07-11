@@ -33,5 +33,8 @@ public interface MemberDAO {
         储值调整
      */
     void storedValueChange(MemberBO memberBO);
-
+    /*
+        储值消费
+     */
+    void storedValueSubtract(MemberBO memberBO);
 }
