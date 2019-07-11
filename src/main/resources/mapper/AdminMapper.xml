@@ -141,7 +141,7 @@
     </select>
 
     <!--查询角色拥有的权限-->
-    <select id="getHotelByRoleId"  resultType="com.szq.hotel.entity.bo.MenuBO"  parameterType="java.lang.Integer">
+    <select id="getHotelByRoleId"  resultType="com.szq.hotel.entity.bo.HotelBO"  parameterType="java.lang.Integer">
         select h.*
         from hm_role_hotel as  rh
         inner join  hm_hotel as h

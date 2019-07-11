@@ -234,15 +234,17 @@ public class OrderController extends BaseCotroller {
         OrderBO orderBO=orderService.getOrderById(orderChildResult.getOrderId());
 
         //添加报表记录
-//        cashierSummaryService.addCheck(money,payType,orderBO.getOrderNumber(),userInfo.getId(),
-//                "name","",orderBO.getOrderType(),
-//                "","","");
+        cashierSummaryService.addCheck(money,payType,orderBO.getOrderNumber(),userInfo.getId(),
+                "name",orderBO.getOTA(),orderBO.getOrderType(),
+                "",orderChildResult.getRoomName(),orderChildResult.getRoomTypeName(),
+                null,userInfo.getHotelId());
 
         //修改子订单信息
         OrderChildBO orderChildBO=new OrderChildBO();
         orderChildBO.setId(id);
         orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
-        //orderChildBO.setRoomRate(cs.getMoney());
+        orderChildBO.setRoomRate(money);
+        orderChildBO.setMain("yes");
 
         orderService.updOrderChild(orderChildBO);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("支付成功")) ;

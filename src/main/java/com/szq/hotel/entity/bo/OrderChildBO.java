@@ -32,13 +32,20 @@ public class OrderChildBO extends BaseModel {
     private String nightAuditorState;//夜审状态
     private String printState;//打印状态（备用字段）
     private String remark;//备注
+    private String main;//是否为主账房
     private List<EverydayRoomPriceBO> everydayRoomPriceBOS;//每日房价信息
     private List<CheckInPersonBO> checkInPersonBOS;//入住人员信息
     private List<OrderRecoredBO> orderRecoredBOS;//消费记录信息
     private String createUserName;//操作员姓名
     private String name;//第一个入住人员姓名
     private String createTime;//第一个入住人员入住时间
+    public String getMain() {
+        return main;
+    }
 
+    public void setMain(String main) {
+        this.main = main;
+    }
 
     public String getCreateUserName() {
         return createUserName;

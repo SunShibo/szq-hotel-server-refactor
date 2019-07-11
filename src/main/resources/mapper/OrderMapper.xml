@@ -91,6 +91,9 @@
             <if test="printState!=null and printState!=''">
                 print_state=#{printState}
             </if>
+            <if test="main!=null and main!=''">
+                main=#{main}
+            </if>
         </set>
         where id=#{id}
     </update>

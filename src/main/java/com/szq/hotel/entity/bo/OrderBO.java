@@ -28,6 +28,15 @@ public class OrderBO extends BaseModel {
     private BigDecimal totalPrice=new BigDecimal(0);//总房价
     private Date createTime;
     private Date updateTime;
+    private String OTA;
+
+    public String getOTA() {
+        return OTA;
+    }
+
+    public void setOTA(String OTA) {
+        this.OTA = OTA;
+    }
 
     private List<OrderChildBO> orderChildBOS;
 
