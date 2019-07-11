@@ -40,7 +40,8 @@ public class MemberRoomTypeController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/updateMemberRoomType")
-    public void updateMemberRoomType(Integer memberLevelId, BigDecimal discount, HttpServletRequest request, HttpServletResponse response){
+    public void updateMemberRoomType(Integer memberLevelId, BigDecimal discount,
+                                     BigDecimal consumeGetIntegral,HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -52,13 +53,14 @@ public class MemberRoomTypeController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            if (memberLevelId== null||discount==null) {
+            if (memberLevelId== null||discount==null||consumeGetIntegral==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;
             }
                 MemberLevelBO memberLevelBO = new MemberLevelBO();
+                memberLevelBO.setConsumeGetIntegral(consumeGetIntegral);
                 memberLevelBO.setDiscount(discount);
                 memberLevelBO.setId(memberLevelId);
                 memberRoomTypeService.updateMemberRoomType(memberLevelBO,loginAdmin.getId());
@@ -106,13 +108,14 @@ public class MemberRoomTypeController extends BaseCotroller {
             }
 
             MemberLevelBO memberLevelBO = memberRoomTypeService.selectMemberRoomType(memberLevelId);
-            if (memberLevelBO==null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(memberLevelBO.getDiscount()));
+//            if (memberLevelBO==null){
+//                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+//                super.safeJsonPrint(response, result);
+//                log.info("result{}",result);
+//                return;
+//            }
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(memberLevelBO));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;

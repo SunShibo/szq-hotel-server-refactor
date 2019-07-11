@@ -22,9 +22,10 @@ public class RoomRecordService {
         添加房间操作记录
     */
     public int insert(RoomRecordBO record, Integer userId,Date now){
-        now = new Date();
+
         record.setCreateUserId(userId);
         record.setCreateTime(now);
         return roomRecordDAO.insert(record);
     }
+
 }

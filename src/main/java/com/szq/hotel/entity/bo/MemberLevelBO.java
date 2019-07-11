@@ -10,11 +10,20 @@ public class MemberLevelBO extends BaseModel {
     private String name;//会员级别名称
     private String state;//状态（yes/no）
     private String type;//能否储值（yes/no）
+    private BigDecimal consumeGetIntegral;//消费1元获得多少积分
     private BigDecimal discount;//折扣
     private Integer createUserId;//创建人id
     private Date createTime;//创建时间
     private Integer updateUserId;//修改人id
     private Date updateTime;//修改时间
+
+    public BigDecimal getConsumeGetIntegral() {
+        return consumeGetIntegral;
+    }
+
+    public void setConsumeGetIntegral(BigDecimal consumeGetIntegral) {
+        this.consumeGetIntegral = consumeGetIntegral;
+    }
 
     public BigDecimal getDiscount() {
         return discount;
