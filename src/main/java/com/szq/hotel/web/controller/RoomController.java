@@ -1,17 +1,14 @@
 package com.szq.hotel.web.controller;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.RoomRecordService;
 import com.szq.hotel.service.RoomService;
 import com.szq.hotel.util.JsonUtils;
-import com.szq.hotel.util.RedisConnectFactory;
 import com.szq.hotel.util.RedisTool;
 import com.szq.hotel.util.StringUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
-import org.omg.CORBA.OBJ_ADAPTER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,7 +18,6 @@ import redis.clients.jedis.Jedis;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.ParseException;
 import java.util.*;
 
 
