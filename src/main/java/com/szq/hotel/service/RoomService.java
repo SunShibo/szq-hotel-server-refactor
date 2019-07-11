@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.RoomDAO;
 import com.szq.hotel.dao.RoomRecordDAO;
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.entity.dto.RoomStateDTO;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.web.controller.RoomController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -87,21 +88,22 @@ public class RoomService {
     }
 
     /**
-     * 抽取公共方法
-     * @param map
+            * 抽取公共方法
+     *
+             * @param map
      * @return
-     */
-    public List<RmBO> publicQuery(Map<String, Object> map){
+             */
+    public List<RmBO> publicQuery(Map<String, Object> map) {
 
         //获取预入住时间
-        String dt =  (String) map.get("checkTime");
-        log.info("获取预约入住的时间:{}",dt);
-        String et =  (String) map.get("endTime");
-        log.info("获取结束入住的时间:{}",et);
+        String dt = (String) map.get("checkTime");
+        log.info("获取预约入住的时间:{}", dt);
+        String et = (String) map.get("endTime");
+        log.info("获取结束入住的时间:{}", et);
         //获取符合条件的房间集合
         List<RmBO> list = roomDAO.queryRm(map);
 
-        log.info("获取符合条件的房间集合:{}",list);
+        log.info("获取符合条件的房间集合:{}", list);
 
         List<Integer> ls = new ArrayList<Integer>();
         //获取出房间的id
@@ -110,17 +112,17 @@ public class RoomService {
                 ls.add(id.getId());
             }
         }
-        log.info("获取符合条件房间的id:{}",ls);
+        log.info("获取符合条件房间的id:{}", ls);
         //根据房间id获取符合条件的订单
-        List<OcBO> l = roomDAO.queryOc(ls,dt,et);
+        List<OcBO> l = roomDAO.queryOc(ls, dt, et);
         List<Integer> reId = new ArrayList<Integer>();
-        for (OcBO oc : l){
-            log.info("获取符合条件房间的订单:{}",oc.getRoomId());
+        for (OcBO oc : l) {
+            log.info("获取符合条件房间的订单:{}", oc.getRoomId());
             reId.add(oc.getRoomId());
         }
 
 
-        log.info("判断客人选择的预入住时间是否在其他符合条件订单之间的id:{}",reId);
+        log.info("判断客人选择的预入住时间是否在其他符合条件订单之间的id:{}", reId);
         //去重
         for (int i = 0; i < reId.size() - 1; i++) {
             for (int j = reId.size() - 1; j > i; j--) {
@@ -129,73 +131,77 @@ public class RoomService {
                 }
             }
         }
-        log.info("去重后:{}",reId);
+        log.info("去重后:{}", reId);
 
         //去掉不能预约入住的房间的房间
         Iterator<RmBO> iterator = list.iterator();
-        if(!CollectionUtils.isEmpty(reId)){
+        if (!CollectionUtils.isEmpty(reId)) {
             while (iterator.hasNext()) {
                 RmBO rmBO = iterator.next();
-                for (Integer id : reId){
-                    if(rmBO.getId().equals(id)){
+                for (Integer id : reId) {
+                    if (rmBO.getId().equals(id)) {
                         iterator.remove();//使用迭代器的删除方法删除
                     }
                 }
             }
         }
 
-        log.info("去掉不能预约入住的房间的房间:{}",list);
+        log.info("去掉不能预约入住的房间的房间:{}", list);
         return list;
     }
+
+
+
+
 
     /**
      * 预约入住选择房间
      */
-    public Map<String, Object> queryRm(Map<String, Object> map)  {
+    public Map<String, Object> queryRm(Map<String, Object> map) {
         Map<String, Object> mp = new HashMap<String, Object>();
-        
+
         //获取酒店下面所有楼层
-         Integer hotelId =   (Integer)map.get("hotelId");
-         log.info("hotelId:{}",hotelId);
-        List<FlrBO> flrList  = roomDAO.queryFlr(hotelId);
-        log.info("酒店下共有楼层:{}",flrList);
-        
-        List<RmBO> list =  this.publicQuery(map);
-        
-        if(!CollectionUtils.isEmpty(flrList) && !CollectionUtils.isEmpty(list)){
-            for (FlrBO f : flrList){
+        Integer hotelId = (Integer) map.get("hotelId");
+        log.info("hotelId:{}", hotelId);
+        List<FlrBO> flrList = roomDAO.queryFlr(hotelId);
+        log.info("酒店下共有楼层:{}", flrList);
+
+        List<RmBO> list = this.publicQuery(map);
+
+        if (!CollectionUtils.isEmpty(flrList) && !CollectionUtils.isEmpty(list)) {
+            for (FlrBO f : flrList) {
                 List<RmBO> a = new ArrayList<RmBO>();
-                for (RmBO rmBO : list){
-                   if(rmBO.getFloorId().equals(f.getId())){
-                       a.add(rmBO);
-                   }
+                for (RmBO rmBO : list) {
+                    if (rmBO.getFloorId().equals(f.getId())) {
+                        a.add(rmBO);
+                    }
                 }
-                mp.put(f.getName()+"",a);
+                mp.put(f.getName() + "", a);
             }
         }
 
-       // mp.put("list",list);
+        // mp.put("list",list);
 
-        return  mp;
+        return mp;
     }
 
-    public Map<String, Object>  queryRoomTypeNum(Map<String, Object> map){
-        Map<String,Object> mp = new HashMap<String, Object>();
-        List<RmBO> list =  this.publicQuery(map);
-        Integer hotelId =   (Integer)map.get("hotelId");
-        log.info("list:{}",list);
+    public Map<String, Object> queryRoomTypeNum(Map<String, Object> map) {
+        Map<String, Object> mp = new HashMap<String, Object>();
+        List<RmBO> list = this.publicQuery(map);
+        Integer hotelId = (Integer) map.get("hotelId");
+        log.info("list:{}", list);
 
         List<RtBO> rtBOS = roomDAO.queryRt(hotelId);
 
-        if(!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)){
-            for (RtBO rtBO : rtBOS){
+        if (!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)) {
+            for (RtBO rtBO : rtBOS) {
                 Integer i = 0;
-               for (RmBO rmBO : list){
-                 if(rtBO.getId().equals(rmBO.getRoomTypeId())){
-                     i++;
-                 }
-               }
-               mp.put( rtBO.getRoomTypeName()+"("+i+")",rtBO.getId());
+                for (RmBO rmBO : list) {
+                    if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
+                        i++;
+                    }
+                }
+                mp.put(rtBO.getRoomTypeName() + "(" + i + ")", rtBO.getId());
             }
         }
         return mp;
@@ -230,12 +236,141 @@ public class RoomService {
 
     /**
      * 查询酒店下面的房型
+     *
      * @param hotelId
      * @return
      */
-    public List<RtBO> queryRt(Integer hotelId){
-        return  roomDAO.queryRt(hotelId);
+    public List<RtBO> queryRt(Integer hotelId) {
+        return roomDAO.queryRt(hotelId);
     }
+
+    /**
+     * 查询未来15天该房间是否有人预约
+     *
+     * @param roomId
+     * @return
+     */
+    public List<RoomStateDTO> queryindexRoomState(Integer roomId) {
+        return null;
+    }
+
+
+
+    public static void main(String[] args) throws ParseException {
+        RoomService roomService = new RoomService();
+        /*Date da  = roomService.quDate(6,0,0);
+        Date dat = roomService.quDate(5,59,59);
+        Date dd  = roomService.lDate(da,1);
+        Date d  = roomService.lDate(dat,1);
+        Date dad  = roomService.lDate(dat,1);
+        for (int i = 0 ; i<15 ; i++){
+            System.err.println("时间"+roomService.lDate(dd, i));
+            System.err.println("时间"+roomService.lDate(d, i+1));
+        }*/
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = sdf.parse("2019-07-11 01:00:00");
+        roomService.timeDate(d);
+
+    }
+
+
+    /**
+     * 获取今天某一时间
+     *
+     * @param i
+     * @return
+     */
+    public Date quDate(Integer i, Integer i2, Integer i3) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, i);
+        c.set(Calendar.MINUTE, i2);
+        c.set(Calendar.SECOND, i3);
+        Date m6 = c.getTime();
+        //System.out.println(m6);
+        return m6;
+    }
+
+
+    /**
+     * 获取未来i天这个时间
+     * @param date
+     * @return
+     */
+    public Date lDate(Date date,Integer i ){
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE,i);//把日期往后增加一天.整数往后推,负数往前移动
+        date=calendar.getTime(); //这个时间就是日期往后推一天的结果
+        return date;
+    }
+
+
+    public void timeDate(Date date){
+        //List<Time> list = new ArrayList<Time>();
+
+        //当天凌晨六点
+        Date da  = quDate(6,0,0);
+        //当天凌晨5点59分59秒
+        Date dat = quDate(5,59,59);
+        //从当天开始的下一天开始时间
+        Date dd  = lDate(da,0);
+        //从开始天使的下一天结束时间
+        Date d   = lDate(dat,0);
+        //从明天开始的下一天开始时间
+        Date dad  = lDate(lDate(da,1),1);
+        //从明天开始的下一天结束时间
+        Date dadd  = lDate(lDate(dat,1),1);
+        //判断当前时间是否在凌晨零点到凌晨六点之间
+        //如果是那么获取今天6点后开始的之后的十五天的时间段
+        if(belongCalendar(date,quDate(0,0,0),quDate(5,59,59))){
+            System.err.println("start if");
+            for (int i = 0 ; i<=15 ; i++){
+                //Time time = new Time();
+                // time.setStartTime(lDate(dad, i));
+                System.err.println(lDate(dd, i));
+                System.err.println(lDate(d, i+1));
+                //time.setEndTime(lDate(d, i+1));
+                //list.add(time);
+            }
+            //如果不是那么获取明天开始后6点之后的十五天的时间段
+        } else {
+            System.err.println("start else");
+            for (int i = 0 ; i<15 ; i++){
+                // Time time = new Time();
+                //time.setStartTime(lDate(dd, i));
+                System.err.println(lDate(dad, i));
+                System.err.println(lDate(dadd, i+1));
+                //time.setEndTime(lDate(d, i+1));
+                // list.add(time);
+            }
+        }
+        // return list;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
         修改房间是否为维修房
@@ -306,4 +441,7 @@ public class RoomService {
         recordBO.setCreateTime(new Date());
         roomRecordDAO.insert(recordBO);
     }
+
+
+
 }

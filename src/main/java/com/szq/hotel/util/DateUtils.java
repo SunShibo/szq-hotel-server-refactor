@@ -1,5 +1,6 @@
 package com.szq.hotel.util;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,13 +33,21 @@ public class DateUtils {
 	public static final String DATE_PATTERN_PLAIN = "yyyyMMdd";
 
 	public static final String YEAR_PATTERN_PLAIN = "yyyy";
-	/** 1:春 ，2:夏 ，3：秋 ，4：冬天 */
+	/**
+	 * 1:春 ，2:夏 ，3：秋 ，4：冬天
+	 */
 	public static final int SEASON_SPRING = 1;
-	/** 1:春 ，2:夏 ，3：秋 ，4：冬天 */
+	/**
+	 * 1:春 ，2:夏 ，3：秋 ，4：冬天
+	 */
 	public static final int SEASON_SUMMER = 2;
-	/** 1:春 ，2:夏 ，3：秋 ，4：冬天 */
+	/**
+	 * 1:春 ，2:夏 ，3：秋 ，4：冬天
+	 */
 	public static final int SEASON_AUTUMN = 3;
-	/** 1:春 ，2:夏 ，3：秋 ，4：冬天 */
+	/**
+	 * 1:春 ，2:夏 ，3：秋 ，4：冬天
+	 */
 	public static final int SEASON_WINTER = 4;
 
 	/**
@@ -100,7 +109,7 @@ public class DateUtils {
 
 	/**
 	 * 将时间转化成指定格式
-	 * 
+	 *
 	 * @param format
 	 * @param v
 	 * @return
@@ -114,7 +123,7 @@ public class DateUtils {
 
 	/**
 	 * 时间字符串转日期
-	 * 
+	 *
 	 * @param dateTime
 	 * @param pattern
 	 * @return
@@ -130,9 +139,9 @@ public class DateUtils {
 
 	/**
 	 * 判断日期是否为月末
-	 * 
+	 *
 	 * @param currDate
-	 * @return true月末,false不是月末
+	 * @return true月末, false不是月末
 	 */
 	public static boolean isEndOfMonth(Date currDate) {
 		Calendar calendar = Calendar.getInstance();
@@ -196,22 +205,23 @@ public class DateUtils {
 
 	/**
 	 * 得到两个日期相差分钟数
-	 * @author mayi
-	 * @version 2014-12-17  下午05:54:46
+	 *
 	 * @param date1
 	 * @param date2
 	 * @return
+	 * @author mayi
+	 * @version 2014-12-17  下午05:54:46
 	 */
 	public static long getQuotMinute(Date date1, Date date2) {
 		long quot = 0;
 		quot = date1.getTime() - date2.getTime();
-		quot = quot / 1000 / 60 ;
+		quot = quot / 1000 / 60;
 		return Math.abs(quot);
 	}
-	
+
 	/**
 	 * 传入Date类型 获得指定格式的 Date数据 yyyy-MM-dd
-	 * 
+	 *
 	 * @param date
 	 * @param format
 	 * @return
@@ -222,11 +232,9 @@ public class DateUtils {
 
 	/**
 	 * 获取当前日期所在周指定的一天 GXY Oct 19, 2010 11:04:35 AM
-	 * 
-	 * @param dayNo
-	 *            日期所在的序号从1到7
-	 * @param flag
-	 *            true: 星期天为本周的开始时间 false: 星期一为本周的开始时间
+	 *
+	 * @param dayNo 日期所在的序号从1到7
+	 * @param flag  true: 星期天为本周的开始时间 false: 星期一为本周的开始时间
 	 */
 	public static Date getThisWeekDay(int dayNo, boolean flag) {
 		Calendar c = Calendar.getInstance();
@@ -279,7 +287,7 @@ public class DateUtils {
 
 	/**
 	 * 得到时间数组里面的最大时间
-	 * 
+	 *
 	 * @return
 	 */
 	public static Date getMaxDate(ArrayList<Date> dates) {
@@ -315,11 +323,9 @@ public class DateUtils {
 
 	/**
 	 * 获取传入日期之前的月日期
-	 * 
-	 * @param date
-	 *            传入日期
-	 * @param before
-	 *            前几个月
+	 *
+	 * @param date   传入日期
+	 * @param before 前几个月
 	 * @return 返回第前几个月的日期值
 	 */
 	public static Date getBeforeMonth(String date, int before) {
@@ -337,11 +343,9 @@ public class DateUtils {
 
 	/**
 	 * 获取传入日期之前的月日期
-	 * 
-	 * @param date
-	 *            传入日期
-	 * @param before
-	 *            前几个天
+	 *
+	 * @param date   传入日期
+	 * @param before 前几个天
 	 * @return 返回第前几个天的日期值
 	 */
 	public static Date getBeforeDay(String date, int before) {
@@ -353,7 +357,7 @@ public class DateUtils {
 		}
 		return d;
 	}
-	
+
 	public static Date getBeforeDay(Date date, int before) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
@@ -363,7 +367,6 @@ public class DateUtils {
 
 	/**
 	 * 季节：春夏秋冬
-	 * 
 	 */
 	public static int getSeasonInt(Date date) {
 		String nowYear = DateUtils.formatDate("yyyy", date);
@@ -388,11 +391,11 @@ public class DateUtils {
 
 	/**
 	 * @param date 可以使当前日期
-	 *            ,也可以是别的日期
+	 *             ,也可以是别的日期
 	 * @return 返回数字对应0:星期天 ，1：星期一， 2：星期二， 3：星期三， 4：星期四， 5：星期五， 6：星期六
 	 */
 	public static int getWeekOfDate(Date date) {
-		int[] weekDays = { 0, 1, 2, 3, 4, 5, 6 };
+		int[] weekDays = {0, 1, 2, 3, 4, 5, 6};
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
@@ -400,176 +403,184 @@ public class DateUtils {
 			w = 0;
 		return weekDays[w];
 	}
-	
+
 	/**
 	 * 判断时间格式
-	 * 
+	 *
 	 * @param str
 	 */
 	public static boolean isValidDate(String str, String format) {
-		boolean convertSuccess=true;
+		boolean convertSuccess = true;
 		// 指定日期格式为四位年/两位月份/两位日期，注意yyyy/MM/dd区分大小写；
-	    SimpleDateFormat date = new SimpleDateFormat(format);
+		SimpleDateFormat date = new SimpleDateFormat(format);
 		try {
 			// 设置lenient为false. 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
 			date.setLenient(false);
-		    date.parse(str);
+			date.parse(str);
 		} catch (ParseException e) {
 			// e.printStackTrace();
 			// 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
-		    convertSuccess=false;
-		} 
+			convertSuccess = false;
+		}
 		return convertSuccess;
 	}
+
 	/**
 	 * 判断输入的时间是否在当前时间之后，
+	 *
 	 * @param time 时间   格式支持   yyyy-MM-dd HH:mm:ss  ，    yyyy-MM-dd  ， HH:mm:ss
 	 * @return 输入时间在当前时间之后返回true ，否则返回 false
 	 */
-	public static boolean isOutNowTime(String time){
-		boolean boll=false;
-		if(isValidDate(time,"HH:mm:ss")){
+	public static boolean isOutNowTime(String time) {
+		boolean boll = false;
+		if (isValidDate(time, "HH:mm:ss")) {
 			Date nowDate = DateUtils.parseDate(DateUtils.formatDate("HH:mm:ss", new Date()), "HH:mm:ss");
-			if(parseDate(time, "HH:mm:ss").after(nowDate)) boll = true;
+			if (parseDate(time, "HH:mm:ss").after(nowDate)) boll = true;
 		}
-		if(isValidDate(time,"yyyy-MM-dd HH:mm:ss")){
+		if (isValidDate(time, "yyyy-MM-dd HH:mm:ss")) {
 			Date nowDate = DateUtils.parseDate(DateUtils.formatDate("yyyy-MM-dd HH:mm:ss", new Date()), "yyyy-MM-dd HH:mm:ss");
-			if(parseDate(time, "yyyy-MM-dd HH:mm:ss").after(nowDate)) boll = true;
+			if (parseDate(time, "yyyy-MM-dd HH:mm:ss").after(nowDate)) boll = true;
 		}
-		if(isValidDate(time,"yyyy-MM-dd")){
+		if (isValidDate(time, "yyyy-MM-dd")) {
 			Date nowDate = DateUtils.parseDate(DateUtils.formatDate("yyyy-MM-dd", new Date()), "yyyy-MM-dd");
-			if(parseDate(time, "yyyy-MM-dd").after(nowDate)) boll = true;
+			if (parseDate(time, "yyyy-MM-dd").after(nowDate)) boll = true;
 		}
 		return boll;
 	}
-	
+
 	/**
-     * 获得本天的开始时间，即2014-10-21 00:00:00
-     * 
-     * @return
-     */
-    public static Date getCurrentDayStartTime(Date date) {
-    	Date current = null;
-        if(null == date) {
-        	current = new Date();
-        } else {
-        	current = date;
-        }
-        return DateUtils.parseDate(DateUtils.format(current) + " 00:00:00", LONG_DATE_PATTERN);
-    }
+	 * 获得本天的开始时间，即2014-10-21 00:00:00
+	 *
+	 * @return
+	 */
+	public static Date getCurrentDayStartTime(Date date) {
+		Date current = null;
+		if (null == date) {
+			current = new Date();
+		} else {
+			current = date;
+		}
+		return DateUtils.parseDate(DateUtils.format(current) + " 00:00:00", LONG_DATE_PATTERN);
+	}
 
-    /**
-     * 获得本天的结束时间，即2014-10-21 23:59:59
-     * 
-     * @return
-     */
-    public static Date getCurrentDayEndTime(Date date) {
-        Date current = null;
-        if(null == date) {
-        	current = new Date();
-        } else {
-        	current = date;
-        }
-        return DateUtils.parseDate(DateUtils.format(current) + " 23:59:59", LONG_DATE_PATTERN);
-    }
-	
-    /**
+	/**
+	 * 获得本天的结束时间，即2014-10-21 23:59:59
+	 *
+	 * @return
+	 */
+	public static Date getCurrentDayEndTime(Date date) {
+		Date current = null;
+		if (null == date) {
+			current = new Date();
+		} else {
+			current = date;
+		}
+		return DateUtils.parseDate(DateUtils.format(current) + " 23:59:59", LONG_DATE_PATTERN);
+	}
+
+	/**
 	 * 获取当前月第一天：
-	 * @author mayi
-	 * @version 2014-9-3  上午10:16:54
+	 *
 	 * @return String
 	 * @throws ParseException
-	 */
-    public static Date getFirstMonthDay() throws ParseException {
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.MONTH, 0);
-        c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
-        String first=formatDate(DATE_PATTERN, c.getTime());
-        SimpleDateFormat sdf = new SimpleDateFormat(LONG_DATE_PATTERN);
-        Date date = sdf.parse(first+" 00:00:00");
-        return date;
-    }
-
-    /**
-	 * 获取当前月第一天：
 	 * @author mayi
 	 * @version 2014-9-3  上午10:16:54
+	 */
+	public static Date getFirstMonthDay() throws ParseException {
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MONTH, 0);
+		c.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
+		String first = formatDate(DATE_PATTERN, c.getTime());
+		SimpleDateFormat sdf = new SimpleDateFormat(LONG_DATE_PATTERN);
+		Date date = sdf.parse(first + " 00:00:00");
+		return date;
+	}
+
+	/**
+	 * 获取当前月第一天：
+	 *
 	 * @return String
 	 * @throws ParseException
+	 * @author mayi
+	 * @version 2014-9-3  上午10:16:54
 	 */
-    public static Date getFirstMonthDay(Date date) throws ParseException {
-        Calendar c = Calendar.getInstance() ;
-        c.setTime(date) ;
-        c.add(Calendar.MONTH, 0);
-        c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
-        String first=formatDate(DATE_PATTERN, c.getTime());
-        SimpleDateFormat sdf = new SimpleDateFormat(LONG_DATE_PATTERN);
-        return sdf.parse(first+" 00:00:00");
-    }
+	public static Date getFirstMonthDay(Date date) throws ParseException {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.MONTH, 0);
+		c.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
+		String first = formatDate(DATE_PATTERN, c.getTime());
+		SimpleDateFormat sdf = new SimpleDateFormat(LONG_DATE_PATTERN);
+		return sdf.parse(first + " 00:00:00");
+	}
 
-    /**
-     * 获取当前月最后一天
-     * @author mayi
-     * @version 2014-9-3  上午10:22:14
-     * @return String
-     * @throws ParseException
-     */
+	/**
+	 * 获取当前月最后一天
+	 *
+	 * @return String
+	 * @throws ParseException
+	 * @author mayi
+	 * @version 2014-9-3  上午10:22:14
+	 */
 
-    public static Date getLastMonthDay() throws ParseException {
-    	 Calendar ca = Calendar.getInstance();
-         ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-         String last = formatDate(DATE_PATTERN, ca.getTime());
-         SimpleDateFormat sdf = new SimpleDateFormat(LONG_DATE_PATTERN);
-         Date date = sdf.parse(last+" 23:59:59");
-         return date;
-    }
+	public static Date getLastMonthDay() throws ParseException {
+		Calendar ca = Calendar.getInstance();
+		ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+		String last = formatDate(DATE_PATTERN, ca.getTime());
+		SimpleDateFormat sdf = new SimpleDateFormat(LONG_DATE_PATTERN);
+		Date date = sdf.parse(last + " 23:59:59");
+		return date;
+	}
 
-    /**
-     * 获取当前月最后一天
-     * @author mayi
-     * @version 2014-9-3  上午10:22:14
-     * @return String
-     * @throws ParseException
-     */
-    public static Date getLastMonthDay(Date date) throws ParseException {
-    	 Calendar ca = Calendar.getInstance();
-    	 ca.setTime(date) ;
-         ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-         String last = formatDate(DATE_PATTERN, ca.getTime());
-         SimpleDateFormat sdf = new SimpleDateFormat(LONG_DATE_PATTERN);
-         return sdf.parse(last+" 23:59:59") ;
-    }
-   
-    /**
-     * 获取一个月有多少天
-     * @author sun
-     * @version 2014-12-29 下午01:55:21
-     * @param date
-     * @return
-     */
-    public static int getActualDaysOfMonth(Date date){
-    	Calendar calendar = Calendar.getInstance() ;
-    	calendar.setTime(date) ;
-    	return calendar.getActualMaximum(Calendar.DAY_OF_MONTH) ;
-    }
-    
-    /**
-     * 获取今天是这个月第几天(即今天多少号)
-     * @author sun
-     * @version 2014-12-29 下午02:37:06
-     * @param date
-     * @return
-     */
-    public static int getDayOfMonth(Date date){
-    	Calendar cal = Calendar.getInstance();
-    	cal.setTime(date) ;
+	/**
+	 * 获取当前月最后一天
+	 *
+	 * @return String
+	 * @throws ParseException
+	 * @author mayi
+	 * @version 2014-9-3  上午10:22:14
+	 */
+	public static Date getLastMonthDay(Date date) throws ParseException {
+		Calendar ca = Calendar.getInstance();
+		ca.setTime(date);
+		ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+		String last = formatDate(DATE_PATTERN, ca.getTime());
+		SimpleDateFormat sdf = new SimpleDateFormat(LONG_DATE_PATTERN);
+		return sdf.parse(last + " 23:59:59");
+	}
+
+	/**
+	 * 获取一个月有多少天
+	 *
+	 * @param date
+	 * @return
+	 * @author sun
+	 * @version 2014-12-29 下午01:55:21
+	 */
+	public static int getActualDaysOfMonth(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * 获取今天是这个月第几天(即今天多少号)
+	 *
+	 * @param date
+	 * @return
+	 * @author sun
+	 * @version 2014-12-29 下午02:37:06
+	 */
+	public static int getDayOfMonth(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
 		return cal.get(Calendar.DAY_OF_MONTH);
-    }
-    
+	}
+
 	public static void main(String[] args) {
 
-		Date date1 = DateUtils.parseDate("2016-05-18", DATE_PATTERN) ;
-		Date date2 = DateUtils.parseDate("2016-12-31", DATE_PATTERN) ;
+		Date date1 = DateUtils.parseDate("2016-05-18", DATE_PATTERN);
+		Date date2 = DateUtils.parseDate("2016-12-31", DATE_PATTERN);
 
 		System.out.println(DateUtils.getQuot(date1, date2));
 //		System.out.println(DateUtils.getAppointDate(DateUtils.parseDate("2015-01-04", DATE_PATTERN), 100));
@@ -595,77 +606,79 @@ public class DateUtils {
 	}
 
 	//获取当日日期的未来N天
-	public static synchronized String[] getSpecifiedDayBefore(Date date,int dayNumber,Date  starTime){
-		String[]  str=new String[2];
+	public static synchronized String[] getSpecifiedDayBefore(Date date, int dayNumber, Date starTime) {
+		String[] str = new String[2];
 		Calendar c = Calendar.getInstance();
 
 		c.setTime(date);
-		int day=c.get(Calendar.DATE);
+		int day = c.get(Calendar.DATE);
 
-		c.set(Calendar.DATE, day+dayNumber);
-		String dayBefore=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.getTime());
-		str[0]=dayBefore;
-		String s="";
-		if(starTime!=null) {
+		c.set(Calendar.DATE, day + dayNumber);
+		String dayBefore = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.getTime());
+		str[0] = dayBefore;
+		String s = "";
+		if (starTime != null) {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(starTime);
 			int hour = calendar.get(Calendar.HOUR_OF_DAY);
 			if (hour >= 0 && hour < 6) {
 				c.add(Calendar.DAY_OF_MONTH, -1);
 			}
-			s=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
-		}else{
-			s=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+			s = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+		} else {
+			s = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
 		}
 
 
-
-
-		str[1]=s;
+		str[1] = s;
 		return str;
 	}
 
 	//获取当日日期的未来N天
-	public static String[] getCheckDate(Date  date,int dayNumber){
-		String[]  strs=new String[2];
+	public static String[] getCheckDate(Date date, int dayNumber) {
+		String[] strs = new String[2];
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
-		int day=c.get(Calendar.DATE);
+		int day = c.get(Calendar.DATE);
 
-		c.set(Calendar.DATE, day+dayNumber);
-		String dayBefore=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.getTime());
-		strs[0]=dayBefore;
-		strs[1]=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+		c.set(Calendar.DATE, day + dayNumber);
+		String dayBefore = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.getTime());
+		strs[0] = dayBefore;
+		strs[1] = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
 		return strs;
 	}
 
 
 	//获取指定分钟之前的时间
-	public static  String  gettheTimeBeforeTheMinute(int zminute){
-		Date  now=new Date();
+	public static String gettheTimeBeforeTheMinute(int zminute) {
+		Date now = new Date();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String specifiedDay=simpleDateFormat.format(now);
+		String specifiedDay = simpleDateFormat.format(now);
 
 		Calendar c = Calendar.getInstance();
-		Date date=null;
+		Date date = null;
 		try {
 			date = new SimpleDateFormat("yy-MM-dd HH:mm:ss").parse(specifiedDay);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		c.setTime(date);
-		int minute=c.get(Calendar.MINUTE);
+		int minute = c.get(Calendar.MINUTE);
 
-		c.set(Calendar.MINUTE, minute-zminute);
-		String dayBefore=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.getTime());
+		c.set(Calendar.MINUTE, minute - zminute);
+		String dayBefore = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.getTime());
 		return dayBefore;
 	}
+
 	//查询当前时间5时前
-	public static String getFiveHoursBefore(){
-		Date date=new Date();
-		String dayBefore=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+	public static String getFiveHoursBefore() {
+		Date date = new Date();
+		String dayBefore = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
 		return dayBefore;
 	}
 
 
-}
+
+
+	}
+

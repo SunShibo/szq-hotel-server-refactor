@@ -126,7 +126,7 @@
         #{roomTypeId,jdbcType=INTEGER},
       </if>
       <if test="roomMajorState != null" >
-        #{roomMajorState,jdbcType=VARCHAR},
+       'vacant',
       </if>
       <if test="roomState != null" >
         #{roomState,jdbcType=VARCHAR},
