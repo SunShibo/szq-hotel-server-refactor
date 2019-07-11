@@ -280,6 +280,30 @@ public class RoomService {
             recordBO.setCreateTime(new Date());
             roomRecordDAO.insert(recordBO);
         }
+    }
 
+    /*
+        修改房间备注
+     */
+    public void updateRoomRemark(Integer id,String remark,Integer userId){
+        //查询房间备注
+        String remark1 = roomDAO.getRoomRemark(id);
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("id",id);
+        map.put("remark",remark);
+        roomDAO.updateRoomRemark(map);
+
+        //查询房间主状态
+        String majorState = roomDAO.getRoomMajorState(id);
+        //添加房间操作记录
+
+        RoomRecordBO recordBO = new RoomRecordBO();
+        recordBO.setRoomId(id);
+        recordBO.setVirginState(majorState);
+        recordBO.setNewState(majorState);
+        recordBO.setRemark("修改备注"+"原:"+remark1+";"+"现:"+remark);
+        recordBO.setCreateUserId(userId);
+        recordBO.setCreateTime(new Date());
+        roomRecordDAO.insert(recordBO);
     }
 }

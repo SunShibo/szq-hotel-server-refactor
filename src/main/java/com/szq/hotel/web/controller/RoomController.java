@@ -12,6 +12,7 @@ import com.szq.hotel.service.RoomService;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.RedisConnectFactory;
 import com.szq.hotel.util.RedisTool;
+import com.szq.hotel.util.StringUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.omg.CORBA.OBJ_ADAPTER;
 import org.slf4j.Logger;
@@ -265,6 +266,40 @@ public class RoomController extends BaseCotroller {
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
         super.safeJsonPrint(response, result);
         log.error("updateRoomMaintainException",e);
+    }
+    }
+@RequestMapping("/updateRoomRemark")
+   public void updateRoomRemark(Integer id,String remark,HttpServletRequest request,HttpServletResponse response){
+    try {
+        log.info(request.getRequestURI());
+        log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        log.info("user{}",loginAdmin);
+        if (loginAdmin == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        if (id== null|| StringUtils.isEmpty(remark)) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        //执行修改房间备注
+        roomService.updateRoomRemark(id,remark,loginAdmin.getId());
+
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改房间备注成功！"));
+        super.safeJsonPrint(response, result);
+        log.info("result{}",result);
+        return;
+
+    }catch (Exception e){
+        e.getStackTrace();
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+        super.safeJsonPrint(response, result);
+        log.error("updateRoomRemarkException",e);
     }
     }
 

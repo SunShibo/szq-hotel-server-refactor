@@ -432,4 +432,13 @@
     SELECT room_major_state FROM hm_room
     WHERE id = #{id}
   </select>
+  <!--修改房间备注-->
+  <update id="updateRoomRemark" parameterType="java.util.Map">
+    UPDATE hm_room SET remark  = #{remark} WHERE id = #{id}
+  </update>
+  <!--查询房间备注-->
+  <select id="getRoomRemark" parameterType="java.lang.Integer" resultType="java.lang.String">
+    SELECT remark FROM hm_room WHERE id = #{id}
+  </select>
+
 </mapper>

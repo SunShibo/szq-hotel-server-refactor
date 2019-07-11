@@ -88,4 +88,12 @@ public interface RoomDAO {
         查询房间主状态
      */
     String getRoomMajorState(Integer id);
+    /*
+        修改房间备注
+     */
+    void updateRoomRemark(Map<String, Object> map);
+    /*
+        查询房间备注
+     */
+    String getRoomRemark(Integer id);
 }
