@@ -18,6 +18,15 @@ public class RoomRecordBO extends BaseModel {
     private Integer createUserId;
 
     private Date createTime;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;

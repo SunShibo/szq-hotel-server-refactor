@@ -9,6 +9,7 @@
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="create_user_id" property="createUserId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="name" property="name" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, room_id, virgin_state, new_state, remark, create_user_id, create_time
@@ -115,5 +116,24 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+<!--分页查询房间操作记录-->
+  <select id="selectRoomRecord" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select room.*,ad.name
+    from hm_room_record room LEFT JOIN hm_admin `ad`
+    ON room.create_user_id = ad.id
+    where room_id = #{id,jdbcType=INTEGER}
+    <include refid="limit" />
+  </select>
+  <!--查询房间记录数量-->
+  <select id="selectRoomRecordCount" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+    select COUNT(id)
+    from hm_room_record
+    where room_id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <sql id="limit">
+    limit #{pageOffset},#{pageSize}
+  </sql>
+
 
 </mapper>
