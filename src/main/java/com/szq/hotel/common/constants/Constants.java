@@ -41,8 +41,8 @@ public enum Constants {
     /* 项目 : 房费调整 */ ADJUSTMENT("房费调整"),
     /* 项目 : 结账 */ SETTLE("结账"),
     /* 项目 : 储值 */ STOREDVALUE("储值"),
-    /* 项目 : 办卡 */ APPLYCARD("办卡");
-
+    /* 项目 : 办卡 */ APPLYCARD("办卡"),
+    /* 详细信息 : 入住押金 */ INTHEDEPOSIT("入住押金");
     Constants(String value) {
         this.value = value;
     }

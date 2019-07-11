@@ -7,6 +7,7 @@ import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.CashierSummaryService;
 import com.szq.hotel.service.CheckInPersonService;
+import com.szq.hotel.service.OrderRecordService;
 import com.szq.hotel.service.OrderService;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
@@ -34,6 +35,9 @@ public class OrderController extends BaseCotroller {
 
     @Resource
     CashierSummaryService cashierSummaryService;
+
+    @Resource
+    OrderRecordService orderRecordService;
     /**
      * 房间预定 预约入住 直接入住 修改
      * @param orderBO 预约信息
@@ -230,6 +234,11 @@ public class OrderController extends BaseCotroller {
         }
         //获取子订单信息
         OrderChildBO orderChildResult=orderService.getOrderChildById(id);
+        if(orderChildResult==null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "此订单异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
 
         //获取主订单信息
         OrderBO orderBO=orderService.getOrderById(orderChildResult.getOrderId());
@@ -243,11 +252,19 @@ public class OrderController extends BaseCotroller {
         //修改子订单信息
         OrderChildBO orderChildBO=new OrderChildBO();
         orderChildBO.setId(id);
+        if(payType.equals(Constants.CASH.getValue())){
+            orderChildBO.setPayCashNum(money);
+        }else{
+            orderChildBO.setOtherPayNum(money);
+        }
         orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
-        orderChildBO.setRoomRate(money);
         orderChildBO.setMain("yes");
-
         orderService.updOrderChild(orderChildBO);
+
+        //插入订单记录
+        orderRecordService.addOrderRecord(orderChildBO.getId(),Constants.INTHEDEPOSIT.getValue(),
+                payType,money,Constants.CASHPLEDGE.getValue(),userInfo.getId(),null);
+
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("支付成功")) ;
         super.safeJsonPrint(response, result);
     }

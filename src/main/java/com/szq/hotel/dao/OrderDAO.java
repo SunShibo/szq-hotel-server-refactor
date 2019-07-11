@@ -5,6 +5,7 @@ import com.szq.hotel.entity.bo.OrderChildBO;
 import com.szq.hotel.entity.bo.OrderListBO;
 import com.szq.hotel.entity.bo.OrderRecoredBO;
 import com.szq.hotel.entity.param.OrderParam;
+import com.szq.hotel.entity.result.OrderResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
@@ -36,9 +37,10 @@ public interface OrderDAO {
     Integer updOrder(OrderBO orderBO);
     //删除旧子订单
     Integer delOrderChild(Integer id);
-
     //根据主订单id查询房间信息（客帐管理）
     List<OrderChildBO> getRoomInfoById(Integer orderId);
+    //获取在住报表
+    List<OrderResult> getCheckInReport();
     /**
      * 订单列表
      * @param param
