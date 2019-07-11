@@ -108,16 +108,7 @@
         });
         form.on('submit(btnSave)', function(data) {
 
-            // var fields=decodeURI($(data.form).serialize())
-            // console.info(fields);
-            // var datas = fields.split("&");
-            // var formd = dealFromData(datas);
-            // console.info(formd);
-            // $.post(api.memberUpdatePrice,JSON.stringify({info:formd}),function (rs) {
-            //     console.info(rs);
-            // })
-            // delete data.field.price;
-            console.log(data.field);
+            data.field.memberLevelId = data.field.id;
             // return false;
             $.ajax({
                 url: api.memberUpdatePrice,
@@ -156,6 +147,7 @@
             var $l = $("#list");
             var str = '';
             $l.empty();
+            // debugger;
             for(var i=0;i<r.length;i++){
                 var price = r[i].price;
                 str +=
@@ -175,10 +167,10 @@
                       // r[i].price,
                       '" type="number" data-id="',
                        r[i].id,
-                      '" name="ratio" id="ratio',
+                      '" name="consumeGetIntegral" id="consumeGetIntegral',
                        r[i].id,
-                      '" name="ratio" value="',
-                      r[i].ratio,
+                      '" name="consumeGetIntegral" value="',
+                      r[i].consumeGetIntegral,
                       '"/>',
                 '   </div>',
                 '   <div class="layui-inline inputv">',

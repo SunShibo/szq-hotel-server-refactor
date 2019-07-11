@@ -98,8 +98,8 @@ var api = {
     , offDuty: '/dealShiftServiceController/offDuty'//确定交班
     , beforeOrder: 'OrderManage/closeAccounts'//已结账的订单查询详情
     , cancelOrder: '/subcribe/cancelTheReservation'//取消预约  取消入住待支付
-    , memberPrice: '/MemberPrice/detail?id='//根据会员级别获取价格
-    , memberUpdatePrice: '/MemberPrice/update'//根据会员级修改价格
+    , memberPrice: '/memberRoomType/selectMemberRoomType?memberLevelId='//根据会员级别获取价格000
+    , memberUpdatePrice: '/memberRoomType/updateMemberRoomType'//根据会员级修改价格
     , queryHouseType: '/roomType/queryRoomType'//查询房型      已修改
     , queryRt: '/room/queryRt'//查询下拉框的房型数据      已修改
     // , toHouseType: '/room/toHouseType'//按ID查询房型信息   废弃
