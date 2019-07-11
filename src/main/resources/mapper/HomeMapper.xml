@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 首页 -->
+<mapper namespace="com.szq.hotel.dao.HomeDAO">
+
+    <resultMap id="queryHome" type="com.szq.hotel.entity.bo.FloorRoomBO" >
+        <id property="id" column="id"></id>
+        <result property="name" column="name"/>
+        <collection property="rooms"  ofType="com.szq.hotel.entity.bo.HomeRoomBO">
+            <result property="roomId"  column="roomId" />
+            <result property="roomName"  column="room_name" />
+            <result property="roomType"  column="room_type_name" />
+            <result property="status"  column="room_major_state" />
+            <result property="lockRoomState"  column="lock_room_state" />
+            <result property="maintain"  column="room_state" />
+        </collection>
+    </resultMap>
+
+    <select id="home"  parameterType="java.util.Map"  resultMap="queryHome" >
+         SELECT DISTINCT room.id s   ,flo.id,flo.name,room.id as roomId,room.room_name,type.room_type_name ,
+        room.room_major_state,room.lock_room_state,room.room_state
+        FROM hm_floor flo INNER JOIN hm_room room on room.floor_id=flo.id
+                           INNER JOIN hm_room_type type ON type.id=room.room_type_id
+													 LEFT JOIN hm_order_child child ON child.room_id=room.id
+         WHERE
+             flo.hotel_id =#{hotelId}  AND  room.show='yes'
+             <if test="type!=null" >
+                 AND       type.id
+                 <foreach collection="type"  item="typeId" open="IN(" separator="," close=")" >
+                     #{typeId}
+                 </foreach>
+             </if>
+        AND ( 1=1
+        <if test="vacant!=null and vacant!=''">OR room. room_major_state=#{vacant}
+        </if>
+             <if test="inthe!=null and inthe!=''">
+               OR  room.room_major_state=#{inthe}
+             </if>
+             <if test="timeout!=null and timeout=''" >
+                 OR  room.room_major_state=#{timeout}
+             </if>
+             <if test="dirty!=null and dirty=''" >
+                 OR  room.room_major_state=#{dirty}
+             </if>
+             <if test="subscribe!=null and subscribe=''" >
+                 OR child.order_state= 'reservation' AND child.start_time BETWEEN #{startTime } AND #{endTime}
+             </if>
+             <if test="departure!=null and deparure!=''" >
+                 OR child.order_state= 'admissions' AND child.end_time BETWEEN #{ startTime} AND #{endTime}
+             </if>
+             <if test="maintain!=null and andmaintain!=''" >
+                 OR  room.room_state='yes'
+             </if>
+             <if test="shop!=null and shop!=''" >
+                 OR  room.lock_room_state='shop'
+             </if>
+             <if test="network!=null and network!=''" >
+                 OR  room.lock_room_state='network'
+             </if>
+             <if test="network!=null and shop!=''" >
+                 OR  room.lock_room_state='all'
+             </if>
+        )
+    </select>
+
+    <!--查询是否有预约-->
+    <select id="querySubStatus"  parameterType="java.util.Map" resultType="java.lang.Integer">
+      SELECT  id  FROM `hm_order_child` WHERE start_time BETWEEN #{startTime} AND #{endTime} AND  order_state='reservation' AND room_id=#{roomId}
+      LIMIT 0,1
+    </select>
+
+    <!--查询入住信息-->
+    <select id="queryChildOrder" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.HomeOrderBO" >
+        SELECT child.id,child.end_time,pay_cash_num+other_pay_num as cash ,room_rate+other_rate+free_rate_num as total ,
+        oder.check_type
+         FROM `hm_order_child` child INNER  JOIN  hm_order oder ON oder.id=child.order_id
+
+          WHERE  order_state='admissions' OR  order_state='notpay'  AND  room_id=#{roomId}
+    </select>
+
+    <!--查询房型数量-->
+    <select id="queryRoomTypeNum"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.HomeRoomTypeBO">
+            SELECT  type.id,type.room_type_name roomType ,COUNT(room.id) count  FROM
+                      hm_room_type type  LEFT JOIN  hm_room room   ON type.id=room.room_type_id
+                      AND  type.hotel_id=#{hotelId}   AND  room.show='yes'
+             GROUP BY type.id
+    </select>
+
+
+</mapper>

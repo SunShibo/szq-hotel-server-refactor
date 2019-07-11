@@ -50,10 +50,10 @@
                 end_time=#{endTime},
             </if>
             <if test="payCashNum!=null and payCashNum!=''">
-                pay_cash_num=#{payCashNum},
+                pay_cash_num=pay_cash_num+#{payCashNum},
             </if>
             <if test="otherPayNum!=null and otherPayNum!=''">
-                other_pay_num=#{otherPayNum},
+                other_pay_num=other_pay_num+#{otherPayNum},
             </if>
             <if test="roomRate!=null and roomRate!=''">
                 room_rate=#{roomRate},
@@ -99,6 +99,24 @@
         where id=#{id}
     </update>
 
+    <!--在住报表-->
+    <select id="getCheckInReport" parameterType="com.szq.hotel.entity.result.OrderResult">
+        select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
+        t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
+        c.room_rate,other_rate,c.free_rate_num
+        from hm_order as o,hm_room as r,hm_room_type as t,
+        hm_order_child as c,hm_dictionaries_value as v,
+        hm_check_in_person as p,hm_everyday_room_price as e,hm_order_record as `or`
+        where o.id=c.order_id
+        and c.room_id=r.id
+        and c.room_type_id=t.id
+        and c.id=p.order_child_id
+        and c.id=e.order_child_id
+        and p.certificate_type=v.id
+        and c.id=`or`.order_child_id
+        and e.time='2019-07-09 00:00:00'
+        group by or.order_child_id
+    </select>
     <!-- 根据手机号 身份证号 查询订单信息 -->
     <select id="getOrderByIdOrMobile" resultType="com.szq.hotel.entity.bo.OrderBO">
     select * from hm_order where

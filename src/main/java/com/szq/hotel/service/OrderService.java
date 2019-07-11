@@ -7,6 +7,7 @@ import com.szq.hotel.dao.OrderDAO;
 import com.szq.hotel.dao.OrderRecordDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
+import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.util.IDBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -321,6 +322,10 @@ public class OrderService {
     //根据子订单id查询子订单
     public OrderChildBO getOrderChildById(Integer orderChildId){
        return orderDAO.getOrderChildById(orderChildId);
+    }
+    //获取在住报表
+    public List<OrderResult> getCheckInReport(){
+        return orderDAO.getCheckInReport();
     }
     /**
      * 订单列表

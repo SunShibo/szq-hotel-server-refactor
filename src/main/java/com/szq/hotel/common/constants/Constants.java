@@ -26,6 +26,7 @@ public enum Constants {
     /* 支付方式 : 积分 */ INTEGRAL("integral"),
     /* 房态 : 空房 */ VACANT("vacant"),
     /* 房态 : 在住 */ INTHE("inthe"),
+    /* 房态 : 超时 */ TIMEOUT("timeout"),
     /* 房态 : 脏房 */ DIRTY("dirty"),
     /* 房态 : 门店锁房 */ SHOP("shop"),
     /* 房态 : 网络锁 */ NETWORK("network"),
@@ -40,8 +41,8 @@ public enum Constants {
     /* 项目 : 房费调整 */ ADJUSTMENT("房费调整"),
     /* 项目 : 结账 */ SETTLE("结账"),
     /* 项目 : 储值 */ STOREDVALUE("储值"),
-    /* 项目 : 办卡 */ APPLYCARD("办卡");
-
+    /* 项目 : 办卡 */ APPLYCARD("办卡"),
+    /* 详细信息 : 入住押金 */ INTHEDEPOSIT("入住押金");
     Constants(String value) {
         this.value = value;
     }

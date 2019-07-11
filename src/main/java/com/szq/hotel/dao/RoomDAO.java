@@ -99,7 +99,7 @@ public interface RoomDAO {
 /*
     查询房屋信息
  */
-RoomMessageBO getRoomMessage(Integer id);
+  RoomMessageBO getRoomMessage(Integer id);
 
     /**
      * 查询未来  15天是否有人预约该房间
