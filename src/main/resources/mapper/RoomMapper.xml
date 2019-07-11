@@ -416,4 +416,20 @@
     select * from hm_floor
      where  hotel_id = #{hotelId}
        </select>
+  <!--修改房间是否为维修房-->
+    <update id="updateRoomState" parameterType="com.szq.hotel.entity.bo.RoomBO">
+        UPDATE hm_room
+        SET room_state = #{roomState}
+        WHERE id = #{id}
+    </update>
+  <!--查询房间维修状态-->
+  <select id="getRoomState" parameterType="java.lang.Integer" resultType="java.lang.String">
+    SELECT room_state FROM hm_room
+    WHERE id = #{id}
+  </select>
+  <!--查询房间主状态-->
+  <select id="getRoomMajorState" parameterType="java.lang.Integer" resultType="java.lang.String">
+    SELECT room_major_state FROM hm_room
+    WHERE id = #{id}
+  </select>
 </mapper>

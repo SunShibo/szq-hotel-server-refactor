@@ -1,5 +1,6 @@
 package com.szq.hotel.service;
 
+import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.RoomDAO;
 import com.szq.hotel.dao.RoomRecordDAO;
 import com.szq.hotel.entity.bo.*;
@@ -43,7 +44,12 @@ public class RoomService {
         mp.put("count", count);
         return mp;
     }
-
+    /*
+        通过id查询房间信息
+    */
+    public RoomBO selectByPrimaryKey(Integer id){
+        return roomDAO.selectByPrimaryKey(id);
+    }
     public int insertSelective(RoomBO record) {
         return roomDAO.insertSelective(record);
     }
@@ -229,5 +235,51 @@ public class RoomService {
      */
     public List<RtBO> queryRt(Integer hotelId){
         return  roomDAO.queryRt(hotelId);
+    }
+
+    /*
+        修改房间是否为维修房
+     */
+    public void updateRoomState(Integer id,Integer userId){
+        //查询房间主状态
+        String majorState = roomDAO.getRoomMajorState(id);
+        //查询房间维修状态
+        String state = roomDAO.getRoomState(id);
+        RoomBO roomBO = new RoomBO();
+        roomBO.setId(id);
+        //之前不是维修房改为维修房
+        if ("no".equals(state)){
+            //执行修改
+            roomBO.setRoomState("yes");
+            roomDAO.updateRoomState(roomBO);
+            //添加操作日志
+            RoomRecordBO recordBO = new RoomRecordBO();
+            recordBO.setRoomId(id);
+            recordBO.setVirginState(majorState);
+            recordBO.setNewState(roomBO.getRoomState());
+            recordBO.setRemark("改为维修房");
+            recordBO.setCreateUserId(userId);
+            recordBO.setCreateTime(new Date());
+            roomRecordDAO.insert(recordBO);
+            //之前是维修房
+        }else if ("yes".equals(state)){
+            Map<String,Object> map =  new HashMap<String, Object>();
+            map.put("id",id);
+            map.put("state", Constants.DIRTY.getValue());
+            roomDAO.updateroomMajorState(map);
+            //执行修改
+            roomBO.setRoomState("no");
+            roomDAO.updateRoomState(roomBO);
+            //添加操作日志
+            RoomRecordBO recordBO = new RoomRecordBO();
+            recordBO.setRoomId(id);
+            recordBO.setVirginState(majorState);
+            recordBO.setNewState(Constants.DIRTY.getValue());
+            recordBO.setRemark("取消维修房");
+            recordBO.setCreateUserId(userId);
+            recordBO.setCreateTime(new Date());
+            roomRecordDAO.insert(recordBO);
+        }
+
     }
 }

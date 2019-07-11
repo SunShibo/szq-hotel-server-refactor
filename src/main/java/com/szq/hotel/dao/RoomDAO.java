@@ -75,4 +75,17 @@ public interface RoomDAO {
      * @return
      */
     List<FlrBO> queryFlr(@Param("hotelId")Integer hotelId);
+    /*
+        修改房间是否为维修房
+     */
+    void updateRoomState(RoomBO roomBO);
+    /*
+        查询房间维修状态
+     */
+    String getRoomState(Integer id);
+
+    /*
+        查询房间主状态
+     */
+    String getRoomMajorState(Integer id);
 }
