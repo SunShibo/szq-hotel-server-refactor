@@ -10,7 +10,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">班次名称</label>
         <div class="layui-input-inline">
-            <input type="text" name="name" required lay-verify="required" placeholder="请输入班次名称" autocomplete="off"
+            <input type="text" name="classesName" required lay-verify="required" placeholder="请输入班次名称" autocomplete="off"
                    class="layui-input">
         </div>
     </div>
@@ -52,7 +52,7 @@
             if (!state) {
                 dataInfo = JSON.parse(sessionStorage.getItem('sc'));
                 form.val('data', {
-                    'name': dataInfo.name,
+                    'classesName': dataInfo.classesName,
                     'startTime': dataInfo.startTime,
                     'endTime': dataInfo.endTime
                 });
@@ -69,7 +69,7 @@
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        name: data.field.name,
+                        classesName: data.field.classesName,
                         startTime: data.field.startTime,
                         endTime: data.field.endTime
                     },
@@ -90,7 +90,7 @@
                     dataType: 'json',
                     data: {
                         id: dataInfo.id,
-                        name: data.field.name,
+                        classesName: data.field.classesName,
                         startTime: data.field.startTime,
                         endTime: data.field.endTime
                     },

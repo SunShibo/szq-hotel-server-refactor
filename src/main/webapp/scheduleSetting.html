@@ -76,7 +76,7 @@
             , even: true
             , loading: true // 是否显示加载条
             , cols: [[ //表头
-                {field: 'name', title: '班次名称', align: 'center'}
+                {field: 'classesName', title: '班次名称', align: 'center'}
                 , {field: 'startTime', title: '开始时间', align: 'center'}
                 , {field: 'endTime', title: '结束时间', align: 'center'}
                 , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barDemo'}
@@ -109,11 +109,11 @@
                 layer.open({
                     type: 2,
                     skin: 'demo-class',
-                    area: ['500px', '400px'],
+                    area: ['500px', '600px'],
                     title: '班次编辑',
                     shade: 0.6,
                     shadeClose: true,
-                    content: 'iframe_schedule.html?s=0',
+                    content: 'iframe_schedule.html?s=0&r='+Date.now(),
                     end: function (index, layero) {
                         tab.reload();
                     }
@@ -126,11 +126,11 @@
             layer.open({
                 type: 2,
                 skin: 'demo-class',
-                area: ['500px', '400px'],
+                area: ['500px', '600px'],
                 title: '班次添加',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_schedule.html?s=1',
+                content: 'iframe_schedule.html?s=1&r='+Date.now(),
                 end: function (index, layero) {
                     tab.reload();
                 }

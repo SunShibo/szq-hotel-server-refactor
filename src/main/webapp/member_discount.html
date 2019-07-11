@@ -201,15 +201,34 @@
             if(v==''){
                 return;
             }
+            //询问框
             v = "&name="+encodeURIComponent(v);
-            $.getJSON(api.addMemberLev+v+"&random="+Date.now(),function (rs) {
-                if(rs.success){
-                    layer.alert("添加成功",function () {
-                        sessionStorage.hyjbid = rs.data
-                        location.reload();
-                    })
-                }
-            })
+            layer.confirm('是否可以储值？', {
+                btn: ['可以','不可以'] //按钮
+            }, function(){
+                $.getJSON(api.addMemberLev+v+"&random="+Date.now()+"&type=yes",function (rs) {
+                    if(rs.success){
+                        layer.alert("添加成功",function () {
+                            sessionStorage.hyjbid = rs.data
+                            location.reload();
+                        })
+                    }
+                })
+                 layer.msg('处理中', {icon: 1});
+            }, function(){
+
+                $.getJSON(api.addMemberLev+v+"&random="+Date.now()+"&type=no",function (rs) {
+                    if(rs.success){
+                        layer.alert("添加成功",function () {
+                            sessionStorage.hyjbid = rs.data
+                            location.reload();
+                        })
+                    }
+                })
+                layer.msg('处理中', {icon: 1});
+            });
+
+
         })
     });
     function calcPrice(v) {
