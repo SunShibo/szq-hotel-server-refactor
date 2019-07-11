@@ -112,6 +112,10 @@ public class AdminService {
         return hotelBOS;
     }
 
+    //获取所有菜单权限
+    public List<MenuBO> getMenuList(){
+        return adminDAO.getMenuList();
+    }
 
     /**
      * 管理员注册

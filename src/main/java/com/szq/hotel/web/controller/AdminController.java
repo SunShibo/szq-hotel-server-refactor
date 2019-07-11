@@ -455,8 +455,21 @@ public class AdminController extends BaseCotroller {
         return ;
     }
 
-
-
+    //查询所有权限菜单
+    @RequestMapping("getPermissionsMenu")
+    public void getPermissionsMenu(HttpServletResponse response,HttpServletRequest  request){
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        //验证用户
+        if(loginAdmin==null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //查询所有权限
+        List<MenuBO> menuBOList=adminService.getMenuList();
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(menuBOList)) ;
+        super.safeJsonPrint(response, result);
+    }
 
 
 }

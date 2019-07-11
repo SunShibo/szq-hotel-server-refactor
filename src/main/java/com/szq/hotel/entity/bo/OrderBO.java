@@ -29,6 +29,15 @@ public class OrderBO extends BaseModel {
     private Date createTime;
     private Date updateTime;
     private String OTA;
+    private String channel;//客源
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
 
     public String getOTA() {
         return OTA;

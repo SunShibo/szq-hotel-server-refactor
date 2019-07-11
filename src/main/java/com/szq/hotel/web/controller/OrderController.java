@@ -211,9 +211,10 @@ public class OrderController extends BaseCotroller {
      * @param id 子订单id 也就是主账房
      * @param money 实付金额
      * @param payType 支付方式
+     * @param name 付款人姓名
      * */
     @RequestMapping("/pay")
-    public void pay(BigDecimal money, String payType,Integer id, HttpServletRequest request, HttpServletResponse response){
+    public void pay(BigDecimal money, String payType,Integer id,String name, HttpServletRequest request, HttpServletResponse response){
         //验证管理员
         AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
@@ -235,8 +236,8 @@ public class OrderController extends BaseCotroller {
 
         //添加报表记录
         cashierSummaryService.addCheck(money,payType,orderBO.getOrderNumber(),userInfo.getId(),
-                "name",orderBO.getOTA(),orderBO.getOrderType(),
-                "",orderChildResult.getRoomName(),orderChildResult.getRoomTypeName(),
+                name,orderBO.getOTA(),orderBO.getOrderType(),
+                orderBO.getChannel(),orderChildResult.getRoomName(),orderChildResult.getRoomTypeName(),
                 null,userInfo.getHotelId());
 
         //修改子订单信息

@@ -160,6 +160,7 @@ public interface AdminDAO {
      */
     Integer getAdminCountByCond(Map<String, Object> map);
 
-
+    //获取所有菜单权限
+    List<MenuBO> getMenuList();
 
 }

@@ -188,4 +188,8 @@
         </if>
     </select>
 
+    <!--查询所有菜单-->
+    <select id="getMenuList" resultType="com.szq.hotel.entity.bo.MenuBO">
+        select * from hm_menu
+    </select>
 </mapper>
