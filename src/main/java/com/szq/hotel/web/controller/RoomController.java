@@ -1,10 +1,7 @@
 package com.szq.hotel.web.controller;
 
 import com.sun.xml.internal.bind.v2.model.core.ID;
-import com.szq.hotel.entity.bo.AdminBO;
-import com.szq.hotel.entity.bo.RoomBO;
-import com.szq.hotel.entity.bo.RoomTypeCountBO;
-import com.szq.hotel.entity.bo.RtBO;
+import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.RoomRecordService;
@@ -302,5 +299,47 @@ public class RoomController extends BaseCotroller {
         log.error("updateRoomRemarkException",e);
     }
     }
+
+    /**
+     * 查询房屋信息
+     * @param id
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/getRoomMessage")
+    public void getRoomMessage(Integer id,HttpServletRequest request,HttpServletResponse response){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}",loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            if (id== null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
+            RoomMessageBO roomMessageBO = roomService.getRoomMessage(id);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(roomMessageBO));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.error("getRoomMessageException",e);
+        }
+
+    }
+
 
 }

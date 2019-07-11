@@ -442,6 +442,12 @@ public class RoomService {
         roomRecordDAO.insert(recordBO);
     }
 
+    /*
+           查询房屋信息
+        */
+    public RoomMessageBO getRoomMessage(Integer id){
+        return roomDAO.getRoomMessage(id);
+    }
 
 
 }

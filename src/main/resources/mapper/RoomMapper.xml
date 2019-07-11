@@ -441,4 +441,10 @@
     SELECT remark FROM hm_room WHERE id = #{id}
   </select>
 
+  <!--房屋信息查询-->
+  <select id="getRoomMessage" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RoomMessageBO">
+    SELECT setting,`character`,remark
+    FROM hm_room WHERE id = #{id}
+  </select>
+
 </mapper>
