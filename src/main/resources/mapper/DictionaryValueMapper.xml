@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.DictionaryValueDAO">
+
+    <insert id="addDic" parameterType="com.szq.hotel.entity.bo.DictionaryValueBO">
+        insert into hm_dictionaries_value value (null,#{kid},#{value})
+    </insert>
+    <select id="getDIcs"  resultType="com.szq.hotel.entity.bo.DictionaryValueBO">
+        select hm_dictionaries_value.*,hm_dictionaries_key.name from hm_dictionaries_value,hm_dictionaries_key
+        where hm_dictionaries_value.kid=hm_dictionaries_key.id
+            <if test="kid!=null ">
+                and kid=#{kid}
+            </if>
+
+        order by sort desc
+    </select>
+    <update id="updDic" parameterType="com.szq.hotel.entity.bo.DictionaryValueBO">
+        update hm_dictionaries_value
+        <set>
+            <if test="kid!=null and kid!=''">
+                kid=#{kid},
+            </if>
+            <if test="value!=null and value!=''">
+                `value`=#{value},
+            </if>
+            <if test="sort!=null and sort!=''">
+                sort=#{sort},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="delDic">
+        delete from hm_dictionaries_value
+        where
+        <foreach collection="idArr" item="id"  separator="or">
+            id=#{id}
+        </foreach>
+    </delete>
+
+</mapper>

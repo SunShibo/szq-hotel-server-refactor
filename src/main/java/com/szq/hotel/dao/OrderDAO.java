@@ -38,7 +38,7 @@ public interface OrderDAO {
     Integer delOrderChild(Integer id);
 
     //根据主订单id查询房间信息（客帐管理）
-    OrderChildBO getRoomInfoById(Integer orderId);
+    List<OrderChildBO> getRoomInfoById(Integer orderId);
     /**
      * 订单列表
      * @param param

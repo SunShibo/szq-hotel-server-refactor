@@ -171,12 +171,11 @@
     <select id="getRoomInfoById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select oc.id,r.room_name as roomName,cp.name as name,cp.create_time as createTime
         from hm_order_child as oc,hm_check_in_person as cp,hm_room as r
-        where oc.order_id=#{orderId}
+        where oc.order_id=38
         and oc.room_id=r.id
         and cp.order_child_id=oc.id
         and cp.status='checkin'
-        order by cp.create_time
-        limit 1
+        group by order_child_id
     </select>
 
     <!--根据子订单id查询子订单-->

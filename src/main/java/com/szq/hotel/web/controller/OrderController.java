@@ -1,5 +1,6 @@
 package com.szq.hotel.web.controller;
 
+import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.entity.param.OrderParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
@@ -29,6 +31,9 @@ public class OrderController extends BaseCotroller {
 
     @Resource
     CheckInPersonService checkInPersonService;
+
+    @Resource
+    CashierSummaryService cashierSummaryService;
     /**
      * 房间预定 预约入住 直接入住 修改
      * @param orderBO 预约信息
@@ -175,7 +180,7 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        OrderChildBO orderBO=orderService.getRoomInfoById(orderId);
+        List<OrderChildBO> orderBO=orderService.getRoomInfoById(orderId);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
         super.safeJsonPrint(response, result);
     }
@@ -203,11 +208,12 @@ public class OrderController extends BaseCotroller {
 
     /**
      * 入住支付
-     * @param cs 报表信息
-     * @param id 子订单id
+     * @param id 子订单id 也就是主账房
+     * @param money 实付金额
+     * @param payType 支付方式
      * */
-    @RequestMapping("/pay")//FIXME 王洋接口有问题
-    public void pay(CashierSummaryBO cs, Integer id, HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping("/pay")
+    public void pay(BigDecimal money, String payType,Integer id, HttpServletRequest request, HttpServletResponse response){
         //验证管理员
         AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
@@ -216,28 +222,64 @@ public class OrderController extends BaseCotroller {
             return ;
         }
         //验证参数
-        if(cs== null){
+        if(id== null||money==null||payType==null||id.equals("")||money.equals("")||payType.equals("")){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
             super.safeJsonPrint(response, result);
             return ;
         }
-     /*   //添加报表记录
-        cashierSummaryService.addCheck(cs.getMoney(),cs.getPayType(),cs.getOrderNumber(),
-                userInfo.getId(),cs.getName(),cs.getOTA(),cs.getChannel(),cs.getPassengerSource(),
-                cs.getRoomName(),cs.getRoomTypeName(),cs.getRemark(),userInfo.getHotelId());
+        //获取子订单信息
+        OrderChildBO orderChildResult=orderService.getOrderChildById(id);
+
+        //获取主订单信息
+        OrderBO orderBO=orderService.getOrderById(orderChildResult.getOrderId());
+
+        //添加报表记录
+//        cashierSummaryService.addCheck(money,payType,orderBO.getOrderNumber(),userInfo.getId(),
+//                "name","",orderBO.getOrderType(),
+//                "","","");
+
         //修改子订单信息
         OrderChildBO orderChildBO=new OrderChildBO();
         orderChildBO.setId(id);
         orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
-        orderChildBO.setRoomRate(cs.getMoney());
+        //orderChildBO.setRoomRate(cs.getMoney());
 
-        orderService.updOrderChild(orderChildBO);*/
+        orderService.updOrderChild(orderChildBO);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("支付成功")) ;
         super.safeJsonPrint(response, result);
     }
 
+
     /**
-     * 入住支付
+     * 入住成功支付页面
+     * @param orderId 订单id
+     * */
+    @RequestMapping("/getPayInfo")
+    public void getPayInfo(Integer orderId, HttpServletRequest request, HttpServletResponse response) {
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request);
+        if (userInfo == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
+        //验证参数
+        if (orderId == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
+        OrderBO orderBO=orderService.getOrderById(orderId);
+        Map<String,Object> resultMap=new HashMap<String, Object>();
+        resultMap.put("totalPrice",orderBO.getTotalPrice());
+        List<OrderChildBO> orderChildBOS=orderService.getRoomInfoById(orderId);
+        resultMap.put("orderChildBOS",orderChildBOS);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
+        super.safeJsonPrint(response, result);
+    }
+
+    /**
+     * 检查身份证号是否在住
      * @param id 身份证号
      * */
     @RequestMapping("/checkId")
