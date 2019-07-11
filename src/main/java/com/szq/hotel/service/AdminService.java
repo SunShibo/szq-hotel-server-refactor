@@ -114,7 +114,21 @@ public class AdminService {
 
     //获取所有菜单权限
     public List<MenuBO> getMenuList(){
-        return adminDAO.getMenuList();
+        List<MenuBO> menuBOList=adminDAO.getMenuList();
+        if(menuBOList!=null && menuBOList.size()>0) {
+            for (int i = 0; i < menuBOList.size(); i++) {
+                MenuBO menuBO = menuBOList.get(i);
+                for(int x=0;x<menuBOList.size();x++){
+                    if(menuBO.getPid().equals(menuBOList.get(x).getId())){
+                        menuBOList.get(x).getChildren().add(menuBO);
+                        menuBOList.remove(i);
+                        --i;
+                        break;
+                    }
+                }
+            }
+        }
+        return menuBOList;
     }
 
     /**
@@ -336,9 +350,23 @@ public class AdminService {
     public List<RoleBO> getRoleByRoleName(String roleName) {
         //查询所有角色
         List<RoleBO> roleList = adminDAO.getRoleByName(roleName);
+
         //循环查询角色拥有的菜单
         for (RoleBO role : roleList) {
             List<MenuBO> menus = adminDAO.getMenuByRoleId(role.getId());
+            if(menus!=null && menus.size()>0) {
+                for (int i = 0; i < menus.size(); i++) {
+                    MenuBO menuBO = menus.get(i);
+                    for(int x=0;x<menus.size();x++){
+                        if(menuBO.getPid().equals(menus.get(x).getId())){
+                            menus.get(x).getChildren().add(menuBO);
+                            menus.remove(i);
+                            --i;
+                            break;
+                        }
+                    }
+                }
+            }
             role.setMenus(menus);
         }
         //循环查询角色拥有的酒店

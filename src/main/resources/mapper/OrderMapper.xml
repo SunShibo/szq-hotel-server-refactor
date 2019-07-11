@@ -89,11 +89,12 @@
                 night_auditor_state=#{nightAuditorState},
             </if>
             <if test="printState!=null and printState!=''">
-                print_state=#{printState}
+                print_state=#{printState},
             </if>
             <if test="main!=null and main!=''">
-                main=#{main}
+                main=#{main},
             </if>
+            update_time=now()
         </set>
         where id=#{id}
     </update>
