@@ -145,7 +145,7 @@ public class HotelController extends BaseCotroller {
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
-            log.error("addHotelException",e);
+            log.error("updateHotelException",e);
         }
     }
 
@@ -177,7 +177,7 @@ public class HotelController extends BaseCotroller {
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
-            log.error("addHotelException",e);
+            log.error("queryHotelException",e);
         }
     }
 
@@ -197,9 +197,9 @@ public class HotelController extends BaseCotroller {
             return;
         }catch (Exception e){
             e.getStackTrace();
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
-            log.error("addHotelException",e);
+            log.error("queryLoginException",e);
         }
     }
 

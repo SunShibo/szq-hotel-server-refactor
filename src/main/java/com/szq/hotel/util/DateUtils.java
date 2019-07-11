@@ -677,7 +677,39 @@ public class DateUtils {
 		return dayBefore;
 	}
 
+	/**
+	 * 获取时间字符串
+	 */
+	public static  String getStringData(Date time,String pattern){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		String format = simpleDateFormat.format(time);
+		return format;
+	}
 
+	/**
+	 * 获取明天早6点字符串
+	 */
+	public static String getBrightSiceStringData(){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date()) ;
+		cal.add(Calendar.DATE,1);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd 06:00:00");
+		String format = simpleDateFormat.format(cal.getTime());
+		return format;
+	}
+
+	/**
+	 * 把字符串转为Data
+	 */
+	public static Date getDataByStr(String strDate) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(LONG_DATE_PATTERN);
+		try {
+			return simpleDateFormat.parse(strDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 
 	}

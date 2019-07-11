@@ -26,6 +26,7 @@ public enum Constants {
     /* 支付方式 : 积分 */ INTEGRAL("integral"),
     /* 房态 : 空房 */ VACANT("vacant"),
     /* 房态 : 在住 */ INTHE("inthe"),
+    /* 房态 : 超时 */ TIMEOUT("timeout"),
     /* 房态 : 脏房 */ DIRTY("dirty"),
     /* 房态 : 门店锁房 */ SHOP("shop"),
     /* 房态 : 网络锁 */ NETWORK("network"),
