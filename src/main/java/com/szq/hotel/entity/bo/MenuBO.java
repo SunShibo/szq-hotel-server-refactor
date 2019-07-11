@@ -24,6 +24,16 @@ public class MenuBO extends BaseModel {
         return path;
     }
 
+    private List<MenuBO> children = new ArrayList<MenuBO>();
+
+    public List<MenuBO> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<MenuBO> children) {
+        this.children = children;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }
