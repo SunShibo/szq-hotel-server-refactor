@@ -196,7 +196,7 @@ public class MemberCardController extends BaseCotroller {
      * 条件分页查询会员卡
      */
     @RequestMapping("/selectMemberCard")
-    public void selectMemberCard(String state,Integer memberLevelId,BigDecimal money,Integer cardNumber,Integer pageNo, Integer pageSize,HttpServletRequest request, HttpServletResponse response){
+    public void selectMemberCard(String state,String name,BigDecimal money,Integer cardNumber,Integer pageNo, Integer pageSize,HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -210,7 +210,7 @@ public class MemberCardController extends BaseCotroller {
             }
             Map<String,Object> map=new HashMap<String, Object>();
             map.put("state",state);
-            map.put("memberLevelId",memberLevelId);
+            map.put("name",name);
             map.put("money",money);
             map.put("cardNumber",cardNumber);
 
