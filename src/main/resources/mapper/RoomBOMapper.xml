@@ -410,4 +410,10 @@
   <select id="queryRt" resultType="com.szq.hotel.entity.bo.RtBO">
     SELECT room_type_name,id FROM hm_room_type WHERE hotel_id  = #{hotelId}  AND `show` = 'yes'
   </select>
+
+
+  <select id="queryFlr" resultType="com.szq.hotel.entity.bo.FlrBO">
+    select * from hm_floor
+     where  hotel_id = #{hotelId}
+       </select>
 </mapper>

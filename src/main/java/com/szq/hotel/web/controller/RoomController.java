@@ -159,12 +159,13 @@ public class RoomController extends BaseCotroller {
                         String roomAuxiliaryStatusStand){
         AdminBO loginUser = super.getLoginAdmin(request);
         log.info("进入此方法");
-        Map map = new HashMap<String,Object>();
+        Map<String, Object> map = new HashMap<String,Object>();
         log.info("checkTime:{}",checkTime);
         log.info("endTime:{}",endTime);
         log.info("roomTypeId:{}",roomTypeId);
         log.info("roomAuxiliaryStatus:{}",roomAuxiliaryStatus);
         log.info("roomAuxiliaryStatusStand:{}",roomAuxiliaryStatusStand);
+        log.info("hotelId:{}",loginUser.getHotelId());
 
         map.put("checkTime", checkTime);
         map.put("hotelId", loginUser.getHotelId());
@@ -172,15 +173,43 @@ public class RoomController extends BaseCotroller {
         map.put("roomTypeId", roomTypeId);
         map.put("roomAuxiliaryStatus", roomAuxiliaryStatus);
         map.put("roomAuxiliaryStatusStand", roomAuxiliaryStatusStand);
-        Map mp = null;
-        try {
-            mp = roomService.queryRm(map);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
+
+        Map<String, Object> mp = roomService.queryRm(map);
+
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
         super.safeJsonPrint(response, result);
         return;
+    }
+
+
+    @RequestMapping("/queryRoomTypeNum")
+    public void queryRoomTypeNum(HttpServletRequest request, HttpServletResponse response, String checkTime,
+                        String endTime, String roomTypeId, String roomAuxiliaryStatus,
+                        String roomAuxiliaryStatusStand){
+        AdminBO loginUser = super.getLoginAdmin(request);
+        log.info("进入此方法");
+        Map<String, Object> map = new HashMap<String,Object>();
+        log.info("checkTime:{}",checkTime);
+        log.info("endTime:{}",endTime);
+        log.info("roomTypeId:{}",roomTypeId);
+        log.info("roomAuxiliaryStatus:{}",roomAuxiliaryStatus);
+        log.info("roomAuxiliaryStatusStand:{}",roomAuxiliaryStatusStand);
+        log.info("hotelId:{}",loginUser.getHotelId());
+
+        map.put("checkTime", checkTime);
+        map.put("hotelId", loginUser.getHotelId());
+        map.put("endTime", endTime);
+        map.put("roomTypeId", roomTypeId);
+        map.put("roomAuxiliaryStatus", roomAuxiliaryStatus);
+        map.put("roomAuxiliaryStatusStand", roomAuxiliaryStatusStand);
+
+        Map<String, Object> mp  = roomService.queryRoomTypeNum(map);
+
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
+        super.safeJsonPrint(response, result);
+        return;
+
     }
 
 

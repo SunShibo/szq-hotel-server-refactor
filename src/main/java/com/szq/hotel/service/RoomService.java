@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.velocity.runtime.log.LogChute;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -80,10 +81,11 @@ public class RoomService {
     }
 
     /**
-     * 预约入住选择房间
+     * 抽取公共方法
+     * @param map
+     * @return
      */
-    public Map<String, Object> queryRm(Map<String, Object> map) throws ParseException {
-        Map<String, Object> mp = new HashMap<String, Object>();
+    public List<RmBO> publicQuery(Map<String, Object> map){
 
         //获取预入住时间
         String dt =  (String) map.get("checkTime");
@@ -125,18 +127,72 @@ public class RoomService {
 
         //去掉不能预约入住的房间的房间
         Iterator<RmBO> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            RmBO rmBO = iterator.next();
-            for (Integer id : reId){
-                if(rmBO.getId().equals(id)){
-                    iterator.remove();//使用迭代器的删除方法删除
+        if(!CollectionUtils.isEmpty(reId)){
+            while (iterator.hasNext()) {
+                RmBO rmBO = iterator.next();
+                for (Integer id : reId){
+                    if(rmBO.getId().equals(id)){
+                        iterator.remove();//使用迭代器的删除方法删除
+                    }
                 }
             }
         }
+
         log.info("去掉不能预约入住的房间的房间:{}",list);
-        mp.put("list",list);
+        return list;
+    }
+
+    /**
+     * 预约入住选择房间
+     */
+    public Map<String, Object> queryRm(Map<String, Object> map)  {
+        Map<String, Object> mp = new HashMap<String, Object>();
+        
+        //获取酒店下面所有楼层
+         Integer hotelId =   (Integer)map.get("hotelId");
+         log.info("hotelId:{}",hotelId);
+        List<FlrBO> flrList  = roomDAO.queryFlr(hotelId);
+        log.info("酒店下共有楼层:{}",flrList);
+        
+        List<RmBO> list =  this.publicQuery(map);
+        
+        if(!CollectionUtils.isEmpty(flrList) && !CollectionUtils.isEmpty(list)){
+            for (FlrBO f : flrList){
+                List<RmBO> a = new ArrayList<RmBO>();
+                for (RmBO rmBO : list){
+                   if(rmBO.getFloorId().equals(f.getId())){
+                       a.add(rmBO);
+                   }
+                }
+                mp.put(f.getName()+"",a);
+            }
+        }
+
+       // mp.put("list",list);
 
         return  mp;
+    }
+
+    public Map<String, Object>  queryRoomTypeNum(Map<String, Object> map){
+        Map<String,Object> mp = new HashMap<String, Object>();
+        List<RmBO> list =  this.publicQuery(map);
+        Integer hotelId =   (Integer)map.get("hotelId");
+        log.info("list:{}",list);
+
+        List<RtBO> rtBOS = roomDAO.queryRt(hotelId);
+
+        if(!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)){
+            for (RtBO rtBO : rtBOS){
+                Integer i = 0;
+               for (RmBO rmBO : list){
+                 if(rtBO.getId().equals(rmBO.getRoomTypeId())){
+                     i++;
+                 }
+               }
+               mp.put( rtBO.getRoomTypeName()+"("+i+")",rtBO.getId());
+            }
+        }
+        return mp;
     }
 
 

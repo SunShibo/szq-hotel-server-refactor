@@ -21,9 +21,9 @@ public class RmBO extends BaseModel {
     private Integer floorId;
     //房间状态
     private String roomMajorState;
-    //酒店类型
+    //房间类型名称
     private String roomType;
-    //酒店类型id
+    //房间类型id
     private Integer roomTypeId;
 
     public Integer getId() {

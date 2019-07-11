@@ -69,5 +69,10 @@ public interface RoomDAO {
     List<RtBO> queryRt(@Param("hotelId")Integer hotelId);
 
 
-  //  List<Integer>
+    /**
+     * 查询酒店下面的楼层
+     * @param hotelId
+     * @return
+     */
+    List<FlrBO> queryFlr(@Param("hotelId")Integer hotelId);
 }
