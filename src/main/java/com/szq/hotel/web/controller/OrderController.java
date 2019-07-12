@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.entity.param.OrderParam;
+import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.CashierSummaryService;
@@ -350,8 +351,23 @@ public class OrderController extends BaseCotroller {
      * 在住信息查询
      * */
     @RequestMapping("/getCheckInInfo")
-    public void getCheckInInfo(){
-
+    public void getCheckInInfo(Integer roomId, HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if (roomId == null||roomId==null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
+        CheckInInfoResult checkInInfoResult=orderService.getCheckInInfo(roomId);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInInfoResult));
+        super.safeJsonPrint(response, result);
     }
 
     /**

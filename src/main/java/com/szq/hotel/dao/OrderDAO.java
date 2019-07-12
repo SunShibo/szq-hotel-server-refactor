@@ -6,6 +6,7 @@ import com.szq.hotel.entity.bo.OrderListBO;
 import com.szq.hotel.entity.bo.OrderRecoredBO;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
+import com.szq.hotel.entity.result.CheckRoomPersonResult;
 import com.szq.hotel.entity.result.OrderResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -50,7 +51,8 @@ public interface OrderDAO {
 
     //通过房间id查找在住订单信息
     CheckInInfoResult getOrderChildByRoomId(Integer roomId);
-    //通过房间id查询在住人
+    //通过联房码查询联房信息
+    List<CheckRoomPersonResult> getOrderRoomByCode(String code);
 
 
     /**

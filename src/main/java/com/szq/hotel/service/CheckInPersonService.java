@@ -20,7 +20,7 @@ public class CheckInPersonService {
 
     //根据订单查询入住人信息
     public List<CheckInPersonBO> getCheckInPersonById(Integer id){
-        return checkInPersonDAO.getCheckInPersonById(id);
+        return checkInPersonDAO.getCheckInPersonById(id,null);
     }
 
     //检查身份证号是否在住

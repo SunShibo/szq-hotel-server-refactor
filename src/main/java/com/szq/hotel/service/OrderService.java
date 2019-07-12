@@ -8,6 +8,7 @@ import com.szq.hotel.dao.OrderRecordDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
+import com.szq.hotel.entity.result.CheckRoomPersonResult;
 import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.util.IDBuilder;
 import org.springframework.stereotype.Service;
@@ -176,7 +177,7 @@ public class OrderService {
                     List<CheckInPersonBO> checkInPersonNewS = orderChildBONew.getCheckInPersonBOS();
                     if (checkInPersonNewS != null) {
                         //查询原来入住人员信息
-                        List<CheckInPersonBO> checkInPersonOldS = checkInPersonDAO.getCheckInPersonById(orderChildOld.getId());
+                        List<CheckInPersonBO> checkInPersonOldS = checkInPersonDAO.getCheckInPersonById(orderChildOld.getId(),null);
                         for (CheckInPersonBO newPerson : checkInPersonNewS) {
                             System.err.println("id==========="+newPerson.getId());
                             //新入住人直接add
@@ -245,7 +246,7 @@ public class OrderService {
                 totalPrice = totalPrice.add(money);
 
                 //查询入住人员信息
-                List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(orderChild.getId());
+                List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(orderChild.getId(),null);
                 orderChild.setCheckInPersonBOS(checkInPersonBOS);
             }
 
@@ -338,13 +339,16 @@ public class OrderService {
         return orderDAO.closeOrder();
     }
     //首页查询在住信息
-    public List<CheckInInfoResult> getCheckInInfo(){
+    public CheckInInfoResult getCheckInInfo(Integer roomId){
         //在住信息
-
+        CheckInInfoResult checkInInfoResult=orderDAO.getOrderChildByRoomId(roomId);
         //同住人信息
-
+        List<CheckInPersonBO> checkInPersonBOS=checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getId(),Constants.CHECKIN.getValue());
+        checkInInfoResult.setCheckInPersonBOS(checkInPersonBOS);
         //联房信息
-        return null;
+        List<CheckRoomPersonResult> checkRoomPersonResults = orderDAO.getOrderRoomByCode(checkInInfoResult.getAlRoomCode());
+        checkInInfoResult.setCheckRoomPersonResults(checkRoomPersonResults);
+        return checkInInfoResult;
     }
     /**
      * 订单列表

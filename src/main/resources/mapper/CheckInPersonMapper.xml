@@ -9,6 +9,9 @@
     <select id="getCheckInPersonById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
         select * from hm_check_in_person
         where order_child_id=#{id}
+        <if test="status!=null and status!=''">
+            and status=#{status}
+        </if>
     </select>
 
     <!-- 添加入住人-->
