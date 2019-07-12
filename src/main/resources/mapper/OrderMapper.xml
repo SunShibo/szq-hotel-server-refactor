@@ -13,13 +13,13 @@
         check_out_time,day_count,phone,ID_number,
         ID_number_type,order_type,clerk_ordering_name,
         clerk_ordering_id,members_id,
-        memberId_or_organizationId,total_price,create_time,hotel_id,channel)
+        memberId_or_organizationId,total_price,create_time,hotel_id,channel,OTA)
         values
         (#{orderPlacer},#{orderNumber},#{checkType},
         #{checkTime},#{checkOutTime},#{dayCount},#{phone},#{IDNumber},
         #{IDNumberType},#{orderType},
         #{clerkOrderingName},#{clerkOrderingId},#{membersId},
-        #{memberIdOrOrganizationId},#{totalPrice},now(),#{hotelId},#{channel})
+        #{memberIdOrOrganizationId},#{totalPrice},now(),#{hotelId},#{channel},#{OTA})
     </insert>
 
     <!-- 添加子订单 -->
@@ -114,7 +114,6 @@
         and c.id=e.order_child_id
         and p.certificate_type=v.id
         and c.id=`or`.order_child_id
-        and c.end_time='2019-07-11 12:00:00'
         and p.status='checkin'
         and (order_state='admissions')
         group by or.order_child_id
@@ -140,7 +139,12 @@
         and c.end_time&gt;=#{afterTime}
         and c.end_time&lt;=#{beforeTime}
         group by or.order_child_id
+        <include refid="limit" />
     </select>
+
+    <sql id="limit">
+        limit #{pageNo},#{pageSize}
+    </sql>
 
     <!-- 根据手机号 身份证号 查询订单信息 -->
     <select id="getOrderByIdOrMobile" resultType="com.szq.hotel.entity.bo.OrderBO">
@@ -262,6 +266,23 @@
         </where>
 
         <include refid="orderLimit"/>
+    </select>
+
+    <!--关闭超过15分钟未支付的子订单-->
+    <update id="closeOrder">
+        update hm_order_child
+        set order_state='cancel'
+        where round((unix_timestamp(now())-unix_timestamp(update_time))/60)>15
+        and order_state='notpay'
+    </update>
+
+    <!--通过房间id查找在住订单信息-->
+    <select id="getOrderChildByRoomId" parameterType="java.lang.Integer">
+        select hm_order_child.id,start_time,end_time,(room_rate+other_rate-free_rate_num) as totalConsumption,sum(pay_cash_num+other_pay_num) as sumPayment,channel,remark
+        from  hm_order_child,hm_order
+        where hm_order_child.order_id=hm_order.id
+        and room_id=#{roomId}
+        and (order_state='admissions' or order_state='notpay')
     </select>
 
     <!--找查首日房价-->

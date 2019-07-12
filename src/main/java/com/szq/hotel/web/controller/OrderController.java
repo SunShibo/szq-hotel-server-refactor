@@ -325,7 +325,7 @@ public class OrderController extends BaseCotroller {
      * @param afterTime 在这个时间之后 最小时间
      * */
     @RequestMapping("/getCheckOutReport")
-    public void getCheckOutReport(@DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")Date beforeTime, @DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")Date afterTime, HttpServletRequest request, HttpServletResponse response){
+    public void getCheckOutReport(@DateTimeFormat(pattern="yyyy/MM/dd hh:mm:ss")Date beforeTime, @DateTimeFormat(pattern="yyyy/MM/dd hh:mm:ss")Date afterTime,Integer pageNo,Integer pageSize, HttpServletRequest request, HttpServletResponse response){
         //验证管理员
         AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
@@ -339,13 +339,28 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return;
         }
-
-        List<OrderResult> results=orderService.getCheckOutReport(beforeTime,afterTime);
+        QueryInfo queryInfo=getQueryInfo(pageNo,pageSize);
+        List<OrderResult> results=orderService.getCheckOutReport(beforeTime,afterTime,queryInfo.getPageOffset(),queryInfo.getPageSize());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results)) ;
         super.safeJsonPrint(response, result);
 
     }
 
+    /**
+     * 在住信息查询
+     * */
+    @RequestMapping("/getCheckInInfo")
+    public void getCheckInInfo(){
+
+    }
+
+    /**
+     * 联房 自动转账 转账记录
+     * */
+//    @RequestMapping("/getCheckOutReport")
+//    public void getCheckOutReport(){
+//
+//    }
 
     /**
      * 检查身份证号是否在住

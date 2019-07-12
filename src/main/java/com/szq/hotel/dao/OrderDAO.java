@@ -5,6 +5,7 @@ import com.szq.hotel.entity.bo.OrderChildBO;
 import com.szq.hotel.entity.bo.OrderListBO;
 import com.szq.hotel.entity.bo.OrderRecoredBO;
 import com.szq.hotel.entity.param.OrderParam;
+import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.OrderResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -43,7 +44,15 @@ public interface OrderDAO {
     //获取在住报表
     List<OrderResult> getCheckInReport();
     //获取预离报表
-    List<OrderResult> getCheckOutReport(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime);
+    List<OrderResult> getCheckOutReport(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+    //把入住未支付超过15分钟的子订单关闭
+    Integer closeOrder();
+
+    //通过房间id查找在住订单信息
+    CheckInInfoResult getOrderChildByRoomId(Integer roomId);
+    //通过房间id查询在住人
+
+
     /**
      * 订单列表
      * @param param

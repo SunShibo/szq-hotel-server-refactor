@@ -7,6 +7,7 @@ import com.szq.hotel.dao.OrderDAO;
 import com.szq.hotel.dao.OrderRecordDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
+import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.util.IDBuilder;
 import org.springframework.stereotype.Service;
@@ -329,8 +330,21 @@ public class OrderService {
     }
 
     //获取预离店报表
-    public List<OrderResult> getCheckOutReport(Date beforeTime,Date afterTime){
-        return orderDAO.getCheckOutReport(beforeTime,afterTime);
+    public List<OrderResult> getCheckOutReport(Date beforeTime,Date afterTime,Integer pageNo,Integer pageSize){
+        return orderDAO.getCheckOutReport(beforeTime,afterTime,pageNo,pageSize);
+    }
+    //把入住未支付超过15分钟的子订单关闭
+    public Integer closeOrder(){
+        return orderDAO.closeOrder();
+    }
+    //首页查询在住信息
+    public List<CheckInInfoResult> getCheckInInfo(){
+        //在住信息
+
+        //同住人信息
+
+        //联房信息
+        return null;
     }
     /**
      * 订单列表

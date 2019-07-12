@@ -1,5 +1,6 @@
 package com.szq.hotel.entity.result;
 
+//在住 预离报表
 public class OrderResult {
     private String orderNumber;//订单号
     private String name;//入住人姓名

@@ -12,9 +12,9 @@ public class OrderBO extends BaseModel {
     private String orderNumber;//单号
     private String checkType;//入住方式
     private String phone;//手机号
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private Date checkTime;//入住时间
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private Date checkOutTime;//离店时间
     private Integer dayCount;//入住天数
     private Integer IDNumberType;//证件类型

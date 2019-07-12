@@ -146,7 +146,7 @@
         from hm_role_hotel as  rh
         inner join  hm_hotel as h
         on rh.hotel_id=h.id
-        where  rh.role_id=#{roleId}
+        where  rh.role_id=#{roleId} and h.status='yes'
     </select>
 
 
