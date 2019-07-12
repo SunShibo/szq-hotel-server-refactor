@@ -364,7 +364,8 @@
 
 
   <select id="queryRm" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
-    SELECT hm_room.* , hm_hotel.name AS hotelName,
+    SELECT hm_room.* , hm_hotel.name AS hotelName, hm_room_type.basic_price,
+    hm_room_type.hour_room_price,
     hm_floor.name AS floorName,
     hm_room_type.room_type_name AS roomType,
     hm_room_type.basic_price AS basicPrice,
@@ -446,5 +447,15 @@
     SELECT setting,`character`,remark
     FROM hm_room WHERE id = #{id}
   </select>
+
+
+
+  <select id="queryMemberByPhone" resultType="com.szq.hotel.entity.bo.MemberDiscountBO">
+    SELECT hm_member.*, hm_member_level.discount   FROM hm_member, hm_member_card, hm_member_level
+    WHERE hm_member_level.id = hm_member_card.member_level_id AND hm_member.member_card_id = hm_member_card.id
+    AND hm_member.phone = #{phone}
+
+  </select>
+
 
 </mapper>

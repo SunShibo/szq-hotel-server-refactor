@@ -168,6 +168,25 @@ public class RoomService {
 
         List<RmBO> list = this.publicQuery(map);
 
+        String phone = (String) map.get("phone");
+        MemberDiscountBO memberDiscountBO = queryMember(phone);
+        if(memberDiscountBO == null){
+            //不是会员
+            mp.put("discount",false);
+        } else {
+            //是会员
+            //获取折扣价格
+            mp.put("discount",true);
+           Double  discount = memberDiscountBO.getDiscount();
+           if(!CollectionUtils.isEmpty(list)){
+               for (RmBO rmBO : list){
+                   rmBO.setBasicPrice(rmBO.getBasicPrice()/discount);
+                   rmBO.setHourRoomPrice(rmBO.getHourRoomPrice()/discount);
+               }
+           }
+        }
+
+
         if (!CollectionUtils.isEmpty(flrList) && !CollectionUtils.isEmpty(list)) {
             for (FlrBO f : flrList) {
                 List<RmBO> a = new ArrayList<RmBO>();
@@ -253,7 +272,6 @@ public class RoomService {
     public List<RoomStateDTO> queryindexRoomState(Integer roomId) {
         return null;
     }
-
 
 
     public static void main(String[] args) throws ParseException {
@@ -348,9 +366,16 @@ public class RoomService {
     }
 
 
-
-
-
+    /**
+     * 判断用户是否为会员
+     *  并且获取折扣价格
+     * @param phone
+     * @return
+     */
+    public MemberDiscountBO queryMember(String phone){
+        MemberDiscountBO memberDiscountBO = roomDAO.queryMemberByPhone(phone);
+        return memberDiscountBO;
+    }
 
 
 

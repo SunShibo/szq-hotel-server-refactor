@@ -107,4 +107,6 @@ public interface RoomDAO {
      * @return
      */
     List<OcBO> queryTc(@Param("roomId")Integer roomId);
+
+    MemberDiscountBO  queryMemberByPhone(@Param("phone")String phone);
 }

@@ -160,8 +160,14 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/quertRm")
     public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime,
                         String endTime, String roomTypeId, String roomAuxiliaryStatus,
-                        String roomAuxiliaryStatusStand){
+                        String roomAuxiliaryStatusStand, String phone){
         AdminBO loginUser = super.getLoginAdmin(request);
+
+        if(StringUtils.isEmpty(phone)){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("手机号不能为空"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
         log.info("进入此方法");
         Map<String, Object> map = new HashMap<String,Object>();
         log.info("checkTime:{}",checkTime);
@@ -170,6 +176,7 @@ public class RoomController extends BaseCotroller {
         log.info("roomAuxiliaryStatus:{}",roomAuxiliaryStatus);
         log.info("roomAuxiliaryStatusStand:{}",roomAuxiliaryStatusStand);
         log.info("hotelId:{}",loginUser.getHotelId());
+        log.info("phone:{}",phone);
 
         map.put("checkTime", checkTime);
         map.put("hotelId", loginUser.getHotelId());
@@ -177,6 +184,7 @@ public class RoomController extends BaseCotroller {
         map.put("roomTypeId", roomTypeId);
         map.put("roomAuxiliaryStatus", roomAuxiliaryStatus);
         map.put("roomAuxiliaryStatusStand", roomAuxiliaryStatusStand);
+        map.put("phone", phone);
 
 
         Map<String, Object> mp = roomService.queryRm(map);

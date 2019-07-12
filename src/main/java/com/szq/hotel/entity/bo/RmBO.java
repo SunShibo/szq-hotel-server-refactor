@@ -25,6 +25,10 @@ public class RmBO extends BaseModel {
     private String roomType;
     //房间类型id
     private Integer roomTypeId;
+    //标准价
+    private Double basicPrice;
+    //钟点房价格
+    private Double hourRoomPrice;
 
     public Integer getId() {
         return id;
@@ -98,6 +102,22 @@ public class RmBO extends BaseModel {
         this.roomTypeId = roomTypeId;
     }
 
+    public Double getBasicPrice() {
+        return basicPrice;
+    }
+
+    public void setBasicPrice(Double basicPrice) {
+        this.basicPrice = basicPrice;
+    }
+
+    public Double getHourRoomPrice() {
+        return hourRoomPrice;
+    }
+
+    public void setHourRoomPrice(Double hourRoomPrice) {
+        this.hourRoomPrice = hourRoomPrice;
+    }
+
     @Override
     public String toString() {
         return "RmBO{" +
@@ -110,6 +130,8 @@ public class RmBO extends BaseModel {
                 ", roomMajorState='" + roomMajorState + '\'' +
                 ", roomType='" + roomType + '\'' +
                 ", roomTypeId=" + roomTypeId +
+                ", basicPrice=" + basicPrice +
+                ", hourRoomPrice=" + hourRoomPrice +
                 '}';
     }
 }

@@ -46,10 +46,6 @@ public class RoomBO {
     private String floorName;
     //房型
     private String roomType;
-    //标准价
-    private Double basicPrice;
-    //钟点房价格
-    private Double hourRoomPrice;
 
 
     public Integer getId() {
@@ -228,19 +224,4 @@ public class RoomBO {
         this.roomType = roomType;
     }
 
-    public Double getBasicPrice() {
-        return basicPrice;
-    }
-
-    public void setBasicPrice(Double basicPrice) {
-        this.basicPrice = basicPrice;
-    }
-
-    public Double getHourRoomPrice() {
-        return hourRoomPrice;
-    }
-
-    public void setHourRoomPrice(Double hourRoomPrice) {
-        this.hourRoomPrice = hourRoomPrice;
-    }
 }
