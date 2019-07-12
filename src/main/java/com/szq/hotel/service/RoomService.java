@@ -180,8 +180,8 @@ public class RoomService {
            Double  discount = memberDiscountBO.getDiscount();
            if(!CollectionUtils.isEmpty(list)){
                for (RmBO rmBO : list){
-                   rmBO.setBasicPrice(rmBO.getBasicPrice()/discount);
-                   rmBO.setHourRoomPrice(rmBO.getHourRoomPrice()/discount);
+                   rmBO.setBasicPrice(rmBO.getBasicPrice()*discount);
+                   rmBO.setHourRoomPrice(rmBO.getHourRoomPrice()*discount);
                }
            }
         }
