@@ -204,26 +204,72 @@ public class RoomService {
         return mp;
     }
 
-    public Map<String, Object> queryRoomTypeNum(Map<String, Object> map) {
-        Map<String, Object> mp = new HashMap<String, Object>();
+    public List<RoomTypeNumBO> queryRoomTypeNum(Map<String, Object> map) {
+        //Map<String, Object> mp = new HashMap<String, Object>();
         List<RmBO> list = this.publicQuery(map);
         Integer hotelId = (Integer) map.get("hotelId");
+        String phone = (String) map.get("phone");
+        log.info("phone:{}",phone);
         log.info("list:{}", list);
+
+        List<RoomTypeNumBO> ls = new ArrayList<RoomTypeNumBO>();
+
 
         List<RtBO> rtBOS = roomDAO.queryRt(hotelId);
 
-        if (!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)) {
-            for (RtBO rtBO : rtBOS) {
-                Integer i = 0;
-                for (RmBO rmBO : list) {
-                    if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
-                        i++;
+        //判断用户是否是会员
+        MemberDiscountBO memberDiscountBO = queryMember(phone);
+        log.info("是否是会员:{}",memberDiscountBO);
+        //没有优惠
+        if(memberDiscountBO == null){
+            log.info("没有优惠");
+            if (!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)) {
+                for (RtBO rtBO : rtBOS) {
+                    RoomTypeNumBO roomTypeBO = new RoomTypeNumBO();
+                    roomTypeBO.setState(false);
+                    roomTypeBO.setName(rtBO.getRoomTypeName());
+
+                    Integer i = 0;
+                    for (RmBO rmBO : list) {
+                        if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
+                            roomTypeBO.setBasicPrice(rmBO.getBasicPrice());
+                            roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice());
+                            roomTypeBO.setHotelId(rmBO.getHotelId());
+                            roomTypeBO.setName(rmBO.getRoomType());
+                            i++;
+                        }
+                        roomTypeBO.setCount(i);
                     }
+                    ls.add(roomTypeBO);
                 }
-                mp.put(rtBO.getRoomTypeName() + "(" + i + ")", rtBO.getId());
+            }
+        } else {
+            //有优惠
+            if(!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)){
+                log.info("有优惠");
+                for (RtBO rtBO : rtBOS) {
+                    RoomTypeNumBO roomTypeBO = new RoomTypeNumBO();
+                    roomTypeBO.setState(true);
+                    roomTypeBO.setName(rtBO.getRoomTypeName());
+                    Integer i = 0;
+                    for (RmBO rmBO : list) {
+                        if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
+                            roomTypeBO.setBasicPrice(rmBO.getBasicPrice()*memberDiscountBO.getDiscount());
+                            roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice()*memberDiscountBO.getDiscount());
+                            roomTypeBO.setHotelId(rmBO.getHotelId());
+                            roomTypeBO.setName(rmBO.getRoomType());
+                            roomTypeBO.setId(rmBO.getId());
+                            i++;
+                        }
+                        roomTypeBO.setCount(i);
+                    }
+                    ls.add(roomTypeBO);
+                }
             }
         }
-        return mp;
+
+
+        return ls;
     }
 
 
@@ -274,23 +320,6 @@ public class RoomService {
     }
 
 
-    public static void main(String[] args) throws ParseException {
-        RoomService roomService = new RoomService();
-        /*Date da  = roomService.quDate(6,0,0);
-        Date dat = roomService.quDate(5,59,59);
-        Date dd  = roomService.lDate(da,1);
-        Date d  = roomService.lDate(dat,1);
-        Date dad  = roomService.lDate(dat,1);
-        for (int i = 0 ; i<15 ; i++){
-            System.err.println("时间"+roomService.lDate(dd, i));
-            System.err.println("时间"+roomService.lDate(d, i+1));
-        }*/
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = sdf.parse("2019-07-11 05:59:59");
-        roomService.timeDate(d);
-
-    }
-
 
     /**
      * 获取今天某一时间
@@ -323,8 +352,8 @@ public class RoomService {
     }
 
 
-    public void timeDate(Date date){
-        //List<Time> list = new ArrayList<Time>();
+    public List<Time> timeDate(Date date){
+        List<Time> list = new ArrayList<Time>();
 
         //当天凌晨六点
         Date da  = quDate(6,0,0);
@@ -343,26 +372,26 @@ public class RoomService {
         if(belongCalendar(date,quDate(0,0,0),quDate(05,59,59))){
             System.err.println("start if");
             for (int i = 0 ; i<15 ; i++){
-                //Time time = new Time();
-                // time.setStartTime(lDate(dad, i));
-                System.err.println(lDate(dd, i));
-                System.err.println(lDate(d, i+1));
-                //time.setEndTime(lDate(d, i+1));
-                //list.add(time);
+                Time time = new Time();
+                time.setStartTime(lDate(dd, i));
+                //System.err.println(lDate(dd, i));
+                //System.err.println(lDate(d, i+1));
+                time.setEndTime(lDate(d, i+1));
+                list.add(time);
             }
             //如果不是那么获取明天开始后6点之后的十五天的时间段
         } else {
             System.err.println("start else");
             for (int i = 0 ; i<15 ; i++){
-                // Time time = new Time();
-                //time.setStartTime(lDate(dd, i));
-                System.err.println(lDate(dad, i));
-                System.err.println(lDate(dadd, i+1));
-                //time.setEndTime(lDate(d, i+1));
-                // list.add(time);
+                 Time time = new Time();
+                 time.setStartTime(lDate(dad, i));
+                 //System.err.println(lDate(dad, i));
+                 //System.err.println(lDate(dadd, i+1));
+                 time.setEndTime(lDate(dadd, i+1));
+                 list.add(time);
             }
         }
-        // return list;
+        return list;
     }
 
 

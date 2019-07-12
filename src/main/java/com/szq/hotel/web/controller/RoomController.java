@@ -78,6 +78,8 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/deleteByPrimaryKey")
     public void deleteByPrimaryKey(HttpServletRequest request, HttpServletResponse response, String byId) {
+        //判断要删除的房型下面的房间是否有在住人员订单
+
         Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
         roomService.deleteByPrimaryKey(idArr);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("删除成功"));
@@ -164,8 +166,15 @@ public class RoomController extends BaseCotroller {
         AdminBO loginUser = super.getLoginAdmin(request);
 
         if(StringUtils.isEmpty(phone)){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("手机号不能为空"));
-            super.safeJsonPrint(response, result);
+            System.out.println("进入此方法");
+            String json=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000200"));
+            super.safeHtmlPrint(response,json);
+            return;
+        }
+        if(StringUtils.isEmpty(phone)){
+            System.out.println("进入此方法");
+            String json=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000201"));
+            super.safeHtmlPrint(response,json);
             return;
         }
         log.info("进入此方法");
@@ -198,8 +207,21 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/queryRoomTypeNum")
     public void queryRoomTypeNum(HttpServletRequest request, HttpServletResponse response, String checkTime,
                         String endTime, String roomTypeId, String roomAuxiliaryStatus,
-                        String roomAuxiliaryStatusStand){
+                        String roomAuxiliaryStatusStand, String phone){
         AdminBO loginUser = super.getLoginAdmin(request);
+        if(StringUtils.isEmpty(phone)){
+            System.out.println("进入此方法");
+            String json=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000200"));
+            super.safeHtmlPrint(response,json);
+            return;
+        }
+        if(StringUtils.isEmpty(phone)){
+            System.out.println("进入此方法");
+            String json=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000201"));
+            super.safeHtmlPrint(response,json);
+            return;
+        }
+
         log.info("进入此方法");
         Map<String, Object> map = new HashMap<String,Object>();
         log.info("checkTime:{}",checkTime);
@@ -208,6 +230,7 @@ public class RoomController extends BaseCotroller {
         log.info("roomAuxiliaryStatus:{}",roomAuxiliaryStatus);
         log.info("roomAuxiliaryStatusStand:{}",roomAuxiliaryStatusStand);
         log.info("hotelId:{}",loginUser.getHotelId());
+        log.info("phone:{}",phone);
 
         map.put("checkTime", checkTime);
         map.put("hotelId", loginUser.getHotelId());
@@ -215,10 +238,12 @@ public class RoomController extends BaseCotroller {
         map.put("roomTypeId", roomTypeId);
         map.put("roomAuxiliaryStatus", roomAuxiliaryStatus);
         map.put("roomAuxiliaryStatusStand", roomAuxiliaryStatusStand);
+        map.put("hotelId:{}", loginUser.getHotelId());
+        map.put("phone", phone);
 
-        Map<String, Object> mp  = roomService.queryRoomTypeNum(map);
+        List<RoomTypeNumBO> roomTypeNumBOS = roomService.queryRoomTypeNum(map);
 
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(roomTypeNumBOS));
         super.safeJsonPrint(response, result);
         return;
 
