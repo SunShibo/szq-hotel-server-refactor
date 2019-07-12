@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.entity.param.OrderParam;
+import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.CashierSummaryService;
 import com.szq.hotel.service.CheckInPersonService;
@@ -13,6 +14,7 @@ import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
@@ -297,6 +299,53 @@ public class OrderController extends BaseCotroller {
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
         super.safeJsonPrint(response, result);
     }
+
+    /**
+     * 获取在住报表
+     * */
+    @RequestMapping("/getCheckInReport")
+    public void getCheckInReport(HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+
+        List<OrderResult> results=orderService.getCheckInReport();
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results)) ;
+        super.safeJsonPrint(response, result);
+
+    }
+
+    /**
+     * 获取预离报表
+     * @param beforeTime 在这个时间之前 最大时间
+     * @param afterTime 在这个时间之后 最小时间
+     * */
+    @RequestMapping("/getCheckOutReport")
+    public void getCheckOutReport(@DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")Date beforeTime, @DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")Date afterTime, HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if (beforeTime == null||afterTime==null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
+
+        List<OrderResult> results=orderService.getCheckOutReport(beforeTime,afterTime);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results)) ;
+        super.safeJsonPrint(response, result);
+
+    }
+
 
     /**
      * 检查身份证号是否在住

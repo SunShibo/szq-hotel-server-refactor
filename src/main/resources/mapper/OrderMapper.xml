@@ -13,13 +13,13 @@
         check_out_time,day_count,phone,ID_number,
         ID_number_type,order_type,clerk_ordering_name,
         clerk_ordering_id,members_id,
-        memberId_or_organizationId,total_price,create_time,hotel_id)
+        memberId_or_organizationId,total_price,create_time,hotel_id,channel)
         values
         (#{orderPlacer},#{orderNumber},#{checkType},
         #{checkTime},#{checkOutTime},#{dayCount},#{phone},#{IDNumber},
         #{IDNumberType},#{orderType},
         #{clerkOrderingName},#{clerkOrderingId},#{membersId},
-        #{memberIdOrOrganizationId},#{totalPrice},now(),#{hotelId})
+        #{memberIdOrOrganizationId},#{totalPrice},now(),#{hotelId},#{channel})
     </insert>
 
     <!-- 添加子订单 -->
@@ -100,7 +100,7 @@
     </update>
 
     <!--在住报表-->
-    <select id="getCheckInReport" parameterType="com.szq.hotel.entity.result.OrderResult">
+    <select id="getCheckInReport" resultType="com.szq.hotel.entity.result.OrderResult">
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
         c.room_rate,other_rate,c.free_rate_num
@@ -114,9 +114,34 @@
         and c.id=e.order_child_id
         and p.certificate_type=v.id
         and c.id=`or`.order_child_id
-        and e.time='2019-07-09 00:00:00'
+        and c.end_time='2019-07-11 12:00:00'
+        and p.status='checkin'
+        and (order_state='admissions')
         group by or.order_child_id
     </select>
+
+    <!--预离报表-->
+    <select id="getCheckOutReport"  resultType="com.szq.hotel.entity.result.OrderResult">
+        select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
+        t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
+        c.room_rate,other_rate,c.free_rate_num
+        from hm_order as o,hm_room as r,hm_room_type as t,
+        hm_order_child as c,hm_dictionaries_value as v,
+        hm_check_in_person as p,hm_everyday_room_price as e,hm_order_record as `or`
+        where o.id=c.order_id
+        and c.room_id=r.id
+        and c.room_type_id=t.id
+        and c.id=p.order_child_id
+        and c.id=e.order_child_id
+        and p.certificate_type=v.id
+        and c.id=`or`.order_child_id
+        and p.status='checkin'
+        and (order_state='admissions')
+        and c.end_time&gt;=#{afterTime}
+        and c.end_time&lt;=#{beforeTime}
+        group by or.order_child_id
+    </select>
+
     <!-- 根据手机号 身份证号 查询订单信息 -->
     <select id="getOrderByIdOrMobile" resultType="com.szq.hotel.entity.bo.OrderBO">
     select * from hm_order where

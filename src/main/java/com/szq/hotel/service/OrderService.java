@@ -327,6 +327,11 @@ public class OrderService {
     public List<OrderResult> getCheckInReport(){
         return orderDAO.getCheckInReport();
     }
+
+    //获取预离店报表
+    public List<OrderResult> getCheckOutReport(Date beforeTime,Date afterTime){
+        return orderDAO.getCheckOutReport(beforeTime,afterTime);
+    }
     /**
      * 订单列表
      *

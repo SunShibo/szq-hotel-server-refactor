@@ -9,6 +9,7 @@ import com.szq.hotel.entity.result.OrderResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public interface OrderDAO {
@@ -41,6 +42,8 @@ public interface OrderDAO {
     List<OrderChildBO> getRoomInfoById(Integer orderId);
     //获取在住报表
     List<OrderResult> getCheckInReport();
+    //获取预离报表
+    List<OrderResult> getCheckOutReport(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime);
     /**
      * 订单列表
      * @param param
