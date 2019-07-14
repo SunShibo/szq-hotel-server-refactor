@@ -10,11 +10,11 @@ public class RoomTypeNumBO extends BaseModel {
 
     private Integer count; //酒店数量
     private Integer hotelId;//酒店id
-    private Integer id;//id
+    private Integer id;//房型id
     private String name;//房型名称
     private Double basicPrice;//全天房价格
     private Double hourRoomPrice;//钟点房价格
-    private boolean state;//是否优惠
+    //private boolean state;//是否优惠
 
     public Integer getCount() {
         return count;
@@ -64,24 +64,5 @@ public class RoomTypeNumBO extends BaseModel {
         this.hourRoomPrice = hourRoomPrice;
     }
 
-    public boolean isState() {
-        return state;
-    }
 
-    public void setState(boolean state) {
-        this.state = state;
-    }
-
-    @Override
-    public String toString() {
-        return "RoomTypeNumBO{" +
-                "count=" + count +
-                ", hotelId=" + hotelId +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", basicPrice=" + basicPrice +
-                ", hourRoomPrice=" + hourRoomPrice +
-                ", state=" + state +
-                '}';
-    }
 }

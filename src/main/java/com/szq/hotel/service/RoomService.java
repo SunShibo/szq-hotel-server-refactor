@@ -45,12 +45,14 @@ public class RoomService {
         mp.put("count", count);
         return mp;
     }
+
     /*
         通过id查询房间信息
     */
-    public RoomBO selectByPrimaryKey(Integer id){
+    public RoomBO selectByPrimaryKey(Integer id) {
         return roomDAO.selectByPrimaryKey(id);
     }
+
     public int insertSelective(RoomBO record) {
         return roomDAO.insertSelective(record);
     }
@@ -88,11 +90,11 @@ public class RoomService {
     }
 
     /**
-            * 抽取公共方法
+     * 抽取公共方法
      *
-             * @param map
+     * @param map
      * @return
-             */
+     */
     public List<RmBO> publicQuery(Map<String, Object> map) {
 
         //获取预入住时间
@@ -151,14 +153,11 @@ public class RoomService {
     }
 
 
-
-
-
     /**
      * 预约入住选择房间
      */
     public Map<String, Object> queryRm(Map<String, Object> map) {
-        Map<String, Object> mp = new HashMap<String, Object>();
+        Map<String, Object> mp = new LinkedHashMap<String, Object>();
 
         //获取酒店下面所有楼层
         Integer hotelId = (Integer) map.get("hotelId");
@@ -170,20 +169,20 @@ public class RoomService {
 
         String phone = (String) map.get("phone");
         MemberDiscountBO memberDiscountBO = queryMember(phone);
-        if(memberDiscountBO == null){
+        if (memberDiscountBO == null) {
             //不是会员
-            mp.put("discount",false);
+           // mp.put("discount", false);
         } else {
             //是会员
             //获取折扣价格
-            mp.put("discount",true);
-           Double  discount = memberDiscountBO.getDiscount();
-           if(!CollectionUtils.isEmpty(list)){
-               for (RmBO rmBO : list){
-                   rmBO.setBasicPrice(rmBO.getBasicPrice()*discount);
-                   rmBO.setHourRoomPrice(rmBO.getHourRoomPrice()*discount);
-               }
-           }
+            //mp.put("discount", true);
+            Double discount = memberDiscountBO.getDiscount();
+            if (!CollectionUtils.isEmpty(list)) {
+                for (RmBO rmBO : list) {
+                    rmBO.setBasicPrice(rmBO.getBasicPrice() * discount);
+                    rmBO.setHourRoomPrice(rmBO.getHourRoomPrice() * discount);
+                }
+            }
         }
 
 
@@ -195,7 +194,7 @@ public class RoomService {
                         a.add(rmBO);
                     }
                 }
-                mp.put(f.getName() + "", a);
+                mp.put(f.getName() , a);
             }
         }
 
@@ -209,7 +208,7 @@ public class RoomService {
         List<RmBO> list = this.publicQuery(map);
         Integer hotelId = (Integer) map.get("hotelId");
         String phone = (String) map.get("phone");
-        log.info("phone:{}",phone);
+        log.info("phone:{}", phone);
         log.info("list:{}", list);
 
         List<RoomTypeNumBO> ls = new ArrayList<RoomTypeNumBO>();
@@ -217,25 +216,30 @@ public class RoomService {
 
         List<RtBO> rtBOS = roomDAO.queryRt(hotelId);
 
+        log.info("rtBOS:{}",rtBOS);
+
         //判断用户是否是会员
         MemberDiscountBO memberDiscountBO = queryMember(phone);
-        log.info("是否是会员:{}",memberDiscountBO);
+        log.info("是否是会员:{}", memberDiscountBO);
         //没有优惠
-        if(memberDiscountBO == null){
+        if (memberDiscountBO == null) {
             log.info("没有优惠");
             if (!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)) {
                 for (RtBO rtBO : rtBOS) {
                     RoomTypeNumBO roomTypeBO = new RoomTypeNumBO();
-                    roomTypeBO.setState(false);
+                    //roomTypeBO.setState(false);
                     roomTypeBO.setName(rtBO.getRoomTypeName());
-
+                    roomTypeBO.setHotelId(rtBO.getHotelId());
+                    roomTypeBO.setId(rtBO.getId());
+                    roomTypeBO.setBasicPrice(rtBO.getBasicPrice());
+                    roomTypeBO.setHourRoomPrice(rtBO.getHourRoomPrice());
+                    //roomTypeBO.setName(rtBO.getRoomType());
                     Integer i = 0;
                     for (RmBO rmBO : list) {
                         if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
-                            roomTypeBO.setBasicPrice(rmBO.getBasicPrice());
-                            roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice());
-                            roomTypeBO.setHotelId(rmBO.getHotelId());
-                            roomTypeBO.setName(rmBO.getRoomType());
+                            //roomTypeBO.setBasicPrice(rmBO.getBasicPrice());
+                            //roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice());
+                            //roomTypeBO.setHotelId(rmBO.getHotelId());
                             i++;
                         }
                         roomTypeBO.setCount(i);
@@ -245,20 +249,25 @@ public class RoomService {
             }
         } else {
             //有优惠
-            if(!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)){
+            if (!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(list)) {
                 log.info("有优惠");
                 for (RtBO rtBO : rtBOS) {
                     RoomTypeNumBO roomTypeBO = new RoomTypeNumBO();
-                    roomTypeBO.setState(true);
+                    //roomTypeBO.setState(true);
                     roomTypeBO.setName(rtBO.getRoomTypeName());
+                    roomTypeBO.setId(rtBO.getId());
+                    roomTypeBO.setHotelId(rtBO.getHotelId());
+                    roomTypeBO.setBasicPrice(rtBO.getBasicPrice() * memberDiscountBO.getDiscount());
+                    roomTypeBO.setHourRoomPrice(rtBO.getHourRoomPrice()* memberDiscountBO.getDiscount());
+                    //roomTypeBO.setName(rtBO.getRoomType());
                     Integer i = 0;
                     for (RmBO rmBO : list) {
                         if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
-                            roomTypeBO.setBasicPrice(rmBO.getBasicPrice()*memberDiscountBO.getDiscount());
-                            roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice()*memberDiscountBO.getDiscount());
-                            roomTypeBO.setHotelId(rmBO.getHotelId());
-                            roomTypeBO.setName(rmBO.getRoomType());
-                            roomTypeBO.setId(rmBO.getId());
+                            //roomTypeBO.setBasicPrice(rmBO.getBasicPrice() * memberDiscountBO.getDiscount());
+                           // roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice() * memberDiscountBO.getDiscount());
+                           //roomTypeBO.setHotelId(rmBO.getHotelId());
+                           // roomTypeBO.setName(rmBO.getRoomType());
+                           //roomTypeBO.setId(rmBO.getId());
                             i++;
                         }
                         roomTypeBO.setCount(i);
@@ -320,7 +329,6 @@ public class RoomService {
     }
 
 
-
     /**
      * 获取今天某一时间
      *
@@ -340,55 +348,56 @@ public class RoomService {
 
     /**
      * 获取未来i天这个时间
+     *
      * @param date
      * @return
      */
-    public Date lDate(Date date,Integer i ){
+    public Date lDate(Date date, Integer i) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-        calendar.add(calendar.DATE,i);//把日期往后增加一天.整数往后推,负数往前移动
-        date=calendar.getTime(); //这个时间就是日期往后推一天的结果
+        calendar.add(calendar.DATE, i);//把日期往后增加一天.整数往后推,负数往前移动
+        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
         return date;
     }
 
 
-    public List<Time> timeDate(Date date){
+    public List<Time> timeDate(Date date) {
         List<Time> list = new ArrayList<Time>();
 
         //当天凌晨六点
-        Date da  = quDate(6,0,0);
+        Date da = quDate(6, 0, 0);
         //当天凌晨5点59分59秒
-        Date dat = quDate(5,59,59);
+        Date dat = quDate(5, 59, 59);
         //从当天开始的下一天开始时间
-        Date dd  = lDate(da,0);
+        Date dd = lDate(da, 0);
         //从开始天使的下一天结束时间
-        Date d   = lDate(dat,0);
+        Date d = lDate(dat, 0);
         //从明天开始的下一天开始时间
-        Date dad  = lDate(da,1);
+        Date dad = lDate(da, 1);
         //从明天开始的下一天结束时间
-        Date dadd  = lDate(dat,1);
+        Date dadd = lDate(dat, 1);
         //判断当前时间是否在凌晨零点到凌晨六点之间
         //如果是那么获取今天6点后开始的之后的十五天的时间段
-        if(belongCalendar(date,quDate(0,0,0),quDate(05,59,59))){
+        if (belongCalendar(date, quDate(0, 0, 0), quDate(05, 59, 59))) {
             System.err.println("start if");
-            for (int i = 0 ; i<15 ; i++){
+            for (int i = 0; i < 15; i++) {
                 Time time = new Time();
                 time.setStartTime(lDate(dd, i));
                 //System.err.println(lDate(dd, i));
                 //System.err.println(lDate(d, i+1));
-                time.setEndTime(lDate(d, i+1));
+                time.setEndTime(lDate(d, i + 1));
                 list.add(time);
             }
             //如果不是那么获取明天开始后6点之后的十五天的时间段
         } else {
             System.err.println("start else");
-            for (int i = 0 ; i<15 ; i++){
-                 Time time = new Time();
-                 time.setStartTime(lDate(dad, i));
-                 //System.err.println(lDate(dad, i));
-                 //System.err.println(lDate(dadd, i+1));
-                 time.setEndTime(lDate(dadd, i+1));
-                 list.add(time);
+            for (int i = 0; i < 15; i++) {
+                Time time = new Time();
+                time.setStartTime(lDate(dad, i));
+                //System.err.println(lDate(dad, i));
+                //System.err.println(lDate(dadd, i+1));
+                time.setEndTime(lDate(dadd, i + 1));
+                list.add(time);
             }
         }
         return list;
@@ -397,39 +406,21 @@ public class RoomService {
 
     /**
      * 判断用户是否为会员
-     *  并且获取折扣价格
+     * 并且获取折扣价格
+     *
      * @param phone
      * @return
      */
-    public MemberDiscountBO queryMember(String phone){
+    public MemberDiscountBO queryMember(String phone) {
         MemberDiscountBO memberDiscountBO = roomDAO.queryMemberByPhone(phone);
         return memberDiscountBO;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /*
         修改房间是否为维修房
      */
-    public void updateRoomState(Integer id,Integer userId){
+    public void updateRoomState(Integer id, Integer userId) {
         //查询房间主状态
         String majorState = roomDAO.getRoomMajorState(id);
         //查询房间维修状态
@@ -437,7 +428,7 @@ public class RoomService {
         RoomBO roomBO = new RoomBO();
         roomBO.setId(id);
         //之前不是维修房改为维修房
-        if ("no".equals(state)){
+        if ("no".equals(state)) {
             //执行修改
             roomBO.setRoomState("yes");
             roomDAO.updateRoomState(roomBO);
@@ -451,9 +442,9 @@ public class RoomService {
             recordBO.setCreateTime(new Date());
             roomRecordDAO.insert(recordBO);
             //之前是维修房
-        }else if ("yes".equals(state)){
-            Map<String,Object> map =  new HashMap<String, Object>();
-            map.put("id",id);
+        } else if ("yes".equals(state)) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", id);
             map.put("state", Constants.DIRTY.getValue());
             roomDAO.updateroomMajorState(map);
             //执行修改
@@ -474,12 +465,12 @@ public class RoomService {
     /*
         修改房间备注
      */
-    public void updateRoomRemark(Integer id,String remark,Integer userId){
+    public void updateRoomRemark(Integer id, String remark, Integer userId) {
         //查询房间备注
         String remark1 = roomDAO.getRoomRemark(id);
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put("id",id);
-        map.put("remark",remark);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("id", id);
+        map.put("remark", remark);
         roomDAO.updateRoomRemark(map);
 
         //查询房间主状态
@@ -490,7 +481,7 @@ public class RoomService {
         recordBO.setRoomId(id);
         recordBO.setVirginState(majorState);
         recordBO.setNewState(majorState);
-        recordBO.setRemark("修改备注"+"原:"+remark1+";"+"现:"+remark);
+        recordBO.setRemark("修改备注" + "原:" + remark1 + ";" + "现:" + remark);
         recordBO.setCreateUserId(userId);
         recordBO.setCreateTime(new Date());
         roomRecordDAO.insert(recordBO);
@@ -499,7 +490,7 @@ public class RoomService {
     /*
            查询房屋信息
         */
-    public RoomMessageBO getRoomMessage(Integer id){
+    public RoomMessageBO getRoomMessage(Integer id) {
         return roomDAO.getRoomMessage(id);
     }
 

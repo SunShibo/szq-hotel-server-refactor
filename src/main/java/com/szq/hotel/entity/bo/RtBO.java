@@ -9,6 +9,9 @@ import com.szq.hotel.common.base.BaseModel;
 public class RtBO extends BaseModel {
     private String roomTypeName;
     private Integer id;
+    private Integer hotelId;
+    private Double basicPrice;
+    private Double hourRoomPrice;
 
     public String getRoomTypeName() {
         return roomTypeName;
@@ -25,4 +28,29 @@ public class RtBO extends BaseModel {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public Integer getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Integer hotelId) {
+        this.hotelId = hotelId;
+    }
+
+    public Double getBasicPrice() {
+        return basicPrice;
+    }
+
+    public void setBasicPrice(Double basicPrice) {
+        this.basicPrice = basicPrice;
+    }
+
+    public Double getHourRoomPrice() {
+        return hourRoomPrice;
+    }
+
+    public void setHourRoomPrice(Double hourRoomPrice) {
+        this.hourRoomPrice = hourRoomPrice;
+    }
+
 }

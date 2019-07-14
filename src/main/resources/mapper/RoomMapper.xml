@@ -212,7 +212,7 @@
         setting = #{setting,jdbcType=VARCHAR},
       </if>
       <if test="character != null" >
-        character = #{character,jdbcType=VARCHAR},
+        `character` = #{character,jdbcType=VARCHAR},
       </if>
       <if test="createUserId != null" >
         create_user_id = #{createUserId,jdbcType=INTEGER},
@@ -409,13 +409,13 @@
 
 
   <select id="queryRt" resultType="com.szq.hotel.entity.bo.RtBO">
-    SELECT room_type_name,id FROM hm_room_type WHERE hotel_id  = #{hotelId}  AND `show` = 'yes'
+    SELECT room_type_name,id,hotel_id,basic_price, hour_room_price FROM hm_room_type WHERE hotel_id  = #{hotelId}  AND `show` = 'yes'
   </select>
 
 
   <select id="queryFlr" resultType="com.szq.hotel.entity.bo.FlrBO">
     select * from hm_floor
-     where  hotel_id = #{hotelId}
+     where  hotel_id = #{hotelId}  order by sort desc
        </select>
   <!--修改房间是否为维修房-->
     <update id="updateRoomState" parameterType="com.szq.hotel.entity.bo.RoomBO">
