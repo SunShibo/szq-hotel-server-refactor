@@ -46,7 +46,8 @@ public class RoomBO {
     private String floorName;
     //房型
     private String roomType;
-
+    private String  show; //是否显示
+    private String network;//网络上下架
 
     public Integer getId() {
         return id;
@@ -224,4 +225,19 @@ public class RoomBO {
         this.roomType = roomType;
     }
 
+    public String getShow() {
+        return show;
+    }
+
+    public void setShow(String show) {
+        this.show = show;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
+    }
 }

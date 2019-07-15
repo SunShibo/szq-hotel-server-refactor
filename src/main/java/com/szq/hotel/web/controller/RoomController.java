@@ -39,7 +39,7 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/queryRoom")
     public void queryRoom(HttpServletRequest request, HttpServletResponse response, Integer pageNo,
-                          Integer pageSize, Integer floorId, Integer roomName, Integer roomTypeId, Integer hotelId) {
+                          Integer pageSize, Integer floorId, String roomName, Integer roomTypeId, Integer hotelId) {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         QueryInfo queryInfo = getQueryInfo(pageNo, pageSize);
         //创建一个用于封装sql条件的map集合
@@ -70,6 +70,7 @@ public class RoomController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return;
         }
+        record.setHotelId(loginAdmin.getHotelId());
         roomService.insertSelective(record);
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加成功"));

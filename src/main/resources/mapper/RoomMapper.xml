@@ -114,6 +114,12 @@
       <if test="hotelId != null" >
         hotel_id,
       </if>
+      <if test="show != null" >
+        `show`,
+      </if>
+      <if test="network != null">
+        network,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -172,6 +178,12 @@
       </if>
       <if test="hotelId != null" >
         #{hotelId,jdbcType=INTEGER},
+      </if>
+      <if test="show != null">
+        #{show,jdbcType=VARCHAR}
+      </if>
+      <if test="network != null">
+        #{network,jdbcType=VARCHAR}
       </if>
     </trim>
   </insert>
