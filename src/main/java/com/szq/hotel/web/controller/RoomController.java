@@ -162,7 +162,7 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/quertRm")
     public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime,
                         String endTime, String roomTypeId, String roomAuxiliaryStatus,
-                        String roomAuxiliaryStatusStand, String phone){
+                        String phone){
         AdminBO loginUser = super.getLoginAdmin(request);
 
         if(StringUtils.isEmpty(phone)){
@@ -179,11 +179,27 @@ public class RoomController extends BaseCotroller {
         }
         log.info("进入此方法");
         Map<String, Object> map = new HashMap<String,Object>();
+        if(StringUtils.isEmpty(roomAuxiliaryStatus)){
+            System.out.println("进入此方法");
+            String json=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeHtmlPrint(response,json);
+            return;
+        }
+        if("day".equals(roomAuxiliaryStatus)){
+            map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "yes");
+        }
+        if("hour".equals(roomAuxiliaryStatus)){
+            map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "no");
+        }
+        if("free".equals(roomAuxiliaryStatus)){
+            map.put("roomAuxiliaryStatus", "no");
+            map.put("roomAuxiliaryStatusStand", "yes");
+        }
         log.info("checkTime:{}",checkTime);
         log.info("endTime:{}",endTime);
         log.info("roomTypeId:{}",roomTypeId);
-        log.info("roomAuxiliaryStatus:{}",roomAuxiliaryStatus);
-        log.info("roomAuxiliaryStatusStand:{}",roomAuxiliaryStatusStand);
         log.info("hotelId:{}",loginUser.getHotelId());
         log.info("phone:{}",phone);
 
@@ -191,8 +207,6 @@ public class RoomController extends BaseCotroller {
         map.put("hotelId", loginUser.getHotelId());
         map.put("endTime", endTime);
         map.put("roomTypeId", roomTypeId);
-        map.put("roomAuxiliaryStatus", roomAuxiliaryStatus);
-        map.put("roomAuxiliaryStatusStand", roomAuxiliaryStatusStand);
         map.put("phone", phone);
 
 
@@ -206,8 +220,7 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/queryRoomTypeNum")
     public void queryRoomTypeNum(HttpServletRequest request, HttpServletResponse response, String checkTime,
-                        String endTime, String roomTypeId, String roomAuxiliaryStatus,
-                        String roomAuxiliaryStatusStand, String phone){
+                        String endTime, String roomTypeId, String roomAuxiliaryStatus, String phone){
         AdminBO loginUser = super.getLoginAdmin(request);
         if(StringUtils.isEmpty(phone)){
             System.out.println("进入此方法");
@@ -221,14 +234,31 @@ public class RoomController extends BaseCotroller {
             super.safeHtmlPrint(response,json);
             return;
         }
-
-        log.info("进入此方法");
+        if(StringUtils.isEmpty(roomAuxiliaryStatus)){
+            System.out.println("进入此方法");
+            String json=JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeHtmlPrint(response,json);
+            return;
+        }
         Map<String, Object> map = new HashMap<String,Object>();
+        if("day".equals(roomAuxiliaryStatus)){
+            map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "yes");
+        }
+        if("hour".equals(roomAuxiliaryStatus)){
+            map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "no");
+        }
+        if("free".equals(roomAuxiliaryStatus)){
+            map.put("roomAuxiliaryStatus", "no");
+            map.put("roomAuxiliaryStatusStand", "yes");
+        }
+        log.info("进入此方法");
+
         log.info("checkTime:{}",checkTime);
         log.info("endTime:{}",endTime);
         log.info("roomTypeId:{}",roomTypeId);
-        log.info("roomAuxiliaryStatus:{}",roomAuxiliaryStatus);
-        log.info("roomAuxiliaryStatusStand:{}",roomAuxiliaryStatusStand);
+
         log.info("hotelId:{}",loginUser.getHotelId());
         log.info("phone:{}",phone);
 
@@ -236,9 +266,7 @@ public class RoomController extends BaseCotroller {
         map.put("hotelId", loginUser.getHotelId());
         map.put("endTime", endTime);
         map.put("roomTypeId", roomTypeId);
-        map.put("roomAuxiliaryStatus", roomAuxiliaryStatus);
-        map.put("roomAuxiliaryStatusStand", roomAuxiliaryStatusStand);
-        map.put("hotelId:{}", loginUser.getHotelId());
+        map.put("hotelId", loginUser.getHotelId());
         map.put("phone", phone);
 
         List<RoomTypeNumBO> roomTypeNumBOS = roomService.queryRoomTypeNum(map);

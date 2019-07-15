@@ -388,8 +388,7 @@
     <if test="roomAuxiliaryStatusStand != null and roomAuxiliaryStatusStand !='' ">
      and  hm_room.room_auxiliary_status_stand = #{roomAuxiliaryStatusStand}
     </if>
-    AND hm_room.lock_room_state
-    IN ('ope','network') AND hm_room.show = 'yes'
+    AND hm_room.show = 'yes'
     HAVING   hm_room.lock_room_start_time  &gt;=  #{endTime}   OR
     hm_room.lock_room_end_time   &lt;= #{checkTime}
     OR hm_room.lock_room_end_time IS NULL
@@ -457,5 +456,9 @@
 
   </select>
 
+
+  <select id="queryTc" resultType="com.szq.hotel.entity.bo.OcBO">
+    select * from hm_order_child where room_id = #{roomId} and order_state = 'reservation';
+  </select>
 
 </mapper>

@@ -12,6 +12,7 @@ public class RoomTypeNumBO extends BaseModel {
     private Integer hotelId;//酒店id
     private Integer id;//房型id
     private String name;//房型名称
+    private Integer roomTypeId;// 酒店房型id
     private Double basicPrice;//全天房价格
     private Double hourRoomPrice;//钟点房价格
     //private boolean state;//是否优惠

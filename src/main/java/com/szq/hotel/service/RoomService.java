@@ -115,14 +115,19 @@ public class RoomService {
             }
         }
         log.info("获取符合条件房间的id:{}", ls);
+        List<OcBO> l = null ;
         //根据房间id获取符合条件的订单
-        List<OcBO> l = roomDAO.queryOc(ls, dt, et);
-        List<Integer> reId = new ArrayList<Integer>();
-        for (OcBO oc : l) {
-            log.info("获取符合条件房间的订单:{}", oc.getRoomId());
-            reId.add(oc.getRoomId());
+        if(!CollectionUtils.isEmpty(ls)){
+           l = roomDAO.queryOc(ls, dt, et);
         }
 
+        List<Integer> reId = new ArrayList<Integer>();
+        if(!CollectionUtils.isEmpty(l)){
+            for (OcBO oc : l) {
+                log.info("获取符合条件房间的订单:{}", oc.getRoomId());
+                reId.add(oc.getRoomId());
+            }
+        }
 
         log.info("判断客人选择的预入住时间是否在其他符合条件订单之间的id:{}", reId);
         //去重
@@ -318,14 +323,39 @@ public class RoomService {
         return roomDAO.queryRt(hotelId);
     }
 
+
+    public static void main(String[] args)  {
+        RoomService roomService  = new RoomService();
+        roomService.queryindexRoomState(1);
+    }
     /**
      * 查询未来15天该房间是否有人预约
      *
      * @param roomId
      * @return
      */
-    public List<RoomStateDTO> queryindexRoomState(Integer roomId) {
-        return null;
+    public  void  queryindexRoomState(Integer roomId) {
+        //获取房间所有订单列表
+        List<OcBO> ocBOS = roomDAO.queryTc(roomId);
+        //获取未来十五天的时间段
+        List<Time> times = timeDate(new Date());
+        //判断未来十五天的时间段是否包括在订单列表入住时间和离开时间这个时间段之间
+
+        for (Time time :  times){
+            for (OcBO rtBOS1:ocBOS){
+                System.out.println("time:"+time.getStartTime());
+                System.out.println("time:"+time.getEndTime());
+                System.out.println("rt:"+rtBOS1.getStartTime());
+                System.out.println("rt:"+rtBOS1.getEndTime());
+                boolean b = false;
+                try {
+                    b = isDateCross(time.getStartTime(), time.getEndTime(), rtBOS1.getStartTime(), rtBOS1.getEndTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println(b == true ? "有交集" : "无交集");
+            }
+        }
     }
 
 
@@ -494,5 +524,25 @@ public class RoomService {
         return roomDAO.getRoomMessage(id);
     }
 
+    public static boolean isDateCross (Date date1_1, Date date1_2, Date date2_1, Date date2_2) throws Exception {
+        boolean flag = false;// 默认无交集
+        long l1_1 = date1_1.getTime();
+        long l1_2 = date1_2.getTime();
+        long l2_1 = date2_1.getTime();
+        long l2_2 = date2_2.getTime();
+
+        if((l1_1>l1_2)||(l2_1>l2_2))
+
+            throw new Exception("Parameter error:date1_1 should not be great than date1_2 and date2_1 should not be great than date2_2");
+        if (((l1_1 <= l2_1) && (l2_1 <= l1_2)) || ((l1_1 <= l2_2) && (l2_2 <= l1_2))
+                || ((l2_1 <= l1_1) && (l1_1 <= l2_2)) || ((l2_1 <= l1_2) && (l1_2 <= l2_2))) {
+            flag = true;
+        }
+        return flag;
+    }
+
+
 
 }
+
+
