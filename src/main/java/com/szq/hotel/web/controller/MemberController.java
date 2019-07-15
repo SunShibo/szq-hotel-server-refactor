@@ -82,17 +82,22 @@ public class MemberController extends BaseCotroller {
                 return ;
             }
 
-
+            //通过会员级别id找到一个会员卡的信息
             MemberCardBO memberCardBO = memberCardService.getMemberNumberMoney(memberCardLevelId);
             if (memberCardBO == null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("本级别会员暂无卡号"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("卡库中卡号不足"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;
             }
+            //设置会员的会员卡id
+            memberBO.setMemberCardId(memberCardBO.getId());
+
             String memberCardNumber = memberCardBO.getCardNumber();
             BigDecimal money = memberCardBO.getMoney();
-
+            //修改会员卡的售出时间
+            memberCardService.updateSellingTime(memberCardNumber);
+            //向数据库中添加数据
             memberService.addMember(memberBO,loginAdmin.getId());
             Map<String,Object> map = new HashMap<String, Object>();
             map.put("memberCardNumber",memberCardNumber);

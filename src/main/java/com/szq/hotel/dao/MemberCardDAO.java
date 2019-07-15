@@ -54,4 +54,8 @@ public interface MemberCardDAO {
         查询会员卡卡号和售价
      */
     MemberCardBO getMemberNumberMoney(Integer memberLevelId);
+    /*
+        更新会员卡售出时间
+     */
+    void updateSellingTime(String cardNumber);
 }

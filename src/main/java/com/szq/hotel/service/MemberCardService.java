@@ -154,5 +154,11 @@ public class MemberCardService {
         return memberCardDAO.getMemberNumberMoney(memberLevelId);
     }
 
+    /*
+        更新会员卡售出时间
+     */
+    public void updateSellingTime(String cardNumber){
+        memberCardDAO.updateSellingTime(cardNumber);
+    }
 
 }
