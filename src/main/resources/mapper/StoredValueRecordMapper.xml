@@ -15,14 +15,13 @@
         #{currentBalance},#{createUserId},NOW(),#{remark});
 </insert>
     <!--储值记录列表-->
-    <select id="getStoredValueRecord" resultType="com.szq.hotel.entity.bo.StoredValueRecordBO">
-        SELECT * FROM `hm_stored_value_record`
+    <select id="getStoredValueRecord" resultType="com.szq.hotel.entity.bo.StoredValueRecordBO" parameterType="java.util.Map">
+        SELECT * FROM `hm_stored_value_record` WHERE check_in_member_id = #{memberId}
         <include refid="limit"/>
     </select>
     <!--储值记录数量-->
     <select id="getStoredValueRecordCount"  parameterType="java.util.Map" resultType="java.lang.Integer">
-        SELECT COUNT(id) FROM `hm_stored_value_record`
-        <include refid="limit"/>
+        SELECT COUNT(id) FROM `hm_stored_value_record` WHERE check_in_member_id = #{memberId}
     </select>
     <!--分页查询-->
     <sql id="limit">

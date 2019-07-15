@@ -29,7 +29,7 @@ public class IntegralRecordController extends BaseCotroller {
     private IntegralRecordService integralRecordService;
 
     @RequestMapping("/getIntegralRecord")
-    public void getIntegralRecord(Integer pageNo, Integer pageSize, HttpServletRequest request, HttpServletResponse response) {
+    public void getIntegralRecord(Integer memberId,Integer pageNo, Integer pageSize, HttpServletRequest request, HttpServletResponse response) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -41,12 +41,23 @@ public class IntegralRecordController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
+            //参数验证
+            if (memberId == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
             Map<String,Object> map=new HashMap<String, Object>();
+            map.put("memberId",memberId);
             QueryInfo queryInfo = getQueryInfo(pageNo,pageSize);
             if(queryInfo != null){
                 map.put("pageSize",queryInfo.getPageSize());
                 map.put("pageOffset",queryInfo.getPageOffset());
             }
+
+
             List<IntegralRecordBO> integralRecordBOS = integralRecordService.getIntegralRecord(map);
             Integer count = integralRecordService.getIntegralRecordCount(map);
             Map<String,Object> resultMap=new HashMap<String, Object>();

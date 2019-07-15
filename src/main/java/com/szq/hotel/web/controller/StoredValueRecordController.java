@@ -35,7 +35,7 @@ public class StoredValueRecordController extends BaseCotroller{
      * @param response
      */
     @RequestMapping("/getStoredValueRecord")
-    public void getStoredValueRecord(Integer pageNo, Integer pageSize, HttpServletRequest request, HttpServletResponse response) {
+    public void getStoredValueRecord(Integer memberId,Integer pageNo, Integer pageSize, HttpServletRequest request, HttpServletResponse response) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -47,12 +47,20 @@ public class StoredValueRecordController extends BaseCotroller{
                 log.info("result{}", result);
                 return;
             }
+            //参数验证
+            if (memberId == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
             Map<String,Object> map=new HashMap<String, Object>();
             QueryInfo queryInfo = getQueryInfo(pageNo,pageSize);
             if(queryInfo != null){
                 map.put("pageSize",queryInfo.getPageSize());
                 map.put("pageOffset",queryInfo.getPageOffset());
             }
+            map.put("memberId",memberId);
             List<StoredValueRecordBO> storedValueRecordBOS = storedValueRecordService.getStoredValueRecord(map);
             Integer count = storedValueRecordService.getStoredValueRecordCount(map);
             Map<String,Object> resultMap=new HashMap<String, Object>();
