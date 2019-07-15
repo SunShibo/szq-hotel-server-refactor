@@ -50,4 +50,8 @@ public interface MemberCardDAO {
         通过会员id查找会员卡信息
      */
     MemberCardBO getCardByMemberId(Integer memberId);
+    /*
+        查询会员卡卡号和售价
+     */
+    MemberCardBO getMemberNumberMoney(Integer memberLevelId);
 }

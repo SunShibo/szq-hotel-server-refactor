@@ -77,4 +77,12 @@ WHERE id = #{id}
         UPDATE hm_member SET stored_value = (stored_value-#{storedValue}) WHERE id = #{id}
     </update>
 
+    <!--通过手机号查询会员信息-->
+    <select id="selectMemberByPhone" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
+        SELECT * FROM hm_member WHERE phone = #{phone}
+    </select>
+    <!--通过证件号查询会员信息-->
+    <select id="selectMemberByCerNumber" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
+        SELECT * FROM hm_member WHERE certificate_number = #{certificateNumber}
+    </select>
 </mapper>

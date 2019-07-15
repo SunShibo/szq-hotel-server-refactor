@@ -147,5 +147,12 @@ public class MemberCardService {
         return memberCardDAO.getCardByMemberId(memberId);
     }
 
+    /*
+        查询会员卡卡号和售价
+     */
+    public MemberCardBO getMemberNumberMoney(Integer memberLevelId){
+        return memberCardDAO.getMemberNumberMoney(memberLevelId);
+    }
+
 
 }

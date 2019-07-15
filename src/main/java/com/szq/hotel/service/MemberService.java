@@ -114,4 +114,18 @@ public class MemberService {
         storedValueRecordService.addStoredValueRecord(id,subtractMoney,remark,type,presenterMoney,currentBalance,userId);
 
     }
+
+    /*
+       通过手机号查询会员信息
+    */
+    public MemberBO selectMemberByPhone(String phone){
+        return memberDAO.selectMemberByPhone(phone);
+    }
+
+    /*
+        通过证件号号查询会员信息
+     */
+    public MemberBO selectMemberByCerNumber(String certificateNumber){
+        return memberDAO.selectMemberByCerNumber(certificateNumber);
+    }
 }

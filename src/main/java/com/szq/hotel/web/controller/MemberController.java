@@ -46,7 +46,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/addMember")
-    public void  addmember(MemberBO memberBO, HttpServletRequest request, HttpServletResponse response){
+    public void  addmember(Integer memberCardLevelId,MemberBO memberBO, HttpServletRequest request, HttpServletResponse response){
         try {
 
             log.info(request.getRequestURI());
@@ -67,10 +67,38 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
+            MemberBO memberBO1 = memberService.selectMemberByPhone(memberBO.getPhone());
+            MemberBO memberBO2 = memberService.selectMemberByCerNumber(memberBO.getCertificateNumber());
+            if (memberBO1!=null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("此手机号已被使用"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            if (memberBO2!=null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("此证件号已被使用"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+
+
+            MemberCardBO memberCardBO = memberCardService.getMemberNumberMoney(memberCardLevelId);
+            if (memberCardBO == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("本级别会员暂无卡号"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            String memberCardNumber = memberCardBO.getCardNumber();
+            BigDecimal money = memberCardBO.getMoney();
 
             memberService.addMember(memberBO,loginAdmin.getId());
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("memberCardNumber",memberCardNumber);
+            map.put("money",money);
 
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功！"));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;

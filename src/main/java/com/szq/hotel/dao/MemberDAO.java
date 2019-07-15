@@ -37,4 +37,12 @@ public interface MemberDAO {
         储值消费
      */
     void storedValueSubtract(MemberBO memberBO);
+    /*
+        通过手机号查询会员信息
+     */
+    MemberBO selectMemberByPhone(String phone);
+    /*
+        通过证件号号查询会员信息
+     */
+    MemberBO selectMemberByCerNumber(String certificateNumber);
 }
