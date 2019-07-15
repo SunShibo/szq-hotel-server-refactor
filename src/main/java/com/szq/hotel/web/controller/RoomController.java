@@ -2,6 +2,7 @@ package com.szq.hotel.web.controller;
 
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
+import com.szq.hotel.entity.dto.RoomStateDTO;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.RoomRecordService;
 import com.szq.hotel.service.RoomService;
@@ -62,7 +63,15 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/insertSelective")
     public void insertSelective(HttpServletRequest request, HttpServletResponse response, RoomBO record) {
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        RoomBO roomBO = roomService.queryRoom(record.getRoomName(), loginAdmin.getHotelId());
+        if(roomBO != null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000202"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
         roomService.insertSelective(record);
+
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加成功"));
         super.safeJsonPrint(response, result);
         return;
@@ -398,5 +407,15 @@ public class RoomController extends BaseCotroller {
 
     }
 
+
+    @RequestMapping("/queryIndexRoomState")
+    public void queryIndexRoomState(HttpServletRequest request, HttpServletResponse response, Integer id) throws Exception {
+        List<RoomStateDTO> list = roomService.queryindexRoomState(id);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(list));
+        super.safeJsonPrint(response, result);
+        log.info("result{}",result);
+        return;
+
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.szq.hotel.dao;
 
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.entity.dto.OcDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -106,7 +107,16 @@ public interface RoomDAO {
      * @param roomId
      * @return
      */
-    List<OcBO> queryTc(@Param("roomId")Integer roomId);
+    List<OcDTO> queryTc(@Param("roomId")Integer roomId);
 
     MemberDiscountBO  queryMemberByPhone(@Param("phone")String phone);
+
+    /**
+     * 判断同一酒店下是否有相同名称的客房
+     * @param name
+     * @param id
+     * @return
+     */
+    RoomBO queryRoom(@Param("nanme")String name, @Param("hotelId")Integer hotelId);
+
 }

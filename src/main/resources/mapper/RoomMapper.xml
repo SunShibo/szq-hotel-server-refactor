@@ -457,8 +457,19 @@
   </select>
 
 
-  <select id="queryTc" resultType="com.szq.hotel.entity.bo.OcBO">
-    select * from hm_order_child where room_id = #{roomId} and order_state = 'reservation';
+  <select id="queryTc" resultType="com.szq.hotel.entity.dto.OcDTO">
+    SELECT
+  id as id,
+  order_id as orderId,
+  start_time as startTime,
+  end_time as endTime
+  FROM
+    hotel.hm_order_child
+   WHERE room_id = #{roomId}
   </select>
 
+
+  <select id="queryRoom" resultType="com.szq.hotel.entity.bo.RoomBO">
+    select * from hm_room where hotel_id = #{hotelId} and room_name = #{name};
+  </select>
 </mapper>

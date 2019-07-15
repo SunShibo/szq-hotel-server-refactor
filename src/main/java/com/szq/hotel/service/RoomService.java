@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.RoomDAO;
 import com.szq.hotel.dao.RoomRecordDAO;
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.entity.dto.OcDTO;
 import com.szq.hotel.entity.dto.RoomStateDTO;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.web.controller.RoomController;
@@ -12,6 +13,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.velocity.runtime.log.LogChute;
 import org.omg.CORBA.OBJ_ADAPTER;
+import org.redisson.core.RList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -324,38 +326,46 @@ public class RoomService {
     }
 
 
-    public static void main(String[] args)  {
-        RoomService roomService  = new RoomService();
-        roomService.queryindexRoomState(1);
-    }
+
     /**
      * 查询未来15天该房间是否有人预约
      *
      * @param roomId
      * @return
      */
-    public  void  queryindexRoomState(Integer roomId) {
+    public  List<RoomStateDTO>  queryindexRoomState(Integer roomId) throws Exception {
         //获取房间所有订单列表
-        List<OcBO> ocBOS = roomDAO.queryTc(roomId);
+        List<OcDTO> ocBOS = roomDAO.queryTc(roomId);
         //获取未来十五天的时间段
         List<Time> times = timeDate(new Date());
         //判断未来十五天的时间段是否包括在订单列表入住时间和离开时间这个时间段之间
-
+        log.info("roomId:{}",roomId);
+        log.info("ocBOs:{}",ocBOS);
+        List<RoomStateDTO> list = new ArrayList<RoomStateDTO>() ;
         for (Time time :  times){
-            for (OcBO rtBOS1:ocBOS){
-                System.out.println("time:"+time.getStartTime());
-                System.out.println("time:"+time.getEndTime());
-                System.out.println("rt:"+rtBOS1.getStartTime());
-                System.out.println("rt:"+rtBOS1.getEndTime());
+            log.info("进入time");
+            RoomStateDTO roomState = new RoomStateDTO();
+            roomState.setStartDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(time.getStartTime()));
+            roomState.setEndDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(time.getEndTime()));
+            for (OcDTO rtBOS1:ocBOS){
+                log.info("进入循环");
                 boolean b = false;
                 try {
-                    b = isDateCross(time.getStartTime(), time.getEndTime(), rtBOS1.getStartTime(), rtBOS1.getEndTime());
+                    b = isDateCross(rtBOS1.getStartTime(), rtBOS1.getEndTime(),time.getStartTime(), time.getEndTime());
+                    log.info("b:{}",b);
+                    if(b){
+                        roomState.setState("有预约");
+                    }else{
+                        roomState.setState("没预约");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println(b == true ? "有交集" : "无交集");
+
             }
+            list.add(roomState);
         }
+        return list;
     }
 
 
@@ -541,6 +551,10 @@ public class RoomService {
         return flag;
     }
 
+
+    public RoomBO queryRoom(String name, Integer hotelId){
+        return roomDAO.queryRoom(name,hotelId);
+    }
 
 
 }
