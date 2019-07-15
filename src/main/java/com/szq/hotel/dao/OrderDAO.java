@@ -17,25 +17,18 @@ import java.util.List;
 public interface OrderDAO {
     //添加主订单 返回id
     Integer addOrder(OrderBO orderBO);
-
     //添加子订单 返回id
     Integer addOrderChild(OrderChildBO orderChildBO);
-
     //修改子订单
     Integer updOrderChild(OrderChildBO orderChildBO);
-
     //根据手机号 身份证号 查询主订单预约信息
     OrderBO getOrderByIdOrMobile(@Param("idNumber")String idNumber, @Param("mobile")String mobile, @Param("date") String date,@Param("hotelId")Integer hotelId);
-
     //根据订单id查询订单信息
     OrderBO getOrderById(Integer orderId);
-
     //根据订单id查询子订单
     List<OrderChildBO> getOrderChildByOrderId(Integer id);
-
     //根据子订单id查询子订单
     OrderChildBO getOrderChildById(Integer id);
-
     //修改主订单
     Integer updOrder(OrderBO orderBO);
     //删除旧子订单
@@ -48,7 +41,6 @@ public interface OrderDAO {
     List<OrderResult> getCheckOutReport(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
     //把入住未支付超过15分钟的子订单关闭
     Integer closeOrder();
-
     //通过房间id查找在住订单信息
     CheckInInfoResult getOrderChildByRoomId(Integer roomId);
     //通过联房码查询联房信息

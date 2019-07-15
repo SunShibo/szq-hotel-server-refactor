@@ -4,16 +4,18 @@ import com.alibaba.fastjson.JSON;
 import com.szq.hotel.entity.bo.CheckInPersonBO;
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import com.szq.hotel.entity.bo.OrderChildBO;
+import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.OrderController;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class test {
-    public  static  void main(String args[]){
+    public  static  void main2(String args[]){
         List<OrderChildBO> OrderChildBOList=new ArrayList<OrderChildBO>();//每日房价信息
         OrderChildBO childBO=new OrderChildBO();
         childBO.setRoomId(6);
@@ -109,8 +111,7 @@ public class test {
         }
     }
 
-    public static void main2(String args[]){
-        OrderController orderController=new OrderController();
-        //System.err.println(orderController.getDate());
+    public static void main(String args[]){
+
     }
 }

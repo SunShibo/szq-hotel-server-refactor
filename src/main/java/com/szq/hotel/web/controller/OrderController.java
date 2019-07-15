@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.*;
 
 @Controller
@@ -72,28 +73,11 @@ public class OrderController extends BaseCotroller {
 
         //检查入住信息是否正确 证件号是否有重复
         if(!type.equals("roomReservation")){
-            //验证所有入住人中是否有重复入住的
-            Set<String> idSet=new HashSet<String>();
-            List<String> idList=new ArrayList<String>();
-
-            for (OrderChildBO order:list) {
-                List<CheckInPersonBO> personBOS=order.getCheckInPersonBOS();
-                for (CheckInPersonBO personBO:personBOS){
-                    idSet.add(personBO.getCertificateNumber());
-                    idList.add(personBO.getCertificateNumber());
-                    if(checkInPersonService.checkId(personBO.getCertificateNumber(),orderBO.getId())>0){
-                        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , personBO.getCertificateNumber()+"此证件信息为在住状态")) ;
-                        super.safeJsonPrint(response, result);
-                        return;
-                    }
-                }
-            }
-
-            if(idList.size()>idSet.size()){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094" , "入住证件信息重复")) ;
-                super.safeJsonPrint(response, result);
-                return;
-            }
+            String result=this.checkInPerson(list,orderBO.getId());
+           if( result!=null){
+               super.safeJsonPrint(response, result);
+               return;
+           }
         }
 
         if(type.equals("roomReservation")){
@@ -113,6 +97,35 @@ public class OrderController extends BaseCotroller {
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
         super.safeJsonPrint(response, result);
 
+    }
+
+
+    //检查证件号是否重复
+    //@param list 入住人
+    //@param orderId 主订单id
+    public String checkInPerson(List<OrderChildBO> list,Integer orderId) {
+
+        //验证所有入住人中是否有重复入住的
+        Set<String> idSet = new HashSet<String>();
+        List<String> idList = new ArrayList<String>();
+
+        for (OrderChildBO order : list) {
+            List<CheckInPersonBO> personBOS = order.getCheckInPersonBOS();
+            for (CheckInPersonBO personBO : personBOS) {
+                idSet.add(personBO.getCertificateNumber());
+                idList.add(personBO.getCertificateNumber());
+                if (checkInPersonService.checkId(personBO.getCertificateNumber(), orderId) > 0) {
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094", personBO.getCertificateNumber() + "此证件信息为在住状态"));
+                    return result;
+                }
+            }
+        }
+
+        if (idList.size() > idSet.size()) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094", "入住证件信息重复"));
+            return result;
+        }
+        return null;
     }
 
     /**
@@ -169,7 +182,7 @@ public class OrderController extends BaseCotroller {
     }
 
     /**
-     * 根据主订单id查询房间信息（客帐管理）
+     * 根据主订单id查询房间信息(客帐管理)
      * @param orderId 订单号
      * */
     @RequestMapping("/getRoomInfoById")
@@ -192,7 +205,7 @@ public class OrderController extends BaseCotroller {
         super.safeJsonPrint(response, result);
     }
 
-    //根据子订单id查询房间信息消费信息（客帐管理）【王洋】
+    //根据子订单id查询房间信息消费信息(客帐管理)
     @RequestMapping("/getOrderInfoById")
     public void getOrderInfoById(Integer orderChildId,HttpServletRequest request, HttpServletResponse response){
         //验证管理员
@@ -377,6 +390,36 @@ public class OrderController extends BaseCotroller {
 //    public void getCheckOutReport(){
 //
 //    }
+
+
+    /**
+     * 修改在住信息
+     * @param orderId 主订单id
+     * @param channel 客源
+     * @param OTA OTA
+     * @param orderChildId 子订单id
+     * @param entTime 离店时间
+     * @param remark 房间备注
+     * @param checkInPersonJson 入住人信息
+     *
+     * */
+    @RequestMapping("/updCheckInInfo")
+    public void updCheckInInfo(Integer orderId,String channel,String OTA,
+                               Integer orderChildId, @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")Date entTime,String remark,
+                               String checkInPersonJson,HttpServletResponse response,HttpServletRequest request) throws ParseException {
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+
+        orderService.updCheckInInfo(orderId,channel,OTA,orderChildId,entTime,remark,checkInPersonJson);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success( "修改成功"));
+        super.safeJsonPrint(response, result);
+        return;
+    }
 
     /**
      * 检查身份证号是否在住

@@ -162,7 +162,6 @@
     id = #{orderId}
 </select>
 
-
     <!-- 根据订单id查询子订单 -->
     <select id="getOrderChildByOrderId" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
     select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
@@ -208,6 +207,12 @@
             </if>
             <if test="totalPrice!=null and totalPrice!=''">
                 total_price=#{totalPrice},
+            </if>
+            <if test="OTA!=null and OTA!=''">
+                OTA=#{OTA},
+            </if>
+            <if test="channel!=null and channel!=''">
+                channel=#{channel},
             </if>
             update_time=now()
         </set>
@@ -278,7 +283,7 @@
 
     <!--通过房间id查找在住订单信息-->
     <select id="getOrderChildByRoomId" resultType="com.szq.hotel.entity.result.CheckInInfoResult" parameterType="java.lang.Integer">
-        select time,hm_order_child.id,start_time,end_time,
+        select hm_order.id as orderId,time,hm_order_child.id as orderChildId,start_time,end_time,
         (room_rate+other_rate-free_rate_num) as totalConsumption,
         (pay_cash_num+other_pay_num) as sumPayment,channel,
         remark,al_room_code,OTA,money
@@ -286,7 +291,7 @@
         where hm_order_child.order_id=hm_order.id
         and (order_state='admissions' or order_state='notpay')
         and hm_everyday_room_price.order_child_id=hm_order_child.id
-        and room_id=1
+        and room_id=#{roomId}
         and time = date_format(now(),'%y-%m-%d')
     </select>
 

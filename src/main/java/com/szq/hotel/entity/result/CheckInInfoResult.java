@@ -6,7 +6,8 @@ import java.util.List;
 
 //首页在住信息
 public class CheckInInfoResult {
-    private Integer id;//子订单id
+    private Integer orderId;//主订单id
+    private Integer orderChildId;//子订单id
     private String startTime;//入住时间
     private String endTime;//离店时间
     private String totalConsumption;//花费金额
@@ -60,12 +61,20 @@ public class CheckInInfoResult {
         this.alRoomCode = alRoomCode;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    public Integer getOrderChildId() {
+        return orderChildId;
+    }
+
+    public void setOrderChildId(Integer orderChildId) {
+        this.orderChildId = orderChildId;
     }
 
     public String getStartTime() {
