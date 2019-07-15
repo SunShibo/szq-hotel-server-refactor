@@ -49,9 +49,9 @@ var api = {
     , addMember: '/member/add?v=1'//会员信息添加?
     , updateMember: '/member/update?v=1'//会员信息修改?userId
     , memberLevel: '/memberLevel/selectmemberLevel?v=1'//获取会员级别000
-    , certificate: '/certificateType/queryAll?v=1'//获取证件
+    , certificate: '/Dictionary/getDic?kid=1'//获取证件000
     , getMemberByCre: '/user/queryByCredentialNumber?credentialNumber='//根据证件号码获取会员信息
-    , getHouseType: '/room/houseType'//获取房屋类型
+    , getHouseType: '/queryRoomTypeNum'//获取房屋类型000
     , getHouse: '/room/roomTypeMain'//获取房间信息
     // , yuImport: '/manage/upload'//预导入  废弃
     , import: '/memberCard/importMemberCard'//会员导入   有问题
@@ -72,7 +72,7 @@ var api = {
     , queryRoomInfo: '/room/queryRoomTypeAndHotelAndFloor'
     , querySale: '/user/queryDiscountId?cerfiticateNumber='//根据证件号查询折扣信息
     , queryOrder: '/orderInfo/OrderInfoList'
-    , queryIdFlag: 'user/queryByCredentialNumber?v=1'//通过手机号或者证件号查询会员信息String credentialNumber,String phoneNumber
+    , queryIdFlag: 'member/selectMember?v=1'//通过手机号或者证件号查询会员信息000
     , queryOrderInfo: 'OrderManage/queryOrderInfoByUser'//查询子订单信息
     , queryRowsOrderInfo: 'OrderManage/queryOrderInfoById'//点击表格查询子订单信息
     , checkInYuYue: '/checkin/subscribeCheckin?v=1'//预约入住
@@ -91,7 +91,7 @@ var api = {
     , updateRoomInfo: '/room/updateRoomInfo'//修改客房信息
     , largeUpdatePriceTime: '/room/largeUpdatePriceTime'//批量修改全天房时间
     , updatePriceAll: '/room/largeUpdatePriceTimeByOtherPrice'//批量修改其他价格  除全天房以外的其他价格
-    , reserveRoom: '/subcribe/phoneSubcribe'//预定房间
+    , reserveRoom: 'order/reservationRoom'//预定房间000
     , stamp: '/OrderManage/stamp' //打印数据
     , priceAll: '/room/queryRoomPrice'//查询当前roomId的所有未过期价格
     , queryCondition: '/dealShiftServiceController/queryCondition'//交班信息
@@ -109,7 +109,7 @@ var api = {
     , queryPettyCash: '/dealShiftServiceController/queryPettyCash?v=1'//备用金查询
     , addPettyCash: '/dealShiftServiceController/addPettyCash?v=1'//备用金增减
     , channelDiscount: '/CooperativePrice/detail?id='
-    , allChannel: '/CooperativePrice/query?v=1'
+    , allChannel: '/Dictionary/getDic?kid=2'//预定页面查询合作机构000
     , addChannel: '/CooperativePrice/add?name='
     , updateChannel: 'CooperativePrice/update'
     , homePage: '/roomMain/homePageInfo?v=1'//获取首页数据

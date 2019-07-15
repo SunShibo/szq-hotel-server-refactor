@@ -57,48 +57,47 @@
 						dealSel(_d);
                     }
 				})
-				var _urll = api.getHouseType+"?v=1";
-				if(getUrl("timeRoomResult"))_urll+="&timeRoomResult="+getUrl("timeRoomResult")
-				if(getUrl("freeId"))_urll+="&freeId="+getUrl("freeId")
-				if(getUrl("endTime"))_urll+="&endTime="+getUrl("endTime").replace(/-/, "/").replace(/-/, "/")
-				if(getUrl("startTime"))_urll+="&startTime="+getUrl("startTime").replace(/-/, "/").replace(/-/, "/")
-				if(getUrl("cnId"))_urll+="&cnId="+getUrl("cnId")
-				if(getUrl("dayNumber"))_urll+="&dayNumber="+getUrl("dayNumber")
-				if(getUrl("hourNumber"))_urll+="&hourNumber="+getUrl("hourNumber")
-				if(getUrl("channel"))_urll+="&channel="+getUrl("channel")
-				if(getUrl("memberRankId"))_urll+="&memberRankId="+getUrl("memberRankId")
-        $.getJSON(_urll+"&random="+Date.now(),function (rs) {
-            // $.getJSON("http://localhost:8080/room/houseType?v=1?v=1&endTime=2018/12/12%2014:00:00&startTime=2018/12/12%2011:14:36&dayNumber=1&random=1544584500711",function (rs) {
 
-                    typeflag++;
+
+
+        $.ajax({
+            url: "room/queryRoomTypeNum",
+            type: 'post',
+            dataType: "json",
+			data:JSON.parse(localStorage.yyxf),
+            success: function (rs) {
+                typeflag++;
                 var $typeList = $("#typeList");
                 var $roomTypeSelect = $("#roomTypeSelect");
 
-					var str2  = '';
-               		 $roomTypeSelect.empty();
-					try{
-						var r = rs.data;
-
-						for(var i=0;i<r.length;i++){
-                            // str+='<p data-id="'+r[i].id+'">'+r[i].name+'<span id="typeid'+r[i].id+'"></span></p>'
-							str2+=['<div class="prt_container">' +
-                            '<span> ',r[i].name,' </span>',
+                var str2  = '';
+                $roomTypeSelect.empty();
+                try{
+                    var r = rs.data;
+					localStorage.pickRoomTypeData = JSON.stringify(r);//设置全局选房型数据
+                    for(var i=0;i<r.length;i++){
+                        // str+='<p data-id="'+r[i].id+'">'+r[i].name+'<span id="typeid'+r[i].id+'"></span></p>'
+                        str2+=['<div class="prt_container">' +
+                        '<span> ',r[i].name,' </span>',
                             '<select name="type_',r[i].id,'">',
                             '<option value="0"></option>',
                             getRoomNum(r[i].count),
                             '</select>' ,
                             '</div>'].join("")
-							// console.log(str2)
-						}
-                        $roomTypeSelect.append(str2);
-						setTimeout(function () {
-                            dealWriteSelect()//写入从上个页面带入的选择信息
-                        },1000)
+                        // console.log(str2)
+                    }
+                    $roomTypeSelect.append(str2);
+                    setTimeout(function () {
+                        dealWriteSelect()//写入从上个页面带入的选择信息
+                    },1000)
 
-					}catch(err){
-						alert(err);
-					}
-				})
+                }catch(err){
+                    alert(err);
+                }
+            }
+        })
+		return;
+
 				var par = "?v=1";
 				if(getUrl("timeRoomResult"))par+="&timeRoomResult="+getUrl("timeRoomResult")
 				if(getUrl("freeId"))par+="&freeId="+getUrl("freeId")
@@ -119,30 +118,28 @@
 		return str
     }
 		function yes(){
-        	// $("#roomTypeSelect").
+
 			var t = $('#roomTypeSelect').serializeArray();
-			var _ids = [];
+            var ptd = JSON.parse(localStorage.pickRoomTypeData);
+            var _ids = [];
 			for(var i=0;i<t.length;i++){
 			    if(t[i].value!=0){
+			        //debugger;
 			        var _typeid=t[i].name.split("_")[1];
                     var _value =Number(t[i].value);
-                    var _tValue = 0;
-                    for(var j=0;j<pickRooms.length;j++){
-						if(_typeid==pickRooms[j].houseTypeId){
-							if(pickRooms[j].state==6||pickRooms[j].state==1||pickRooms[j].state==3){
-
-                                pickRooms[j].roomNum = '';
-                                _ids.push(pickRooms[j])
-                                if((_tValue+1)==_value){
-									break;
-                                }
-                                _tValue++;
-							}
+					if(_value==0){continue}
+                    for(var j=0;j<ptd.length;j++){
+						if(_typeid==ptd[j].id){
+                                ptd[j].roomNum = '';
+                                for(k=0;k< ptd[j].count;k++){
+                                    _ids.push(ptd[j])
+								}
 						}
                     }
 				}
 			}
-			parent.parSelectRoom(_ids,t);
+
+			parent.parSelectRoomType(_ids,t);
 			no();
 		}
 
