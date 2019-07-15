@@ -18,11 +18,11 @@
     <insert id="addCheckInPerson" parameterType="com.szq.hotel.entity.bo.CheckInPersonBO">
         insert into hm_check_in_person
         (order_child_id,`name`,gender,phone,
-        certificate_number,certificate_type,`status`,remark,create_time)
+        certificate_number,certificate_type,`status`,remark,create_time,create_user_id)
         values
         (#{orderChildId},#{name},#{gender},#{phone},
         #{certificateNumber},#{certificateType},
-        #{status},#{remark},now())
+        #{status},#{remark},now(),#{createUserId})
     </insert>
 
     <!-- 删除入住人 -->

@@ -28,4 +28,32 @@ public class CheckInPersonService {
         return checkInPersonDAO.checkId(certificateNumber,orderId);
     }
 
+    //添加入住人信息
+    public Integer addCheckInPerson(Integer orderChildId,String name,String gender,String phone,String certificateNumber,Integer certificateType,String status,String remark,Integer userId){
+        CheckInPersonBO checkInPersonBO = new CheckInPersonBO();
+        checkInPersonBO.setOrderChildId(orderChildId);
+        checkInPersonBO.setName(name);
+        checkInPersonBO.setGender(gender);
+        checkInPersonBO.setPhone(phone);
+        checkInPersonBO.setCertificateNumber(certificateNumber);
+        checkInPersonBO.setCertificateType(certificateType);
+        checkInPersonBO.setStatus(status);
+        checkInPersonBO.setRemark(remark);
+        checkInPersonBO.setCreateUserId(userId);
+        return checkInPersonDAO.addCheckInPerson(checkInPersonBO);
+    }
+
+    //修改入住人信息
+    public Integer updCheckInPerson(Integer id,String name,String gender,String phone,String certificateNumber,Integer certificateType,String status,String remark){
+        CheckInPersonBO checkInPersonBO = new CheckInPersonBO();
+        checkInPersonBO.setId(id);
+        checkInPersonBO.setName(name);
+        checkInPersonBO.setGender(gender);
+        checkInPersonBO.setPhone(phone);
+        checkInPersonBO.setCertificateNumber(certificateNumber);
+        checkInPersonBO.setCertificateType(certificateType);
+        checkInPersonBO.setStatus(status);
+        checkInPersonBO.setRemark(remark);
+        return checkInPersonDAO.updCheckInPerson(checkInPersonBO);
+    }
 }

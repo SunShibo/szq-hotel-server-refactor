@@ -10,6 +10,7 @@ public class CheckInPersonBO {
     private Integer certificateType;//证件类型
     private String status;//入住状态
     private String remark;//备注
+    private Integer createUserId;//操作人id
 
     public Integer getOrderChildId() {
         return orderChildId;
@@ -80,5 +81,13 @@ public class CheckInPersonBO {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Integer getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(Integer createUserId) {
+        this.createUserId = createUserId;
     }
 }
