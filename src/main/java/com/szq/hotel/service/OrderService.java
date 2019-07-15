@@ -13,8 +13,6 @@ import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
-import org.springframework.core.annotation.Order;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +40,12 @@ public class OrderService {
 
     @Resource
     OrderRecordDAO orderRecordDAO;
+
+    @Resource
+    ChildOrderService childOrderService;
+
+    @Resource
+    OrderRecordService orderRecordService;
 
     //添加主订单 携带订单id
     public void addOrder(OrderBO orderBO) {
@@ -330,6 +334,10 @@ public class OrderService {
     public List<OrderResult> getCheckOutReport(Date beforeTime,Date afterTime,Integer pageNo,Integer pageSize){
         return orderDAO.getCheckOutReport(beforeTime,afterTime,pageNo,pageSize);
     }
+    //获取预离店总数
+    public Integer getCheckOutReportCount(Date beforeTime,Date afterTime){
+        return orderDAO.getCheckOutReportCount(beforeTime,afterTime).size();
+    }
     //把入住未支付超过15分钟的子订单关闭
     public Integer closeOrder(){
         return orderDAO.closeOrder();
@@ -407,6 +415,65 @@ public class OrderService {
         }
 
     }
+
+    //查询所有可用联房
+    public List<CheckInPersonBO> getAlRoom(Integer roomId){
+        return orderDAO.getAlRoom(roomId);
+    }
+
+    //解除联房
+    public void updAlRoom(Integer[] idArr){
+        for (int i=0;i<idArr.length;i++){
+            //修改联房码 解除联房 设置为主账房
+            OrderChildBO orderChildBO=new OrderChildBO();
+            orderChildBO.setId(idArr[i]);
+            orderChildBO.setAlRoomCode(UUID.randomUUID().toString());
+            orderChildBO.setMain("yes");
+            orderDAO.updOrderChild(orderChildBO);
+        }
+
+    }
+
+    //联房
+    public void addAlRoom(Integer orderChildId,String orderChildIds,Integer userId){
+        //旧主账房
+        String[]orderChildIdArr=orderChildIds.split(",");
+        //新主账房
+        OrderChildBO orderChildBONew=orderDAO.getOrderChildById(orderChildId);
+        //旧主账房 取消主账房 联房码修改为新主账房的联房码
+        for (int i=0;i<orderChildIdArr.length;i++){
+            //主账房的账单记录id
+            String ids="";
+            List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(new Integer(orderChildIdArr[i]));
+            for (int y=0;y<orderRecoredBO.size();y++) {
+                ids=ids+orderRecoredBO.get(y).getId()+",";
+            }
+            //房间消费转账到新的主账房 添加消费记录
+            childOrderService.transferAccounts(userId,ids,orderChildId,new Integer(orderChildIdArr[i]));
+
+            //修改子帐房联房码
+            OrderChildBO orderChildBO=orderDAO.getOrderChildById(new Integer(orderChildIdArr[i]));
+            List<OrderChildBO> orderChildBOList=orderDAO.getOrderByCode(orderChildBO.getAlRoomCode(),"no");
+            for (OrderChildBO child:orderChildBOList) {
+                child.setAlRoomCode(orderChildBONew.getAlRoomCode());
+                orderDAO.updOrderChild(child);
+            }
+
+            //修改主账房信息
+            OrderChildBO mainOrder=new OrderChildBO();
+            mainOrder.setId(new Integer(orderChildIdArr[i]));
+            mainOrder.setMain("no");
+            mainOrder.setAlRoomCode(orderChildBONew.getAlRoomCode());
+            orderDAO.updOrderChild(mainOrder);
+        }
+
+    }
+
+    //获取子订单剩余租期价格
+    public List<EverydayRoomPriceBO> getRemainingLease(Integer orderChildId){
+        return everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
+    }
+
     /**
      * 订单列表
      *

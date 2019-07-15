@@ -136,12 +136,43 @@
         and c.id=`or`.order_child_id
         and p.status='checkin'
         and (order_state='admissions')
-        and c.end_time&gt;=#{afterTime}
-        and c.end_time&lt;=#{beforeTime}
+        <if test="afterTime!=null and afterTime!=''">
+            and c.end_time&gt;=#{afterTime}
+        </if>
+        <if test="beforeTime!=null and beforeTime!=''">
+            and c.end_time&lt;=#{beforeTime}
+        </if>
         group by or.order_child_id
+        order by c.end_time
         <include refid="limit" />
     </select>
 
+    <!--预离报表总数-->
+    <select id="getCheckOutReportCount"  resultType="com.szq.hotel.entity.result.OrderResult">
+        select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
+        t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
+        c.room_rate,other_rate,c.free_rate_num
+        from hm_order as o,hm_room as r,hm_room_type as t,
+        hm_order_child as c,hm_dictionaries_value as v,
+        hm_check_in_person as p,hm_everyday_room_price as e,hm_order_record as `or`
+        where o.id=c.order_id
+        and c.room_id=r.id
+        and c.room_type_id=t.id
+        and c.id=p.order_child_id
+        and c.id=e.order_child_id
+        and p.certificate_type=v.id
+        and c.id=`or`.order_child_id
+        and p.status='checkin'
+        and (order_state='admissions')
+        <if test="afterTime!=null and afterTime!=''">
+            and c.end_time&gt;=#{afterTime}
+        </if>
+        <if test="beforeTime!=null and beforeTime!=''">
+            and c.end_time&lt;=#{beforeTime}
+        </if>
+        group by or.order_child_id
+        order by c.end_time
+    </select>
     <sql id="limit">
         limit #{pageNo},#{pageSize}
     </sql>
@@ -304,6 +335,23 @@
         and al_room_code=#{code}
         and status='checkin'
         group by  hm_room.id
+    </select>
+
+    <!--通过联房码查询子订单-->
+    <select id="getOrderByCode"  resultType="com.szq.hotel.entity.bo.OrderChildBO" >
+        select * from hm_order_child where al_room_code=#{code} and main=#{main}
+    </select>
+
+    <!--查询所有可用联房-->
+    <select id="getAlRoom" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
+        select hm_order_child.id as orderChildId,hm_room.id as roomId,hm_check_in_person.name,hm_order_child.start_time
+        from hm_order_child,hm_room,hm_check_in_person
+        where hm_order_child.room_id=hm_room.id
+        and hm_order_child.main='yes'
+        and hm_check_in_person.order_child_id=hm_order_child.id
+        and hm_check_in_person.status='checkin'
+        and hm_order_child.room_id!=#{roomId}
+        group by hm_order_child.id
     </select>
 
     <!--找查首日房价-->

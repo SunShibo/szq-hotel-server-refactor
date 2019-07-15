@@ -1,9 +1,6 @@
 package com.szq.hotel.dao;
 
-import com.szq.hotel.entity.bo.OrderBO;
-import com.szq.hotel.entity.bo.OrderChildBO;
-import com.szq.hotel.entity.bo.OrderListBO;
-import com.szq.hotel.entity.bo.OrderRecoredBO;
+import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.CheckRoomPersonResult;
@@ -39,14 +36,18 @@ public interface OrderDAO {
     List<OrderResult> getCheckInReport();
     //获取预离报表
     List<OrderResult> getCheckOutReport(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+    //获取预离报表总数
+    List<OrderResult> getCheckOutReportCount(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime);
     //把入住未支付超过15分钟的子订单关闭
     Integer closeOrder();
     //通过房间id查找在住订单信息
     CheckInInfoResult getOrderChildByRoomId(Integer roomId);
     //通过联房码查询联房信息
     List<CheckRoomPersonResult> getOrderRoomByCode(String code);
-
-
+    //查询所有可用联房
+    List<CheckInPersonBO> getAlRoom(Integer roomId);
+    //通过联房码查询子订单
+    List<OrderChildBO> getOrderByCode(@Param("code") String code,@Param("main") String main);
     /**
      * 订单列表
      * @param param

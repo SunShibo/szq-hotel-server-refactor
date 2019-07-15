@@ -28,7 +28,7 @@
     <!--修改子订单订单详情-->
     <update id="updateRecord" parameterType="com.szq.hotel.entity.bo.OrderRecoredBO" >
      UPDATE   `hm_order_record` SET  `order_child_id`=#{orderChildId}, `info`=#{info} ,  `pay_type`= #{payType},
-     `money`=#{money}, `state`=#{state}, `project`=#{project}, `number`=#{number},  WHERE  id=#{id}
+     `money`=#{money}, `state`=#{state}, `project`=#{project}, `number`=#{number}  WHERE  id=#{id}
     </update>
 
 

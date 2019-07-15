@@ -148,8 +148,9 @@ public class ChildOrderService {
         log.info("start transferAccounts.........................................................");
         log.info("userId:{}\tids:{}\tshiftToId:{}\trollOutId:{}",userId,ids,shiftToId,rollOutId);
         String[] split = ids.split(",");
+
         for(int i=0;i<split.length;i++){
-            OrderRecoredBO orderRecoredBO = orderRecordService.queryOrderRecordById(split.length);
+            OrderRecoredBO orderRecoredBO = orderRecordService.queryOrderRecordById(new Integer(split[i]));
 
             //押金
             if(Constants.CASHPLEDGE.getValue().equals(orderRecoredBO.getProject())){

@@ -347,15 +347,14 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        //验证参数
-        if (beforeTime == null||afterTime==null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
-            super.safeJsonPrint(response, result);
-            return;
-        }
+        Map<String,Object> resultMap=new HashMap<String, Object>();
         QueryInfo queryInfo=getQueryInfo(pageNo,pageSize);
-        List<OrderResult> results=orderService.getCheckOutReport(beforeTime,afterTime,queryInfo.getPageOffset(),queryInfo.getPageSize());
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results)) ;
+        List<OrderResult> list=orderService.getCheckOutReport(beforeTime,afterTime,queryInfo.getPageOffset(),queryInfo.getPageSize());
+        Integer count=orderService.getCheckOutReportCount(beforeTime,afterTime);
+
+        resultMap.put("list",list);
+        resultMap.put("count",count);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
         super.safeJsonPrint(response, result);
 
     }
@@ -373,7 +372,7 @@ public class OrderController extends BaseCotroller {
             return ;
         }
         //验证参数
-        if (roomId == null||roomId==null) {
+        if (roomId == null||roomId.equals("")) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
             super.safeJsonPrint(response, result);
             return;
@@ -382,15 +381,6 @@ public class OrderController extends BaseCotroller {
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInInfoResult));
         super.safeJsonPrint(response, result);
     }
-
-    /**
-     * 联房 自动转账 转账记录
-     * */
-//    @RequestMapping("/getCheckOutReport")
-//    public void getCheckOutReport(){
-//
-//    }
-
 
     /**
      * 修改在住信息
@@ -421,6 +411,77 @@ public class OrderController extends BaseCotroller {
         return;
     }
 
+
+    /**
+     * 查询所有可用联房
+     * */
+    @RequestMapping("/getAlRoom")
+    public void  getAlRoom(Integer roomId,HttpServletRequest request,HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if (roomId == null||roomId.equals("")) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
+        List<CheckInPersonBO> checkInPersonBOS=orderService.getAlRoom(roomId);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInPersonBOS));
+        super.safeJsonPrint(response, result);
+    }
+
+    /**
+     * 解除联房
+     * */
+    @RequestMapping("/updAlRoom")
+    public void  updAlRoom(String orderChildIds,HttpServletRequest request,HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if (orderChildIds == null||orderChildIds.length()<2) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
+        Integer[] idArr=JsonUtils.getIntegerArray4Json(orderChildIds);
+        orderService.updAlRoom(idArr);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
+        super.safeJsonPrint(response, result);
+    }
+
+    /**
+     * 联房 自动转账 转账记录
+     * */
+    @RequestMapping("/addAlRoom")
+    public void addAlRoom(Integer orderChildId,String orderChildIds, HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if (orderChildId==null||orderChildId.equals("")||orderChildIds == null||orderChildIds.length()==0) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
+        orderService.addAlRoom(orderChildId,orderChildIds,userInfo.getId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
+        super.safeJsonPrint(response, result);
+    }
+
     /**
      * 检查身份证号是否在住
      * @param id 身份证号
@@ -449,6 +510,30 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
         }
 
+    }
+
+    /**
+     * 获取剩余每日房价
+     * @param orderChildId 身份证号
+     * */
+    @RequestMapping("/getRemainingLease")
+    public void getRemainingLease(Integer orderChildId,HttpServletRequest request, HttpServletResponse response){
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(orderChildId== null||orderChildId.equals("")){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderService.getRemainingLease(orderChildId);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(everydayRoomPriceBOList)) ;
+        super.safeJsonPrint(response, result);
     }
 
     /**
