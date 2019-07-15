@@ -117,6 +117,6 @@ public interface RoomDAO {
      * @param id
      * @return
      */
-    RoomBO queryRooms(@Param("nanme")String name, @Param("hotelId")Integer hotelId);
+    RoomBO queryRooms(@Param("name")String name, @Param("hotelId")Integer hotelId);
 
 }
