@@ -44,4 +44,17 @@ public interface OrderRecordDAO {
      */
     List<String> queryPayType(@Param("list")List<Integer> list);
 
+    /**
+     * 查询消费项
+     * @param list
+     * @return
+     */
+    double consumption(@Param("list") List<Integer> list);
+
+    /**
+     * 查询支付项
+     * @param list
+     * @return
+     */
+    double pay(@Param("list")List<Integer> list);
 }

@@ -186,6 +186,13 @@ public class ChildOrderController extends BaseCotroller {
                 return;
             }
 
+            boolean lean = orderRecordService.queryInvoicing(ids);
+            if(lean){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
             childOrderService.transferAccounts(loginAdmin.getId(),ids,shiftToId,rollOutId);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));

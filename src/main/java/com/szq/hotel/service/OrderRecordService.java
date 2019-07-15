@@ -5,7 +5,6 @@ import com.szq.hotel.dao.OrderRecordDAO;
 import com.szq.hotel.entity.bo.ChildOrderBO;
 import com.szq.hotel.entity.bo.OrderRecoredBO;
 import com.szq.hotel.util.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -120,10 +117,10 @@ public class OrderRecordService {
     }
 
    public double consumption(List<Integer> list) {
-        return 0;// orderRecordDAO.consumption(list);
+        return  orderRecordDAO.consumption(list);
     }
     public double pay(List<Integer> list) {
-        return  0;//orderRecordDAO.pay(list);
+        return  orderRecordDAO.pay(list);
     }
 
 }

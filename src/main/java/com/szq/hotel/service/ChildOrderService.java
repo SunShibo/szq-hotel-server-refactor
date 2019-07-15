@@ -150,6 +150,7 @@ public class ChildOrderService {
         String[] split = ids.split(",");
         for(int i=0;i<split.length;i++){
             OrderRecoredBO orderRecoredBO = orderRecordService.queryOrderRecordById(split.length);
+
             //押金
             if(Constants.CASHPLEDGE.getValue().equals(orderRecoredBO.getProject())){
                 log.info("start transferAccounts....CASHPLEDGE.....................................................");
