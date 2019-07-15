@@ -27,7 +27,7 @@ public class RechargeDailyController extends BaseCotroller {
     private RechargeDailyService rechargeDailyService;
 
     @RequestMapping("/getRechargeDaily")
-    public void getRechargeDaily(Date begin, Date end, HttpServletRequest request, HttpServletResponse response){
+    public void getRechargeDaily(Date  startTime,Date endTime, HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -39,7 +39,14 @@ public class RechargeDailyController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
-            List<RechargeDailyBO> rechargeDailyBOS=rechargeDailyService.getRechargeDaily(begin,end);
+            //参数验证
+            if (startTime==null||endTime==null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            List<RechargeDailyBO> rechargeDailyBOS=rechargeDailyService.getRechargeDaily(startTime,endTime);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(rechargeDailyBOS));
             super.safeJsonPrint(response, result);

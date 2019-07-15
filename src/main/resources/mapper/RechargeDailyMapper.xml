@@ -16,7 +16,7 @@
                 #{presenterMoney},#{createUserId},NOW())
     </insert>
 
-    <select id="getRechargeDaily" resultType="com.szq.hotel.entity.bo.RechargeDailyBO">
+    <select id="getRechargeDaily" resultType="com.szq.hotel.entity.bo.RechargeDailyBO" parameterType="map">
         SELECT ho.id hotelId,ho.`name` hotelName,rd.member_card_number memberCardNumber,
         rd.`name`,le.`name` levelName,me.certificate_type certificateType,
             me.certificate_number certificateNumber,rd.pay_type payType,rd.recharge_money rechargeMoney,
@@ -28,11 +28,10 @@
         LEFT JOIN hm_member_level le ON card.member_level_id = le.id
         LEFT JOIN hm_stored_value_record re ON me.id = re.check_in_member_id
         LEFT JOIN hm_admin ad ON ad.id = re.create_user_id
-        <where>
-        rd.create_time BETWEEN #{}AND #{}
-            <if test="begin != null and begin != ''">AND rd.create_time <![CDATA[>=]]> #{begin}</if>
-            <if test="end != null and end != ''">AND rd.create_time <![CDATA[<=]]>#{end}</if>
-        </where>
+        WHERE rd.create_time BETWEEN #{startTime} AND  #{endTime}
+            <!--<if test="begin != null and begin != ''">AND rd.create_time <![CDATA[>=]]> #{begin}</if>-->
+            <!--<if test="end != null and end != ''">AND rd.create_time <![CDATA[<=]]>#{end}</if>-->
+        <!--</where>-->
         GROUP BY rd.id
     </select>
 

@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("rechargeDailyService")
 @Transactional
@@ -44,7 +46,10 @@ public class RechargeDailyService {
     /*
        获取充值日报
     */
-    public List<RechargeDailyBO> getRechargeDaily(Date begin, Date end){
-        return rechargeDailyDAO.getRechargeDaily(begin,end);
+    public List<RechargeDailyBO> getRechargeDaily(Date startTime, Date endTime){
+        Map<String,Object> map=new HashMap<String, Object>();
+        map.put("startTime",startTime);
+        map.put("endTime",endTime);
+        return rechargeDailyDAO.getRechargeDaily(map);
     }
 }

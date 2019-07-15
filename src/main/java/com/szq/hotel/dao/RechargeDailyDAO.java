@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface RechargeDailyDAO {
     /*
@@ -14,5 +15,5 @@ public interface RechargeDailyDAO {
     /*
         获取充值日报
      */
-    List<RechargeDailyBO> getRechargeDaily(@Param("begin") Date begin,@Param("end") Date end);
+    List<RechargeDailyBO> getRechargeDaily(Map<String, Object> map);
 }
