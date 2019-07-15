@@ -280,6 +280,9 @@
   <if test="roomTypeId != null">
     and hm_room.room_type_id = #{roomTypeId}
   </if>
+    <if test="roomId != null">
+      and hm_room.id = #{roomId}
+    </if>
     and hm_room.show = 'yes'
     <include refid="limit" />
   </select>
@@ -300,6 +303,9 @@
     </if>
     <if test="roomTypeId != null">
       and hm_room.room_type_id = #{roomTypeId}
+    </if>
+    <if test="roomName != null">
+      and room_name = #{roomName}
     </if>
     and hm_room.show = 'yes'
   </select>

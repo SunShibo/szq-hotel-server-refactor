@@ -351,7 +351,7 @@ public class RoomService {
                 log.info("进入循环");
                 boolean b = false;
                 try {
-                    b = isDateCross(rtBOS1.getStartTime(), rtBOS1.getEndTime(),time.getStartTime(), time.getEndTime());
+                    b = isDate(time.getStartTime(), time.getEndTime(),rtBOS1.getStartTime(), rtBOS1.getEndTime());
                     log.info("b:{}",b);
                     if(b){
                         roomState.setState("有预约");
@@ -557,6 +557,22 @@ public class RoomService {
     }
 
 
+    private boolean isDate(Date leftStartDate,Date leftEndDate,Date rightStartDate, Date rightEndDate){
+        /*判断*/
+        if (((leftStartDate.getTime() >= rightStartDate.getTime())
+                && leftStartDate.getTime() < rightEndDate.getTime())
+                || ((leftStartDate.getTime() > rightStartDate.getTime())
+                && leftStartDate.getTime() <= rightEndDate.getTime())
+                || ((rightStartDate.getTime() >= leftStartDate.getTime())
+                && rightStartDate.getTime() < leftEndDate.getTime())
+                || ((rightStartDate.getTime() > leftStartDate.getTime())
+                && rightStartDate.getTime() <= leftEndDate.getTime())){
+            //存在交集
+            return true;
+        }
+        //不存在交集
+       return false;
+    }
 }
 
 
