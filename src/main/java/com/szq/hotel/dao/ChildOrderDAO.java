@@ -13,12 +13,18 @@ public interface ChildOrderDAO {
      * 增加子订单现金押金
      */
     void increaseCashCashPledge(@Param("id") Integer childId,@Param("money") BigDecimal money) ;
-
+    /**
+     * 减少子订单现金押金
+     */
+    void reduceCashCashPledge(@Param("id") Integer childId,@Param("money") BigDecimal money) ;
     /**
      * 增加子订单其他押金
      */
     void increaseOtherCashPledge(@Param("id") Integer childId,@Param("money") BigDecimal money) ;
-
+    /**
+     * 减少子订单其他押金
+     */
+    void reduceOtherCashPledge(@Param("id") Integer childId,@Param("money") BigDecimal money) ;
 
     ChildOrderBO queryOrderChildById(Integer id);
 
@@ -30,12 +36,24 @@ public interface ChildOrderDAO {
     void increaseRoomRate(@Param("id") Integer childId,@Param("money") BigDecimal money);
 
     /**
+     * 减少房费
+     * @param childId
+     * @param money
+     */
+    void reduceRoomRate(@Param("id") Integer childId,@Param("money") BigDecimal money);
+    /**
      * 添加其他消费
      * @param childId
      * @param money
      */
     void increaseOtherRate(@Param("id") Integer childId,@Param("money") BigDecimal money);
 
+    /**
+     * 减少其他消费
+     * @param childId
+     * @param money
+     */
+    void reduceOtherRate(@Param("id") Integer childId,@Param("money") BigDecimal money);
     /**
      * 查询挂账信息
      * @param roomName
@@ -49,6 +67,17 @@ public interface ChildOrderDAO {
      * @param money
      */
     void free(@Param("id") Integer id,@Param("money") BigDecimal money);
+    /**
+     * 减少免单
+     * @param id
+     * @param money
+     */
+    void reducefree(@Param("id") Integer id,@Param("money") BigDecimal money);
 
     Integer queryOrderChildMain(String code);
+
+    /**
+     * 通过id查询订单记录
+     */
+
 }

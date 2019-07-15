@@ -4,6 +4,8 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.OrderRecordDAO;
 import com.szq.hotel.entity.bo.ChildOrderBO;
 import com.szq.hotel.entity.bo.OrderRecoredBO;
+import com.szq.hotel.util.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,7 +47,6 @@ public class OrderRecordService {
      * @param userId  用户id
      * @param number  数量
      */
-    //FIXME 生成记录应在主订单中
     public void addOrderRecord(Integer orderChildId , String info, String payType, BigDecimal money,String project,Integer userId,String number){
         log.info("star addOrderRecord..................................");
         log.info("orderChildId:{}\tinfo:{}\tpayType:{}\tmoney:{}\tproject:{}\tuserId:{}\tnumber:{}",
@@ -73,5 +76,54 @@ public class OrderRecordService {
     }
 
 
+    /**
+     * 查询子订单详情
+     */
+    public OrderRecoredBO queryOrderRecordById(Integer id){
+        return orderRecordDAO.queryOrderRecordById(id);
+    }
+
+    /**
+     * 修改子订单详情
+     */
+    public void updateRecord(OrderRecoredBO orderRecoredBO){
+        log.info("star updateRecord.......................................................");
+        log.info("orderRecoredBO:{}",orderRecoredBO);
+        //查询子订单
+        ChildOrderBO childOrderBO = childOrderService.queryOrderChildById(orderRecoredBO.getOrderChildId());
+        //此间房不是主账房
+        if(!Constants.YES.getValue().equals(childOrderBO.getMain())) {
+            log.info("updateRecord........................................................");
+            log.info("orderRecoredBO:{}",orderRecoredBO);
+            //查询主账房
+            Integer mainId=childOrderService.queryOrderChildMain(childOrderBO.getAlRoomCode());
+            orderRecoredBO.setOrderChildId(mainId);
+            orderRecoredBO.setInfo(orderRecoredBO.getInfo()+"("+  childOrderBO.getRoomName()+"转入)");
+            log.info("orderRecoredBO:{}",orderRecoredBO);
+        }
+
+        orderRecordDAO.updateRecord(orderRecoredBO);
+        log.info("end updateRecord.......................................................");
+    }
+
+    /**
+     * 查询是否包含以结账
+     */
+    public boolean queryInvoicing(String ids){
+        List<Integer> list = StringUtils.strToList(ids);
+        return orderRecordDAO.queryInvoicing(list)>0;
+    }
+
+
+    public List<String> queryPayType(List<Integer> list) {
+        return  orderRecordDAO.queryPayType(list);
+    }
+
+   public double consumption(List<Integer> list) {
+        return 0;// orderRecordDAO.consumption(list);
+    }
+    public double pay(List<Integer> list) {
+        return  0;//orderRecordDAO.pay(list);
+    }
 
 }

@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.ChildOrderDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.util.IDBuilder;
+import com.szq.hotel.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("ChildOrderService")
 @Transactional
@@ -134,4 +137,81 @@ public class ChildOrderService {
         log.info("queryOrderChildMain.......................................................");
         return  childOrderDAO.queryOrderChildMain(code);
     }
+
+    /**
+     *
+     * @param ids     详情id
+     * @param shiftToId  转入id
+     * @param rollOutId  转出id
+     */
+    public void transferAccounts(Integer userId,String ids, Integer shiftToId, Integer rollOutId) {
+        log.info("start transferAccounts.........................................................");
+        log.info("userId:{}\tids:{}\tshiftToId:{}\trollOutId:{}",userId,ids,shiftToId,rollOutId);
+        String[] split = ids.split(",");
+        for(int i=0;i<split.length;i++){
+            OrderRecoredBO orderRecoredBO = orderRecordService.queryOrderRecordById(split.length);
+            //押金
+            if(Constants.CASHPLEDGE.getValue().equals(orderRecoredBO.getProject())){
+                log.info("start transferAccounts....CASHPLEDGE.....................................................");
+                //现金
+                if(Constants.CASH.getValue().equals(  orderRecoredBO.getPayType())){
+                    log.info("start transferAccounts....CASH.....................................................");
+                    childOrderDAO.increaseCashCashPledge(shiftToId,orderRecoredBO.getMoney());
+                    childOrderDAO.reduceCashCashPledge(rollOutId,orderRecoredBO.getMoney());
+                }else {
+                    //非现金
+                    log.info("start transferAccounts....OtherCashPledge.....................................................");
+                    childOrderDAO.increaseOtherCashPledge(shiftToId,orderRecoredBO.getMoney());
+                    childOrderDAO.reduceOtherCashPledge(rollOutId,orderRecoredBO.getMoney());
+                }
+
+            }else if (Constants.ROOMRATE.getValue().equals(orderRecoredBO.getProject())){
+                //房费
+                log.info("start transferAccounts....ROOMRATE.....................................................");
+                childOrderDAO.increaseRoomRate(shiftToId,orderRecoredBO.getMoney());
+                childOrderDAO.reduceRoomRate(rollOutId,orderRecoredBO.getMoney());
+
+            }else if (Constants.COMMODITY.getValue().equals(orderRecoredBO.getProject())|| Constants.COMPENSATE.getValue().equals(orderRecoredBO.getProject())
+                    ||Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())){
+                //商品 赔偿 超时费
+                log.info("start transferAccounts....OtherRate.....................................................");
+                childOrderDAO.increaseOtherRate(shiftToId,orderRecoredBO.getMoney());
+                childOrderDAO.reduceOtherRate(rollOutId,orderRecoredBO.getMoney());
+
+            }else if (Constants.FREEORDER.getValue().equals(orderRecoredBO.getProject())||Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())){
+                log.info("start transferAccounts....free.....................................................");
+                //免单 超时费减免
+                childOrderDAO.free(shiftToId,orderRecoredBO.getMoney());
+                childOrderDAO.reducefree(rollOutId,orderRecoredBO.getMoney());
+            }
+
+            ChildOrderBO childOrderBO = childOrderDAO.queryOrderChildById(rollOutId);
+            orderRecoredBO.setInfo(orderRecoredBO.getInfo()+"("+childOrderBO.getRoomName()+"转入)");
+            orderRecoredBO.setOrderChildId(shiftToId);
+            orderRecoredBO.setCreateUserId(userId);
+            orderRecordService.updateRecord(orderRecoredBO);
+
+        }
+
+        log.info("end transferAccounts.........................................................");
+    }
+
+    /**
+     * 单项结账查询
+     */
+    public Map<String,Object> queryChildleAccounts(String ids) {
+        log.info("start queryChildleAccounts.........................................................");
+        log.info("ids:{}",ids);
+        List<Integer> list = StringUtils.strToList(ids);
+        List<String>  payType=orderRecordService.queryPayType(list);
+        //查询消费多少
+        double consumption=orderRecordService.consumption(list);
+        //查询交了多少
+        double pay=orderRecordService.pay(list);
+
+        Map<String,Object>  resultMap=new HashMap<String, Object>();
+        return null;
+    }
+
+
 }

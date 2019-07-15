@@ -1,6 +1,7 @@
 package com.szq.hotel.util;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.ServletContext;
@@ -3558,8 +3559,15 @@ public class StringUtils {
 		
 		return target;
 	}
-    
-	
+
+	public static  List<Integer> strToList(String strs){
+		String[] split = strs.split(",");
+		List<Integer> list=new ArrayList<Integer>();
+		for(int i=0;i<split.length;i++){
+			list.add(Integer.parseInt(split[i]));
+		}
+		return  list;
+	}
 	// Test only.
 	public static void main(String[] args) throws Exception {
 //		 String strTest = "123,33,44,AA,*,222,333,444,*,555,666,777,*";
