@@ -351,12 +351,10 @@ public class RoomService {
                 log.info("进入循环");
                 boolean b = false;
                 try {
-                    b = isDate(time.getStartTime(), time.getEndTime(),rtBOS1.getStartTime(), rtBOS1.getEndTime());
+                    b = isDate(rtBOS1.getStartTime(), rtBOS1.getEndTime(),time.getStartTime(), time.getEndTime());
                     log.info("b:{}",b);
                     if(b){
                         roomState.setState("有预约");
-                    }else{
-                        roomState.setState("没预约");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -534,22 +532,7 @@ public class RoomService {
         return roomDAO.getRoomMessage(id);
     }
 
-    public static boolean isDateCross (Date date1_1, Date date1_2, Date date2_1, Date date2_2) throws Exception {
-        boolean flag = false;// 默认无交集
-        long l1_1 = date1_1.getTime();
-        long l1_2 = date1_2.getTime();
-        long l2_1 = date2_1.getTime();
-        long l2_2 = date2_2.getTime();
 
-        if((l1_1>l1_2)||(l2_1>l2_2))
-
-            throw new Exception("Parameter error:date1_1 should not be great than date1_2 and date2_1 should not be great than date2_2");
-        if (((l1_1 <= l2_1) && (l2_1 <= l1_2)) || ((l1_1 <= l2_2) && (l2_2 <= l1_2))
-                || ((l2_1 <= l1_1) && (l1_1 <= l2_2)) || ((l2_1 <= l1_2) && (l1_2 <= l2_2))) {
-            flag = true;
-        }
-        return flag;
-    }
 
 
     public RoomBO queryRoom(String name, Integer hotelId){

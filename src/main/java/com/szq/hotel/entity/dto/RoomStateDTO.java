@@ -10,7 +10,7 @@ public class RoomStateDTO implements Serializable {
 
     private String startDate;
     private String endDate;
-    private String state;
+    private String state = "没预约";
 
     public String getStartDate() {
         return startDate;
