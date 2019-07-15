@@ -38,22 +38,22 @@
         <div class="layui-inline">
             <label class="layui-form-label">房 号</label>
             <div class="layui-input-inline">
-                <input type="text" name="roomNum" placeholder="请输入房号" autocomplete="off"
+                <input type="text" name="roomName" placeholder="请输入房号" autocomplete="off"
                        class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">房 型</label>
             <div class="layui-input-inline">
-                <select name="house" id="house" lay-verify="">
+                <select name="roomTypeId" id="roomTypeId">
                     <option value="">全部</option>
                 </select>
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">楼 层</label>
-            <div class="layui-input-inline" lay-filter="floor">
-                <select name="floor" id="floor">
+            <div class="layui-input-inline" lay-filter="floorId">
+                <select name="floorId" id="floorId">
                     <option value="">全部</option>
                 </select>
             </div>
@@ -173,8 +173,6 @@
                 $.ajax({url: api.queryRt, type: 'POST', dataType: 'json'}),
                 $.ajax({url: api.queryFloor, type: 'POST', dataType: 'json', data: {hotelId: hotelId ? hotelId : 0}})
             ).then(function (a, b) {
-                console.log(a[0]);
-                console.log(b[0]);
                 setSelectHouseData(a[0].data);
                 setSelectFloorData(b[0].data);
             });
@@ -183,7 +181,7 @@
         //绑定下拉框数据
         function setSelectHouseData(second) {
             for (var i = 0, len = second.length; i < len; i++) {
-                $('#house').append("<option value=" + second[i].id + ">" + second[i].roomTypeName + "</option>");
+                $('#roomTypeId').append("<option value=" + second[i].id + ">" + second[i].roomTypeName + "</option>");
             }
             form.render('select');
         }
@@ -191,7 +189,7 @@
         //绑定下拉框数据
         function setSelectFloorData(second) {
             for (var i = 0, len = second.length; i < len; i++) {
-                $('#floor').append("<option value=" + second[i].id + ">" + second[i].name + "</option>");
+                $('#floorId').append("<option value=" + second[i].id + ">" + second[i].name + "</option>");
             }
             form.render('select');
         }
@@ -207,10 +205,9 @@
             tab.reload({
                 method: 'POST',
                 where: {
-                    roomNum: data.field.roomNum,
-                    houseTypeId: data.field.house,
-                    hotelId: data.field.building,
-                    floorName: data.field.floor
+                    roomName: data.field.roomName,
+                    roomTypeId: data.field.roomTypeId,
+                    floorId: data.field.floorId
                 },
                 page: {
                     curr: 1 //重新从第 1 页开始
@@ -251,15 +248,15 @@
                     layer.close(index);
                 });
             } else if (layEvent === 'edit') { //编辑
-                sessionStorage.setItem('roomItem', data);
+                sessionStorage.setItem('roomInfo', JSON.stringify(data));
                 layer.open({
                     type: 2,
                     skin: 'demo-class',
-                    area: ['500px', '400px'],
+                    area: ['500px', '90%'],
                     title: '编辑',
                     shade: 0.6,
                     shadeClose: true,
-                    content: 'iframe_roomInfo.html',
+                    content: 'iframe_roomInfo.html?s=1',
                     end: function (index, layero) {
                         sessionStorage.removeItem('roomItem');
                         tab.reload();//刷新表格

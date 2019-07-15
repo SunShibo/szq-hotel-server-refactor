@@ -24,22 +24,14 @@
             <div class="layui-inline">
                 <label class="layui-form-label">房 号:</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="roomNum" name="roomNum" placeholder="请输入房号" autocomplete="off"
-                           class="layui-input">
+                    <input type="text" id="roomName" name="roomName" placeholder="请输入房号" autocomplete="off"
+                           class="layui-input" lay-verify="required">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">房 型:</label>
                 <div class="layui-input-inline">
-                    <select name="house" id="house" lay-filter="house">
-                        <option value="">请选择</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">楼 栋:</label>
-                <div class="layui-input-inline">
-                    <select name="building" id="building" lay-filter="building">
+                    <select name="roomTypeId" id="roomTypeId" lay-verify="required">
                         <option value="">请选择</option>
                     </select>
                 </div>
@@ -47,7 +39,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">楼 层:</label>
                 <div class="layui-input-inline">
-                    <select name="floor" id="floor" lay-filter="floor">
+                    <select name="floorId" id="floorId" lay-verify="required">
                         <option value="">请选择</option>
                     </select>
                 </div>
@@ -55,21 +47,21 @@
             <div class="layui-form-item row-m-top">
                 <label class="layui-form-label">设 施:</label>
                 <div class="layui-input-block">
-                    <input type="text" name="facilities" autocomplete="off" placeholder="请输入设施名称"
-                           class="layui-input">
+                    <input type="text" name="setting" autocomplete="off" placeholder="请输入设施名称"
+                           class="layui-input" lay-verify="required">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">特 性:</label>
                 <div class="layui-input-block">
-                    <input type="text" name="characteristic" autocomplete="off" placeholder="请输入特性"
-                           class="layui-input">
+                    <input type="text" name="character" autocomplete="off" placeholder="请输入特性"
+                           class="layui-input" lay-verify="required">
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">备注</label>
                 <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" name="remarks" class="layui-textarea"></textarea>
+                    <textarea placeholder="请输入内容" name="remark" class="layui-textarea"></textarea>
                 </div>
             </div>
         </div>
@@ -80,7 +72,7 @@
             <div>
                 <div class="layui-form-item">
                     <div class="layui-input-block" style="margin: 0 10px;">
-                        <input type="checkbox" name="hourRoom" id="hourRoom" lay-filter="hourRoom" value="2"
+                        <input type="checkbox" name="roomAuxiliaryStatus" id="roomAuxiliaryStatus"
                                lay-skin="primary" title="钟点房">
                     </div>
                 </div>
@@ -89,7 +81,7 @@
             <div>
                 <div class="layui-form-item">
                     <div class="layui-input-block" style="margin: 0 10px;">
-                        <input type="checkbox" name="freeRoom" id="freeRoom" lay-filter="freeRoom" value="3"
+                        <input type="checkbox" name="roomAuxiliaryStatusStand" id="roomAuxiliaryStatusStand"
                                lay-skin="primary" title="免费房">
                     </div>
                 </div>
@@ -106,41 +98,13 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form', 'element', 'laydate'], function () {
-        var form = layui.form, $ = layui.$, state = 0, num = 1, formData = {},
-            housePrice = 0, houseArr = [],
-            buildingArr = [],
-            hourRoomPrice = 0,
-            dayRoom = [],
-            startTime = [],
-            endTime = [],
-            roomId = 0,
-            numArr = [],
-            idArr = [],
-            isUpdate = 0   //新增为0  修改为1
-            , iframe_roomInfo = {}
+        var form = layui.form, $ = layui.$, state = 0, formData = {}, roomInfo = {},
+            roomId = 0
         ;
         $(function () {//页面加载
-            state = getUrl('s');// 获取地址栏roomId 当新增时roomId为null
-            numArr.push(1);//初始化
-            if (state) { //判断是否修改
-                isUpdate = 1;
-                //当修改客房时 房间号禁止修改
-                $('#roomNum').attr('disabled', 'true');
-                //表单初始赋值
-                form.val('data', {
-                    'roomNum': data.data.second[0].roomNum,
-                    'house': data.data.second[0].houseTypeId,
-                    'building': data.data.second[0].hotelId,
-                    'floor': data.data.second[0].floorId,
-                    'facilities': data.data.second[0].roomFacility,
-                    'characteristic': data.data.second[0].roomFeatures,
-                    'remarks': data.data.second[0].comment,
-                    'freeRoom': data.data.second[0].freeId,
-                    'hourRoom': data.data.second[0].timeRoomResult
-                });
-            }
-            //绑定下拉框数据
-            setSelect();
+            state = getUrl('s');// 获取当前状态  修改/新增
+            //数据初始化
+            initData();
         });
 
         $('#back').on('click', function () {
@@ -151,129 +115,89 @@
         /**
          * 获取下拉框数据并绑定
          */
-        function setSelect() {
+        function initData() {
+            var user = JSON.parse(localStorage.getItem('User'));
             $.when(
-                // /floor/queryFloor
-            ).then(function (house, floor) {
+                $.ajax({url: api.queryRt, type: 'POST', dataType: 'json'}),
+                $.ajax({url: api.queryFloor, type: 'POST', dataType: 'json', data: {hotelId: user.hotelId}})
+            ).then(function (roomType, floor) {
+                setSelectData(roomType[0].data, floor[0].data);
 
-            });
 
-            $.ajax({
-                url: api.queryRoomInfo,
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    // console.log(data)
-                    houseArr = data.data.first;
-                    buildingArr = data.data.two;
-                    setSelectData(data.data.first, data.data.two);
-
+                if(state){
+                    roomInfo = JSON.parse(sessionStorage.getItem('roomInfo'));
+                    //当修改客房时 房间号禁止修改
+                    $('#roomNum').attr('disabled', 'true');
+                    //表单初始赋值
+                    form.val('data', {
+                        'roomName': roomInfo.roomName,
+                        'roomTypeId': roomInfo.roomTypeId,
+                        'floorId': roomInfo.floorId,
+                        'setting': roomInfo.setting,
+                        'character': roomInfo.character,
+                        'remark': roomInfo.remark,
+                        'roomAuxiliaryStatus': roomInfo.roomAuxiliaryStatus === 'yes',
+                        'roomAuxiliaryStatusStand': roomInfo.roomAuxiliaryStatusStand === 'yes'
+                    });
                 }
             });
         }
 
         /**
          * 绑定下拉框数据
-         * @param second
-         * @param three
+         * @param roomType
+         * @param floor
          */
-        function setSelectData(second, three) {
-            for (var i = 0, len = second.length; i < len; i++) {
-                $('#house').append("<option value=" + second[i].id + ">" + second[i].name + "</option>");
+        function setSelectData(roomType, floor) {
+            for (var i = 0, len = roomType.length; i < len; i++) {
+                $('#roomTypeId').append("<option value=" + roomType[i].id + ">" + roomType[i].roomTypeName + "</option>");
             }
-            for (var i = 0, len = three.length; i < len; i++) {
-                $('#building').append("<option value=" + three[i].id + ">" + three[i].name + "</option>");
+            for (var i = 0, len = floor.length; i < len; i++) {
+                $('#floorId').append("<option value=" + floor[i].id + ">" + floor[i].name + "</option>");
             }
             form.render('select');
         }
 
-        //监听下拉框选中事件
-        form.on('select(building)', function (data) {
-            $('#floor').html('').append('<option value="">请选择</option>');
-            if (data.value) {
-                selectInfo(parseInt(data.value));
-            } else {
-                form.render('select');
-            }
-        });
-
-        // //监听下拉框选中事件
-        form.on('select(house)', function (data) {
-            // console.log(data.value);
-            for (var i = 0, len = houseArr.length; i < len; i++) {
-                if (houseArr[i].id === parseInt(data.value)) {
-                    housePrice = houseArr[i].typePrice;
-                }
-            }
-        });
-
-        //初始化floor数据
-        function selectInfo(data) {
-            for (var i = 0, len = buildingArr.length; i < len; i++) {
-                if (buildingArr[i].id === data) {
-                    for (var j = 0, jlen = buildingArr[i].roomTypeSelf.length; j < jlen; j++) {
-                        $('#floor').append("<option value=" + buildingArr[i].roomTypeSelf[j].id + ">" + buildingArr[i].roomTypeSelf[j].name + "</option>")
-                    }
-                    form.render('select');
-                }
-            }
-        }
 
         //监听提交
         form.on('submit(formData)', function (data) {
-            iframe_roomInfo = formatData(data.field);
-            if (iframe_roomInfo != null) {
-                iframe_roomInfo.name = data.field.roomNum;
-                iframe_roomInfo.houseTypeId = data.field.house;
-                iframe_roomInfo.hotelId = data.field.building;
-                iframe_roomInfo.floorId = data.field.floor;
-                iframe_roomInfo.roomFacility = data.field.facilities;
-                iframe_roomInfo.roomFeatures = data.field.characteristic;
-                iframe_roomInfo.comment = data.field.remarks;
-                if (isUpdate) {
-                    iframe_roomInfo.roomId = roomId;
-                } else {
-                    iframe_roomInfo.workdayPrice = housePrice;
-                }
-            } else {
-                return false;
-            }
-            if (isUpdate) {
+            data.field.roomAuxiliaryStatus = data.field.roomAuxiliaryStatus ? 'yes' : 'no';
+            data.field.roomAuxiliaryStatusStand = data.field.roomAuxiliaryStatusStand ? 'yes' : 'no';
+
+            if (state) {
+                data.field.roomId = roomId;
                 $.ajax({
                     url: api.updateRoomInfo,
                     type: 'POST',
                     dataType: 'json',
-                    data: {
-                        roomInfo: JSON.stringify(iframe_roomInfo)
-                    },
+                    data: data.field,
                     success: function (data) {
                         if (data.success) {
-                            showMsg1('客房修改成功', 1, true);
+                            showMsg(data.data, 1, false);
                         } else {
-                            showMsg1('客房修改失败', 2, false);
+                            showMsg(data.data, 2, false);
                         }
                     }
                 });
             } else {
-                $.ajax({
-                    url: api.roomAdd,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        roomInfo: JSON.stringify(iframe_roomInfo)
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            showMsg1('客房添加成功', 1, true);
-                            return false;
-                        } else {
-                            console.log(data)
-                            showMsg1(data.errMsg, 2, false);
-                            return false;
+                    $.ajax({
+                        url: api.roomAdd,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: data.field,
+                        success: function (data) {
+                            if (data.success) {
+                                showMsg(data.data, 1, false);
+                                return false;
+                            } else {
+                                showMsg(data.errMsg, 2, false);
+                                return false;
+                            }
                         }
-                    }
-                });
+                    });
             }
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭-
             return false;
         });
 
@@ -281,31 +205,11 @@
         form.on('checkbox(hourRoom)', function (obj) {
             if (!obj.elem.checked) {
                 $('#hourPrice').val('');
-                hourRoomPrice = 0;
                 if (formData.hourRoom != null) {
                     delete formData.hourRoom;
                 }
             }
         });
-
-        /**
-         * 格式化当前表单数据
-         * @param data
-         */
-        function formatData(data) {
-            var objName = getName(data), roomInfo = {};
-            if (!(!!data.roomNum) || !(!!data.house) || !(!!data.building) || !(!!data.floor)) {
-                showMsg1('请设置客房信息！（房间号、房型、楼栋、楼层）', 2, false);
-                return null;
-            }
-            iframe_roomInfo.timeRoomResult = data.hourRoom ? 1 : 0;
-            if (checkArrayId(objName, 'freeRoom') != -1) {
-                iframe_roomInfo.freeRoomResult = 1;
-            } else {
-                iframe_roomInfo.freeRoomResult = 0;
-            }
-            return iframe_roomInfo;
-        }
 
         //判断数组内是否存在指定值并返回数组
         function checkArrayId(arr, value) {

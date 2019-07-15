@@ -42,7 +42,6 @@
 
         $(function () {
             state = parseInt(getUrl('state'));
-            initData = JSON.parse(sessionStorage.membersCard);
             selectData()
         });
 
@@ -57,6 +56,7 @@
                     if (!state) {//添加
                         $('#isUpdate').css('display', 'inline-block');
                     } else {//修改
+                        initData = JSON.parse(sessionStorage.membersCard);
                         updateInfo();
                     }
                 }

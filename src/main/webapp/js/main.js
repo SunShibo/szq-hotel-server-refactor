@@ -59,7 +59,8 @@ var api = {
     , offMember: '/member/logout?userId='//注销会员userId
     , roomDelete: '/room/deleteByPrimaryKey'  //客房删除   已修改
     , roomQuery: '/room/queryRoom'   //客房查询    已修改
-    , roomAdd: '/room/addRoomInfo'   //新增客房
+    , roomAdd: '/room/insertSelective'   //新增客房  已修改
+    , updateRoomInfo: '/room/updateByPrimaryKeySelective'//修改客房信息  已修改
     , roomUnLock: '/room/openLockRoom'   //客房解锁
     , roomLockRoom: '/room/updatelockRoomClose'    //客房锁房
     , queryMemberById: '/member/detail?userId='//根据会员id查询
@@ -87,7 +88,6 @@ var api = {
     , outRoomRefound: '/OrderManage/outRoomRefound'//退房回滚
     , exemption: '/OrderManage/exemption'//免单
     , updatePriceTime: '/room/updatePriceTime'//查询修改时间是否冲突
-    , updateRoomInfo: '/room/updateRoomInfo'//修改客房信息
     , largeUpdatePriceTime: '/room/largeUpdatePriceTime'//批量修改全天房时间
     , updatePriceAll: '/room/largeUpdatePriceTimeByOtherPrice'//批量修改其他价格  除全天房以外的其他价格
     , reserveRoom: 'order/reservationRoom'//预定房间000
@@ -648,7 +648,7 @@ function showMsg(title, iconId, isRefresh) {
 function showMsg1(title, iconId, isRefresh) {
     layer.msg(title, {
         icon: iconId,
-        time: 5000 //2秒关闭（如果不配置，默认是3秒）
+        time: 5000 //5秒关闭（如果不配置，默认是3秒）
     }, function () {
         if (!isRefresh) {
             return
