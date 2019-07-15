@@ -41,7 +41,7 @@
     </select>
 
     <!--查询支付方式-->
-    <select id="queryInvoicing"  resultType="java.lang.String" >
+    <select id="queryPayType"  resultType="java.lang.String" >
         SELECT pay_type FROM `hm_order_record` WHERE  id in
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
@@ -49,4 +49,18 @@
     </select>
 
 
+    <!--查询消费项-->
+    <select id="consumption"  resultType="double" >
+        SELECT SUM(money)  FROM `hm_order_record` WHERE   money &lt;0  AND  id in
+        <foreach collection="list" item="id" open="(" separator=","  close=")" >
+            #{id}
+        </foreach>
+    </select>
+    <!--查询支付项-->
+    <select id="pay" resultType="double" >
+        SELECT SUM(money)  FROM `hm_order_record` WHERE   money >0  AND  id in
+        <foreach collection="list" item="id" open="(" separator=","  close=")" >
+            #{id}
+        </foreach>
+    </select>
 </mapper>
