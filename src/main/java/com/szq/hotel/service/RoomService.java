@@ -553,7 +553,7 @@ public class RoomService {
 
 
     public RoomBO queryRoom(String name, Integer hotelId){
-        return roomDAO.queryRoom(name,hotelId);
+        return roomDAO.queryRooms(name,hotelId);
     }
 
 

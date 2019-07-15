@@ -469,7 +469,7 @@
   </select>
 
 
-  <select id="queryRoom" resultType="com.szq.hotel.entity.bo.RoomBO">
+  <select id="queryRooms" resultType="com.szq.hotel.entity.bo.RoomBO">
     select * from hm_room where hotel_id = #{hotelId} and room_name = #{name};
   </select>
 </mapper>
