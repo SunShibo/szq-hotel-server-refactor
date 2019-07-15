@@ -25,8 +25,8 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-inline">
-            <input type="checkbox" name="network" id="network" lay-skin="primary">
-            <input type="checkbox" name="room" id="room" lay-skin="primary">
+            <input type="checkbox" value="network" name="network" id="network" lay-skin="primary">
+            <input type="checkbox" value="shop" name="room" id="room" lay-skin="primary">
         </div>
     </div>
     <div class="layui-form-item" id="comment" style="display: none">
@@ -57,13 +57,12 @@
             if (state === 1) {
                 $('#time').css('display', 'block');
                 $('#comment').css('display', 'block');
-                $('#network').attr({title: '网络锁房', value: '10'});
-                $('#room').attr({title: '门店锁房', value: '9'});
+                $('#network').attr({title: '网络锁房'});
+                $('#room').attr({title: '门店锁房'});
 
             } else {
-                // $('#commentText').attr({layVerify:'', required: false})
-                $('#network').attr({title: '网络解锁', value: '11'});
-                $('#room').attr({title: '门店解锁', value: '12'});
+                $('#network').attr({title: '网络解锁'});
+                $('#room').attr({title: '门店解锁'});
             }
             form.render();
         });
@@ -105,36 +104,37 @@
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {
             var network = data.field.network, room = data.field.room, selectArr = sessionStorage.getItem('selectArr'),
-                status = 0;
-            if (state === 1) {//锁房
-                if(!data.field.comment){
-                    showMsg('备注不能为空', 2, false);
-                    return false;
-                }
-                if (network && room) {
-                    status = 8;
-                } else if (network) {
-                    status = network;
-                } else if (room) {
-                    status = room;
-                } else {
-                    layer.msg('请选择锁房状态(全选为全部锁房)');
-                    return false;
-                }
-                lockRoom(data.field, status, selectArr, 0);
-            } else {//解锁
-                if (network && room) {
-                    status = 13;
-                } else if (network) {
-                    status = network;
-                } else if (room) {
-                    status = room;
-                } else {
-                    layer.msg('请选择解锁状态(全选为全部解锁)');
-                    return false;
-                }
-                lockRoom(data.field, status, selectArr, null);
-            }
+                status = '';
+
+            // if (state === 1) {//锁房
+            //     if(!data.field.comment){
+            //         showMsg('备注不能为空', 2, false);
+            //         return false;
+            //     }
+            //     if (network && room) {
+            //         status = 8;
+            //     } else if (network) {
+            //         status = network;
+            //     } else if (room) {
+            //         status = room;
+            //     } else {
+            //         layer.msg('请选择锁房状态(全选为全部锁房)');
+            //         return false;
+            //     }
+            //     lockRoom(data.field, status, selectArr, 0);
+            // } else {//解锁
+            //     if (network && room) {
+            //         status = 13;
+            //     } else if (network) {
+            //         status = network;
+            //     } else if (room) {
+            //         status = room;
+            //     } else {
+            //         layer.msg('请选择解锁状态(全选为全部解锁)');
+            //         return false;
+            //     }
+            //     lockRoom(data.field, status, selectArr, null);
+            // }
             return false;
         });
 
@@ -142,8 +142,8 @@
         function lockRoom(data, status, selectArr, trueId) {
             var obj = {};
             obj.state = status;
-            obj.roomIds = selectArr;
-            if(trueId != null){
+            obj.roomIds = "[" + selectArr + "]";
+            if (trueId != null) {
                 obj.startTime = new Date(data.startTime.replace(/-/, "/").replace(/-/, "/"));
                 obj.endTime = new Date(data.endTime.replace(/-/, "/").replace(/-/, "/"));
                 obj.comment = data.comment;
@@ -170,13 +170,13 @@
                             showMsg('锁房成功', 1, false);
                             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                             parent.layer.close(index); //再执行关闭
-                        }else{
+                        } else {
                             showMsg(data.errMsg, 2, false);
                         }
 
                     }
                 });
-            }else {
+            } else {
                 $.ajax({
                     url: api.roomUnLock,
                     type: 'POST',

@@ -132,7 +132,10 @@
                 obj.condition = data.field.mate;
             }
             tab.reload({
-                where: obj
+                where: obj,
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
             });
             return false;
         });

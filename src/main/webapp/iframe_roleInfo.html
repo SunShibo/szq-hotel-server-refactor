@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>角色编辑</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+<form class="layui-form" lay-filter="roleForm">
+    <div class="layui-form-item" style="padding-top: 5px;">
+        <label class="layui-form-label">角色名称</label>
+        <div class="layui-input-block" style="width:70%;">
+            <input type="text" name="roleName" placeholder="请输入角色名称" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">酒店权限</label>
+        <div class="layui-input-block" id="hotel">
+
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单权限</label>
+        <div class="layui-input-block">
+            <div id="menuTree"></div>
+        </div>
+    </div>
+    <div class="layui-form-item" style="padding-left: 100px;">
+        <div style="width: 120px;">
+            <button class="layui-btn layui-btn-sm layui-btn-fluid" lay-submit lay-filter="formData">保存</button>
+        </div>
+    </div>
+</form>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['tree', 'form'], function () {
+        var tree = layui.tree, $ = layui.$, form = layui.form, state = 0, roleData = [], idArr = [], menuData = [],
+            hotelData = [],
+            hotels = [];
+
+        $(function () {
+            state = getUrl('s');
+            initData();
+            // if(state){//编辑
+            //
+            // }
+        });
+
+        //渲染
+        var treeDom = tree.render({
+            elem: '#menuTree'  //绑定元素
+            , data: menuData
+            , id: 'menu',
+            showCheckbox: true
+        });
+
+        function initData() {
+            $.when(
+                $.ajax({url: api.hotelInfo, type: "POST", dataType: 'json'}),
+                $.ajax({url: api.permissionsMenu, type: "POST", dataType: 'json'})
+            ).then(function (hotel, menu) {
+                //判断是否是编辑功能
+                if (state) {
+                    roleData = JSON.parse(sessionStorage.getItem('roleItem'));
+                    form.val('roleForm', {
+                        roleName: roleData.roleName
+                    });
+                    compare(roleData.menus);
+                    hotels = roleData.hotels;
+                }
+                hotelData = hotel[0].data;
+                initHotelData();
+
+                //更新tree数据
+                tree.reload('menu', {
+                    elem: '#menuTree',
+                    data: formatTreeData(menu[0].data)
+                });
+                tree.setChecked('menu', idArr);
+            });
+        }
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            //获取选中ID并且清空idArr数组
+            var checkData = tree.getChecked('menu');
+            idArr = [];
+            //格式化菜单
+            var menus = compare(checkData, 1);
+
+            if (state) {//编辑
+                $.ajax({
+                    url: api.roleUpdate,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        roleId: roleData.id,
+                        roleName: data.field.roleName,
+                        hotelIds: JSON.stringify(formatHotelData(data.field)), //格式化酒店权限
+                        menuIds: JSON.stringify(menus)
+                    },
+                    success: function (res) {
+                        showMsg(res.data, 1, false);
+                    }
+                })
+            } else {//添加
+                $.ajax({
+                    url: api.roleAdd,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        roleName: data.field.roleName,
+                        hotelIds: JSON.stringify(formatHotelData(data.field)), //格式化酒店权限
+                        menuIds: JSON.stringify(menus)
+                    },
+                    success: function (res) {
+
+                    }
+                })
+            }
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+            return false;
+        });
+
+        function initHotelData() {
+
+            //先循环绑定DOM
+            for (var i = 0, len = hotelData.length; i < len; i++) {
+                $('#hotel').append('<input type="checkbox" value="' + hotelData[i].id + '" name="hotel' + (i + 1) + '" title="' + hotelData[i].name + '" lay-skin="primary"> ')
+            }
+            form.render('checkbox');
+
+            var obj = {};
+            for (var j = 0, jLen = hotels.length; j < jLen; j++) {
+                for (var k = 0; k < hotelData.length; k++) {
+                    if (hotels[j].id === hotelData[k].id) {
+                        obj['hotel' + (k + 1)] = true;
+                    }
+                }
+            }
+
+            form.val('roleForm', obj);
+        }
+
+        //获取比较的ID
+        function compare(origin, state) {
+            origin.forEach(function (value) {
+                if (!value) {
+                    return;
+                }
+                if ((!state && value.children && value.children.length === 0) || state) {
+                    idArr.push(value.id);
+                }
+                if (value.children) {
+                    compare(value.children, state);
+                }
+            });
+            return idArr;
+        }
+
+        //格式化数据
+        function formatTreeData(data) {
+            return data.map(function (value) {
+                if (!value) {
+                    return null;
+                }
+                var title = value.menuName, id = value.id;
+                var result = {
+                    id: id,
+                    title: title
+                };
+                if (value.children.length > 0) {
+                    result.children = formatTreeData(value.children);
+                }
+                return result;
+            }).filter(function (item) {
+                return item
+            });
+        }
+
+        function formatHotelData(data) {
+            var arr = [];
+            for (var item in data) {
+                if (item.indexOf('hotel') !== -1) {
+                    arr.push(data[item]);
+                }
+            }
+            return arr;
+        }
+    });
+</script>
+</body>
+</html>

@@ -28,8 +28,8 @@
 			}
 
 			.layadmin-user-login-main {
-                min-width: 332px;
-				width: 385px;
+				min-width: 340px;
+				width: 400px;
 				margin: 0 auto;
 				box-sizing: border-box
 			}
@@ -165,20 +165,6 @@
 			.ladmin-user-login-theme ul li:hover {
 				opacity: .9
 			}
-
-			@media screen and (max-width: 768px) {
-				.layadmin-user-login {
-					padding-top: 60px
-				}
-
-				.layadmin-user-login-main {
-					width: 332px
-				}
-
-				.layadmin-user-login-box {
-					padding: 10px
-				}
-			}
 		</style>
 	</head>
 
@@ -239,8 +225,8 @@
                 dataType: 'json',
                 success: function (data) {
                     defaultId = data.data[0].id;
-                    // scheduleData();
                     setSelectData(data.data);
+                    scheduleData();
                 }
             });
         }
@@ -263,7 +249,7 @@
         function setScheduleData(data) {
             $("#schedule").empty();
 			for(var i = 0, len = data.length; i< len; i++){
-			    var div = '<input class="sch" type="radio" name="classesId" value="'+data[i].id+'" title="'+data[i].name+'（'+data[i].startTime+'-'+data[i].endTime+'）">';
+			    var div = '<input class="sch" type="radio" name="classesId" value="'+data[i].id+'" title="'+data[i].classesName+'（'+data[i].startTime+'-'+data[i].endTime+'）">';
                 $('#schedule').append(div);
 			}
             $('.sch:first').prop('checked', 'true');
@@ -289,13 +275,7 @@
 
 		//监听提交
 		form.on('submit(LAY-user-login-submit)', function(data) {
-		    // alert(JSON.stringify(data.field))
-            // if(data.field.classesId == null){
-             //    layer.msg('请选择班次');
-             //    return;
-            // }
 			$.post("/admin/adminLogin",data.field, function(r){
-                console.log(r);
 				if(r.success){
                     localStorage.hotelMenu = JSON.stringify(r.data.menu);
                     localStorage.User = JSON.stringify(r.data.admin);

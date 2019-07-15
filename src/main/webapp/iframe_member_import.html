@@ -12,12 +12,11 @@
             <p id="member0" style="float: right;">模板文件：<a target="_blank" href="/manage/download" class="layui-btn layui-btn-warm" >下载</a></p>
             <p  id="member1" style="float: right;">模板文件：<a target="_blank" href="/manage/download1"class="layui-btn layui-btn-warm" >下载</a></p>
         </div>
-        <p style="padding: 10px 20px;color: red;">温馨提示：数据导入时不允许数据有错误，一旦有错误将全部导入不成功，可以通过预导入功能检查数据的有效性</p>
-        <!--<p style="padding: 10px 20px;"><input class="layui-btn layui-btn-warm" type="file" value=". . . "/></p>-->
+        <p style="padding: 10px 20px;color: red;">温馨提示：数据导入时不允许数据有错误，一旦有错误将全部导入不成功。</p>
         <div style="height: 50px;">
             <p class="fr">
-                <button class="layui-btn layui-btn-warm" id="ydr" >预导入</button>
-                <button class="layui-btn layui-btn-warm layui-hide" id="dr" >导入</button>
+                <!--<button class="layui-btn layui-btn-warm" id="ydr" >预导入</button>-->
+                <button class="layui-btn layui-btn-warm" id="dr" >导入</button>
                 <button class="layui-btn layui-btn-warm" onclick="no();" >取消</button>
             </p>
         </div>
@@ -53,6 +52,7 @@
         element = layui.element,
             $ = jQuery = layui.$;
         var upload = layui.upload;
+        console.log(getUrl('v') )
         if(getUrl("v")==""){
             $("#member1").addClass("layui-hide");
         }else{
@@ -60,25 +60,18 @@
         }
         //执行实例
         var uploadInst = upload.render({
-            elem: '#ydr' //绑定元素
-            ,url: api.yuImport+getUrl("v") //上传接口
+            elem: '#dr' //绑定元素
+            ,url: !getUrl('v') ? api.import : api.cardImport //上传接口
             ,accept: 'file' //允许上传的文件类型
             ,done: function(res){
                 //上传完毕回调
                 console.info(res);
 
                 if(res.success){
-                    if(!res.data.resultInfo){
-                        layer.msg(res.data.result, {icon: 2,shift:6});
-                        $("#result").val(res.data.result)
-                    }else{
-                        layer.alert("预导入成功");
-                        $("#result").val('预导入成功')
-                        $("#ydr").addClass("layui-hide");
-                        $("#dr").removeClass("layui-hide");
-                    }
+                    parent.layer.alert(res.data);
+                    $("#result").val(res.data);
                 }else{
-                    layer.msg(res.errMsg, {icon: 2,shift:6});
+                    parent.layer.msg(res.errMsg, {icon: 2,shift:6});
                     $("#result").val(res.errMsg)
                 }
             }
@@ -90,17 +83,17 @@
             }
         });
 
-        $("#dr").on("click",function () {
-            $.getJSON(api.import+getUrl("v")+"?random="+Date.now(),function (res) {
-                console.info(res)
-                if(res.success){
-                    layer.alert("导入成功");
-                }else{
-                    layer.alert(res.errMsg)
-                    $("#result").val(res.errMsg)
-                }
-            })
-        })
+        // $("#dr").on("click",function () {
+        //     $.getJSON(api.import+"?random="+Date.now(),function (res) {
+        //         console.info(res)
+        //         if(res.success){
+        //             layer.alert("导入成功");
+        //         }else{
+        //             layer.alert(res.errMsg);
+        //             $("#result").val(res.errMsg)
+        //         }
+        //     })
+        // })
     });
 
 

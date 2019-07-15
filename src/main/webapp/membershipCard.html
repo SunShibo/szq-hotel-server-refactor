@@ -29,16 +29,39 @@
         </li>
     </ul>
 </nav>
-<div style="height: 60px;"></div>
+<div style="height: 70px;"></div>
 <form class="layui-form" style="padding: 10px 0; position: relative;">
     <div class="layui-form-item">
         <label class="layui-form-label">筛选</label>
         <div class="layui-input-block">
-            <input type="radio" lay-filter="option" name="option" value="" title="全部" lay-skin="primary" checked>
-            <input type="radio" lay-filter="option" name="option" value="1" title="待分配" lay-skin="primary">
-            <input type="radio" lay-filter="option" name="option" value="2" title="使用中" lay-skin="primary">
+            <input type="radio" name="state" value="" title="全部" lay-skin="primary" checked>
+            <input type="radio" name="state" value="unsold" title="未售出" lay-skin="primary">
+            <input type="radio" name="state" value="use" title="使用中" lay-skin="primary">
+            <!--<input type="radio" name="state" value="freeze" title="冻结" lay-skin="primary">-->
+            <!--<input type="radio" name="state" value="no" title="删除" lay-skin="primary">-->
         </div>
-        <div class="layui-input-block" style="position: absolute; right: 5%;top: 10px;">
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">卡号</label>
+            <div class="layui-input-inline" style="width: 200px;">
+                <input type="number" name="cardNumber" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">售价</label>
+            <div class="layui-input-inline" style="width: 200px;">
+                <input type="number" name="money" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">会员级别</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn" lay-submit lay-filter="formData">查询</button>
             <a class="layui-btn" id="addCard">添加</a>
             <button class="layui-btn" lay-submit lay-filter="outExcel">导出</button>
         </div>
@@ -50,10 +73,8 @@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    {{# if(d.state == 1) { }}
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    {{# } else { }}
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="cancellation">注销</a>
+    {{# if(d.state != "no") { }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     {{# } }}
 </script>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
@@ -62,10 +83,22 @@
         var $ = layui.$, form = layui.form, table = layui.table;
         renderReport($)
         $(function () {
+            // initData();
             setInterval(function () {
                 getReport($)
             }, 60000)
         });
+
+        // function initData() {
+        //     $.ajax({
+        //         url: api.memberLevel,
+        //         type: 'POST',
+        //         dataType: 'json',
+        //         success: function (res) {
+        //             setSelectData(res.data);
+        //         }
+        //     })
+        // }
 
         //第一个实例
         var tab = table.render({
@@ -88,22 +121,31 @@
                     "code": 200, //解析接口状态
                     "msg": res.errMsg, //解析提示文本
                     "count": res.data.count, //解析数据长度
-                    "data": res.data.cart //解析数据列表
+                    "data": res.data.memberCardBOS //解析数据列表
                 };
             }
             , page: true //开启分页
             , even: true
             , cols: [[ //表头
-                {field: 'cart', title: '卡号', align: 'center'}
+                {field: 'cardNumber', title: '卡号', align: 'center'}
                 , {field: 'name', title: '会员级别', align: 'center'}
-                , {field: 'price', title: '卡售价', align: 'center'}
+                , {field: 'money', title: '卡售价', align: 'center'}
+                , {
+                    field: 'sellingTime', title: '售出时间', align: 'center', templet: function (data) {
+                        return !!data.sellingTime ? DateToLStr(new Date(data.sellingTime.time)) : '空'
+                    }
+                }
                 , {
                     field: 'state', title: '卡状态', align: 'center', templet: function (data) {
                         switch (data.state) {
-                            case 1:
-                                return '待分配';
-                            case 2:
+                            case 'unsold':
+                                return '未售出';
+                            case 'use':
                                 return '使用中';
+                            case 'freeze':
+                                return '冻结';
+                            case 'no':
+                                return '删除';
                         }
                     }
                 }
@@ -113,7 +155,12 @@
 
         //监听导出按钮提交
         form.on('submit(outExcel)', function (data) {
-            location.href = api.cartExport + '?state=' + data.field.option;
+            var href = api.cartExport;
+            data.field.state ? href+="?state=" + data.field.state: '';
+            data.field.money ? href+="?money=" + data.field.money: '';
+            data.field.cardNumber ? href+="?cardNumber=" + data.field.cardNumber: '';
+            data.field.name ? href+="?name=" + data.field.name: '';
+            window.open(href);
             return false;
         });
 
@@ -123,22 +170,7 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
 
-            if(layEvent === 'cancellation'){//注销
-                layer.confirm('真的注销吗', function (index) {
-                    $.ajax({
-                        url: api.cartLogout,
-                        data: {
-                            id: data.id
-                        },
-                        type: 'POST',
-                        dataType: 'json',
-                        success: function (data) {
-                            tab.reload();//刷新表格
-                        }
-                    });
-                    layer.close(index);
-                });
-            } else if (layEvent === 'del') { //删除
+            if (layEvent === 'del') { //删除
                 layer.confirm('真的删除吗', function (index) {
                     $.ajax({
                         url: api.cartDelete,
@@ -154,6 +186,7 @@
                     layer.close(index);
                 });
             } else if (layEvent === 'edit') { //编辑
+                sessionStorage.setItem('membersCard', JSON.stringify(data));
                 layer.open({
                     type: 2,
                     skin: 'demo-class',
@@ -161,7 +194,7 @@
                     title: '编辑',
                     shade: 0.6,
                     shadeClose: true,
-                    content: 'iframe_membersCard.html?state=1&id=' + data.id,
+                    content: 'iframe_membersCard.html?state=1',
                     end: function (index, layero) {
                         tab.reload();
                     }
@@ -184,12 +217,29 @@
             });
         });
 
-        form.on('radio(option)', function (data) {
+        //绑定下拉框数据
+        // function setSelectData(second) {
+        //     for (var i = 0, len = second.length; i < len; i++) {
+        //         $('#memberLevel').append("<option value=" + second[i].id + ">" + second[i].name + "</option>");
+        //     }
+        //     form.render('select');
+        // }
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
             tab.reload({
+                method: 'POST',
                 where: {
-                    state: data.value
+                    state: data.field.state,
+                    name: data.field.name,
+                    money: data.field.money,
+                    cardNumber: data.field.cardNumber
+                },
+                page: {
+                    curr: 1 //重新从第 1 页开始
                 }
             });
+            return false;
         });
     });
 </script>

@@ -1,4 +1,4 @@
-document.write("<link rel='stylesheet' href='css/layui.css'>");
+document.write("<link rel='stylesheet' href='../css/layui.css'>");
 document.write("<link rel='stylesheet' href='css/login.css'>");
 document.write("<link rel='stylesheet' href='css/main.css'>");
 // document.write("<link rel='stylesheet' href='css/styles.css'>");

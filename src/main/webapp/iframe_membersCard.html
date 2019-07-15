@@ -20,11 +20,12 @@
     <div class="layui-form-item">
         <label class="layui-form-label">会员级别</label>
         <div class="layui-input-inline">
-            <select name="membersCard" id="membersCard"></select>
+            <select name="memberLevelId" id="membersCard"></select>
         </div>
         <label class="layui-form-label">卡售价</label>
         <div class="layui-input-inline">
-            <input type="number" name="cardPrice" required  lay-verify="required" placeholder="卡售价" autocomplete="off" class="layui-input">
+            <input type="number" name="money" required lay-verify="required" placeholder="卡售价" autocomplete="off"
+                   class="layui-input">
         </div>
     </div>
     <div style="position: fixed; right: 10px; bottom: 10px;">
@@ -37,11 +38,11 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form'], function () {
-        var $ = layui.$, form = layui.form, state = 0, id = 0, cardLeave = [];
+        var $ = layui.$, form = layui.form, state = 0, initData = {};
 
         $(function () {
             state = parseInt(getUrl('state'));
-            id = parseInt(getUrl('id'));
+            initData = JSON.parse(sessionStorage.membersCard);
             selectData()
         });
 
@@ -51,8 +52,8 @@
                 type: 'POST',
                 dataType: 'json',
                 success: function (data) {
-                    cardLeave = data.data.cartLeaveBOs;
-                    setSelectData(data.data.cartLeaveBOs);
+                    console.log(data)
+                    setSelectData(data.data);
                     if (!state) {//添加
                         $('#isUpdate').css('display', 'inline-block');
                     } else {//修改
@@ -84,16 +85,14 @@
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        cartLeave: data.field.membersCard,
-                        price: data.field.cardPrice,
-                        id: id
+                        memberLevelId: data.field.memberLevelId,
+                        money: data.field.money,
+                        id: initData.id
                     },
                     success: function (data) {
-                        if(data.success){
-                            showMsg('修改成功', 1, false);
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layer.close(index); //再执行关闭
-                        }else {
+                        if (data.success) {
+                            showMsg(data.data, 1, false);
+                        } else {
                             showMsg(data.errMsg, 2, false);
                             return false;
                         }
@@ -106,13 +105,12 @@
                         url: api.cartAdd,
                         type: 'POST',
                         dataType: 'json',
-                        data:obj,
+                        data: obj,
+                        traditional: true,
                         success: function (data) {
-                            if(data.success){
-                                showMsg('添加成功', 1, false);
-                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                parent.layer.close(index); //再执行关闭
-                            }else {
+                            if (data.success) {
+                                showMsg(data.data, 1, false);
+                            } else {
                                 showMsg(data.errMsg, 2, false);
                                 return false;
                             }
@@ -120,6 +118,9 @@
                     })
                 }
             }
+
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
             return false;
         });
 
@@ -128,11 +129,12 @@
                 showMsg('请输入数字', 2, false);
                 return null;
             }
-            if(parseInt(data.startCard)<0||data.endCard<0){
+            if (parseInt(data.startCard) < 0 || data.endCard < 0) {
                 showMsg('数字格式不正确', 2, false);
                 return null;
             }
-            var startCard =  Math.ceil(parseInt(data.startCard)), endCard =  Math.ceil(parseInt(data.endCard)), arr = [], obj = {};
+            var startCard = Math.ceil(parseInt(data.startCard)), endCard = Math.ceil(parseInt(data.endCard)), arr = [],
+                obj = {};
             var len = endCard - startCard < 0 ? startCard - endCard : endCard - startCard;
             var start = endCard - startCard < 0 ? endCard : startCard;
             var end = endCard - startCard > 0 ? endCard : startCard;
@@ -149,9 +151,9 @@
                         arr.push(newStartCard);
                     }
                 }
-                obj.cart = arr.join(',');
-                obj.leaveId = data.membersCard;
-                obj.price = data.cardPrice;
+                obj.cardNumber = arr;
+                obj.memberLevelId = data.memberLevelId;
+                obj.money = data.money;
                 return obj;
             } else {
                 showMsg('一次只能添加100张会员卡', 2, false);
@@ -161,23 +163,9 @@
 
         //编辑回显
         function updateInfo() {
-            $.ajax({
-                url: api.cartDetail,
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    id: id
-                },
-                success: function (data) {
-                    if(!data.success){
-                        showMsg(data.errMsg, 2, false);
-                        return;
-                    }
-                    form.val('data', {
-                        'membersCard': data.data.cartLeave,
-                        'cardPrice': data.data.price
-                    });
-                }
+            form.val("data",{
+                memberLevelId: initData.memberLevelId,
+                money: initData.money
             })
         }
     });

@@ -29,7 +29,7 @@
         </li>
     </ul>
 </nav>
-<div style="height: 60px;"></div>
+<div style="height: 70px;"></div>
 <form class="layui-form" style="padding: 10px 0;">
     <div class="layui-form-item">
         <label class="layui-form-label">酒店</label>
@@ -204,7 +204,10 @@
             }
             obj.query = data.field.query;
             tab.reload({
-                where: obj
+                where: obj,
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
             });
             return false;
         });

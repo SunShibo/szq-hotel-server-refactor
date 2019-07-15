@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>角色设置</title>
+    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<nav class="hotel-nav">
+
+    <ul class="layui-nav " lay-filter="" id="navMenu"></ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="hotelusername"></a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" id="updateHotel">更换酒店</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" id="updatePass">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="outLogin">退出登录</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</nav>
+<div style="height: 70px;"></div>
+<form class="layui-form">
+    <div class="layui-form-item" style="padding-top: 5px;">
+        <div class="layui-inline">
+            <label class="layui-form-label">角色名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="roleName" placeholder="请输入角色名" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm layui-btn-fluid" lay-submit lay-filter="formData">查询</button>
+        </div>
+    </div>
+</form>
+<div class="layui-btn-container" style="width: 90%;margin: 0 auto;">
+    <button class="layui-btn layui-btn-sm" id="addItem">新增</button>
+</div>
+<div class="tab-box">
+    <table id="roomManage" lay-filter="roomManage" class="layui-table"></table>
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'form'], function () {
+        var table = layui.table, $ = layui.$, form = layui.form;
+
+
+        //初始化表格数据
+        var tab = table.render({
+            elem: '#roomManage'
+            , method: 'POST'
+            , url: api.roleAllData
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.data //解析数据列表
+                };
+            }
+            , height: 'full'
+            , even: true
+            , loading: true // 是否显示加载条
+            , cols: [[ //表头
+                {field: 'roleName', title: '角色名', align: 'center'}
+                , {
+                    field: 'menus', title: '菜单权限', align: 'center', templet: function (data) {
+                        return formatMenus(data.menus);
+                    }
+                }
+                , {
+                    field: 'hotels', title: '酒店权限', align: 'center', templet: function (data) {
+                        var nameArr = [];
+                        for (var i = 0, len = data.hotels.length; i < len; i++) {
+                            nameArr.push(data.hotels[i].name);
+                        }
+                        return nameArr.join(' , ');
+                    }
+                }
+                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo'}
+            ]]
+        });
+
+        function formatMenus(data) {
+            var newArr = [];
+            for (var i = 0, len = data.length; i < len; i++) {
+                newArr.push(data[i].menuName);
+                if (data[i].children && data[i].children.length > 0) {
+                    for (var j = 0, jLen = data[i].children.length; j < jLen; j++){
+                        newArr.push(data[i].children[j].menuName);
+                    }
+                }
+            }
+            return newArr.join(' , ');
+        }
+
+        //监听查询按钮提交
+        form.on('submit(formData)', function (data) {
+            tab.reload({
+                method: 'POST',
+                where: {
+                    roleName: data.field.roleName
+                },
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false;
+        });
+
+        //表格操作按钮
+        table.on('tool(roomManage)', function (obj) { //tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if (layEvent === 'del') { //删除
+                layer.confirm('确定要删除么', function (index) {
+                    $.ajax({
+                        url: api.roleDelete,
+                        data: {
+                            roleIds: JSON.stringify([data.id])
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            tab.reload();//刷新表格
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (layEvent === 'edit') { //编辑
+                sessionStorage.setItem('roleItem', JSON.stringify(data));
+                layer.open({
+                    type: 2,
+                    skin: 'demo-class',
+                    area: ['700px', '600px'],
+                    title: '编辑',
+                    shade: 0.6,
+                    shadeClose: true,
+                    content: 'iframe_roleInfo.html?s=1',
+                    end: function (index, layero) {
+                        sessionStorage.removeItem('roleItem');
+                        tab.reload();//刷新表格
+                    }
+                });
+            }
+        });
+
+        //新增按钮跳转
+        $('#addItem').on('click', function () {
+            layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['700px', '600px'],
+                title: '编辑',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_roleInfo.html',
+                end: function (index, layero) {
+                    tab.reload();//刷新表格
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

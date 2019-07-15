@@ -54,15 +54,14 @@ var api = {
     , getHouseType: '/queryRoomTypeNum'//获取房屋类型000
     , getHouse: '/room/roomTypeMain'//获取房间信息
     // , yuImport: '/manage/upload'//预导入  废弃
-    , import: '/memberCard/importMemberCard'//会员导入   有问题
     , cardImport: '/memberCard/importMemberCard'//会员卡导入  有问题
     , exportExcel: '/manage/outExce?v=1'//导出会员信息
     , offMember: '/member/logout?userId='//注销会员userId
-    , roomDelete: '/room/deleteRoom'  //客房删除
-    , roomQuery: '/room/queryRoom'   //客房查询
+    , roomDelete: '/room/deleteByPrimaryKey'  //客房删除   已修改
+    , roomQuery: '/room/queryRoom'   //客房查询    已修改
     , roomAdd: '/room/addRoomInfo'   //新增客房
     , roomUnLock: '/room/openLockRoom'   //客房解锁
-    , roomLockRoom: '/room/lockRoom'    //客房锁房
+    , roomLockRoom: '/room/updatelockRoomClose'    //客房锁房
     , queryMemberById: '/member/detail?userId='//根据会员id查询
     , pickRoomQuery: '/room/QueryRoomInfoByState?v=1'//选房查询
     , checkIn: '/checkin/addCheckin?v=1'//入住
@@ -143,9 +142,9 @@ var api = {
     , getCardNoByLeaveId: '/member/queryCart?leaveId='//根据级别id查询卡费用信息
     , getCardUpdate: '/member/queryCartUpdate?v=1'//根据用户id卡级别判断是否缴费member/queryCartUpdate?userId=1&leaveId=1
     , cartInfo: '/memberCard/selectMemberCard'//会员卡查询   已修改
-    , cartDelete: '/Cart/delete?v=1'//会员卡删除
-    , cartExport: '/memberCard/exportMemberCard'//会员卡导出
-    , cartAdd: '/memberCard/addMemberCard'//会员卡添加   已修改  有问题
+    , cartDelete: '/memberCard/deleteMemberCard'//会员卡删除   已修改
+    , cartExport: '/memberCard/exportMemberCard'//会员卡导出    已修改
+    , cartAdd: '/memberCard/addMemberCard'//会员卡添加   已修改
     // , cartDetail: '/Cart/detail?v=1'//会员卡回显  废弃
     , cartUpdate: '/memberCard/updateMemberCard'//会员卡编辑     已修改
     , checkRoomInfo: '/room/ifCheckIn'//判断选的房间是否可用
@@ -196,6 +195,11 @@ var api = {
     , addFloor:'floor/addFloor'//添加楼层000
     , updateFloor:'floor/updateFloor'//修改楼层000
     , deleteFloor:'floor/deleteFloor'//删除楼层000
+    , roleAllData: '/admin/getAllRoleMenu'//查询角色     已修改
+    , roleDelete: '/admin/delRoleByIds' //角色删除      已修改
+    , roleUpdate: '/admin/grantAuthority' //角色编辑      已修改
+    , roleAdd: '/admin/addRoleGrantAuthority' //角色添加      已修改
+    , permissionsMenu: '/admin/getPermissionsMenu'  //查询所有菜单  已修改
 }
 layui.use(['jquery', 'element'], function () {
     $ = layui.jquery;
