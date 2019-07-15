@@ -30,7 +30,7 @@ public interface OrderRecordDAO {
     /**
      * 修改子订单详情
      */
-    OrderRecoredBO updateRecord(OrderRecoredBO orderRecoredBO);
+    void updateRecord(OrderRecoredBO orderRecoredBO);
 
     /**
      * 查询是否包含以结账

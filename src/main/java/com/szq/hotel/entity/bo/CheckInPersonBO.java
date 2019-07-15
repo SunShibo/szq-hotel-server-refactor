@@ -1,5 +1,7 @@
 package com.szq.hotel.entity.bo;
 
+import java.util.Date;
+
 public class CheckInPersonBO {
     private Integer id;//入住人
     private Integer orderChildId;//子订单id
@@ -11,6 +13,42 @@ public class CheckInPersonBO {
     private String status;//入住状态
     private String remark;//备注
     private Integer createUserId;//操作人id
+    private Date createTime;//入住时间
+    private Date startTime;//房间的入住时间
+    private Integer roomId;//房间id
+    private Integer roomName;//房间号
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+
+    public Integer getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(Integer roomName) {
+        this.roomName = roomName;
+    }
 
     public Integer getOrderChildId() {
         return orderChildId;

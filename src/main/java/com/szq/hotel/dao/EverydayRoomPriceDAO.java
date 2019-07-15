@@ -12,6 +12,9 @@ public interface EverydayRoomPriceDAO {
     //根据子订单id查询每日房价
     List<EverydayRoomPriceBO> getEverydayRoomById(Integer id);
 
+    //根据子订单id查询未经过夜审的日期价格
+    List<EverydayRoomPriceBO> getRemainingEverydayRoomById(Integer id);
+
     //根据子订单删除每日房价
     Integer delEverydayRoomById(Integer id);
 
