@@ -2,6 +2,7 @@ package com.szq.hotel.web.controller;
 
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
+import com.szq.hotel.entity.param.PayTypeBO;
 import com.szq.hotel.service.ChildOrderService;
 import com.szq.hotel.service.OrderRecordService;
 import com.szq.hotel.util.JsonUtils;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/chilOrder")
@@ -209,7 +211,6 @@ public class ChildOrderController extends BaseCotroller {
 
 
 
-
     /**
      * 子订单结账查询
      * @param request
@@ -243,8 +244,56 @@ public class ChildOrderController extends BaseCotroller {
                 return;
             }
 
-            childOrderService.queryChildleAccounts(ids);
+            Map<String, Object> map = childOrderService.queryChildleAccounts(ids);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("queryChildleAccountsException", e);
+        }
+    }
 
+
+    /**
+     * 子订单结账
+     * @param request
+     * @param response
+     * @param chilId    子订单id
+     * @param ids       详情id
+     * @param status    收/退  yes/no
+     */
+    @RequestMapping("/childleAccounts")
+    public void childleAccounts(HttpServletRequest request, HttpServletResponse response, Integer chilId, String ids,String payType, PayTypeBO param,String status) {
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}", loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            if (StringUtils.isEmpty(ids)||chilId==null||StringUtils.isEmpty(status)) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            boolean lean = orderRecordService.queryInvoicing(ids);
+            if(lean){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            childOrderService.childleAccounts(loginAdmin.getHotelId(),loginAdmin.getId(),chilId,ids,payType,param,status);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
@@ -253,7 +302,112 @@ public class ChildOrderController extends BaseCotroller {
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
-            log.error("transferAccountsException", e);
+            log.error("queryChildleAccountsException", e);
+        }
+    }
+
+
+
+
+    /**
+     * 结账查询
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/queryAccounts")
+    public void queryAccounts(HttpServletRequest request, HttpServletResponse response,String chilIds) {
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}", loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            if (StringUtils.isEmpty(chilIds)) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            boolean lean = childOrderService.ifCheckOut(chilIds);
+            if(lean){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            Map<String, Object> map = childOrderService.queryAccounts(chilIds);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("queryChildleAccountsException", e);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 结账
+     * @param request
+     * @param response
+     * @param chilId    子订单id
+     * @param ids       详情id
+     * @param status    收/退  yes/no
+     */
+    @RequestMapping("/accounts")
+    public void accounts(HttpServletRequest request, HttpServletResponse response, Integer chilId, String ids,String payType, PayTypeBO param,String status) {
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}", loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            if (StringUtils.isEmpty(ids)||chilId==null||StringUtils.isEmpty(status)) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            boolean lean = orderRecordService.queryInvoicing(ids);
+            if(lean){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            childOrderService.childleAccounts(loginAdmin.getHotelId(),loginAdmin.getId(),chilId,ids,payType,param,status);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("accountsException", e);
         }
     }
 }

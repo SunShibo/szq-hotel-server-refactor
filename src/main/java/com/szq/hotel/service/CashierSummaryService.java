@@ -264,12 +264,13 @@ public class CashierSummaryService {
      * @param roomType         房间类型
      * @param remark            原因
      * @param hotelId            酒店id
+     * @param type               支付方式
      */
-    public void addAccounts(BigDecimal money,String orderNumber,Integer userId,String name,String OTA,
+    public void addAccounts(BigDecimal money,String orderNumber,Integer userId,String name,String OTA,String type,
                         String channel,String passengerSource,String roomName,String roomType,String remark,Integer hotelId) {
         log.info("start addAccounts...........................................");
-        log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tremark:{}\thotelId:{}",
-                money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark,hotelId);
+        log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tremark:{}\thotelId:{}\ttype:{}",
+                money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark,hotelId,type);
 
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject(Constants.SETTLE.getValue());
@@ -284,6 +285,7 @@ public class CashierSummaryService {
         cashierSummaryBO.setRoomTypeName(roomType);
         cashierSummaryBO.setRemark(remark);
         cashierSummaryBO.setHotelId(hotelId);
+        cashierSummaryBO.setType(type);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end addAccounts...........................................");
     }

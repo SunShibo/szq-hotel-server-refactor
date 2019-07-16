@@ -73,4 +73,12 @@
     <select id="queryOrderChildMain"  parameterType="java.lang.String" resultType="java.lang.Integer" >
         SELECT id  FROM `hm_order_child` WHERE al_room_code =#{code}  AND main='yes'
     </select>
+
+    <!--判断是否有未退房的-->
+    <select id="ifCheckOut"  resultType="int" >
+        SELECT count(id) FROM hm_order_child WHERE order_state='notpaid'  AND  id IN
+        <foreach collection="list"  item="id" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+    </select>
 </mapper>

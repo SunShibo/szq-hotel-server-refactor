@@ -57,4 +57,17 @@ public interface OrderRecordDAO {
      * @return
      */
     double pay(@Param("list")List<Integer> list);
+
+    /**
+     * 修改订单状态为已结
+     * @param list
+     */
+    void closedAccount(@Param("list")List<Integer> list);
+
+    /**
+     * 结账查询
+     * @param list
+     * @return
+     */
+    List<Integer> queryRecordIds(@Param("list")List<Integer> list);
 }

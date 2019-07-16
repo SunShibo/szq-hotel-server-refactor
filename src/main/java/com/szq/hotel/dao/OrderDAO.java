@@ -55,6 +55,8 @@ public interface OrderDAO {
      */
     List<OrderListBO> queryOrderList(OrderParam param);
 
+    int queryOrderListCount(OrderParam param);
+
     BigDecimal queryUnitPrice(Integer id);
 
     void addOrderRecored(OrderRecoredBO orderRecoredBO);
