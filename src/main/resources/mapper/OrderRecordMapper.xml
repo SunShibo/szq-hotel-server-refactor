@@ -51,16 +51,43 @@
 
     <!--查询消费项-->
     <select id="consumption"  resultType="double" >
-        SELECT SUM(money)  FROM `hm_order_record` WHERE   money &lt;0  AND  id in
+        SELECT ifnull(SUM(money),0)  FROM `hm_order_record` WHERE   money &lt;0  AND  id in
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
     </select>
     <!--查询支付项-->
     <select id="pay" resultType="double" >
-        SELECT SUM(money)  FROM `hm_order_record` WHERE   money >0  AND  id in
+        SELECT ifnull(SUM(money),0)  FROM `hm_order_record` WHERE   money >0  AND  id in
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
     </select>
+
+    <!--修改订单详情为已结-->
+    <update id="closedAccount" >
+        UPDATE  hm_order_record  SET  state='yes'   WHERE
+        <foreach collection="list" item="id" open="(" separator=","  close=")" >
+            #{id}
+        </foreach>
+    </update>
+
+    <!--结账查询-->
+    <select id="queryRecordIds" resultType="java.lang.Integer"   >
+        SELECT id  FROM hm_order_record WHERE  state='no' AND  order_child_id  IN
+        <foreach collection="list" item="id" open="(" separator=","  close=")" >
+            #{id}
+        </foreach>
+    </select>
+
+    <!--完成订单-->
+    <select id="completeAccount" >
+        UPDATE  hm_order_child child LEFT JOIN hm_order_record rd ON rd.order_child_id=child.id  SET
+        od.state='yes'  , child.order_state='accomplish'  WHERE child.id IN
+        <foreach collection="list" item="id" open="(" separator=","  close=")" >
+            #{id}
+        </foreach>
+    </select>
+
+
 </mapper>

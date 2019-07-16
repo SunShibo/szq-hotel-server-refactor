@@ -549,4 +549,8 @@ public class OrderService {
         return orderListBOS;
     }
 
+
+    public  int queryOrderListCount(OrderParam param){
+       return  orderDAO.queryOrderListCount(param);
+    }
 }

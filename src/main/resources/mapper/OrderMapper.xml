@@ -304,6 +304,32 @@
         <include refid="orderLimit"/>
     </select>
 
+    <!--订单列表数量-->
+    <select id="queryOrderListCount" parameterType="com.szq.hotel.entity.param.OrderParam"
+            resultType="int">
+        SELECT COUNT(child.id)
+        FROM hm_order der LEFT JOIN hm_order_child child ON der.id=child.order_id
+        INNER JOIN hm_room_type type ON type.id=child.room_type_id INNER JOIN hm_room room ON room.id=child.room_id
+        <where>
+            <if test="hotelId!=null">der.hotel_id=#{hotelId}</if>
+            <if test="orderState!=null and orderState!=''">and child.order_state=#{orderState}</if>
+            <if test="admissionsStartTime!=null and admissionsEndTime!=null">and der.check_time BETWEEN
+                #{admissionsStartTime} and #{admissionsEndTime}
+            </if>
+            <if test="departureStartTime!=null and departureEndTime!=null">and der.check_out_time BETWEEN
+                #{departureStartTime} and #{departureEndTime}
+            </if>
+            <if test="roomName!=null and roomName!=''">and room.room_name =#{roomName}</if>
+            <if test="checkType!=null and checkType!=''">and der.check_type =#{checkType}</if>
+            <if test="orderPlacer!=null and orderPlacer!=''">and der.order_placer LIKE '%${orderPlacer}%'</if>
+            <if test="phone!=null and phone!=''">and der.phone LIKE '%${phone}%'</if>
+            <if test="roomTypeId!=null ">and child.room_type_id =#{roomType}</if>
+            <if test="roomName!=null and roomName!='' ">and room.room_name LIKE '%${roomName}%'</if>
+            <if test="channel!=null and channel!=''">and der.channel LIKE '%${channel}%'</if>
+            <if test="OTA!=null and OTA!=''">and der.OTA LIKE '%${OTA}%'</if>
+        </where>
+
+    </select>
     <!--关闭超过15分钟未支付的子订单-->
     <update id="closeOrder">
         update hm_order_child

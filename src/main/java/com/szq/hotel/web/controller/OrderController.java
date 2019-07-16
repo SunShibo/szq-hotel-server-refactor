@@ -608,11 +608,14 @@ public class OrderController extends BaseCotroller {
             QueryInfo queryInfo = getQueryInfo(param.getPageNo(),param.getPageSize());
             param.setPageOffset(queryInfo.getPageOffset());
             param.setPageSize(queryInfo.getPageSize());
-
+            param.setHotelId(loginAdmin.getHotelId());
             List<OrderListBO> orderListBOS = orderService.queryOrderList(param);
+            int count=orderService.queryOrderListCount(param);
+            Map<String,Object> resultMap=new HashMap<String, Object>();
+            resultMap.put("data",orderListBOS);
+            resultMap.put("count",count);
 
-
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderListBOS));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
             return;

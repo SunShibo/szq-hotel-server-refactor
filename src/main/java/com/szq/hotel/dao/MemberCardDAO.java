@@ -58,4 +58,9 @@ public interface MemberCardDAO {
         更新会员卡售出时间
      */
     void updateSellingTime(String cardNumber);
+
+    /*
+        通过卡号查找会员卡信息
+     */
+    MemberCardBO getCardNumber(String cardNumber);
 }

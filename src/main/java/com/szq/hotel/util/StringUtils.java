@@ -3568,6 +3568,14 @@ public class StringUtils {
 		}
 		return  list;
 	}
+
+	public static String listToStr(List<?> list, String decollator){
+		StringBuffer  buffer=new StringBuffer();
+		for(int i=0;i<list.size();i++){
+			buffer.append(list.get(i)).append(decollator);
+		}
+		return buffer.toString();
+	}
 	// Test only.
 	public static void main(String[] args) throws Exception {
 //		 String strTest = "123,33,44,AA,*,222,333,444,*,555,666,777,*";

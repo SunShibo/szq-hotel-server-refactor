@@ -43,7 +43,8 @@ public enum Constants {
     /* 项目 : 结账 */ SETTLE("结账"),
     /* 项目 : 储值 */ STOREDVALUE("储值"),
     /* 项目 : 办卡 */ APPLYCARD("办卡"),
-    /* 详细信息 : 入住押金 */ INTHEDEPOSIT("入住押金");
+    /* 详细信息 : 入住押金 */ INTHEDEPOSIT("入住押金"),
+    /* 详细信息 : 消费项目结账 */ CONSUMPTIONITEM("消费项目结账");
     Constants(String value) {
         this.value = value;
     }

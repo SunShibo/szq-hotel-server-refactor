@@ -112,15 +112,50 @@ public class OrderRecordService {
     }
 
 
+    /**
+     * 查询支付方式
+     * @param list
+     * @return
+     */
     public List<String> queryPayType(List<Integer> list) {
         return  orderRecordDAO.queryPayType(list);
     }
 
+    /**
+     * 查询消费金额
+     * @param list
+     * @return
+     */
    public double consumption(List<Integer> list) {
         return  orderRecordDAO.consumption(list);
     }
+
+    /**
+     * 查询支付多少金额
+     * @param list
+     * @return
+     */
     public double pay(List<Integer> list) {
         return  orderRecordDAO.pay(list);
     }
 
+    /**
+     * 修改子订单为已结
+     * @param list
+     */
+    public void closedAccount(List<Integer> list) {
+        orderRecordDAO.closedAccount(list);
+    }
+
+
+    public List<Integer> queryRecordIds(List<Integer> list) {
+        return orderRecordDAO.queryRecordIds(list);
+    }
+
+    /**
+     * 修改订单为已经结账
+     */
+    public void completeAccount(List<Integer> list){
+        orderRecordDAO.completeAccount(list);
+    }
 }

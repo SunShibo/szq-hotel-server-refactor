@@ -1,6 +1,5 @@
 package com.szq.hotel.entity.param;
 
-import java.util.Arrays;
 
 public class HomeParam {
     private String vacant; //空房

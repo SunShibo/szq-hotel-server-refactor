@@ -40,14 +40,15 @@ public class HomeService {
      * @param departure  预离店
      * @param maintain   维修
      * @param shop       门店锁
-     * @param network    网络锁
+
      */
+  //  * @param network    网络锁
     public List<FloorRoomBO> home(HomeTypeBO typeBO,Integer hotelId, String vacant, String inthe, String timeout,
                                   String dirty, String subscribe, String departure, String maintain, String shop,
-                                  String network, String types){
+                                /*  String network,*/ String types){
         log.info("start home.............................................");
         log.info("vacant:{}\tinthe:{}\ttimeout:{}\tdirty:{}\tsubscribe:{}\tdeparture:{}\tmaintain:{}" +
-                "\tshop:{}\tnetwork:{}\t",vacant,inthe,timeout,dirty,subscribe,departure,maintain,shop,network);
+                "\tshop:{}\tnetwork:{}\t",vacant,inthe,timeout,dirty,subscribe,departure,maintain,shop/*,network*/);
 
         Map<String,Object> paramMap=new HashMap<String, Object>();
         paramMap.put("hotelId",hotelId) ;
@@ -59,7 +60,7 @@ public class HomeService {
         paramMap.put("departure",departure);
         paramMap.put("maintain",maintain);
         paramMap.put("shop",shop);
-        paramMap.put("network",network);
+      /*  paramMap.put("network",network);*/
         if(!StringUtils.isEmpty(types))
              paramMap.put("type",types.split(","));
         paramMap.put("startTime",DateUtils.getStringData(new Date(),DateUtils.LONG_DATE_PATTERN));
@@ -128,10 +129,10 @@ public class HomeService {
                     if(Constants.SHOP.getValue().equals(homeRoomBO.getLockRoomState())){
                         typeBO.setShop();
                     }
-                    //网络锁房
+                  /*  //网络锁房
                     if(Constants.NETWORK.getValue().equals(homeRoomBO.getLockRoomState())){
                         typeBO.setNetwork();
-                    }
+                    }*/
 
                 }catch (Exception e){
                     e.printStackTrace();

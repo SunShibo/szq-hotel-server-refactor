@@ -77,6 +77,15 @@ public interface ChildOrderDAO {
     Integer queryOrderChildMain(String code);
 
     /**
+     * 判断是否退房
+     * @param list
+     * @return
+     */
+    int ifCheckOut(@Param("list")List<Integer> list);
+
+    void updateOrderUserId(@Param("id") Integer orderChildId,@Param("meId") Integer meId);
+
+    /**
      * 通过id查询订单记录
      */
 

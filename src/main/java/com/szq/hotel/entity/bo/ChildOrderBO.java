@@ -28,6 +28,8 @@ public class ChildOrderBO extends BaseModel {
     private String OTA;
     private String orderNumer;//订单
     private String main;//主账房
+    private Integer membersId;
+
     public Integer getId() {
         return id;
     }
@@ -203,5 +205,13 @@ public class ChildOrderBO extends BaseModel {
 
     public void setMain(String main) {
         this.main = main;
+    }
+
+    public Integer getMembersId() {
+        return membersId;
+    }
+
+    public void setMembersId(Integer membersId) {
+        this.membersId = membersId;
     }
 }
