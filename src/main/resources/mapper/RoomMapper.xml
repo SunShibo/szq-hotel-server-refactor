@@ -501,4 +501,8 @@
   update hm_room set lock_room_state = 'no'
     where id = #{roomId}
   </update>
+
+  <select id="querRoomTypeCount" resultType="java.lang.Integer">
+    select count(1) from hm_room where hotel_id = #{hotelId} and room_type_id = #{roomTypeId};
+  </select>
 </mapper>

@@ -221,9 +221,9 @@ public class RoomController extends BaseCotroller {
         map.put("phone", phone);
 
 
-        Map<String, Object> mp = roomService.queryRm(map);
+        List<List<RmBO>> lists = roomService.queryRm(map);
 
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(lists));
         super.safeJsonPrint(response, result);
         return;
     }
@@ -441,8 +441,10 @@ public class RoomController extends BaseCotroller {
             log.info("result{}",result);
             return;
         }
-        roomService.querySc(checkTime,endTime,loginAdmin.getHotelId());
-
+        Map<String, Object> map = roomService.querySc(checkTime, endTime, loginAdmin.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+        super.safeJsonPrint(response, result);
+        return;
     }
 
 
@@ -492,22 +494,13 @@ public class RoomController extends BaseCotroller {
                 return;
             }
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             roomService.closeRoom(startTime,endTime,roomId);
 
         }
 
         //开锁
         if("ope".equals(state)){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             roomService.opeRoom(roomId);
         }
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));

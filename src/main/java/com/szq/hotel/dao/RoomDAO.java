@@ -122,4 +122,12 @@ public interface RoomDAO {
     void closeRoom(@Param("startTime")String startTime, @Param("endTime")String endTime, @Param("roomId")Integer roomId);
 
     void opeRoom(@Param("roomId")Integer roomId);
+
+    /**
+     * 查询酒店下各种房型房间数量
+     * @param roomTypeId
+     * @param hotelId
+     * @return
+     */
+    Integer querRoomTypeCount(@Param("roomTypeId")Integer roomTypeId, @Param("hotelId")Integer hotelId);
 }
