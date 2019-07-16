@@ -1,7 +1,9 @@
 package com.szq.hotel.service;
 
+import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.CommodiryDAO;
 import com.szq.hotel.entity.bo.CommodityBO;
+import com.szq.hotel.entity.bo.MemberBO;
 import com.szq.hotel.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +26,21 @@ public class CommodiryService {
 
     @Resource
     private CommodiryDAO commodiryDAO;
-
+    @Resource
+    private MemberService memberService;
     /**
      * 添加商品交易
      */
-    public Integer addCommodiry(String payType, String consumptionType, BigDecimal money, String info,String orderNumber,Integer userId,Integer hotelId){
+    public Integer addCommodiry(String payType, String consumptionType, BigDecimal money, String info,String orderNumber,Integer userId,Integer hotelId,String certificateNumber){
         log.info("start addFloor..........................");
         log.info("payType:{}\tconsumptionType:{}\tmoney:{}\tinfo:{}\torderNumber:{}\tuserId:{}\thotelId:{}",payType,consumptionType,money,info,orderNumber,userId,hotelId);
         CommodityBO commodityBO = new CommodityBO(orderNumber, payType, consumptionType, money, userId, info, hotelId);
         commodiryDAO.addCommodiry(commodityBO);
+        if(payType.equals(Constants.STORED.getValue())){
+            memberService.storedValuePay(certificateNumber,money,info,"储值支付",new BigDecimal("0"),userId);
+            MemberBO memberBO = memberService.selectMemberByCerNumber(certificateNumber);
+            memberService.accountIntegral( memberBO.getMemberCardId(),money,info,userId);
+        }
         log.info("end  addFloor..........................");
         return commodityBO.getId();
 

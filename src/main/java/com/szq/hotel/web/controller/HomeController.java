@@ -53,7 +53,7 @@ public class HomeController extends BaseCotroller {
             HomeTypeBO homeTypeBO=new HomeTypeBO();
             List<FloorRoomBO> home = homeService.home(homeTypeBO, loginAdmin.getHotelId(),param.getVacant(), param.getInthe(), param.getTimeout(),
                     param.getDirty(), param.getSubscribe(), param.getDeparture(), param.getMaintain(), param.getShop(),
-                    param.getNetwork(),param.getTypes());
+                    /*param.getNetwork(),*/param.getTypes());
             List<HomeRoomTypeBO> homeRoomTypeBOS = homeService.queryRoomTypeNum(loginAdmin.getHotelId());
             Map<String,Object> resultMap=new HashMap<String, Object>();
             resultMap.put("room",home);

@@ -70,4 +70,10 @@ public interface OrderRecordDAO {
      * @return
      */
     List<Integer> queryRecordIds(@Param("list")List<Integer> list);
+
+    /**
+     * 完成订单
+     * @param list
+     */
+    void completeAccount(@Param("list")List<Integer> list);
 }

@@ -583,7 +583,7 @@ public class OrderController extends BaseCotroller {
             QueryInfo queryInfo = getQueryInfo(param.getPageNo(),param.getPageSize());
             param.setPageOffset(queryInfo.getPageOffset());
             param.setPageSize(queryInfo.getPageSize());
-
+            param.setHotelId(loginAdmin.getHotelId());
             List<OrderListBO> orderListBOS = orderService.queryOrderList(param);
             int count=orderService.queryOrderListCount(param);
             Map<String,Object> resultMap=new HashMap<String, Object>();

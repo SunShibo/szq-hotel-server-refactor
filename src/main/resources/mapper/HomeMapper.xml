@@ -56,15 +56,15 @@
              <if test="shop!=null and shop!=''" >
                  OR  room.lock_room_state='shop'
              </if>
-             <if test="network!=null and network!=''" >
-                 OR  room.lock_room_state='network'
-             </if>
-             <if test="network!=null and shop!=''" >
-                 OR  room.lock_room_state='all'
-             </if>
+
         )
     </select>
-
+    <!--  <if test="network!=null and network!=''" >
+                    OR  room.lock_room_state='network'
+                </if>
+                <if test="network!=null and shop!=''" >
+                    OR  room.lock_room_state='all'
+                </if>-->
     <!--查询是否有预约-->
     <select id="querySubStatus"  parameterType="java.util.Map" resultType="java.lang.Integer">
       SELECT  id  FROM `hm_order_child` WHERE start_time BETWEEN #{startTime} AND #{endTime} AND  order_state='reservation' AND room_id=#{roomId}
