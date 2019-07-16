@@ -109,7 +109,7 @@
         SELECT card.id,card.card_number,card.money
         FROM hm_member_card card LEFT JOIN hm_member_level le ON card.member_level_id = le.id
         WHERE card.member_level_id = #{memberLevelId} AND card.state = 'unsold'
-        ORDER BY card.card_number+0 ASC
+        ORDER BY card.card_number+0 ASC LIMIT 1
     </select>
 
     <!--更新会员卡售出时间-->

@@ -70,13 +70,13 @@ public class MemberController extends BaseCotroller {
             MemberBO memberBO1 = memberService.selectMemberByPhone(memberBO.getPhone());
             MemberBO memberBO2 = memberService.selectMemberByCerNumber(memberBO.getCertificateNumber());
             if (memberBO1!=null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("此手机号已被使用"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000203"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;
             }
             if (memberBO2!=null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("此证件号已被使用"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000204"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;
@@ -85,7 +85,7 @@ public class MemberController extends BaseCotroller {
             //通过会员级别id找到一个会员卡的信息
             MemberCardBO memberCardBO = memberCardService.getMemberNumberMoney(memberCardLevelId);
             if (memberCardBO == null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("卡库中卡号不足"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000205"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;
