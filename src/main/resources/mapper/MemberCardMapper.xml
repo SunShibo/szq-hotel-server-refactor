@@ -116,6 +116,8 @@
     <update id="updateSellingTime" parameterType="java.lang.String">
         UPDATE hm_member_card SET selling_time = NOW(),state = 'use' WHERE card_number = #{cardNumber}
     </update>
-
-
+    <!--通过卡号查找会员卡信息-->
+    <select id="getCardNumber" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.MemberCardBO">
+        SELECT * FROM hm_member_card WHERE card_number = #{cardNumber}
+</select>
 </mapper>

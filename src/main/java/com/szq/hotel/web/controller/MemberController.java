@@ -48,7 +48,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/addMember")
-    public void  addmember(Integer memberCardLevelId,MemberBO memberBO, HttpServletRequest request, HttpServletResponse response){
+    public void  addmember(String cardNumber,MemberBO memberBO, HttpServletRequest request, HttpServletResponse response){
         try {
 
             log.info(request.getRequestURI());
@@ -83,15 +83,8 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
+            MemberCardBO memberCardBO = memberCardService.getCardNumber(cardNumber);
 
-            //通过会员级别id找到一个会员卡的信息
-            MemberCardBO memberCardBO = memberCardService.getMemberNumberMoney(memberCardLevelId);
-            if (memberCardBO == null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000205"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //设置会员的会员卡id
             memberBO.setMemberCardId(memberCardBO.getId());
 
@@ -101,9 +94,60 @@ public class MemberController extends BaseCotroller {
             memberCardService.updateSellingTime(memberCardNumber);
             //向数据库中添加数据
             memberService.addMember(memberBO,loginAdmin.getId());
+
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000004"));
+            super.safeJsonPrint(response, result);
+            log.error("addMemberException",e);
+        }
+    }
+
+    /**
+     * 获取卡号
+     * @param memberCardLevelId
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/getMemberCardNumber")
+    public void getMemberCardNumber(Integer memberCardLevelId,HttpServletRequest request,HttpServletResponse response){
+
+        try {
+
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //获取管理员对象
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}",loginAdmin);
+            if (loginAdmin==null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //参数验证
+            if (memberCardLevelId == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //通过会员级别id找到一个会员卡的信息
+            MemberCardBO memberCardBO = memberCardService.getMemberNumberMoney(memberCardLevelId);
+            if (memberCardBO == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000205"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
             Map<String,Object> map = new HashMap<String, Object>();
-            map.put("memberCardNumber",memberCardNumber);
-            map.put("money",money);
+            map.put("cardNumber",memberCardBO.getCardNumber());
+            map.put("monye",memberCardBO.getMoney());
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
             super.safeJsonPrint(response, result);
@@ -116,7 +160,6 @@ public class MemberController extends BaseCotroller {
             log.error("addMemberException",e);
         }
     }
-
     /**
      * 删除会员
      * @param id

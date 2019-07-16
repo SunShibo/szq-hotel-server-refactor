@@ -160,5 +160,11 @@ public class MemberCardService {
     public void updateSellingTime(String cardNumber){
         memberCardDAO.updateSellingTime(cardNumber);
     }
+    /*
+        通过卡号查找会员卡信息
+     */
+    public MemberCardBO getCardNumber(String cardNumber){
+        return memberCardDAO.getCardNumber(cardNumber);
+    }
 
 }
