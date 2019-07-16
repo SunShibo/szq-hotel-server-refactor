@@ -165,6 +165,7 @@ public class RoomController extends BaseCotroller {
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
         super.safeJsonPrint(response, result);
+        RedisTool.releaseDistributedLock(jedis,"500",requestId.toString());
         return;
     }
 
@@ -416,7 +417,91 @@ public class RoomController extends BaseCotroller {
         super.safeJsonPrint(response, result);
         log.info("result{}",result);
         return;
+    }
 
+
+    @RequestMapping("/querySc")
+    public void querySc(HttpServletRequest request, HttpServletResponse response, String checkTime, String endTime){
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        if (loginAdmin == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        if (checkTime == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        if (endTime == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        roomService.querySc(checkTime,endTime,loginAdmin.getHotelId());
+
+    }
+
+
+    @RequestMapping("/updatelockRoomState")
+    public void updatelockRoomState(HttpServletRequest request, HttpServletResponse response,
+                                    String startTime, String endTime,
+                                    Integer roomId, String state){
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        if(loginAdmin == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        if(roomId == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        if(state == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        Jedis jedis = new Jedis();
+        UUID requestId = UUID.randomUUID();
+        System.err.println(requestId);
+        if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId.toString(), 5000))) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("请重试"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
+        //锁房
+        if("close".equals(state)){
+            if(startTime == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            if(endTime == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            roomService.closeRoom(startTime,endTime,roomId);
+
+        }
+        //开锁
+        if("ope".equals(state)){
+            roomService.opeRoom(roomId);
+        }
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
+        super.safeJsonPrint(response, result);
+        RedisTool.releaseDistributedLock(jedis,"500",requestId.toString());
+        return;
     }
 
 }

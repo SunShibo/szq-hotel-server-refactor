@@ -260,7 +260,7 @@
       room_auxiliary_status = #{roomAuxiliaryStatus,jdbcType=VARCHAR},
       room_auxiliary_status_stand = #{roomAuxiliaryStatusStand,jdbcType=VARCHAR},
       setting = #{setting,jdbcType=VARCHAR},
-      character = #{character,jdbcType=VARCHAR},
+      `character` = #{character,jdbcType=VARCHAR},
       create_user_id = #{createUserId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_user_id = #{updateUserId,jdbcType=INTEGER},
@@ -486,8 +486,19 @@
    WHERE room_id = #{roomId}
   </select>
 
-
   <select id="queryRooms" resultType="com.szq.hotel.entity.bo.RoomBO">
     select * from hm_room where hotel_id = #{hotelId} and room_name = #{name};
   </select>
+
+  <update id="closeRoom">
+    update hm_room set lock_room_state = 'yes',
+    lock_room_start_time = #{startTime},
+    lock_room_end_time = #{endTime}
+    where id = #{roomId}
+  </update>
+
+  <update id="opeRoom">
+  update hm_room set lock_room_state = 'no'
+    where id = #{roomId}
+  </update>
 </mapper>

@@ -114,9 +114,12 @@ public interface RoomDAO {
     /**
      * 判断同一酒店下是否有相同名称的客房
      * @param name
-     * @param id
+     * @param
      * @return
      */
     RoomBO queryRooms(@Param("name")String name, @Param("hotelId")Integer hotelId);
 
+    void closeRoom(@Param("startTime")String startTime, @Param("endTime")String endTime, @Param("roomId")Integer roomId);
+
+    void opeRoom(@Param("roomId")Integer roomId);
 }
