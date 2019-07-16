@@ -18,8 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.awt.geom.AreaOp;
 
 import javax.annotation.Resource;
+import javax.xml.transform.dom.DOMResult;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -399,6 +401,11 @@ public class RoomService {
     }
 
 
+    /**
+     * 获取未来十五天的时间
+     * @param date
+     * @return
+     */
     public List<Time> timeDate(Date date) {
         List<Time> list = new ArrayList<Time>();
 
@@ -441,6 +448,32 @@ public class RoomService {
         return list;
     }
 
+    /**
+     * 获取某个区间段的时间
+     * @param
+     * @return
+     */
+    public List<Time> timeDate2(Date da,Integer num){
+        List<Time> list = new ArrayList<Time>();
+        //当天凌晨5点59分59秒
+        Date dat = quDate(5, 59, 59);
+        //从当天开始的下一天开始时间
+        Date dd = lDate(da, 0);
+        //从开始天使的下一天结束时间
+        Date d = lDate(dat, 0);
+
+            for (int i = 0; i < num; i++) {
+                Time time = new Time();
+                time.setStartTime(lDate(dd, i));
+                //System.err.println(lDate(dd, i));
+                //System.err.println(lDate(d, i+1));
+                time.setEndTime(lDate(d, i + 1));
+                list.add(time);
+            }
+
+
+        return list;
+    }
 
     /**
      * 判断用户是否为会员
@@ -555,6 +588,70 @@ public class RoomService {
         }
         //不存在交集
        return false;
+    }
+
+    /**
+     * 查询某一时间段下每天剩下多少房
+     * @param checkTime
+     * @param endTime
+     * @param hotrlId
+     */
+    public void querySc(String checkTime, String endTime, Integer hotrlId) {
+        Map<String,Object> map = new HashMap<String, Object>();
+       /* long quot = DateUtils.getQuot(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
+        log.info("两个日期之间相差的天数:{}",quot);*/
+        List<String> dates = querSeTime(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
+        log.info("两段时间区间的每一天日期:{}",dates);
+        checkTime = checkTime+" 06:00:00";
+        endTime = endTime+" 05:59:59";
+        log.info("checkTime:{}",checkTime);
+        log.info("endTime:{}",endTime);
+        Date date = DateUtils.parseDate(endTime, "yyyy-MM-dd HH:mm:ss");
+        log.info("date:{}",date);
+        Date date1 = lDate(date, 1);
+        log.info("date1:{}",date1);
+        String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1);
+        log.info("format:{}", format);
+        map.put("checkTime", checkTime);
+        map.put("hotelId", hotrlId);
+        map.put("endTime", endTime);
+        List<Time> times = timeDate2(DateUtils.parseDate(checkTime, "yyyy-MM-dd HH:mm:ss"), dates.size());
+        log.info("获取未来:{}天的时间:{}",dates.size(),times);
+
+    }
+
+
+
+    public List<String> querSeTime(Date bigtime, Date endtime){
+        //定义一个接受时间的集合
+        List<Date> lDate = new ArrayList<Date>();
+        lDate.add(bigtime);
+        Calendar calBegin = Calendar.getInstance();
+        // 使用给定的 Date 设置此 Calendar 的时间
+        calBegin.setTime(bigtime);
+        Calendar calEnd = Calendar.getInstance();
+        // 使用给定的 Date 设置此 Calendar 的时间
+        calEnd.setTime(endtime);
+        // 测试此日期是否在指定日期之后
+        while (endtime.after(calBegin.getTime()))  {
+            // 根据日历的规则，为给定的日历字段添加或减去指定的时间量
+            calBegin.add(Calendar.DAY_OF_MONTH, 1);
+            lDate.add(calBegin.getTime());
+        }
+        List<String>  ls = new ArrayList<String>();
+        for (Date d :  lDate){
+            ls.add(new SimpleDateFormat("yyyy-MM-dd").format(d));
+        }
+
+        return ls;
+    }
+
+    public void closeRoom(String startTime,String endTime,Integer roomId){
+        roomDAO.closeRoom(startTime,endTime,roomId);
+    }
+
+    public void opeRoom(Integer roomId){
+        roomDAO.opeRoom(roomId);
     }
 }
 
