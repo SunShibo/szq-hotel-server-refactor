@@ -25,10 +25,13 @@ public interface MemberDAO {
      */
     MemberBO queryMemberById(Integer id);
     /*
-        积分增减
+        积分增加
      */
     void integralChange(MemberBO memberBO);
-
+    /*
+        积分减免
+     */
+    void integralBreaks(Map<String,Object> map);
     /*
         储值调整
      */
@@ -37,6 +40,10 @@ public interface MemberDAO {
         储值消费
      */
     void storedValueSubtract(MemberBO memberBO);
+    /*
+        储值支付
+     */
+    void storedValuePay(Map<String,Object> map);
     /*
         通过手机号查询会员信息
      */

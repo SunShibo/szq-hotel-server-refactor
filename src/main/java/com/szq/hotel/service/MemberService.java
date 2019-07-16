@@ -3,6 +3,7 @@ package com.szq.hotel.service;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberDAO;
 import com.szq.hotel.entity.bo.MemberBO;
+import com.szq.hotel.entity.bo.MemberLevelBO;
 import com.szq.hotel.entity.bo.StoredValueRecordBO;
 import com.szq.hotel.web.controller.MemberController;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +26,10 @@ public class MemberService {
     private MemberDAO memberDAO;
     @Resource
     private StoredValueRecordService storedValueRecordService;
+    @Resource
+    private MemberLevelService memberLevelService;
+    @Resource
+    private IntegralRecordService integralRecordService;
 
     /*
         新增会员
@@ -84,6 +90,37 @@ public class MemberService {
         memberDAO.integralChange(memberBO);
         log.info("end===================integralChange");
     }
+
+    /**
+     * 积分减免
+     * @param certificateNumber 证件号
+     * @param subtractMoney 减免多少钱
+     * @param remark 备注
+     * @param type 类型
+     * @param userId 操作人id
+     */
+    public void integralBreaks(String certificateNumber,BigDecimal subtractMoney,String remark,String type,Integer userId){
+        //通过证件号获取会员对象
+        MemberBO memberBO = this.selectMemberByCerNumber(certificateNumber);
+        Integer cardId = memberBO.getMemberCardId();
+        //通过会员卡id查找会员级别对象
+        MemberLevelBO memberLevelBO = memberLevelService.getLevelByCardId(cardId);
+        //得到消费1元获得多少积分
+        BigDecimal consumeGetIntegral = memberLevelBO.getConsumeGetIntegral();
+        //得出应该减多少积分
+        BigDecimal integral = subtractMoney.divide(consumeGetIntegral);
+        Map<String,Object> map = new HashMap<String, Object>();
+        //进行封装
+        map.put("certificateNumber",certificateNumber);
+        map.put("integral",integral);
+        memberDAO.integralBreaks(map);
+        //查询最新
+        MemberBO memberBO1 = this.selectMemberByCerNumber(certificateNumber);
+        //添加到积分明细
+        integralRecordService.addIntegralRecord(memberBO.getId(),integral,remark,type,memberBO1.getIntegral(),userId);
+
+
+    }
     /*
         储值调整
      */
@@ -112,6 +149,27 @@ public class MemberService {
         memberDAO.storedValueSubtract(memberBO);
 
         storedValueRecordService.addStoredValueRecord(id,subtractMoney,remark,type,presenterMoney,currentBalance,userId);
+
+    }
+
+    /**
+     * 储值支付
+     * @param certificateNumber 证件号
+     * @param subtractMoney 消费金额
+     * @param remark 备注
+     * @param type 类型
+     * @param presenterMoney 赠送金额
+     * @param userId 操作人id
+     */
+    public void storedValuePay(String certificateNumber,BigDecimal subtractMoney,String remark,String type,BigDecimal presenterMoney,Integer userId){
+        MemberBO memberBO = this.selectMemberByCerNumber(certificateNumber);
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("certificateNumber",certificateNumber);
+        map.put("subtractMoney",subtractMoney);
+        memberDAO.storedValuePay(map);
+        MemberBO memberBO1 = this.selectMemberByCerNumber(certificateNumber);
+
+        storedValueRecordService.addStoredValueRecord(memberBO.getId(),subtractMoney,remark,type,presenterMoney,memberBO1.getStoredValue(),userId);
 
     }
 

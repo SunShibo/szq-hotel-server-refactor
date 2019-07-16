@@ -68,6 +68,10 @@ WHERE id = #{id}
     <update id="integralChange" parameterType="com.szq.hotel.entity.bo.MemberBO">
         UPDATE hm_member SET integral = (integral+#{integral}) WHERE id = #{id}
     </update>
+    <!--积分减免-->
+    <update id="integralBreaks" parameterType="java.util.Map">
+        UPDATE hm_member SET integral = (integral-#{integral}) WHERE certificate_number = #{certificateNumber}
+    </update>
     <!--储值调整-->
     <update id="storedValueChange" parameterType="com.szq.hotel.entity.bo.MemberBO">
         UPDATE hm_member SET stored_value = (stored_value+#{storedValue}) WHERE id = #{id}
@@ -76,7 +80,10 @@ WHERE id = #{id}
     <update id="storedValueSubtract" parameterType="com.szq.hotel.entity.bo.MemberBO">
         UPDATE hm_member SET stored_value = (stored_value-#{storedValue}) WHERE id = #{id}
     </update>
-
+    <!--储值支付-->
+    <update id="storedValuePay" parameterType="java.util.Map">
+         UPDATE hm_member SET stored_value = (stored_value-#{subtractMoney}) WHERE certificate_number = #{certificateNumber}
+    </update>
     <!--通过手机号查询会员信息-->
     <select id="selectMemberByPhone" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
         SELECT * FROM hm_member WHERE phone = #{phone}
