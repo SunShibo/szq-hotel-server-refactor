@@ -17,6 +17,10 @@
     <select id="getEverydayRoomById" resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO" parameterType="java.lang.Integer">
         select * from hm_everyday_room_price where order_child_id=#{id}
     </select>
+    <!-- 根据子订单id查询未经过夜审的日期价格-->
+    <select id="getRemainingEverydayRoomById" resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO" >
+       select * from hm_everyday_room_price where `time`>#{time} and order_child_id=#{id}
+    </select>
 
     <!--  根据子订单删除每日房价 -->
     <delete id="delEverydayRoomById" parameterType="java.lang.Integer">
@@ -24,9 +28,11 @@
     </delete>
 
     <!-- 修改每日房价信息 -->
-    <delete id="updEverydayRoomPrice" parameterType="com.szq.hotel.entity.bo.EverydayRoomPriceBO">
-        update hm_everyday_room_price set `time`=#{time},money=#{money}  where order_child_id=#{id}
-    </delete>
+    <update id="updEverydayRoomPrice" parameterType="com.szq.hotel.entity.bo.EverydayRoomPriceBO">
+        update hm_everyday_room_price
+        set `money`=#{money}
+        where id=#{id}
+    </update>
 
 
 </mapper>

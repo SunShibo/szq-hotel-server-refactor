@@ -1,7 +1,9 @@
 package com.szq.hotel.dao;
 
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface EverydayRoomPriceDAO {
@@ -13,7 +15,7 @@ public interface EverydayRoomPriceDAO {
     List<EverydayRoomPriceBO> getEverydayRoomById(Integer id);
 
     //根据子订单id查询未经过夜审的日期价格
-    List<EverydayRoomPriceBO> getRemainingEverydayRoomById(Integer id);
+    List<EverydayRoomPriceBO> getRemainingEverydayRoomById(@Param("time") String time, @Param("id") Integer id);
 
     //根据子订单删除每日房价
     Integer delEverydayRoomById(Integer id);
