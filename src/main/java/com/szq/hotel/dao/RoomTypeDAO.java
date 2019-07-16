@@ -25,4 +25,7 @@ public interface RoomTypeDAO {
       */
     List<Integer> getRoomTypeList();
     void updateShow(@Param("id") Integer id);
+
+    //根据房型id 查询房间信息
+    RoomTypeBO getRoomType(Integer id);
 }

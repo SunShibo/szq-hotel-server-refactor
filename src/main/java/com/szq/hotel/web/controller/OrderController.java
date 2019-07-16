@@ -563,6 +563,31 @@ public class OrderController extends BaseCotroller {
     }
 
     /**
+     * 退房 获取退房信息
+     * @param orderChildId 子订单id
+     * */
+    @RequestMapping("/getCheckOutInfo")
+    public void getCheckOutInfo(Integer orderChildId,HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(orderChildId==null||orderChildId.equals("")){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        OrderChildBO orderChildBO=orderService.getOrderChildById(orderChildId);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderChildBO)) ;
+        super.safeJsonPrint(response, result);
+    }
+
+
+    /**
      * 订单列表
      */
     @RequestMapping("/queryOrderList")

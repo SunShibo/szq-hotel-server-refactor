@@ -1,10 +1,7 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
-import com.szq.hotel.dao.CheckInPersonDAO;
-import com.szq.hotel.dao.EverydayRoomPriceDAO;
-import com.szq.hotel.dao.OrderDAO;
-import com.szq.hotel.dao.OrderRecordDAO;
+import com.szq.hotel.dao.*;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
@@ -13,6 +10,7 @@ import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +45,9 @@ public class OrderService {
 
     @Resource
     OrderRecordService orderRecordService;
+
+    @Resource
+    RoomTypeDAO roomTypeDAO;
 
     //添加主订单 携带订单id
     public void addOrder(OrderBO orderBO) {
@@ -325,7 +326,32 @@ public class OrderService {
     }
     //根据子订单id查询子订单
     public OrderChildBO getOrderChildById(Integer orderChildId){
-       return orderDAO.getOrderChildById(orderChildId);
+        try {
+            OrderChildBO orderChildBO=orderDAO.getOrderChildById(orderChildId);
+            //OrderBO orderBO=orderDAO.getOrderById(orderChildBO.getOrderId());
+            //获取当前
+            Date currentTime  = new Date();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateString=df.format(currentTime);
+            Date currentTime_2 = df.parse(dateString);
+            //计算超时费
+            if(currentTime_2.getTime()>orderChildBO.getEndTime().getTime()){
+                Long minute=DateUtils.getQuotMinute(currentTime_2,orderChildBO.getEndTime());
+                RoomTypeBO roomTypeBO=roomTypeDAO.getRoomType(orderChildBO.getRoomTypeId());
+                //超过4小时
+                if(minute<=4){
+                    orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
+                }else{
+                    orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()));
+                }
+            }
+            return orderChildBO;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
     }
     //获取在住报表
     public List<OrderResult> getCheckInReport(){
@@ -401,7 +427,8 @@ public class OrderService {
             OrderChildBO orderChildBO=new OrderChildBO();
             orderChildBO.setId(orderChildId);
             orderChildBO.setRemark(remark);
-            orderChildBO.setEndTime(entTime);
+            //修改实际离店时间
+            orderChildBO.setPracticalDepartureTime(entTime);
             orderDAO.updOrderChild(orderChildBO);
 
             //修改同住人
@@ -474,7 +501,7 @@ public class OrderService {
     public List<EverydayRoomPriceBO> getRemainingLease(Integer orderChildId) throws ParseException {
         //获取今天六点
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 06);
+        c.set(Calendar.HOUR_OF_DAY, 04);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         Date m6 = c.getTime();

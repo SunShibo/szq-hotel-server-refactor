@@ -181,4 +181,10 @@
     select id from hm_room_type
     where `show` = 'yes'
   </select>
+  <!--根据id查房型-->
+  <select id="getRoomType" resultType="com.szq.hotel.entity.bo.RoomTypeBO" parameterType="java.lang.Integer">
+    select * from hm_room_type
+    where id=#{id}
+  </select>
+
 </mapper>
