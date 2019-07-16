@@ -114,7 +114,7 @@
 
     <!--更新会员卡售出时间-->
     <update id="updateSellingTime" parameterType="java.lang.String">
-        UPDATE hm_member_card SET selling_time = NOW() WHERE card_number = #{cardNumber}
+        UPDATE hm_member_card SET selling_time = NOW(),state = 'use' WHERE card_number = #{cardNumber}
     </update>
 
 

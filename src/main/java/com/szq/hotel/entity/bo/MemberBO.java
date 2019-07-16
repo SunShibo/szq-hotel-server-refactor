@@ -24,6 +24,7 @@ public class MemberBO extends BaseModel {
     private String memberLevelName;//会员级别名称
     private String type;//会员卡能否充值
     private Date createTime;//创建时间
+    private Date sellingTime;//卡售出时间
     private Integer updateUserId;//修改人id
     private Date updateTime;//修改时间
 
@@ -169,6 +170,14 @@ public class MemberBO extends BaseModel {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Date getSellingTime() {
+        return sellingTime;
+    }
+
+    public void setSellingTime(Date sellingTime) {
+        this.sellingTime = sellingTime;
     }
 
     public Integer getUpdateUserId() {
