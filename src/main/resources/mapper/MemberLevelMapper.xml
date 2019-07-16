@@ -38,6 +38,10 @@
     <select id="queryMemberLevelById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberLevelBO">
         SELECT * FROM `hm_member_level` WHERE id=#{id}
     </select>
-
-
+    <!--通过会员卡id查询会员级别-->
+    <select id="getLevelByCardId" resultType="com.szq.hotel.entity.bo.MemberLevelBO" parameterType="java.lang.Integer">
+        SELECT le.* FROM hm_member_level le
+        LEFT JOIN hm_member_card ca ON ca.member_level_id = le.id
+        WHERE ca.id = #{memberCardId} AND le.type = 'yes'
+    </select>
 </mapper>

@@ -45,4 +45,8 @@ public interface MemberDAO {
         通过证件号号查询会员信息
      */
     MemberBO selectMemberByCerNumber(String certificateNumber);
+    /*
+        通过证件号查询储值和积分金额
+     */
+    MemberBO getStoreValueIntegral(String certificateNumber);
 }

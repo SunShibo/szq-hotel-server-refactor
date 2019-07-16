@@ -128,4 +128,10 @@ public class MemberService {
     public MemberBO selectMemberByCerNumber(String certificateNumber){
         return memberDAO.selectMemberByCerNumber(certificateNumber);
     }
+    /*
+        通过证件号查询储值和积分金额
+     */
+    public MemberBO getStoreValueIntegral(String certificateNumber){
+        return memberDAO.getStoreValueIntegral(certificateNumber);
+    }
 }

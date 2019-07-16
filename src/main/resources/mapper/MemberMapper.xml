@@ -85,4 +85,10 @@ WHERE id = #{id}
     <select id="selectMemberByCerNumber" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
         SELECT * FROM hm_member WHERE certificate_number = #{certificateNumber}
     </select>
+
+    <!--通过证件号查询储值和积分金额-->
+    <select id="getStoreValueIntegral" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.MemberBO">
+        SELECT id,stored_value,integral FROM `hm_member`
+        WHERE certificate_number = #{certificateNumber} AND state = 'yes'
+    </select>
 </mapper>

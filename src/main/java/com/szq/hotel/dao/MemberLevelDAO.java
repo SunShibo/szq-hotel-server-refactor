@@ -34,4 +34,8 @@ public interface MemberLevelDAO {
      * @return
      */
     MemberLevelBO queryMemberLevelById(Integer memebrLevelId);
+    /*
+        通过会员卡id查询会员级别
+     */
+    MemberLevelBO getLevelByCardId(Integer memebrCardId);
 }

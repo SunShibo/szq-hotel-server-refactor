@@ -78,4 +78,11 @@ public class MemberLevelService {
         memberLevelDAO.updateMemberLevel(memberLevelBO);
         log.info("end===================updateMemberLevel");
     }
+
+    /*
+        通过会员卡id查询会员级别
+     */
+    public MemberLevelBO getLevelByCardId(Integer memebrCardId){
+        return memberLevelDAO.getLevelByCardId(memebrCardId);
+    }
 }

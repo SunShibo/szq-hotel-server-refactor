@@ -38,6 +38,8 @@ public class MemberController extends BaseCotroller {
     private RechargeDailyService rechargeDailyService;
     @Resource
     private MemberCardService memberCardService;
+    @Resource
+    private MemberLevelService memberLevelService;
 
     /**
      * 新增会员
@@ -344,6 +346,67 @@ public class MemberController extends BaseCotroller {
             log.error("storedValueChangeException",e);
         }
 
+    }
+
+    /**
+     * 积分储值支付查询接口
+     * @param certificateNumber 证件号
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/getStoreValueIntegral")
+    public void getStoreValueIntegral(String certificateNumber,HttpServletRequest request,HttpServletResponse response){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}",loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            //参数验证
+            if (StringUtils.isEmpty(certificateNumber)) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            MemberBO memberBO = memberService.selectMemberByCerNumber(certificateNumber);
+            if (memberBO==null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("证件号有误"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            //储值
+            BigDecimal storeValue = memberBO.getStoredValue();
+            //积分
+            BigDecimal integral = memberBO.getIntegral();
+            //会员卡id
+            Integer memberCardId = memberBO.getMemberCardId();
+            MemberLevelBO memberLevelBO = memberLevelService.getLevelByCardId(memberCardId);
+            //获取消费1元得多少积分
+            BigDecimal consumeGetIntegral= memberLevelBO.getConsumeGetIntegral();
+            //积分金额 = 积分 * 消费1元得多少积分
+            BigDecimal integralMoney = integral.multiply(consumeGetIntegral);
+
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("storeValue",storeValue);
+            map.put("integralMoney",integralMoney);
+            map.put("memeberId",memberBO.getId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.error("getStoreValueIntegralException",e);
+        }
     }
 
 }
