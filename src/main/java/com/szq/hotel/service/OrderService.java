@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -470,10 +471,39 @@ public class OrderService {
     }
 
     //获取子订单剩余租期价格
-    public List<EverydayRoomPriceBO> getRemainingLease(Integer orderChildId){
-        return everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
+    public List<EverydayRoomPriceBO> getRemainingLease(Integer orderChildId) throws ParseException {
+        //获取今天六点
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 06);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        Date m6 = c.getTime();
+        //获取当前
+        Date currentTime  = new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString=df.format(currentTime);
+        Date currentTime_2 = df.parse(dateString);
+        Calendar calendar = Calendar.getInstance();
+
+        DateFormat time = new SimpleDateFormat("yyyy-MM-dd");
+        //超过六点则昨天的夜审过了
+        if(currentTime_2.getTime()>m6.getTime()){
+            calendar.add(Calendar.DATE, -1); //得到前一天
+        }else{
+            calendar.add(Calendar.DATE, -2); //得到前两天
+        }
+        return everydayRoomPriceDAO.getRemainingEverydayRoomById(time.format(calendar.getTime()),orderChildId);
     }
 
+    //换房
+    public void changeRoom(OrderChildBO orderChildBO,List<EverydayRoomPriceBO> everydayRoomPrice){
+        //修改房间 房型
+        orderDAO.updOrderChild(orderChildBO);
+        //修改每日房价
+        for (EverydayRoomPriceBO e :everydayRoomPrice) {
+            everydayRoomPriceDAO.updEverydayRoomPrice(e);
+        }
+    }
     /**
      * 订单列表
      *

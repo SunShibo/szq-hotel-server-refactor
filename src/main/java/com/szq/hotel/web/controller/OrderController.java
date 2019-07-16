@@ -514,10 +514,10 @@ public class OrderController extends BaseCotroller {
 
     /**
      * 获取剩余每日房价
-     * @param orderChildId 身份证号
+     * @param orderChildId 子订单号
      * */
     @RequestMapping("/getRemainingLease")
-    public void getRemainingLease(Integer orderChildId,HttpServletRequest request, HttpServletResponse response){
+    public void getRemainingLease(Integer orderChildId,HttpServletRequest request, HttpServletResponse response) throws ParseException {
         //验证管理员
         AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
@@ -533,6 +533,32 @@ public class OrderController extends BaseCotroller {
         }
         List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderService.getRemainingLease(orderChildId);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(everydayRoomPriceBOList)) ;
+        super.safeJsonPrint(response, result);
+    }
+
+    /**
+     * 换房 修改房间 每日房价
+     * @param orderChildBO 子订单信息
+     * @param everydayRoomPrice 房价信息
+     * */
+    @RequestMapping("/changeRoom")
+    public void changeRoom(OrderChildBO orderChildBO,String everydayRoomPrice,HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(orderChildBO==null||orderChildBO.getId()==null||everydayRoomPrice==null||everydayRoomPrice.length()<2){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        List<EverydayRoomPriceBO> everydayRoomPriceBOList = JsonUtils.getJSONtoList(everydayRoomPrice, EverydayRoomPriceBO.class);
+        orderService.changeRoom(orderChildBO,everydayRoomPriceBOList);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
         super.safeJsonPrint(response, result);
     }
 
