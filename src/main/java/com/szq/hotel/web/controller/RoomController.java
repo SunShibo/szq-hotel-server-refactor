@@ -491,11 +491,23 @@ public class RoomController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             roomService.closeRoom(startTime,endTime,roomId);
 
         }
+
         //开锁
         if("ope".equals(state)){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             roomService.opeRoom(roomId);
         }
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
