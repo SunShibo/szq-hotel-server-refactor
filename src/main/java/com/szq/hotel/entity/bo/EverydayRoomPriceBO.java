@@ -11,6 +11,15 @@ public class EverydayRoomPriceBO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date time;//日期
     private BigDecimal money;//价格
+    private String status;//状态
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Integer getId() {
         return id;

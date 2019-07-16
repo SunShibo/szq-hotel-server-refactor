@@ -17,6 +17,9 @@ public interface EverydayRoomPriceDAO {
     //根据子订单id查询未经过夜审的日期价格
     List<EverydayRoomPriceBO> getRemainingEverydayRoomById(@Param("time") String time, @Param("id") Integer id);
 
+    //根据子订单id 时间 查询日期价格
+    EverydayRoomPriceBO getRemainingEverydayRoomByIdAndTime(@Param("time") String time, @Param("id") Integer id);
+
     //根据子订单删除每日房价
     Integer delEverydayRoomById(Integer id);
 

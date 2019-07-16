@@ -21,6 +21,10 @@
     <select id="getRemainingEverydayRoomById" resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO" >
        select * from hm_everyday_room_price where `time`>#{time} and order_child_id=#{id}
     </select>
+    <!-- 根据子订单id 日期查询价格-->
+    <select id="getRemainingEverydayRoomByIdAndTime" resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO" >
+       select * from hm_everyday_room_price where `time`=#{time} and order_child_id=#{id}
+    </select>
 
     <!--  根据子订单删除每日房价 -->
     <delete id="delEverydayRoomById" parameterType="java.lang.Integer">
