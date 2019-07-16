@@ -60,7 +60,7 @@ WHERE id = #{id}
         limit #{pageOffset},#{pageSize}
     </sql>
 
-    <!--通过id查询会员级别-->
+    <!--通过id查询会员-->
     <select id="queryMemberById"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.MemberBO">
         SELECT * FROM `hm_member` WHERE id=#{id}
     </select>
@@ -91,6 +91,10 @@ WHERE id = #{id}
     <!--通过证件号查询会员信息-->
     <select id="selectMemberByCerNumber" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
         SELECT * FROM hm_member WHERE certificate_number = #{certificateNumber}
+    </select>
+    <!--通过证件号查询会员id-->
+    <select id="getIdByCerNumber" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT id FROM hm_member WHERE certificate_number = #{certificateNumber}
     </select>
 
     <!--通过证件号查询储值和积分金额-->

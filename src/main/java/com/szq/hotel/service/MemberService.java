@@ -92,6 +92,32 @@ public class MemberService {
     }
 
     /**
+     *  结账增加积分
+     * @param memberId 会员id
+     * @param money 金额
+     * @param remark 备注
+     * @param userId 操作人id
+     */
+    public void accountIntegral(Integer memberId,BigDecimal money,String remark,Integer userId){
+        //通过id查询会员信息
+        MemberBO memberBO = memberDAO.queryMemberById(memberId);
+        Integer memberCardId = memberBO.getMemberCardId();
+        //查询改会员所属会员级别
+        MemberLevelBO memberLevelBO = memberLevelService.getLevelByCardId(memberCardId);
+        BigDecimal consumeGetIntegral = memberLevelBO.getConsumeGetIntegral();
+        //积分数 = 消费金额 * 比例
+        BigDecimal integral = money.multiply(consumeGetIntegral);
+        memberBO.setIntegral(integral);
+        memberBO.setUpdateUserId(userId);
+        memberDAO.integralChange(memberBO);
+        //查询最新
+        MemberBO memberBO1 = memberDAO.queryMemberById(memberId);
+        String type = "结账增加";
+        integralRecordService.addIntegralRecord(memberId,integral,remark,type,memberBO1.getIntegral(),userId);
+
+    }
+
+    /**
      * 积分减免
      * @param certificateNumber 证件号
      * @param subtractMoney 减免多少钱
@@ -130,6 +156,20 @@ public class MemberService {
         memberBO.setUpdateUserId(userId);
         memberDAO.storedValueChange(memberBO);
         log.info("end===================storedValueChange");
+    }
+    /*
+        结账退储值
+     */
+    public void accountStoreValue(Integer memberId,BigDecimal money,String remark,Integer userId){
+       MemberBO memberBO =  memberDAO.queryMemberById(memberId);
+       memberBO.setUpdateUserId(userId);
+       memberBO.setStoredValue(money);
+       memberDAO.storedValueChange(memberBO);
+
+       MemberBO memberBO1 = memberDAO.queryMemberById(memberId);
+
+       String type = "结账退款";
+       storedValueRecordService.addStoredValueRecord(memberId,money,remark,type,null,memberBO1.getStoredValue(),userId);
     }
 
     /**
@@ -185,6 +225,12 @@ public class MemberService {
      */
     public MemberBO selectMemberByCerNumber(String certificateNumber){
         return memberDAO.selectMemberByCerNumber(certificateNumber);
+    }
+    /*
+        通过证件号查询会员id
+     */
+    Integer getIdByCerNumber(String certificateNumber){
+        return memberDAO.getIdByCerNumber(certificateNumber);
     }
     /*
         通过证件号查询储值和积分金额

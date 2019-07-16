@@ -53,6 +53,10 @@ public interface MemberDAO {
      */
     MemberBO selectMemberByCerNumber(String certificateNumber);
     /*
+        通过证件号查询会员id
+     */
+    Integer getIdByCerNumber(String certificateNumber);
+    /*
         通过证件号查询储值和积分金额
      */
     MemberBO getStoreValueIntegral(String certificateNumber);
