@@ -607,29 +607,34 @@ public class RoomService {
         List<Time> times = timeDate2(DateUtils.parseDate(start, "yyyy-MM-dd HH:mm:ss"),
                 DateUtils.parseDate(end, "yyyy-MM-dd HH:mm:ss"),
                 dates.size());
-
+        log.info("times:{}",times);
         //获取酒店下面所有房型
         List<RtBO> rtBOS = queryRt(hotrlId);
         log.info("酒店下面所有房型:{}",rtBOS);
         Map<String, Object> mp = new HashMap<String, Object>();
 
-
-
         List<Map<String,Object>>  list = new ArrayList<Map<String, Object>>();
+
         for (RtBO rtBO : rtBOS){
             Map<String, Object> m = new HashMap<String, Object>();
             m.put("sumCountRoomType",roomDAO.querRoomTypeCount(rtBO.getId(),hotrlId));
             m.put("roomTypeName",rtBO.getRoomTypeName());
+            int i = 1;
             for (Time time : times){
+
                 map.put("checkTime",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
                 map.put("endTime",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
-                List<RmBO> rmBOS1 = this.publicQuery(map);
-                log.info("符合条件的集合:{}",rmBOS1);
+                map.put("roomTypeId",rtBO.getId());
 
+                List<RmBO> rmBOS1 = this.publicQuery(map);
+                m.put("date"+i,rmBOS1.size());
+                i++;
             }
             list.add(m);
         }
         mp.put("first", list);
+        mp.put("dateNumber", dates.size());
+        mp.put("date",dates);
         return mp;
     }
 
@@ -665,6 +670,23 @@ public class RoomService {
 
     public void opeRoom(Integer roomId){
         roomDAO.opeRoom(roomId);
+    }
+
+    public void verificationRoom(Integer[] idArr, String state, String checkTime, String endTime) {
+        Map<String,Object> map = new HashMap<String, Object>();
+        if("day".equals(state)){
+           /* map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "yes");*/
+        }
+        if("hour".equals(state)){
+            map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "no");
+        }
+        if("free".equals(state)){
+            map.put("roomAuxiliaryStatus", "no");
+            map.put("roomAuxiliaryStatusStand", "yes");
+        }
+
     }
 }
 

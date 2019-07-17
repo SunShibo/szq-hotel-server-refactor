@@ -419,7 +419,7 @@
       #{item}
     </foreach>
     and  order_state IN ('reservation','notpay','admissions')
-    having
+      having
     (hm_order_child.start_time  BETWEEN #{checkTime} AND  #{endTime})
     OR (#{checkTime}  between hm_order_child.start_time AND hm_order_child.end_time)
   </select>

@@ -253,8 +253,8 @@ public class RoomController extends BaseCotroller {
         }
         Map<String, Object> map = new HashMap<String,Object>();
         if("day".equals(roomAuxiliaryStatus)){
-            map.put("roomAuxiliaryStatus", "yes");
-            map.put("roomAuxiliaryStatusStand", "yes");
+           /* map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "yes");*/
         }
         if("hour".equals(roomAuxiliaryStatus)){
             map.put("roomAuxiliaryStatus", "yes");
@@ -429,13 +429,13 @@ public class RoomController extends BaseCotroller {
             log.info("result{}",result);
             return;
         }
-        if (checkTime == null) {
+        if (StringUtils.isEmpty(checkTime)) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;
         }
-        if (endTime == null) {
+        if (StringUtils.isEmpty(endTime)) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
@@ -507,6 +507,21 @@ public class RoomController extends BaseCotroller {
         super.safeJsonPrint(response, result);
         RedisTool.releaseDistributedLock(jedis,"500",requestId.toString());
         return;
+    }
+
+
+    @RequestMapping("/verificationRoom")
+    public void verificationRoom(HttpServletRequest request, HttpServletResponse response,
+                                 String ids, String state, String checkTime, String endTime){
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        if(loginAdmin == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        Integer[] idArr = JsonUtils.getIntegerArray4Json(ids);
+        roomService.verificationRoom(idArr,state,checkTime,endTime);
     }
 
 }
