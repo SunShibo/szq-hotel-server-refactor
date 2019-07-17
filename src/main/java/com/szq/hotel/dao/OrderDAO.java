@@ -22,8 +22,14 @@ public interface OrderDAO {
     OrderBO getOrderByIdOrMobile(@Param("idNumber")String idNumber, @Param("mobile")String mobile, @Param("date") String date,@Param("hotelId")Integer hotelId);
     //根据订单id查询订单信息
     OrderBO getOrderById(Integer orderId);
-    //根据订单id查询子订单
+    //根据订单id查询子订单 带房型房间信息
     List<OrderChildBO> getOrderChildByOrderId(Integer id);
+    //根据订单id查询预约中的子订单 带房型信息
+    List<OrderChildBO> getOrderChildByOrderId2(@Param("id") Integer id,@Param("orderState") String orderState);
+    //根据订单id查询预约中的子订单 带房型房间信息
+    List<OrderChildBO> getOrderChildByOrderId3(@Param("id") Integer id,@Param("orderState") String orderState);
+    //根据订单id查询没有入住的子订单
+    List<OrderChildBO> getOrderChildByOrderId4(@Param("id") Integer id,@Param("orderState") String orderState);
     //根据子订单id查询子订单
     OrderChildBO getOrderChildById(Integer id);
     //修改主订单
@@ -48,6 +54,9 @@ public interface OrderDAO {
     List<CheckInPersonBO> getAlRoom(Integer roomId);
     //通过联房码查询子订单
     List<OrderChildBO> getOrderByCode(@Param("code") String code,@Param("main") String main);
+    //备份子订单
+    Integer addOrderChildBackup(OrderChildBO orderChildBO);
+
     /**
      * 订单列表
      * @param param

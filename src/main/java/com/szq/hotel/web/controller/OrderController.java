@@ -382,6 +382,7 @@ public class OrderController extends BaseCotroller {
         super.safeJsonPrint(response, result);
     }
 
+
     /**
      * 修改在住信息
      * @param orderId 主订单id
@@ -396,7 +397,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/updCheckInInfo")
     public void updCheckInInfo(Integer orderId,String channel,String OTA,
                                Integer orderChildId, @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")Date entTime,String remark,
-                               String checkInPersonJson,HttpServletResponse response,HttpServletRequest request) throws ParseException {
+                               String checkInPersonJson,HttpServletResponse response,
+                               String everyDayRoomPrice,HttpServletRequest request) throws ParseException {
         //验证管理员
         AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
@@ -405,12 +407,11 @@ public class OrderController extends BaseCotroller {
             return ;
         }
 
-        orderService.updCheckInInfo(orderId,channel,OTA,orderChildId,entTime,remark,checkInPersonJson);
+        orderService.updCheckInInfo(orderId,channel,OTA,orderChildId,entTime,remark,checkInPersonJson,everyDayRoomPrice);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success( "修改成功"));
         super.safeJsonPrint(response, result);
         return;
     }
-
 
     /**
      * 查询所有可用联房
@@ -562,6 +563,9 @@ public class OrderController extends BaseCotroller {
         super.safeJsonPrint(response, result);
     }
 
+
+
+
     /**
      * 退房 获取退房信息
      * @param orderChildId 子订单id
@@ -585,6 +589,7 @@ public class OrderController extends BaseCotroller {
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderChildBO)) ;
         super.safeJsonPrint(response, result);
     }
+
     /**
      * 退房
      * @param orderChildId 子订单id
@@ -604,11 +609,10 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        orderService.checkOut(orderChildId);
+        orderService.checkOut(orderChildId,userInfo.getId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
         super.safeJsonPrint(response, result);
     }
-
 
     /**
      * 订单列表

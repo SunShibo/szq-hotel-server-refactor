@@ -39,6 +39,59 @@
 
     </insert>
 
+    <!-- 备份子订单 -->
+    <insert id="addOrderChildBackup" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
+        insert into hm_order_child_backup set
+        id=#{id}
+        order_id=#{orderId},
+        start_time=#{startTime},
+        end_time=#{endTime},
+        pay_cash_num=#{payCashNum},
+        other_pay_num=#{otherPayNum},
+        room_rate=#{roomRate},
+        other_rate=#{otherRate},
+        timeout_rate=#{timeoutRate},
+        free_rate_num=#{freeRateNum},
+        order_state=#{orderState},
+        practical_departure_time=#{practicalDepartureTime},
+        remark=#{remark},
+        room_id=#{roomId},
+        room_type_id=#{roomTypeId},
+        al_room_code=#{alRoomCode},
+        night_auditor_state=#{nightAuditorState},
+        print_state=#{printState},
+        main=#{main},
+        update_time=#{updateTime}
+    </insert>
+    <!-- 查询备份的子订单 -->
+    <select id="OrderChildBackup" resultType="com.szq.hotel.entity.bo.OrderChildBO" parameterType="java.lang.Integer">
+        select * from hm_order_child_backup where id=#{id}
+    </select>
+    <!-- 把备份的子订单插入回主订单 -->
+    <insert id="checkOutRollback" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
+        insert into hm_order_child set
+        id=#{id}
+        order_id=#{orderId},
+        start_time=#{startTime},
+        end_time=#{endTime},
+        pay_cash_num=#{payCashNum},
+        other_pay_num=#{otherPayNum},
+        room_rate=#{roomRate},
+        other_rate=#{otherRate},
+        timeout_rate=#{timeoutRate},
+        free_rate_num=#{freeRateNum},
+        order_state=#{orderState},
+        practical_departure_time=#{practicalDepartureTime},
+        remark=#{remark},
+        room_id=#{roomId},
+        room_type_id=#{roomTypeId},
+        al_room_code=#{alRoomCode},
+        night_auditor_state=#{nightAuditorState},
+        print_state=#{printState},
+        main=#{main},
+        update_time=#{updateTime}
+    </insert>
+
     <!-- 修改子订单信息 -->
     <update id="updOrderChild" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
         update hm_order_child
@@ -193,17 +246,49 @@
     id = #{orderId}
 </select>
 
-    <!-- 根据订单id查询子订单 -->
+    <!-- 根据订单id查询所有子订单 带房型房间信息 -->
     <select id="getOrderChildByOrderId" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
-    select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
-    from hm_order_child,hm_room,hm_room_type
-    where
-    hm_order_child.room_id=hm_room.id
-    and
-    hm_order_child.room_type_id=hm_room_type.id
-    and
-    order_id=#{id}
-</select>
+        select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
+        from hm_order_child,hm_room,hm_room_type
+        where
+        hm_order_child.room_id=hm_room.id
+        and
+        hm_order_child.room_type_id=hm_room_type.id
+        and
+        order_id=#{id}
+    </select>
+
+    <!-- 根据订单id查询未入住子订单 带房型信息 -->
+    <select id="getOrderChildByOrderId2" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select hm_order_child.*,hm_room_type.room_type_name
+        from hm_order_child,hm_room_type
+        where
+        hm_order_child.room_type_id=hm_room_type.id
+        and
+        order_id=#{id}
+        and order_state=#{orderState}
+    </select>
+
+    <!-- 根据订单id查询未入住子订单 带房型房间信息 -->
+    <select id="getOrderChildByOrderId3"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+       select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
+        from hm_order_child,hm_room,hm_room_type
+        where
+        hm_order_child.room_id=hm_room.id
+        and
+        hm_order_child.room_type_id=hm_room_type.id
+        and
+        order_id=#{id}
+        and order_state=#{orderState}
+    </select>
+
+    <!-- 根据订单id以及状态查询未入住的子订单  -->
+    <select id="getOrderChildByOrderId4"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select *
+        from hm_order_child
+        where order_id=#{id} and order_state=#{orderState}
+    </select>
+
 
     <!-- 修改主订单信息 -->
     <update id="updOrder" parameterType="com.szq.hotel.entity.bo.OrderBO">
