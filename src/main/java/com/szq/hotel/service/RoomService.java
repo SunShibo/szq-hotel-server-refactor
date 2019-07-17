@@ -165,9 +165,9 @@ public class RoomService {
     /**
      * 预约入住选择房间
      */
-    public Map<String, Object> queryRm(Map<String, Object> map) {
-        Map<String, Object> mp = new LinkedHashMap<String, Object>();
-
+    public List<List<RmBO>> queryRm(Map<String, Object> map) {
+        //Map<String, Object> mp = new LinkedHashMap<String, Object>();
+        List<List<RmBO>> ls = new ArrayList<List<RmBO>>();
         //获取酒店下面所有楼层
         Integer hotelId = (Integer) map.get("hotelId");
         log.info("hotelId:{}", hotelId);
@@ -203,13 +203,13 @@ public class RoomService {
                         a.add(rmBO);
                     }
                 }
-                mp.put(f.getName() , a);
+                ls.add( a);
             }
         }
 
         // mp.put("list",list);
 
-        return mp;
+        return ls;
     }
 
     public List<RoomTypeNumBO> queryRoomTypeNum(Map<String, Object> map) {
@@ -453,25 +453,16 @@ public class RoomService {
      * @param
      * @return
      */
-    public List<Time> timeDate2(Date da,Integer num){
+    public List<Time> timeDate2(Date da, Date dab,Integer num){
         List<Time> list = new ArrayList<Time>();
-        //当天凌晨5点59分59秒
-        Date dat = quDate(5, 59, 59);
-        //从当天开始的下一天开始时间
-        Date dd = lDate(da, 0);
-        //从开始天使的下一天结束时间
-        Date d = lDate(dat, 0);
-
             for (int i = 0; i < num; i++) {
                 Time time = new Time();
-                time.setStartTime(lDate(dd, i));
+                time.setStartTime(lDate(da, i));
                 //System.err.println(lDate(dd, i));
                 //System.err.println(lDate(d, i+1));
-                time.setEndTime(lDate(d, i + 1));
+                time.setEndTime(lDate(dab, i + 1));
                 list.add(time);
             }
-
-
         return list;
     }
 
@@ -596,28 +587,55 @@ public class RoomService {
      * @param endTime
      * @param hotrlId
      */
-    public void querySc(String checkTime, String endTime, Integer hotrlId) {
+    public Map<String, Object> querySc(String checkTime, String endTime, Integer hotrlId) {
         Map<String,Object> map = new HashMap<String, Object>();
        /* long quot = DateUtils.getQuot(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
         log.info("两个日期之间相差的天数:{}",quot);*/
         List<String> dates = querSeTime(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
         log.info("两段时间区间的每一天日期:{}",dates);
-        checkTime = checkTime+" 06:00:00";
-        endTime = endTime+" 05:59:59";
+
+        String start = checkTime+" 06:00:00";
+        String end = checkTime+" 05:59:59";
+
         log.info("checkTime:{}",checkTime);
         log.info("endTime:{}",endTime);
-        Date date = DateUtils.parseDate(endTime, "yyyy-MM-dd HH:mm:ss");
-        log.info("date:{}",date);
-        Date date1 = lDate(date, 1);
-        log.info("date1:{}",date1);
-        String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1);
-        log.info("format:{}", format);
-        map.put("checkTime", checkTime);
-        map.put("hotelId", hotrlId);
-        map.put("endTime", endTime);
-        List<Time> times = timeDate2(DateUtils.parseDate(checkTime, "yyyy-MM-dd HH:mm:ss"), dates.size());
-        log.info("获取未来:{}天的时间:{}",dates.size(),times);
 
+
+        map.put("hotelId", hotrlId);
+
+
+        List<Time> times = timeDate2(DateUtils.parseDate(start, "yyyy-MM-dd HH:mm:ss"),
+                DateUtils.parseDate(end, "yyyy-MM-dd HH:mm:ss"),
+                dates.size());
+        log.info("times:{}",times);
+        //获取酒店下面所有房型
+        List<RtBO> rtBOS = queryRt(hotrlId);
+        log.info("酒店下面所有房型:{}",rtBOS);
+        Map<String, Object> mp = new HashMap<String, Object>();
+
+        List<Map<String,Object>>  list = new ArrayList<Map<String, Object>>();
+
+        for (RtBO rtBO : rtBOS){
+            Map<String, Object> m = new HashMap<String, Object>();
+            m.put("sumCountRoomType",roomDAO.querRoomTypeCount(rtBO.getId(),hotrlId));
+            m.put("roomTypeName",rtBO.getRoomTypeName());
+            int i = 1;
+            for (Time time : times){
+
+                map.put("checkTime",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
+                map.put("endTime",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
+                map.put("roomTypeId",rtBO.getId());
+
+                List<RmBO> rmBOS1 = this.publicQuery(map);
+                m.put("date"+i,rmBOS1.size());
+                i++;
+            }
+            list.add(m);
+        }
+        mp.put("first", list);
+        mp.put("dateNumber", dates.size());
+        mp.put("date",dates);
+        return mp;
     }
 
 
@@ -652,6 +670,23 @@ public class RoomService {
 
     public void opeRoom(Integer roomId){
         roomDAO.opeRoom(roomId);
+    }
+
+    public void verificationRoom(Integer[] idArr, String state, String checkTime, String endTime) {
+        Map<String,Object> map = new HashMap<String, Object>();
+        if("day".equals(state)){
+           /* map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "yes");*/
+        }
+        if("hour".equals(state)){
+            map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "no");
+        }
+        if("free".equals(state)){
+            map.put("roomAuxiliaryStatus", "no");
+            map.put("roomAuxiliaryStatusStand", "yes");
+        }
+
     }
 }
 

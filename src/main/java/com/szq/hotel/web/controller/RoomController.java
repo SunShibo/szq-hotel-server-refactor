@@ -221,9 +221,9 @@ public class RoomController extends BaseCotroller {
         map.put("phone", phone);
 
 
-        Map<String, Object> mp = roomService.queryRm(map);
+        List<List<RmBO>> lists = roomService.queryRm(map);
 
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(mp));
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(lists));
         super.safeJsonPrint(response, result);
         return;
     }
@@ -253,8 +253,8 @@ public class RoomController extends BaseCotroller {
         }
         Map<String, Object> map = new HashMap<String,Object>();
         if("day".equals(roomAuxiliaryStatus)){
-            map.put("roomAuxiliaryStatus", "yes");
-            map.put("roomAuxiliaryStatusStand", "yes");
+           /* map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "yes");*/
         }
         if("hour".equals(roomAuxiliaryStatus)){
             map.put("roomAuxiliaryStatus", "yes");
@@ -429,20 +429,22 @@ public class RoomController extends BaseCotroller {
             log.info("result{}",result);
             return;
         }
-        if (checkTime == null) {
+        if (StringUtils.isEmpty(checkTime)) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;
         }
-        if (endTime == null) {
+        if (StringUtils.isEmpty(endTime)) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;
         }
-        roomService.querySc(checkTime,endTime,loginAdmin.getHotelId());
-
+        Map<String, Object> map = roomService.querySc(checkTime, endTime, loginAdmin.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+        super.safeJsonPrint(response, result);
+        return;
     }
 
 
@@ -492,28 +494,34 @@ public class RoomController extends BaseCotroller {
                 return;
             }
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             roomService.closeRoom(startTime,endTime,roomId);
 
         }
 
         //开锁
         if("ope".equals(state)){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             roomService.opeRoom(roomId);
         }
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
         super.safeJsonPrint(response, result);
         RedisTool.releaseDistributedLock(jedis,"500",requestId.toString());
         return;
+    }
+
+
+    @RequestMapping("/verificationRoom")
+    public void verificationRoom(HttpServletRequest request, HttpServletResponse response,
+                                 String ids, String state, String checkTime, String endTime){
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        if(loginAdmin == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        Integer[] idArr = JsonUtils.getIntegerArray4Json(ids);
+        roomService.verificationRoom(idArr,state,checkTime,endTime);
     }
 
 }
