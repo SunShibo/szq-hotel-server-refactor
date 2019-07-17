@@ -514,14 +514,44 @@ public class RoomController extends BaseCotroller {
     public void verificationRoom(HttpServletRequest request, HttpServletResponse response,
                                  String ids, String state, String checkTime, String endTime){
         AdminBO loginAdmin = super.getLoginAdmin(request);
+        log.info("ids:{}",ids);
         if(loginAdmin == null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;
         }
+        if(StringUtils.isEmpty(ids)){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        if(StringUtils.isEmpty(checkTime)){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+        if(StringUtils.isEmpty(endTime)){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+
         Integer[] idArr = JsonUtils.getIntegerArray4Json(ids);
-        roomService.verificationRoom(idArr,state,checkTime,endTime);
+        List<Integer> list = Arrays.asList(idArr);
+        List<Integer> arrList = new ArrayList(list);
+
+        log.info("list:{}",arrList);
+        log.info("state:{}",state);
+        log.info("checkTime:{}",checkTime);
+        log.info("endTime:{}",endTime);
+        Map<String, Object> map = roomService.verificationRoom(arrList, state, checkTime, endTime, loginAdmin.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+        super.safeJsonPrint(response, result);
+        return;
     }
 
 }

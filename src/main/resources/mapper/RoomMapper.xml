@@ -406,6 +406,13 @@
     <if test="roomAuxiliaryStatusStand != null and roomAuxiliaryStatusStand !='' ">
      and  hm_room.room_auxiliary_status_stand = #{roomAuxiliaryStatusStand}
     </if>
+    <if test="list.size() > 0">
+      and hm_room.id in
+      <foreach item="item" collection="list" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+
     AND hm_room.show = 'yes'
     HAVING   hm_room.lock_room_start_time  &gt;=  #{endTime}   OR
     hm_room.lock_room_end_time   &lt;= #{checkTime}
@@ -504,5 +511,12 @@
 
   <select id="querRoomTypeCount" resultType="java.lang.Integer">
     select count(1) from hm_room where hotel_id = #{hotelId} and room_type_id = #{roomTypeId};
+  </select>
+
+  <select id="queryRoomName" resultType="java.lang.String">
+    select room_name from hm_room where id in
+    <foreach item="item" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
   </select>
 </mapper>

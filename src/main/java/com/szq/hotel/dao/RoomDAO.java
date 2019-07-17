@@ -130,4 +130,7 @@ public interface RoomDAO {
      * @return
      */
     Integer querRoomTypeCount(@Param("roomTypeId")Integer roomTypeId, @Param("hotelId")Integer hotelId);
+
+
+    List<String> queryRoomName(@Param("list")List<Integer> list);
 }
