@@ -43,8 +43,9 @@ public class OrderRecordService {
      * @param project  项目
      * @param userId  用户id
      * @param number  数量
+     * @param statue   已结/未结  yes/no
      */
-    public void addOrderRecord(Integer orderChildId , String info, String payType, BigDecimal money,String project,Integer userId,String number){
+    public void addOrderRecord(Integer orderChildId , String info, String payType, BigDecimal money,String project,Integer userId,String number,String statue){
         log.info("star addOrderRecord..................................");
         log.info("orderChildId:{}\tinfo:{}\tpayType:{}\tmoney:{}\tproject:{}\tuserId:{}\tnumber:{}",
                 orderChildId,info,payType,money,project,userId,number);
@@ -67,7 +68,7 @@ public class OrderRecordService {
         orderRecoredBO.setMoney(money);
         orderRecoredBO.setProject(project);
         orderRecoredBO.setNumber(number);
-        orderRecoredBO.setState(Constants.NO.getValue());
+        orderRecoredBO.setState(statue);
         orderRecordDAO.addOrderRecord(orderRecoredBO);
         log.info("end addOrderRecord..................................");
     }

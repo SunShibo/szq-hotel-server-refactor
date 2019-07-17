@@ -26,5 +26,9 @@ public interface CashierSummaryDAO {
      */
     List<CashierSummaryBO> queryCashierSummary(CashierSummaryBO cashierSummaryBO);
 
+    /**
+     * 删除一条数据
+     */
+    void deleteCashierSummary(Integer id);
 
 }

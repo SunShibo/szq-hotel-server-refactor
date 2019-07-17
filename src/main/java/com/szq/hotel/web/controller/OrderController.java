@@ -279,7 +279,7 @@ public class OrderController extends BaseCotroller {
 
         //插入订单记录
         orderRecordService.addOrderRecord(orderChildBO.getId(),Constants.INTHEDEPOSIT.getValue(),
-                payType,money,Constants.CASHPLEDGE.getValue(),userInfo.getId(),null);
+                payType,money,Constants.CASHPLEDGE.getValue(),userInfo.getId(),null,Constants.NO.getValue());
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("支付成功")) ;
         super.safeJsonPrint(response, result);

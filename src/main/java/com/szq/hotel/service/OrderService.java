@@ -576,13 +576,13 @@ public class OrderService {
             //加记录
             orderRecordService.addOrderRecord(orderChild, ymd.format(date) + "半天超时费",
                     null,new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)), Constants.TIMEOUTCOST.getValue(),
-                    userId, null);
+                    userId, null,Constants.NO.getValue());
             orderChildBO.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
         } else {
             //加记录
             orderRecordService.addOrderRecord(orderChild, ymd.format(date) + "全天超时费",
                     null, new BigDecimal(roomTypeBO.getBasicPrice()), Constants.TIMEOUTCOST.getValue(),
-                    userId, null);
+                    userId, null,Constants.NO.getValue());
             orderChildBO.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()));
         }
         orderDAO.updOrderChild(orderChildBO);
@@ -600,12 +600,12 @@ public class OrderService {
             //加记录
             orderRecordService.addOrderRecord(orderChild, everydayRoomPriceBO.getTime() + "提前退房收全天超时费",
                     null, everydayRoomPriceBO.getMoney(), Constants.TIMEOUTCOST.getValue(),
-                    userId, null);
+                    userId, null,Constants.NO.getValue());
         } else {
             //加记录
             orderRecordService.addOrderRecord(orderChild, everydayRoomPriceBO.getTime() + "提前退房收半天超时费",
                     null, everydayRoomPriceBO.getMoney().divide(new BigDecimal(2)), Constants.TIMEOUTCOST.getValue(),
-                    userId, null);
+                    userId, null,Constants.NO.getValue());
             orderChildBO.setOtherRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney().divide(new BigDecimal(2))));
         }
         orderDAO.updOrderChild(orderChildBO);
@@ -618,7 +618,7 @@ public class OrderService {
         EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(date, orderChild);
         orderRecordService.addOrderRecord(orderChild, everydayRoomPriceBO.getTime() + "房费",
                 null, everydayRoomPriceBO.getMoney(), Constants.ROOMRATE.getValue(),
-                userId, "1天");
+                userId, "1天",Constants.NO.getValue());
 
         orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
         orderDAO.updOrderChild(orderChildBO);

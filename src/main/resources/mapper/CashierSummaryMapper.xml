@@ -36,4 +36,9 @@
     </select>
 
 
+    <!--通过id删除-->
+    <delete id="deleteCashierSummary" parameterType="java.lang.Integer" >
+        DELETE FROM hm_cashier_summary WHERE id=#{id}
+    </delete>
+
 </mapper>

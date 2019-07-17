@@ -299,4 +299,10 @@ public class CashierSummaryService {
      }
 
 
+    /**
+     * 删除收银汇总
+     */
+    public void deleteCashierSummary(Integer id){
+        cashierSummaryDAO.deleteCashierSummary(id);
+    }
 }

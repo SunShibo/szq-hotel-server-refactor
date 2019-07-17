@@ -25,7 +25,7 @@
                            INNER JOIN hm_room_type type ON type.id=room.room_type_id
 													 LEFT JOIN hm_order_child child ON child.room_id=room.id
          WHERE
-             flo.hotel_id =#{hotelId}  AND  room.show='yes'
+             room.hotel_id =#{hotelId}  AND  room.show='yes'
              <if test="type!=null" >
                  AND       type.id
                  <foreach collection="type"  item="typeId" open="IN(" separator="," close=")" >
@@ -58,6 +58,7 @@
              </if>
 
         )
+        ORDER BY flo.sort DESC ,room.room_name
     </select>
     <!--  <if test="network!=null and network!=''" >
                     OR  room.lock_room_state='network'
@@ -84,7 +85,7 @@
     <select id="queryRoomTypeNum"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.HomeRoomTypeBO">
             SELECT  type.id,type.room_type_name roomType ,COUNT(room.id) count  FROM
                       hm_room_type type  LEFT JOIN  hm_room room   ON type.id=room.room_type_id
-                      AND  type.hotel_id=#{hotelId}   AND  room.show='yes'
+                      AND  room.hotel_id=#{hotelId}   AND  room.show='yes'
              GROUP BY type.id
     </select>
 

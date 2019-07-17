@@ -46,6 +46,7 @@
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
+        GROUP BY pay_type
     </select>
 
 
@@ -66,7 +67,7 @@
 
     <!--修改订单详情为已结-->
     <update id="closedAccount" >
-        UPDATE  hm_order_record  SET  state='yes'   WHERE
+        UPDATE  hm_order_record  SET  state='yes'   WHERE  id IN
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
@@ -78,6 +79,7 @@
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
+
     </select>
 
     <!--完成订单-->

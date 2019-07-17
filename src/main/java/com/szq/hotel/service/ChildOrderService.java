@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class ChildOrderService {
         log.info("start addCashPledge........................................");
         log.info("payType:{}\torderChildId:{}\tmoney:{}\tuserId:{}", payType, orderChildId, money, userId);
         //生成记录
-        orderRecordService.addOrderRecord(orderChildId, "入住押金", payType, money, Constants.CASHPLEDGE.getValue(), userId, null);
+        orderRecordService.addOrderRecord(orderChildId, "入住押金", payType, money, Constants.CASHPLEDGE.getValue(), userId, null,Constants.NO.getValue());
         //增加金额
         if (Constants.CASH.getValue().equals(payType)) {
             log.info("increaseCashCashPledge...............................");
@@ -78,7 +79,7 @@ public class ChildOrderService {
         log.info("start recorded........................................");
         log.info("orderChildId:{}\tmoney:{}\tdesignation:{}\ttype:{}\tuserId:{}\thotelId:{}", orderChildId, money, designation, type, userId, hotelId);
         //生成记录
-        orderRecordService.addOrderRecord(orderChildId, designation, null, new BigDecimal("-1").multiply(money), type, userId, null);
+        orderRecordService.addOrderRecord(orderChildId, designation, null, new BigDecimal("-1").multiply(money), type, userId, null,Constants.NO.getValue());
         if (type.equals(Constants.ROOMRATE.getValue())) {
             log.info("increaseRoomRate...............................");
             childOrderDAO.increaseRoomRate(orderChildId, money);
@@ -117,7 +118,7 @@ public class ChildOrderService {
         log.info("start free........................................");
         log.info("orderChildId:{}\tmoney:{}\tremark:{}\tuserId:{}\thotelId:{}", orderChildId, money, remark, userId, hotelId);
         //生成记录
-        orderRecordService.addOrderRecord(orderChildId, remark, null, money, Constants.FREEORDER.getValue(), userId, null);
+        orderRecordService.addOrderRecord(orderChildId, remark, null, money, Constants.FREEORDER.getValue(), userId, null,Constants.NO.getValue());
         log.info("free...................................");
         //变为负数
         BigDecimal negation = money.multiply(new BigDecimal("-1"));
@@ -216,6 +217,7 @@ public class ChildOrderService {
         List<Integer> list = StringUtils.strToList(ids);
         log.info("query PayType.................................................................");
         List<String> payType = orderRecordService.queryPayType(list);
+        payType.removeAll(Collections.singleton(null));
         log.info("PayType:{}", payType);
         //查询消费多少
         log.info("query consumption.................................................................");
@@ -233,7 +235,7 @@ public class ChildOrderService {
             //收
             resultMap.put("status", "yes");
         }
-        resultMap.put("typeType", payType);
+        resultMap.put("typeType",payType);
         resultMap.put("money", consumption + pay);
 
         log.info("end queryChildleAccounts.........................................................");
@@ -290,7 +292,7 @@ public class ChildOrderService {
         if (status.equals("yes")) {
             log.info("start gathering........................................................");
             //收款
-            orderRecordService.addOrderRecord(chilId, Constants.CONSUMPTIONITEM.getValue(), payType, param.getMoney(), Constants.SETTLE.getValue(), userId, null);
+            orderRecordService.addOrderRecord(chilId, Constants.CONSUMPTIONITEM.getValue(), payType, param.getMoney(), Constants.SETTLE.getValue(), userId, null,Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getMoney(), childOrderBO.getOrderNumer(), userId, childOrderBO.getName(), childOrderBO.getOTA(), payType,
                     childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
@@ -349,7 +351,7 @@ public class ChildOrderService {
             }
 
             //收款
-            orderRecordService.addOrderRecord(childMain, Constants.CONSUMPTIONITEM.getValue(), payType, param.getMoney(), Constants.SETTLE.getValue(), userId, null);
+            orderRecordService.addOrderRecord(childMain, Constants.CONSUMPTIONITEM.getValue(), payType, param.getMoney(), Constants.SETTLE.getValue(), userId, null,Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getMoney(), childOrderBO.getOrderNumer(), userId, childOrderBO.getName(), childOrderBO.getOTA(), payType,
                     childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
@@ -389,7 +391,7 @@ public class ChildOrderService {
         if (param.getCash() != null) {  //现金
             log.info("start.....refund...cash........................................................");
             orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.CASH.getValue(), param.getCash().
-                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null);
+                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null,Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumer(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.CASH.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
@@ -397,7 +399,7 @@ public class ChildOrderService {
         if (param.getCart() != null) {  //银行卡
             log.info("start.....refund...cart........................................................");
             orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.CART.getValue(), param.getCash().
-                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null);
+                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null,Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumer(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.CART.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
@@ -405,7 +407,7 @@ public class ChildOrderService {
         if (param.getWechat() != null) {  //微信
             log.info("start.....refund...wechat........................................................");
             orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.WECHAT.getValue(), param.getCash().
-                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null);
+                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null,Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumer(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.WECHAT.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
@@ -413,7 +415,7 @@ public class ChildOrderService {
         if (param.getAlipay() != null) {  //支付宝
             log.info("start.....refund...alipay........................................................");
             orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getCash().
-                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null);
+                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null,Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumer(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.ALIPAY.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
@@ -421,7 +423,7 @@ public class ChildOrderService {
         if (param.getOther() != null) {  //其他
             log.info("start.....refund...other........................................................");
             orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getCash().
-                    multiply(new BigDecimal("-1")), Constants.OTHER.getValue(), userId, null);
+                    multiply(new BigDecimal("-1")), Constants.OTHER.getValue(), userId, null,Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumer(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.OTHER.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
@@ -432,7 +434,7 @@ public class ChildOrderService {
                 memberService.accountStoreValue(childOrderBO.getMembersId(),param.getStored(),"结账",userId);
             }
             orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getCash().
-                    multiply(new BigDecimal("-1")), Constants.STORED.getValue(), userId, null);
+                    multiply(new BigDecimal("-1")), Constants.STORED.getValue(), userId, null,Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumer(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.STORED.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
