@@ -42,23 +42,31 @@ public class ManagementReportController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            //验证参数
-            if (StringUtils.isEmpty(start) || StringUtils.isEmpty(end) ) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
+//            //验证参数
+//            if (StringUtils.isEmpty(start) || StringUtils.isEmpty(end) ) {
+//                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+//                super.safeJsonPrint(response, result);
+//                log.info("result{}",result);
+//                return;
+//            }
             Map<String,Object> map = new HashMap<String, Object>();
             String startTime  = start + " 04:00:00";
             String endTime = end + " 04:00:00";
             map.put("startTime",startTime);
             map.put("endTime",endTime);
             map.put("hotelId",loginAdmin.getHotelId());
+
             BigDecimal receivableSum = managementReportService.getReceivableSum(map);
+            Integer roomSum = managementReportService.getRoomSum(map);
 
 
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(receivableSum));
+            Map<String,Object> resultMap = new HashMap<String, Object>();
+
+
+            resultMap.put("receivableSum",receivableSum);
+            resultMap.put("roomSum",roomSum);
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;

@@ -22,8 +22,65 @@
 
 
         <!--查询时间段内应收总计-->
-        <select id="getReceivableSum" resultType="java.math.BigDecimal" parameterType="java.lang.String">
+        <select id="getReceivableSum" resultType="java.math.BigDecimal" parameterType="java.util.Map">
                 SELECT SUM(consumption) FROM hm_cashier_summary WHERE create_time
-                BETWEEN #{startTime} AND #{endTime}
+                BETWEEN #{startTime} AND #{endTime} AND hotel_id = #{hotelId}
+        </select>
+        <!--房费总收入-->
+        <select id="getRoomRate" resultType="java.math.BigDecimal">
+            SELECT SUM(auditor_room_rate) FROM `hm_operating_income`
+        </select>
+        <!--房间总数-->
+        <select id="getRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
+          SELECT COUNT(id) FROM `hm_room` WHERE `show`='yes' AND hotel_id = #{hotelId}
+        </select>
+        <!--会员卡收入-->
+        <select id="getMemberCardRate" resultType="java.math.BigDecimal">
+          SELECT SUM(member_card_rate) FROM `hm_operating_income`
+        </select>
+        <!--房晚数-->
+        <!--人晚数-->
+
+        <!--入住人数-->
+        <select id="getCheckInPerson" parameterType="java.util.Map" resultType="java.lang.Integer">
+            SELECT COUNT(id) FROM `hm_check_in_person`
+            WHERE create_time BETWEEN #{startTime} AND #{endTime}
+        </select>
+        <!--赔偿收入-->
+        <select id="getCompensation" resultType="java.math.BigDecimal">
+            SELECT SUM(compensation) FROM `hm_operating_income`
+        </select>
+        <!--免费入住房数-->
+        <select id="getFreeRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
+            SELECT COUNT(ro.id) FROM hm_order `or` LEFT JOIN hm_order_child ch ON ch.order_id = `or`.id
+            LEFT JOIN hm_room ro ON ch.room_id = ro.id
+            WHERE `or`.check_type = 'free' AND ch.order_state = 'admissions' AND `or`.hotel_id = #{hotelId}
+        </select>
+        <!--维修房数-->
+        <select id="getMaintainSum" resultType="java.lang.Integer">
+            SELECT COUNT(id) FROM hm_room WHERE room_state = 'yes'
+        </select>
+        <!--会员房数-->
+        <select id="getMemberRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
+            SELECT COUNT(ro.id) FROM hm_order `or` LEFT JOIN hm_order_child ch ON ch.order_id = `or`.id
+            LEFT JOIN hm_room ro ON ch.room_id = ro.id
+            WHERE  ch.order_state = 'admissions' AND `or`.members_id IS NOT NULL
+            AND `or`.hotel_id = #{hotelId}
+        </select>
+        <!--商品收入-->
+        <select id="getCommodity" resultType="java.math.BigDecimal">
+            SELECT SUM(commodity) FROM hm_operating_income
+        </select>
+        <!--房费调整-->
+        <select id="getRoomRateAdjustment" resultType="java.math.BigDecimal" >
+            SELECT SUM(room_rate_adjustment) FROM hm_operating_income
+        </select>
+        <!--锁房数-->
+        <select id="getLockRoomSum" resultType="java.lang.Integer">
+            SELECT COUNT(id) FROM hm_room WHERE lock_room_state = 'yes'
+        </select>
+        <!--空房数-->
+        <select id="getEmptyRoomSum" resultType="java.lang.Integer">
+            SELECT COUNT(id) FROM hm_room WHERE room_major_state = 'vacant'
         </select>
 </mapper>
