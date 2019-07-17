@@ -64,9 +64,9 @@ var api = {
     , roomUnLock: '/room/openLockRoom'   //客房解锁
     , roomLockRoom: '/room/updatelockRoomClose'    //客房锁房
     , queryMemberById: '/member/detail?userId='//根据会员id查询
-    , pickRoomQuery: '/room/QueryRoomInfoByState?v=1'//选房查询
+    , pickRoomQuery: '/room/quertRm'//选房查询000
     , checkIn: '/checkin/addCheckin?v=1'//入住
-    , yueCheckIn: '/user/queryUserMake?v=1'//预约入住信息查询
+    , yueCheckIn: '/order/getReservationRoomInfo?v=1'//预约入住信息查询000
     , roomQueryById: '/room/toUpdateRoomInfo?v=1'//按roomId查询
     , roomHouseType: '/room/houseType?v=1'
     , queryRoomInfo: '/room/queryRoomTypeAndHotelAndFloor'
@@ -948,4 +948,30 @@ function debounce(fn, wait) {
         if (timeout !== null) clearTimeout(timeout);
         timeout = setTimeout(fn, wait);
     }
+}
+
+// 日期，在原有日期基础上，增加days天数，默认增加1天
+function addDate(date, days) {
+    if (days == undefined || days == '') {
+        days = 1;
+    }
+    var date = new Date(date);
+    date.setDate(date.getDate() + days);
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    return date.getFullYear() + '-' + getFormatDate(month) + '-' + getFormatDate(day);
+}
+
+// 日期月份/天的显示，如果是1位数，则在前面加上'0'
+function getFormatDate(arg) {
+    if (arg == undefined || arg == '') {
+        return '';
+    }
+
+    var re = arg + '';
+    if (re.length < 2) {
+        re = '0' + re;
+    }
+
+    return re;
 }

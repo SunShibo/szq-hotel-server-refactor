@@ -1,5 +1,6 @@
 clearModifyPrice();
 function modifyPrice() {
+    //console.log(sRooms)
     var inWay = state.roomType;
     var phoneNumber = $("#phoneNumber").val();
     var cnId = '';
@@ -23,9 +24,11 @@ function modifyPrice() {
     if($("#startTime").val()){
         stime = $("#startTime").val().replace(/-/g, "/")
     }
-    if(state.roomType!=1){
+    if($("input[name='checkType']:checked").val()!="day"){
         return ;
     }
+    productRoomType();
+
     layer.open({
         area: ['1000px', '420px'],
         // area : ['100%', '100%'],
@@ -50,8 +53,10 @@ function getTypeIds() {
     })
     return ids.join(",");
 }
+
 function parModifyPrice() {
     if(localStorage.modifyPrice){
+        // debugger;
         var _mp = JSON.parse(localStorage.modifyPrice);
         var _total = 0;
         _mp.map(function (curr,index) {
@@ -61,20 +66,43 @@ function parModifyPrice() {
                     _total+=(getRoomQuantity(curr['roomTypeId'])*Number(curr[i]));
                 }
             }
+            for(var i=0;i<sRooms.length;i++){
+                if(sRooms[i].id == curr['id']){
+                    sRooms[i]['hourRoomPrice'] = sRooms[i]['basicPrice'] = getOneDayPrice(_mp,curr['id']);
+                }
+            }
         })
+
+        function getOneDayPrice(a,id) {
+            for(var j=0;j<a.length;j++){
+                if (a[j]['id'] != id) {
+                    continue;
+                }
+                for (var i in a[j]) {
+                    if (i.split('-').length > 2 && i.indexOf('y') == -1) {
+                        return a[j][i];
+                        break;
+                    }
+                }
+                break;
+            }
+        }
         var _v = $("#totalPrice").text();
 
         if(_v.indexOf("/")==-1){
-            $("#totalPrice").text(_total.toFixed(2)+"/"+_v);
+            $("#totalPrice").text(_total+"/"+_v);
         }else{
-            $("#totalPrice").text(_total.toFixed(2)+"/"+_v.split('/')[1]);
+            $("#totalPrice").text(_total+"/"+_v.split('/')[1]);
         }
+
+        tableObj.reload({data:JSON.parse(JSON.stringify(sRooms))})
+        state.selRow=[];
     }
 }
 function getRoomQuantity (v){
     var _num=0;
     sRooms.map(function (curr) {
-        if(curr['houseTypeId']==v)_num+=1
+        if(curr['id']==v)_num+=1
     })
     return _num;
 }

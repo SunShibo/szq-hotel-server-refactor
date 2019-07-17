@@ -158,28 +158,6 @@
               dealRsData();
               return;
           }
-            var index = layer.load(1,{time:10*1000});
-  	      var pd = urlToObj(window.location.search);
-  	      if(pd.startTime){
-              pd.startTime = decodeURIComponent(pd.startTime)
-		  }else{
-  	          delete pd.startTime;
-		  }
-            $.ajax({
-                data: pd,
-                type: "POST",
-                dataType: "JSON",
-                url: "/checkin/queryRoomPrice",
-                success: function (rs) {
-                    layer.close(index);
-                    // console.log(rs)
-                    if (!rs.success) {
-                    }else{
-                        rsd = rs.data;
-                        dealRsData();
-                    }
-                }
-            });
 
         }
         function urlToObj(str){
@@ -193,19 +171,22 @@
             return obj;
         }
         function dealRsData(ff) {
+  	      // debugger;
+            var sRooms = JSON.parse(localStorage.modifyPrice);
             $table.empty();
             dealDays();
             var str = '';
-            rsd.map(function(c,i){
+            sRooms.map(function(c,i){
                 str+=  ['<div class="table-row">',
                     '<div class="cell">',
-                    c.roomTypeName,
+                    c.name,
                     '</div>',
                     _deal(c),
                     '</div>'].join("");
             })
             $table.append(str);
             function _deal(r) {
+              //  debugger;
                 var _str = '';
                 for(var j in r){
                     if(j.split('-').length>2&&j.indexOf('y')==-1){
@@ -233,8 +214,14 @@
 
         function submitInfo() {
   	      var _arr = [];
+  	       // debugger;
             rsd.map(function (c,i) {
-                var _o={roomTypeId:c['roomTypeId'],roomTypeName:c['roomTypeName']};
+                var _o={
+                    roomTypeId:c['roomTypeId'],
+					roomTypeName:c['roomTypeName'],
+                    id:c['roomTypeId'],
+                    name:c['roomTypeName']
+                };
 				$(".rti"+c['roomTypeId']).each(function () {
 					// debugger;
                     _o[this.dataset['date']]=this.value;
