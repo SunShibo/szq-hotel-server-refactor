@@ -10,7 +10,7 @@ public class HomeRoomBO {
     private String outStatus;//预离状态
     private String balance;//余额
     private String checkType;//入住方式
-    private String lockRoomState;//锁房状态
+    private String lockRoomState;//锁房状态 yes/no
     private String maintain;//维修
 
 

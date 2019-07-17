@@ -1,10 +1,7 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
-import com.szq.hotel.dao.CheckInPersonDAO;
-import com.szq.hotel.dao.EverydayRoomPriceDAO;
-import com.szq.hotel.dao.OrderDAO;
-import com.szq.hotel.dao.OrderRecordDAO;
+import com.szq.hotel.dao.*;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
@@ -13,6 +10,7 @@ import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +45,9 @@ public class OrderService {
 
     @Resource
     OrderRecordService orderRecordService;
+
+    @Resource
+    RoomTypeDAO roomTypeDAO;
 
     //添加主订单 携带订单id
     public void addOrder(OrderBO orderBO) {
@@ -325,7 +326,32 @@ public class OrderService {
     }
     //根据子订单id查询子订单
     public OrderChildBO getOrderChildById(Integer orderChildId){
-       return orderDAO.getOrderChildById(orderChildId);
+        try {
+            OrderChildBO orderChildBO=orderDAO.getOrderChildById(orderChildId);
+            //OrderBO orderBO=orderDAO.getOrderById(orderChildBO.getOrderId());
+            //获取当前
+            Date currentTime  = new Date();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateString=df.format(currentTime);
+            Date currentTime_2 = df.parse(dateString);
+            //计算超时费
+            if(currentTime_2.getTime()>orderChildBO.getEndTime().getTime()){
+                Long minute=DateUtils.getQuotMinute(currentTime_2,orderChildBO.getEndTime());
+                RoomTypeBO roomTypeBO=roomTypeDAO.getRoomType(orderChildBO.getRoomTypeId());
+                //超过4小时
+                if(minute<=4){
+                    orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
+                }else{
+                    orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()));
+                }
+            }
+            return orderChildBO;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
     }
     //获取在住报表
     public List<OrderResult> getCheckInReport(){
@@ -401,7 +427,8 @@ public class OrderService {
             OrderChildBO orderChildBO=new OrderChildBO();
             orderChildBO.setId(orderChildId);
             orderChildBO.setRemark(remark);
-            orderChildBO.setEndTime(entTime);
+            //修改实际离店时间
+            orderChildBO.setPracticalDepartureTime(entTime);
             orderDAO.updOrderChild(orderChildBO);
 
             //修改同住人
@@ -474,7 +501,7 @@ public class OrderService {
     public List<EverydayRoomPriceBO> getRemainingLease(Integer orderChildId) throws ParseException {
         //获取今天六点
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 06);
+        c.set(Calendar.HOUR_OF_DAY, 04);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         Date m6 = c.getTime();
@@ -503,7 +530,100 @@ public class OrderService {
         for (EverydayRoomPriceBO e :everydayRoomPrice) {
             everydayRoomPriceDAO.updEverydayRoomPrice(e);
         }
+        //加操作日志
+
     }
+
+    //退房
+    public void checkOut(Integer orderChildId) throws ParseException {
+        //当前时间
+        Date currentTimeDate = new Date();
+        SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+        Date currentTime = ymdhms.parse(ymdhms.format(currentTimeDate));
+        //订单信息
+        OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChildId);
+        //判断是否超时
+        if (currentTime.compareTo(orderChildBO.getEndTime()) <= 0) {
+            Date currentDate = ymd.parse(ymd.format(currentTimeDate));
+            Date endDate = ymd.parse(ymd.format(orderChildBO.getEndTime()));
+            //滚入住第一天的房费
+            this.addOrderChildRecordAndRoomRate(ymd.format(orderChildBO.getStartTime()), orderChildId, null);
+            //判断是否提前退房
+            if (currentDate.compareTo(endDate) == 0) {
+                this.addOrderChildRecordAndRoomRate2(ymd.format(currentTimeDate), orderChildId, null);
+            }
+        } else {
+            //超时滚房费
+            this.addOrderChildRecordAndRoomRate3(ymdhms.format(currentTimeDate),orderChildId,null);
+        }
+
+        //修改订单状态
+
+        //修改房间状态
+    }
+    //超时滚房费 根据当前时间计算超时房费
+    public void addOrderChildRecordAndRoomRate3(String date, Integer orderChild, Integer userId) throws ParseException {
+        SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChild);
+        //房型信息
+        RoomTypeBO roomTypeBO = roomTypeDAO.getRoomType(orderChild);
+        //计算超时费
+        Long minute = DateUtils.getQuotMinute(ymdhms.parse(date), orderChildBO.getEndTime());
+        //超过4小时
+        if (minute <= 4*60) {
+            //加记录
+            orderRecordService.addOrderRecord(orderChild, ymd.format(date) + "半天超时费",
+                    null,new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)), Constants.TIMEOUTCOST.getValue(),
+                    userId, null);
+            orderChildBO.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
+        } else {
+            //加记录
+            orderRecordService.addOrderRecord(orderChild, ymd.format(date) + "全天超时费",
+                    null, new BigDecimal(roomTypeBO.getBasicPrice()), Constants.TIMEOUTCOST.getValue(),
+                    userId, null);
+            orderChildBO.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()));
+        }
+        orderDAO.updOrderChild(orderChildBO);
+    }
+
+    //提前离店 按超时滚房费 根据时间 子订单id 查询这天的房价 累计到子订单其他房费
+    public void addOrderChildRecordAndRoomRate2(String date, Integer orderChild, Integer userId) {
+        OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChild);
+        //这天的房价信息
+        EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(date, orderChild);
+        //退房时间超过下午四点
+        SimpleDateFormat hh = new SimpleDateFormat("HH");
+        if (new Integer(hh.format(date)) > 18) {
+            orderChildBO.setOtherRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
+            //加记录
+            orderRecordService.addOrderRecord(orderChild, everydayRoomPriceBO.getTime() + "提前退房收全天超时费",
+                    null, everydayRoomPriceBO.getMoney(), Constants.TIMEOUTCOST.getValue(),
+                    userId, null);
+        } else {
+            //加记录
+            orderRecordService.addOrderRecord(orderChild, everydayRoomPriceBO.getTime() + "提前退房收半天超时费",
+                    null, everydayRoomPriceBO.getMoney().divide(new BigDecimal(2)), Constants.TIMEOUTCOST.getValue(),
+                    userId, null);
+            orderChildBO.setOtherRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney().divide(new BigDecimal(2))));
+        }
+        orderDAO.updOrderChild(orderChildBO);
+    }
+
+    //正常滚房费 根据时间 子订单id 查询这天的房价 累计到子订单房费 添加房费记录
+    public void addOrderChildRecordAndRoomRate(String date, Integer orderChild, Integer userId) {
+        OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChild);
+        //这天的房价信息
+        EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(date, orderChild);
+        orderRecordService.addOrderRecord(orderChild, everydayRoomPriceBO.getTime() + "房费",
+                null, everydayRoomPriceBO.getMoney(), Constants.ROOMRATE.getValue(),
+                userId, "1天");
+
+        orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
+        orderDAO.updOrderChild(orderChildBO);
+    }
+
     /**
      * 订单列表
      *

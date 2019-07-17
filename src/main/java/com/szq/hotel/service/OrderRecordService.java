@@ -151,4 +151,11 @@ public class OrderRecordService {
     public List<Integer> queryRecordIds(List<Integer> list) {
         return orderRecordDAO.queryRecordIds(list);
     }
+
+    /**
+     * 修改订单为已经结账
+     */
+    public void completeAccount(List<Integer> list){
+        orderRecordDAO.completeAccount(list);
+    }
 }

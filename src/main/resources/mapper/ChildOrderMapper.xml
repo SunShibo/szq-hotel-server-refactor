@@ -9,8 +9,8 @@
     <select id="queryOrderChildById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.ChildOrderBO">
        SELECT child.id,child.start_time,child.end_time ,child.pay_cash_num,child.other_pay_num,child.other_rate,child.timeout_rate,
         child.free_rate_num ,child.order_state,room.room_name,`type`.room_type_name,child.al_room_code,child.night_auditor_state,
-        child.print_state,child.remark,per.name,oder.channel,oder.order_type as passengerSource,oder.OTA,oder.order_number,child.main
-
+        child.print_state,child.remark,per.name,oder.channel,oder.order_type as passengerSource,oder.OTA,oder.order_number,child.main,
+        oder.members_id
         FROM hm_order oder  LEFT JOIN hm_order_child child ON child.order_id=oder.id
         LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type
         ON type.id=child.room_type_id  LEFT JOIN hm_check_in_person  per ON per.order_child_id = child.id
@@ -81,4 +81,9 @@
             #{id}
         </foreach>
     </select>
+
+    <update id="updateOrderUserId" >
+        UPDATE  hm_order od LEFT JOIN hm_order_child child  ON child.order_id=od.id  SET
+        members_id =#{meId} WHERE   child.id=#{id}
+    </update>
 </mapper>

@@ -51,7 +51,7 @@ public class CommoditytController extends BaseCotroller {
      * @param info       详情
      */
     @RequestMapping("/addCommodity")
-    public void addCommodity(HttpServletRequest request, HttpServletResponse response, String payType, String consumptionType, BigDecimal money,String info){
+    public void addCommodity(HttpServletRequest request, HttpServletResponse response, String payType, String consumptionType, BigDecimal money,String info,String certificateNumber){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -74,7 +74,7 @@ public class CommoditytController extends BaseCotroller {
 
             String orderNumber = IDBuilder.getOrderNumber();
 
-            Integer id=commodiryService.addCommodiry(payType,consumptionType,money,info,orderNumber,loginAdmin.getId(),loginAdmin.getHotelId());
+            Integer id=commodiryService.addCommodiry(payType,consumptionType,money,info,orderNumber,loginAdmin.getId(),loginAdmin.getHotelId(),certificateNumber);
             //判断支付类型
             cashierSummaryService.addCommodity(payType,money,info,consumptionType,orderNumber,loginAdmin.getId(),loginAdmin.getHotelId());
 

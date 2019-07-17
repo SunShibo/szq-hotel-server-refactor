@@ -39,7 +39,7 @@ public class ChildOrderController extends BaseCotroller {
      * @param money  金额
      */
     @RequestMapping("/addCashPledge")
-    public void addCashPledge(HttpServletRequest request, HttpServletResponse response, String payType, Integer orderChildId, BigDecimal money) {
+    public void addCashPledge(HttpServletRequest request, HttpServletResponse response, String payType, Integer orderChildId, BigDecimal money,String certificateNumber) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -58,7 +58,7 @@ public class ChildOrderController extends BaseCotroller {
                 return;
             }
 
-            childOrderService.addCashPledge(payType,orderChildId,money,loginAdmin.getId(),loginAdmin.getHotelId());
+            childOrderService.addCashPledge(payType,orderChildId,money,loginAdmin.getId(),loginAdmin.getHotelId(),certificateNumber);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);
@@ -259,7 +259,7 @@ public class ChildOrderController extends BaseCotroller {
 
 
     /**
-     * 子订单结账
+     * 单项结账
      * @param request
      * @param response
      * @param chilId    子订单id
@@ -315,7 +315,7 @@ public class ChildOrderController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/queryAccounts")
-    public void queryAccounts(HttpServletRequest request, HttpServletResponse response,String chilIds) {
+    public void queryAccounts(HttpServletRequest request, HttpServletResponse response,String ids) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -327,13 +327,13 @@ public class ChildOrderController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
-            if (StringUtils.isEmpty(chilIds)) {
+            if (StringUtils.isEmpty(ids)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}", result);
                 return;
             }
-            boolean lean = childOrderService.ifCheckOut(chilIds);
+            boolean lean = childOrderService.ifCheckOut(ids);
             if(lean){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
                 super.safeJsonPrint(response, result);
@@ -341,7 +341,7 @@ public class ChildOrderController extends BaseCotroller {
                 return;
             }
 
-            Map<String, Object> map = childOrderService.queryAccounts(chilIds);
+            Map<String, Object> map = childOrderService.queryAccounts(ids);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
@@ -355,24 +355,15 @@ public class ChildOrderController extends BaseCotroller {
     }
 
 
-
-
-
-
-
-
-
-
     /**
      * 结账
      * @param request
      * @param response
-     * @param chilId    子订单id
-     * @param ids       详情id
+     * @param ids       子订单ids
      * @param status    收/退  yes/no
      */
     @RequestMapping("/accounts")
-    public void accounts(HttpServletRequest request, HttpServletResponse response, Integer chilId, String ids,String payType, PayTypeBO param,String status) {
+    public void accounts(HttpServletRequest request, HttpServletResponse response,String ids,String payType, PayTypeBO param,String status) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -384,7 +375,7 @@ public class ChildOrderController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
-            if (StringUtils.isEmpty(ids)||chilId==null||StringUtils.isEmpty(status)) {
+            if (StringUtils.isEmpty(ids)||StringUtils.isEmpty(status)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}", result);
@@ -398,7 +389,7 @@ public class ChildOrderController extends BaseCotroller {
                 return;
             }
 
-            childOrderService.childleAccounts(loginAdmin.getHotelId(),loginAdmin.getId(),chilId,ids,payType,param,status);
+            childOrderService.accounts(loginAdmin.getHotelId(),loginAdmin.getId(),ids,payType,param,status);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);

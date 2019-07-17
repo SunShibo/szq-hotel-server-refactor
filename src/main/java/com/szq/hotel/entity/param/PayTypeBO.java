@@ -11,7 +11,7 @@ public class PayTypeBO {
     private BigDecimal other;//其他支付
     private BigDecimal stored;//储值
     private BigDecimal money;//金额 ?收款
-    private String IDNumber;//证件号
+    private String certificateNumber;//证件号
     private BigDecimal integral;//积分 减免
 
 
@@ -71,12 +71,13 @@ public class PayTypeBO {
         this.money = money;
     }
 
-    public String getIDNumber() {
-        return IDNumber;
+
+    public String getCertificateNumber() {
+        return certificateNumber;
     }
 
-    public void setIDNumber(String IDNumber) {
-        this.IDNumber = IDNumber;
+    public void setCertificateNumber(String certificateNumber) {
+        this.certificateNumber = certificateNumber;
     }
 
     public BigDecimal getIntegral() {

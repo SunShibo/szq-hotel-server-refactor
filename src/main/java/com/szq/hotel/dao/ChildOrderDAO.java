@@ -83,6 +83,8 @@ public interface ChildOrderDAO {
      */
     int ifCheckOut(@Param("list")List<Integer> list);
 
+    void updateOrderUserId(@Param("id") Integer orderChildId,@Param("meId") Integer meId);
+
     /**
      * 通过id查询订单记录
      */

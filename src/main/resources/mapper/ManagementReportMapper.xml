@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <!-- 【用户】 -->
+<mapper namespace="com.szq.hotel.dao.ManagementReportDAO">
+
+        <!--添加-->
+        <insert id="addData" parameterType="com.szq.hotel.entity.bo.ManagementReportBO">
+            INSERT INTO `hm_management_report` (
+	          `receivable_sum`,`avg_room_rate`,`avg_consumption_of_room`,`avg_consumption_of_person`,
+	          `indemnity_income`,`free_check_in_sum`,`room_sum`,`maintain_room_sum`,
+	          `member_room_sum`,`member_card_sold_money`,`room_late_sum`,`person_late_sum`,
+	          `commodity_revenues`,`room_rate_adjustment`,`occupancy_rate`,`REVPAR`,
+	          `disable_room_sum`,`rental_income`,`empty_room_sum`,`hour_room_late_sum`,`create_time`,`hotel_id`)
+          VALUES(#{receivableSum},#{avgRoomRate},#{avgConsumptionOfRoom},#{avgConsumptionOfPerson},
+                  #{indemnityIncome},#{freeCheckInSum},#{roomSum},#{maintainRoomSum},
+                  #{memberRoomSum},#{memberCardSoldMoney},#{roomLateSum},#{personLateSum},
+                  #{commodityRevenues},#{roomRateAdjustment},#{occupancyRate},#{REVPAR},
+                  #{disableRoomSum},#{rentalIncome},#{emptyRoomSum},#{hourRoomLateSum},NOW(),#{hotelId})
+        </insert>
+
+
+        <!--查询时间段内应收总计-->
+        <select id="getReceivableSum" resultType="java.math.BigDecimal" parameterType="java.lang.String">
+                SELECT SUM(consumption) FROM hm_cashier_summary WHERE create_time
+                BETWEEN #{startTime} AND #{endTime}
+        </select>
+</mapper>
