@@ -97,4 +97,9 @@ public class ManagementReportService {
         return managementReportDAO.getEmptyRoomSum();
     }
 
+    //钟点房晚数
+    public Integer getHourRoomSum(Map<String,Object> map){
+        return managementReportDAO.getHourRoomSum(map);
+    }
+
 }

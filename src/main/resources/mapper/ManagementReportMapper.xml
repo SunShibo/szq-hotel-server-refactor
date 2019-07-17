@@ -83,4 +83,10 @@
         <select id="getEmptyRoomSum" resultType="java.lang.Integer">
             SELECT COUNT(id) FROM hm_room WHERE room_major_state = 'vacant'
         </select>
+        <!--钟点房晚数-->
+        <select id="getHourRoomSum" parameterType="java.util.Map" resultType="java.lang.Integer">
+            SELECT COUNT(ro.id) FROM hm_order `or` LEFT JOIN hm_order_child ch ON ch.order_id = `or`.id
+            LEFT JOIN hm_room ro ON ch.room_id = ro.id
+            WHERE  ch.order_state = 'admissions' AND `or`.check_type = 'hour' AND `or`.hotel_id = #{hotelId}
+        </select>
 </mapper>

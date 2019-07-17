@@ -40,4 +40,6 @@ public interface ManagementReportDAO {
     Integer getLockRoomSum();
     //空房数
     Integer getEmptyRoomSum();
+    //钟点房晚数
+    Integer getHourRoomSum(Map<String,Object> map);
 }
