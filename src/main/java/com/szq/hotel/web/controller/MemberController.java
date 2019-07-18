@@ -283,8 +283,13 @@ public class MemberController extends BaseCotroller {
             }
 
             List<MemberBO> memberBOS = memberService.selectMember(map);
+            Integer count = memberService.selectMemberCount(map);
 
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(memberBOS));
+            Map<String,Object> resultMap =new HashMap<String, Object>();
+            resultMap.put("memberBOS",memberBOS);
+            resultMap.put("count",count);
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;

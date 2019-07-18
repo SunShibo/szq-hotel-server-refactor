@@ -73,6 +73,12 @@ public class MemberService {
     public List<MemberBO> selectMember(Map<String,Object> map){
         return memberDAO.selectMember(map);
     }
+    /*
+        条件分页查询会员信息数量
+     */
+    public Integer selectMemberCount(Map<String,Object> map){
+        return memberDAO.selectMemberCount(map);
+    }
 
 
     /*

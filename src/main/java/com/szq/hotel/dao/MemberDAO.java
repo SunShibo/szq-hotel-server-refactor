@@ -20,6 +20,10 @@ public interface MemberDAO {
         条件分页查询会员信息
      */
     List<MemberBO> selectMember(Map<String,Object> map);
+    /*
+        条件分页查询会员信息数量
+     */
+    Integer selectMemberCount(Map<String,Object> map);
 
     /*
         通过id查询会员信息

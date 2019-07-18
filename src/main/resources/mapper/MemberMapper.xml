@@ -55,6 +55,20 @@ WHERE id = #{id}
         </where>
         <include refid="limit" />
     </select>
+    <!--查询会员条数-->
+    <select id="selectMemberCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT COUNT(me.id)
+        FROM `hm_member` me LEFT JOIN hm_member_card card ON me.member_card_id = card.id
+        LEFT JOIN hm_member_level le ON card.member_level_id = le.id
+        <where>
+            me.state = 'yes'
+            <if test="query!=null  ">
+                AND (me.`phone` LIKE concat('%',#{query},'%')
+                OR me.`certificate_number` LIKE concat('%',#{query},'%')
+                OR me.`name` LIKE concat('%',#{query},'%'))
+            </if>
+        </where>
+    </select>
     <!--分页查询-->
     <sql id="limit">
         limit #{pageOffset},#{pageSize}
