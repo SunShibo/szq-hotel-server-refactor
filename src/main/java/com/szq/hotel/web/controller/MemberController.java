@@ -1,4 +1,5 @@
 package com.szq.hotel.web.controller;
+import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;
@@ -41,6 +42,7 @@ public class MemberController extends BaseCotroller {
     @Resource
     private MemberLevelService memberLevelService;
 
+
     /**
      * 新增会员
      * @param memberBO
@@ -48,7 +50,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/addMember")
-    public void  addmember(String cardNumber,MemberBO memberBO, HttpServletRequest request, HttpServletResponse response){
+    public void  addmember(String cardNumber,MemberBO memberBO,BigDecimal money,String payType, HttpServletRequest request, HttpServletResponse response){
         try {
 
             log.info(request.getRequestURI());
@@ -89,11 +91,17 @@ public class MemberController extends BaseCotroller {
             memberBO.setMemberCardId(memberCardBO.getId());
 
             String memberCardNumber = memberCardBO.getCardNumber();
-            BigDecimal money = memberCardBO.getMoney();
+            //BigDecimal money = memberCardBO.getMoney();
             //修改会员卡的售出时间
             memberCardService.updateSellingTime(memberCardNumber);
+
             //向数据库中添加数据
             memberService.addMember(memberBO,loginAdmin.getId());
+
+            //添加收银汇总
+            cashierSummaryService.addCard(memberBO.getName(),money,payType,IDBuilder.getOrderNumber(),loginAdmin.getId(),loginAdmin.getHotelId());
+            //添加商品交易
+            cashierSummaryService.addCommodity(payType,money, Constants.APPLYCARD.getValue(),Constants.COMMODITY.getValue(),IDBuilder.getOrderNumber(),loginAdmin.getId(),loginAdmin.getHotelId());
 
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功"));
