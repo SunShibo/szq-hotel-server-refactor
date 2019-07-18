@@ -86,7 +86,7 @@ public class OrderController extends BaseCotroller {
             orderService.addOrderAllInfo(list,orderBO);
         }else if(type.equals("reservation")){
             //预约入住
-            orderService.updOrderInfo(list,orderBO);
+            orderService.reservation(list,orderBO);
         }else if(type.equals("directly")){
             //直接入住
             orderService.addOrder(orderBO);
@@ -327,7 +327,7 @@ public class OrderController extends BaseCotroller {
             return ;
         }
 
-        List<OrderResult> results=orderService.getCheckInReport();
+        List<OrderResult> results=orderService.getCheckInReport(userInfo.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results)) ;
         super.safeJsonPrint(response, result);
 
@@ -349,8 +349,8 @@ public class OrderController extends BaseCotroller {
         }
         Map<String,Object> resultMap=new HashMap<String, Object>();
         QueryInfo queryInfo=getQueryInfo(pageNo,pageSize);
-        List<OrderResult> list=orderService.getCheckOutReport(beforeTime,afterTime,queryInfo.getPageOffset(),queryInfo.getPageSize());
-        Integer count=orderService.getCheckOutReportCount(beforeTime,afterTime);
+        List<OrderResult> list=orderService.getCheckOutReport(beforeTime,afterTime,queryInfo.getPageOffset(),queryInfo.getPageSize(),userInfo.getHotelId());
+        Integer count=orderService.getCheckOutReportCount(beforeTime,afterTime,userInfo.getHotelId());
 
         resultMap.put("list",list);
         resultMap.put("count",count);
@@ -431,7 +431,7 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return;
         }
-        List<CheckInPersonBO> checkInPersonBOS=orderService.getAlRoom(roomId);
+        List<CheckInPersonBO> checkInPersonBOS=orderService.getAlRoom(roomId,userInfo.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInPersonBOS));
         super.safeJsonPrint(response, result);
     }
@@ -593,9 +593,10 @@ public class OrderController extends BaseCotroller {
     /**
      * 退房
      * @param orderChildId 子订单id
+     * @param money 超时减免
      * */
     @RequestMapping("/checkOut")
-    public void checkOut(Integer orderChildId,HttpServletRequest request, HttpServletResponse response) throws ParseException {
+    public void checkOut(Integer orderChildId,BigDecimal money,HttpServletRequest request, HttpServletResponse response) throws ParseException {
         //验证管理员
         AdminBO userInfo = super.getLoginAdmin(request) ;
         if(userInfo == null){
@@ -609,7 +610,31 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        orderService.checkOut(orderChildId,userInfo.getId());
+        orderService.checkOut(orderChildId,money,userInfo.getId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
+        super.safeJsonPrint(response, result);
+    }
+
+    /**
+     * 退房回滚
+     * @param orderChildId 子订单id
+     * */
+    @RequestMapping("/checkOutRollback")
+    public void checkOutRollback(Integer orderChildId,HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        //验证管理员
+        AdminBO userInfo = super.getLoginAdmin(request) ;
+        if(userInfo == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        //验证参数
+        if(orderChildId==null||orderChildId.equals("")){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+            super.safeJsonPrint(response, result);
+            return ;
+        }
+        orderService.checkOutRollback(orderChildId,userInfo.getId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
         super.safeJsonPrint(response, result);
     }

@@ -72,4 +72,8 @@
             id=#{id}
     </update>
 
+    <!--入住人离店-->
+    <update id="updPersonCheckOut">
+        update hm_check_in_person set `status`=#{status} where order_child_id=#{id}
+    </update>
 </mapper>

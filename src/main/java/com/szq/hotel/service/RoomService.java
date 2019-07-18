@@ -773,6 +773,11 @@ public class RoomService {
         return list1;
     }
 
+    //锁房时间到了 把锁房状态修改为未锁房
+    public Integer updRoom(){
+        return roomDAO.updRoom();
+    }
+
 }
 
 

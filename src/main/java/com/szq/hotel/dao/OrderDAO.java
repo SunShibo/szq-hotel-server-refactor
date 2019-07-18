@@ -1,6 +1,7 @@
 package com.szq.hotel.dao;
 
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.entity.param.OrderChildBackupParam;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.CheckRoomPersonResult;
@@ -39,11 +40,11 @@ public interface OrderDAO {
     //根据主订单id查询房间信息（客帐管理）
     List<OrderChildBO> getRoomInfoById(Integer orderId);
     //获取在住报表
-    List<OrderResult> getCheckInReport();
+    List<OrderResult> getCheckInReport(Integer hotelId);
     //获取预离报表
-    List<OrderResult> getCheckOutReport(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+    List<OrderResult> getCheckOutReport(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("hotelId")Integer hotelId);
     //获取预离报表总数
-    List<OrderResult> getCheckOutReportCount(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime);
+    List<OrderResult> getCheckOutReportCount(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime,@Param("hotelId")Integer hotelId);
     //把入住未支付超过15分钟的子订单关闭
     Integer closeOrder();
     //通过房间id查找在住订单信息
@@ -51,11 +52,15 @@ public interface OrderDAO {
     //通过联房码查询联房信息
     List<CheckRoomPersonResult> getOrderRoomByCode(String code);
     //查询所有可用联房
-    List<CheckInPersonBO> getAlRoom(Integer roomId);
+    List<CheckInPersonBO> getAlRoom(@Param("roomId") Integer roomId,@Param("hotelId")Integer hotelId);
     //通过联房码查询子订单
     List<OrderChildBO> getOrderByCode(@Param("code") String code,@Param("main") String main);
     //备份子订单
-    Integer addOrderChildBackup(OrderChildBO orderChildBO);
+    Integer addOrderChildBackup(OrderChildBackupParam orderChildBO);
+    //查询备份的子订单
+    OrderChildBackupParam getOrderChildBackup(Integer id);
+    //获取超时的子订单
+    List<OrderChildBO> getTimeOutOrder(String orderState);
 
     /**
      * 订单列表
