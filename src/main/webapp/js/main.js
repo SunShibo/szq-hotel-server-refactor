@@ -75,7 +75,7 @@ var api = {
     , queryIdFlag: 'member/selectMember?v=1'//通过手机号或者证件号查询会员信息000
     , queryOrderInfo: 'OrderManage/queryOrderInfoByUser'//查询子订单信息
     , queryRowsOrderInfo: 'OrderManage/queryOrderInfoById'//点击表格查询子订单信息
-    , checkInYuYue: '/checkin/subscribeCheckin?v=1'//预约入住
+    , checkInYuYue: '/order/reservationRoom?v=1'//预约入住
     , refundOnclick: '/OrderManage/refundOnclick?v=1'//获取结账信息
     , cash: '/OrderManage/cash'//押金
     , refundprice: '/OrderManage/refundprice?v=1'//退款
@@ -955,4 +955,30 @@ function getFormatDate(arg) {
     }
 
     return re;
+}
+
+//选择完成开始和结束时间，计算时间差
+function updateTimeInfo(v) {
+    if(state.roomType!=2){
+        //全天房或者免费房
+        $("#leaveDate1").val(v.split(" ")[0] + LEAVETIME);
+        v.split(" ")[0] + LEAVETIME;
+        document.getElementById("days1").value =
+            GetDateDiff($("#startTime").val(),$("#leaveDate1").val());
+        $(".typea").removeClass("layui-hide")
+        $(".typeb").addClass("layui-hide")
+    }else{
+        // console.info($("#startTime").val(),v)
+        //钟点房
+
+        $(".typea").addClass("layui-hide")
+        $(".typeb").removeClass("layui-hide")
+    }
+    clearRoomInfo();
+}
+//清除选择的时间
+function  clearTimeInfo() {
+
+    document.getElementById("leaveDate1").value = "";
+    document.getElementById("days1").value = "";
 }
