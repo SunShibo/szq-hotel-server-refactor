@@ -1,6 +1,7 @@
 package com.szq.hotel.dao;
 
 import com.szq.hotel.entity.bo.MemberBO;
+import com.szq.hotel.entity.bo.MemberResultBO;
 
 import java.util.List;
 import java.util.Map;
@@ -60,4 +61,8 @@ public interface MemberDAO {
         通过证件号查询储值和积分金额
      */
     MemberBO getStoreValueIntegral(String certificateNumber);
+    /*
+        通过id查找会员卡号级别和积分
+     */
+    MemberResultBO getMemberCardNumber(Integer memberId);
 }

@@ -102,4 +102,12 @@ WHERE id = #{id}
         SELECT id,stored_value,integral FROM `hm_member`
         WHERE certificate_number = #{certificateNumber} AND state = 'yes'
     </select>
+
+    <!--通过id查找会员卡号级别和积分-->
+    <select id="getMemberCardNumber" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.MemberResultBO">
+        SELECT me.`name` memberName,ca.card_number cardNumber,le.`name` memberLevelName,me.integral
+        FROM hm_member me LEFT JOIN hm_member_card ca ON me.member_card_id = ca.id
+        LEFT JOIN hm_member_level le ON le.id = ca.member_level_id
+        WHERE me.id = #{memberId}
+    </select>
 </mapper>

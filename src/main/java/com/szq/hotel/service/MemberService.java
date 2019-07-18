@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberDAO;
 import com.szq.hotel.entity.bo.MemberBO;
 import com.szq.hotel.entity.bo.MemberLevelBO;
+import com.szq.hotel.entity.bo.MemberResultBO;
 import com.szq.hotel.entity.bo.StoredValueRecordBO;
 import com.szq.hotel.web.controller.MemberController;
 import org.slf4j.Logger;
@@ -237,5 +238,11 @@ public class MemberService {
      */
     public MemberBO getStoreValueIntegral(String certificateNumber){
         return memberDAO.getStoreValueIntegral(certificateNumber);
+    }
+    /*
+        通过id查找会员卡号级别和积分
+     */
+    public MemberResultBO getMemberCardNumber(Integer memberId){
+        return memberDAO.getMemberCardNumber(memberId);
     }
 }
