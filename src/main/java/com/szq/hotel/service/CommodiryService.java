@@ -28,8 +28,18 @@ public class CommodiryService {
     private CommodiryDAO commodiryDAO;
     @Resource
     private MemberService memberService;
+
     /**
      * 添加商品交易
+     * @param payType 支付方式
+     * @param consumptionType 消费类型
+     * @param money 金额
+     * @param info 备注
+     * @param orderNumber 订单号
+     * @param userId
+     * @param hotelId
+     * @param certificateNumber 证件号
+     * @return
      */
     public Integer addCommodiry(String payType, String consumptionType, BigDecimal money, String info,String orderNumber,Integer userId,Integer hotelId,String certificateNumber){
         log.info("start addFloor..........................");
