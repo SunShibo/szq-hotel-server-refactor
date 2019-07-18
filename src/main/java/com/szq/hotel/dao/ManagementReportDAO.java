@@ -13,33 +13,37 @@ public interface ManagementReportDAO {
      * 添加数据
      */
     void addData(ManagementReportBO managementReportBO);
+    /*
+        查询结果
+     */
+    ManagementReportBO selectManagementReport(Map<String,Object> map);
 
     //查询应收合计（管理层报表）
     BigDecimal getReceivableSum(Map<String,Object> map);
     //房费收入
-    BigDecimal getRoomRate();
+    BigDecimal getRoomRate(Map<String,Object> map);
     //房间总数
     Integer getRoomSum(Map<String,Object> map);
     //会员卡收入
-    BigDecimal getMemberCardRate();
+    BigDecimal getMemberCardRate(Map<String,Object> map);
     //入住人数
     Integer getCheckInPerson(Map<String,Object> map);
     //赔偿收入
-    BigDecimal getCompensation();
+    BigDecimal getCompensation(Map<String,Object> map);
     //免费入住房数
     Integer getFreeRoomSum(Map<String,Object> map);
     //维修房数
-    Integer getMaintainSum();
+    Integer getMaintainSum(Map<String,Object> map);
     //会员房数
     Integer getMemberRoomSum(Map<String,Object> map);
     //商品收入
-    BigDecimal getCommodity();
+    BigDecimal getCommodity(Map<String,Object> map);
     //房费调整
-    BigDecimal getRoomRateAdjustment();
+    BigDecimal getRoomRateAdjustment(Map<String,Object> map);
     //锁房数
-    Integer getLockRoomSum();
+    Integer getLockRoomSum(Map<String,Object> map);
     //空房数
-    Integer getEmptyRoomSum();
+    Integer getEmptyRoomSum(Map<String,Object> map);
     //钟点房晚数
     Integer getHourRoomSum(Map<String,Object> map);
 }

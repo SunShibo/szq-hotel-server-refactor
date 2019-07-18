@@ -7,26 +7,26 @@ import java.util.Date;
 
 public class ManagementReportBO extends BaseModel {
     private Integer id; //管理层报表
-    private BigDecimal receivableSum; //应收合计
-    private BigDecimal avgRoomRate; //平均房价
-    private BigDecimal avgConsumptionOfRoom; //房平均消费
-    private BigDecimal avgConsumptionOfPerson; //人均消费
-    private BigDecimal indemnityIncome; //赔偿收入
-    private Integer freeCheckInSum; //免费入住数
-    private Integer roomSum; //房间总数
-    private Integer maintainRoomSum; //维修房数
-    private Integer memberRoomSum; //会员房数
-    private BigDecimal memberCardSoldMoney; //会员卡销售金额
-    private Integer roomLateSum; //房晚数
-    private Integer personLateSum; //人晚数
-    private BigDecimal commodityRevenues; //商品收入
-    private BigDecimal roomRateAdjustment; //房费调整
-    private String occupancyRate; //出租率
-    private String REVPAR; //REVPAR = 应收合计 / (总房间数 - 维修房数)
-    private Integer disableRoomSum; //停用房间数
-    private BigDecimal rentalIncome; //房租收入
-    private Integer emptyRoomSum; //空房数
-    private Integer hourRoomLateSum; //钟点房晚数
+    private BigDecimal receivableSum = BigDecimal.valueOf(0); //应收合计
+    private BigDecimal avgRoomRate = BigDecimal.valueOf(0); //平均房价
+    private BigDecimal avgConsumptionOfRoom = BigDecimal.valueOf(0); //房平均消费
+    private BigDecimal avgConsumptionOfPerson = BigDecimal.valueOf(0); //人均消费
+    private BigDecimal indemnityIncome = BigDecimal.valueOf(0); //赔偿收入
+    private Integer freeCheckInSum = 0; //免费入住房数
+    private Integer roomSum = 0; //房间总数
+    private Integer maintainRoomSum = 0; //维修房数
+    private Integer memberRoomSum = 0; //会员房数
+    private BigDecimal memberCardSoldMoney = BigDecimal.valueOf(0); //会员卡销售金额
+    private Integer roomLateSum = 0; //房晚数
+    private Integer personLateSum = 0; //人晚数
+    private BigDecimal commodityRevenues = BigDecimal.valueOf(0); //商品收入
+    private BigDecimal roomRateAdjustment = BigDecimal.valueOf(0); //房费调整
+    private String occupancyRate = "0"; //出租率
+    private String REVPAR = "0"; //REVPAR = 应收合计 / (总房间数 - 维修房数)
+    private Integer disableRoomSum = 0; //停用房间数
+    private BigDecimal rentalIncome = BigDecimal.valueOf(0); //房租收入
+    private Integer emptyRoomSum = 0; //空房数
+    private Integer hourRoomLateSum = 0; //钟点房晚数
     private Date createTime;//创建时间
     private Integer hotelId;//酒店id
 

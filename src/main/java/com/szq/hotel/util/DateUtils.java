@@ -579,10 +579,10 @@ public class DateUtils {
 
 	public static void main(String[] args) {
 
-		Date date1 = DateUtils.parseDate("2016-05-18", DATE_PATTERN);
-		Date date2 = DateUtils.parseDate("2016-12-31", DATE_PATTERN);
-
-		System.out.println(DateUtils.getQuot(date1, date2));
+//		Date date1 = DateUtils.parseDate("2016-05-18", DATE_PATTERN);
+//		Date date2 = DateUtils.parseDate("2016-12-31", DATE_PATTERN);
+//
+//		System.out.println(DateUtils.getQuot(date1, date2));
 //		System.out.println(DateUtils.getAppointDate(DateUtils.parseDate("2015-01-04", DATE_PATTERN), 100));
 
 		/***
@@ -719,6 +719,29 @@ public class DateUtils {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd 04:00:00");
 		String format = simpleDateFormat.format(new Date());
 		return format;
+	}
+
+	/**
+	 * 获得指定日期的前一天
+	 * @param specifiedDay
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getSpecifiedDayBefore(String specifiedDay){
+//SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		Date date=null;
+		try {
+			date = new SimpleDateFormat("yyyy-MM-dd").parse(specifiedDay);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		c.setTime(date);
+		int day=c.get(Calendar.DATE);
+		c.set(Calendar.DATE,day-1);
+
+		String dayBefore=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+		return dayBefore;
 	}
 
 }
