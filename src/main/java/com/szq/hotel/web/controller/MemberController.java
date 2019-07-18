@@ -41,7 +41,8 @@ public class MemberController extends BaseCotroller {
     private MemberCardService memberCardService;
     @Resource
     private MemberLevelService memberLevelService;
-
+    @Resource
+    private CommodiryService  commodiryService;
 
     /**
      * 新增会员
@@ -71,20 +72,7 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
-            MemberBO memberBO1 = memberService.selectMemberByPhone(memberBO.getPhone());
-            MemberBO memberBO2 = memberService.selectMemberByCerNumber(memberBO.getCertificateNumber());
-            if (memberBO1!=null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000203"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
-            if (memberBO2!=null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000204"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
+
             MemberCardBO memberCardBO = memberCardService.getCardNumber(cardNumber);
 
             //设置会员的会员卡id
@@ -101,7 +89,8 @@ public class MemberController extends BaseCotroller {
             //添加收银汇总
             cashierSummaryService.addCard(memberBO.getName(),money,payType,IDBuilder.getOrderNumber(),loginAdmin.getId(),loginAdmin.getHotelId());
             //添加商品交易
-            cashierSummaryService.addCommodity(payType,money, Constants.APPLYCARD.getValue(),Constants.COMMODITY.getValue(),IDBuilder.getOrderNumber(),loginAdmin.getId(),loginAdmin.getHotelId());
+            commodiryService.addCommodiry(payType,Constants.APPLYCARD.getValue(),money,null,IDBuilder.getOrderNumber(),loginAdmin.getId(),loginAdmin.getHotelId(),null);
+
 
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功"));
@@ -123,7 +112,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/getMemberCardNumber")
-    public void getMemberCardNumber(Integer memberCardLevelId,HttpServletRequest request,HttpServletResponse response){
+    public void getMemberCardNumber(Integer memberCardLevelId,String phone,String certificateNumber,HttpServletRequest request,HttpServletResponse response){
 
         try {
 
@@ -139,8 +128,22 @@ public class MemberController extends BaseCotroller {
                 return ;
             }
             //参数验证
-            if (memberCardLevelId == null){
+            if (memberCardLevelId == null||StringUtils.isEmpty(phone)||StringUtils.isEmpty(certificateNumber)){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            MemberBO memberBO1 = memberService.selectMemberByPhone(phone);
+            MemberBO memberBO2 = memberService.selectMemberByCerNumber(certificateNumber);
+            if (memberBO1!=null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000203"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            if (memberBO2!=null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000204"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;
