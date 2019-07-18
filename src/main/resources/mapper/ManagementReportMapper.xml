@@ -58,10 +58,23 @@
             WHERE hotel_id = #{hotelId} AND project = '办卡'
                 AND create_time BETWEEN #{startTime} AND #{endTime}
         </select>
-        <!--房晚数-->
-        <!--人晚数-->
 
-        <!--入住人数-->
+    <!--房晚数-->
+    <select id="getRoomLateSum"  parameterType="java.util.Map"  resultType="java.lang.Integer" >
+        SELECT COUNT(child.id) FROM hm_order_child child LEFT JOIN  hm_order oder  ON oder.id=child.order_id
+        WHERE oder.hotel_id=#{hotelId} AND start_time &lt; #{endTime}  AND end_time > #{startTime}
+        AND ( order_state='admissions'  OR  order_state='notpaid'  OR    order_state='accomplish' )
+    </select>
+    <!--人晚数-->
+    <select id="getPersonLateSum" parameterType="java.util.Map"  resultType="java.lang.Integer" >
+        SELECT COUNT(per.id) FROM hm_order_child  child LEFT JOIN hm_order oder  ON oder.id=child.order_id
+        LEFT JOIN hm_check_in_person per  ON child.id=per.order_child_id
+        WHERE oder.hotel_id=#{hotelId}  and  per.status='checkin'  AND  child.start_time &lt; #{endTime}  AND child.end_time > #{startTime}
+        AND ( child.order_state='admissions'  OR  child.order_state='notpaid'  OR    child.order_state='accomplish' )
+    </select>
+
+
+    <!--入住人数-->
         <select id="getCheckInPerson" parameterType="java.util.Map" resultType="java.lang.Integer">
             SELECT COUNT(id) FROM `hm_check_in_person`
             WHERE create_time BETWEEN #{startTime} AND #{endTime}

@@ -1,7 +1,6 @@
 package com.szq.hotel.web.controller;
 
 import com.szq.hotel.entity.bo.AdminBO;
-import com.szq.hotel.entity.bo.IntegralRecordBO;
 import com.szq.hotel.entity.bo.StoredValueRecordBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.query.QueryInfo;

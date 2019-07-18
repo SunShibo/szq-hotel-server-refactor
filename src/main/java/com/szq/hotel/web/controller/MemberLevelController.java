@@ -1,7 +1,6 @@
 package com.szq.hotel.web.controller;
 import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.MemberLevelBO;
-import com.szq.hotel.entity.bo.MemberRoomTypeBO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.service.MemberLevelService;
 import com.szq.hotel.service.MemberRoomTypeService;
@@ -28,10 +27,6 @@ public class MemberLevelController extends BaseCotroller {
 
     @Resource
     private MemberLevelService memberLevelService;
-    @Resource
-    private MemberRoomTypeService memberRoomTypeService;
-    @Resource
-    private RoomTypeService roomTypeService;
 
     /**
      * 新增会员级别

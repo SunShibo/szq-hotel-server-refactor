@@ -21,8 +21,14 @@ import java.util.Map;
 public class ManagementReportService {
     @Resource
     private ManagementReportDAO managementReportDAO;
-    /*
-        添加数据
+
+    /**
+     * 添加数据
+     *  startTime 起始时间
+     *  endTime 终止时间
+     *  hotelId 酒店id
+     * @param map
+     * @param hotelId 酒店id
      */
     public void addData(Map<String,Object> map,Integer hotelId){
         ManagementReportBO managementReportBO = new ManagementReportBO();
@@ -37,8 +43,11 @@ public class ManagementReportService {
         managementReportBO.setMaintainRoomSum(this.getMaintainSum(map));
         managementReportBO.setMemberRoomSum(this.getMemberRoomSum(map));
         managementReportBO.setMemberCardSoldMoney(this.getMemberCardRate(map));
+        managementReportBO.setRoomLateSum(this.getRoomLateSum(map));
+        managementReportBO.setPersonLateSum(this.getPersonLateSum(map));
         managementReportBO.setCommodityRevenues(this.getCommodity(map));
         managementReportBO.setRoomRateAdjustment(this.getRoomRateAdjustment(map));
+        managementReportBO.setOccupancyRate(this.getOccupancyRate(map).toString());
         managementReportBO.setREVPAR(this.REVPAR(map).toString());
         managementReportBO.setDisableRoomSum(this.getDisableRoomSum(map));
         managementReportBO.setRentalIncome(this.getRoomRate(map));
@@ -416,6 +425,29 @@ public class ManagementReportService {
         }
         return memberCardRate;
     }
+    //房晚数
+    public Integer getRoomLateSum(Map<String,Object> map){
+        return managementReportDAO.getRoomLateSum(map);
+    }
+    //人晚数
+    public  Integer getPersonLateSum(Map<String,Object> map){
+        return managementReportDAO.getPersonLateSum(map);
+    }
+    //出租率-------房晚数 / (总房间数 - 维修房数)
+    public BigDecimal getOccupancyRate(Map<String,Object> map){
+        //房晚数
+        BigDecimal roomLateSum = new BigDecimal(this.getRoomLateSum(map));
+        //总房间数
+        BigDecimal roomSum = new BigDecimal(this.getRoomSum(map));
+        //维修房数
+        BigDecimal maintainSum = new BigDecimal(this.getMaintainSum(map));
+        if (roomSum.subtract(maintainSum).intValue()==0){
+            return new BigDecimal(0);
+        }
+        BigDecimal occupancyRate = roomLateSum.divide(roomSum.subtract(maintainSum),2,BigDecimal.ROUND_HALF_UP);//TODO
+        return occupancyRate;
+    }
+
     //人均消费 = 总消费/入住人数
     public BigDecimal getAvgConsumptionOfPerson(Map<String,Object> map){
         //所有收入

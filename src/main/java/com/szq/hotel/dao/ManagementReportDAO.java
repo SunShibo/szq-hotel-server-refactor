@@ -26,6 +26,10 @@ public interface ManagementReportDAO {
     Integer getRoomSum(Map<String,Object> map);
     //会员卡收入
     BigDecimal getMemberCardRate(Map<String,Object> map);
+    //房晚数
+    Integer getRoomLateSum(Map<String,Object> map);
+    //人晚数
+    Integer getPersonLateSum(Map<String,Object> map);
     //入住人数
     Integer getCheckInPerson(Map<String,Object> map);
     //赔偿收入

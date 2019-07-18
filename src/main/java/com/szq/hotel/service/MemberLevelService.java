@@ -2,9 +2,7 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberLevelDAO;
-import com.szq.hotel.entity.bo.HotelBO;
 import com.szq.hotel.entity.bo.MemberLevelBO;
-import com.szq.hotel.web.controller.HotelController;
 import com.szq.hotel.web.controller.MemberLevelController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

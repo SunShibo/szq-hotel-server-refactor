@@ -5,7 +5,6 @@ import com.szq.hotel.dao.MemberDAO;
 import com.szq.hotel.entity.bo.MemberBO;
 import com.szq.hotel.entity.bo.MemberLevelBO;
 import com.szq.hotel.entity.bo.MemberResultBO;
-import com.szq.hotel.entity.bo.StoredValueRecordBO;
 import com.szq.hotel.web.controller.MemberController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
