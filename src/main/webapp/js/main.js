@@ -61,8 +61,8 @@ var api = {
     , roomQuery: '/room/queryRoom'   //客房查询    已修改
     , roomAdd: '/room/insertSelective'   //新增客房  已修改
     , updateRoomInfo: '/room/updateByPrimaryKeySelective'//修改客房信息  已修改
-    , roomUnLock: '/room/openLockRoom'   //客房解锁
-    , roomLockRoom: '/room/updatelockRoomClose'    //客房锁房
+    // , roomUnLock: '/room/openLockRoom'   //客房解锁   废弃
+    , roomLockRoom: '/room/updatelockRoomState'    //客房锁房
     , queryMemberById: '/member/detail?userId='//根据会员id查询
     , pickRoomQuery: '/room/quertRm'//选房查询000
     , checkIn: '/checkin/addCheckin?v=1'//入住
@@ -71,7 +71,7 @@ var api = {
     , roomHouseType: '/room/houseType?v=1'
     , queryRoomInfo: '/room/queryRoomTypeAndHotelAndFloor'
     , querySale: '/user/queryDiscountId?cerfiticateNumber='//根据证件号查询折扣信息
-    , queryOrder: '/orderInfo/OrderInfoList'
+    , queryOrder: '/order/queryOrderList'  //订单查询    已修改
     , queryIdFlag: 'member/selectMember?v=1'//通过手机号或者证件号查询会员信息000
     , queryOrderInfo: 'OrderManage/queryOrderInfoByUser'//查询子订单信息
     , queryRowsOrderInfo: 'OrderManage/queryOrderInfoById'//点击表格查询子订单信息
@@ -104,7 +104,7 @@ var api = {
     // , toHouseType: '/room/toHouseType'//按ID查询房型信息   废弃
     , updateHouseType: '/roomType/updateRoomType'//修改房型      已修改
     , deleteHouseType: '/roomType/deleteRoomType'//删除房型
-    , addHouseType: '/roomType/insertRoomType'//添加房型      有问题
+    , addHouseType: '/roomType/insertRoomType'//添加房型      已修改
     , queryPettyCash: '/dealShiftServiceController/queryPettyCash?v=1'//备用金查询
     , addPettyCash: '/dealShiftServiceController/addPettyCash?v=1'//备用金增减
     , channelDiscount: '/CooperativePrice/detail?id='
@@ -438,31 +438,12 @@ function renderSelect(id, key, value, url, f, callback) {
     $.getJSON(url + "&random=" + Date.now(), function (rs) {
         var dom = $("#" + id);
         var str = '';
-        if (url.indexOf("/member/cartLeaveDetail") > -1) {
-            // rs.data = rs.data.cartLeaveBOs;
-
-            if (rs.success) {
-                for (var i = 0; i < rs.data.cartLeaveBOs.length; i++)
-                    // dom.append(
-                    str += '<option value="' + rs.data.cartLeaveBOs[i][key] + '">' + rs.data.cartLeaveBOs[i][value] + '</option>'
-                // );
-                dom.append(str)
-            }
-            f.render("select");
-            if (callback) callback(str, rs.data.cartLeaveBOs);
-        } else {
-
-
-            if (rs.success) {
-                for (var i = 0; i < rs.data.length; i++)
-                    // dom.append(
-                    str += '<option value="' + rs.data[i][key] + '">' + rs.data[i][value] + '</option>'
-                // );
-                dom.append(str)
-            }
-            f.render("select");
-            if (callback) callback(str, rs.data);
+        if (rs.success) {
+            for (var i = 0; i < rs.data.length; i++) {str += '<option value="' + rs.data[i][key] + '">' + rs.data[i][value] + '</option>';}
+            dom.append(str)
         }
+        f.render("select");
+        if (callback) callback(str, rs.data);
 
     })
 }

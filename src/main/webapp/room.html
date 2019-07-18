@@ -70,7 +70,7 @@
     <button class="layui-btn layui-btn-sm" id="addItem">新增</button>
     <button class="layui-btn layui-btn-sm" id="batchDelete">批量删除</button>
     <button class="layui-btn layui-btn-sm" id="lockRoom">批量锁房</button>
-    <button class="layui-btn layui-btn-sm" id="unlock">批量解锁</button>
+    <!--<button class="layui-btn layui-btn-sm" id="unlock">批量解锁</button>-->
 </div>
 <div class="tab-box">
     <table id="roomManage" lay-filter="roomManage" class="layui-table"></table>
@@ -321,26 +321,26 @@
             });
         });
 
-        //解锁
-        $('#unlock').on('click', function () {
-            if (!selectArr.length) {
-                layer.msg('请选择客房！');
-                return;
-            }
-            sessionStorage.setItem('selectArr', selectArr);
-            layer.open({
-                type: 2,
-                skin: 'demo-class',
-                area: ['400px', '200px'],
-                title: '批量解锁',
-                shade: 0.6,
-                shadeClose: true,
-                content: 'iframe_lockRoom.html?state=2',
-                end: function () {
-                    tab.reload();//刷新表格
-                }
-            });
-        });
+        // //解锁
+        // $('#unlock').on('click', function () {
+        //     if (!selectArr.length) {
+        //         layer.msg('请选择客房！');
+        //         return;
+        //     }
+        //     sessionStorage.setItem('selectArr', selectArr);
+        //     layer.open({
+        //         type: 2,
+        //         skin: 'demo-class',
+        //         area: ['400px', '200px'],
+        //         title: '批量解锁',
+        //         shade: 0.6,
+        //         shadeClose: true,
+        //         content: 'iframe_lockRoom.html?state=2',
+        //         end: function () {
+        //             tab.reload();//刷新表格
+        //         }
+        //     });
+        // });
     });
 </script>
 </body>
