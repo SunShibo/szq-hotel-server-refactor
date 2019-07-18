@@ -323,6 +323,15 @@
         group by order_child_id
     </select>
 
+    <!--获取入住支付信息-->
+    <select id="getPayInfo" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select oc.id,ip.name
+        from hm_order_child as oc,hm_check_in_person as ip
+        where oc.id=ip.order_child_id
+        and order_id=#{orderId}
+        group by oc.id
+    </select>
+
     <!--根据子订单id查询子订单-->
     <select id="getOrderChildById"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name

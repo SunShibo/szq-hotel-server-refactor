@@ -299,18 +299,16 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return;
         }
+
         //验证参数
         if (orderId == null) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
             super.safeJsonPrint(response, result);
             return;
         }
-        OrderBO orderBO=orderService.getOrderById(orderId);
-        Map<String,Object> resultMap=new HashMap<String, Object>();
-        resultMap.put("totalPrice",orderBO.getTotalPrice());
-        List<OrderChildBO> orderChildBOS=orderService.getRoomInfoById(orderId);
-        resultMap.put("orderChildBOS",orderChildBOS);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
+
+        List<OrderChildBO> orderChildBOS=orderService.getPayInfo(orderId);
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderChildBOS));
         super.safeJsonPrint(response, result);
     }
 

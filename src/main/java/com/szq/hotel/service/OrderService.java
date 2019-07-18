@@ -128,7 +128,7 @@ public class OrderService {
     }
 
     //预定入住 报留当修改用吧 里面逻辑也不对。。
-    public void updOrderInfo(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
+    public void reservation(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
 
         //旧的子订单信息
         List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildByOrderId(orderBO.getId());
@@ -186,7 +186,7 @@ public class OrderService {
     }
 
     //预定入住
-    public void reservation(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
+    public void updOrderInfo(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
         //旧的子订单信息
         List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildByOrderId(orderBO.getId());
         //新添加的房间 代表新的子订单
@@ -413,6 +413,11 @@ public class OrderService {
 
         orderChildBO.setOrderRecoredBOS(recoredBOS);
         return orderChildBO;
+    }
+
+    //获取入住支付信息
+    public List<OrderChildBO> getPayInfo(Integer orderId){
+        return orderDAO.getPayInfo(orderId);
     }
 
     //根据子订单id查询子订单

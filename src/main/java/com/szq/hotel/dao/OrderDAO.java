@@ -61,7 +61,8 @@ public interface OrderDAO {
     OrderChildBackupParam getOrderChildBackup(Integer id);
     //获取超时的子订单
     List<OrderChildBO> getTimeOutOrder(String orderState);
-
+    //获取入住支付信息
+    List<OrderChildBO> getPayInfo(Integer orderId);
     /**
      * 订单列表
      * @param param
