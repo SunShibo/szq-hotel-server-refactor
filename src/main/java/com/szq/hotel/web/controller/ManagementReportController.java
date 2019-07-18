@@ -113,8 +113,8 @@ public class ManagementReportController extends BaseCotroller {
 
     }
 
-    @RequestMapping("/select")
-    public void select(Date startTime, Date endTime,HttpServletResponse response, HttpServletRequest request ){
+    @RequestMapping("/getManagementReport")
+    public void getManagementReport(Date startTime, Date endTime,HttpServletResponse response, HttpServletRequest request ){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
