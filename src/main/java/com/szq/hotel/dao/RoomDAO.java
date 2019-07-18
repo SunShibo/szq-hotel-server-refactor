@@ -134,4 +134,8 @@ public interface RoomDAO {
 
 
     List<String> queryRoomName(@Param("list")List<Integer> list);
+
+    //锁房时间到了 把锁房状态修改为未锁房
+    Integer updRoom();
+
 }

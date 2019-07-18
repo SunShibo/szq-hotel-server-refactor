@@ -527,4 +527,9 @@
       #{item}
     </foreach>
   </select>
+
+  <update id="updRoom">
+    update hm_room set lock_room_state='no' where lock_room_end_time &lt;=now()
+  </update>
+
 </mapper>

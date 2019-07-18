@@ -40,57 +40,20 @@
     </insert>
 
     <!-- 备份子订单 -->
-    <insert id="addOrderChildBackup" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
+    <insert id="addOrderChildBackup" parameterType="com.szq.hotel.entity.param.OrderChildBackupParam">
         insert into hm_order_child_backup set
-        id=#{id}
-        order_id=#{orderId},
-        start_time=#{startTime},
-        end_time=#{endTime},
-        pay_cash_num=#{payCashNum},
-        other_pay_num=#{otherPayNum},
+        id=#{id},
         room_rate=#{roomRate},
         other_rate=#{otherRate},
         timeout_rate=#{timeoutRate},
         free_rate_num=#{freeRateNum},
         order_state=#{orderState},
-        practical_departure_time=#{practicalDepartureTime},
-        remark=#{remark},
-        room_id=#{roomId},
-        room_type_id=#{roomTypeId},
-        al_room_code=#{alRoomCode},
-        night_auditor_state=#{nightAuditorState},
-        print_state=#{printState},
-        main=#{main},
-        update_time=#{updateTime}
+        room_major_state=#{roomMajorState}
     </insert>
     <!-- 查询备份的子订单 -->
-    <select id="OrderChildBackup" resultType="com.szq.hotel.entity.bo.OrderChildBO" parameterType="java.lang.Integer">
+    <select id="getOrderChildBackup" resultType="com.szq.hotel.entity.param.OrderChildBackupParam" parameterType="java.lang.Integer">
         select * from hm_order_child_backup where id=#{id}
     </select>
-    <!-- 把备份的子订单插入回主订单 -->
-    <insert id="checkOutRollback" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
-        insert into hm_order_child set
-        id=#{id}
-        order_id=#{orderId},
-        start_time=#{startTime},
-        end_time=#{endTime},
-        pay_cash_num=#{payCashNum},
-        other_pay_num=#{otherPayNum},
-        room_rate=#{roomRate},
-        other_rate=#{otherRate},
-        timeout_rate=#{timeoutRate},
-        free_rate_num=#{freeRateNum},
-        order_state=#{orderState},
-        practical_departure_time=#{practicalDepartureTime},
-        remark=#{remark},
-        room_id=#{roomId},
-        room_type_id=#{roomTypeId},
-        al_room_code=#{alRoomCode},
-        night_auditor_state=#{nightAuditorState},
-        print_state=#{printState},
-        main=#{main},
-        update_time=#{updateTime}
-    </insert>
 
     <!-- 修改子订单信息 -->
     <update id="updOrderChild" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
@@ -153,7 +116,7 @@
     </update>
 
     <!--在住报表-->
-    <select id="getCheckInReport" resultType="com.szq.hotel.entity.result.OrderResult">
+    <select id="getCheckInReport" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.result.OrderResult">
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
         c.room_rate,other_rate,c.free_rate_num
@@ -169,6 +132,7 @@
         and c.id=`or`.order_child_id
         and p.status='checkin'
         and (order_state='admissions')
+        and o.hotel_id=#{hotelId}
         group by or.order_child_id
     </select>
 
@@ -195,6 +159,7 @@
         <if test="beforeTime!=null and beforeTime!=''">
             and c.end_time&lt;=#{beforeTime}
         </if>
+        and o.hotel_id=#{hotelId}
         group by or.order_child_id
         order by c.end_time
         <include refid="limit" />
@@ -223,6 +188,7 @@
         <if test="beforeTime!=null and beforeTime!=''">
             and c.end_time&lt;=#{beforeTime}
         </if>
+        and o.hotel_id=#{hotelId}
         group by or.order_child_id
         order by c.end_time
     </select>
@@ -242,9 +208,9 @@
 
     <!-- 根据订单id查询订单信息 -->
     <select id="getOrderById" resultType="com.szq.hotel.entity.bo.OrderBO">
-    select * from hm_order where
-    id = #{orderId}
-</select>
+        select * from hm_order where
+        id = #{orderId}
+    </select>
 
     <!-- 根据订单id查询所有子订单 带房型房间信息 -->
     <select id="getOrderChildByOrderId" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
@@ -287,6 +253,13 @@
         select *
         from hm_order_child
         where order_id=#{id} and order_state=#{orderState}
+    </select>
+
+    <!-- 查询入住超时的子订单  -->
+    <select id="getTimeOutOrder"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select *
+        from hm_order_child
+        where order_state=#{orderState} and end_time &lt; now() and  practical_departure_time &lt; now()
     </select>
 
 
@@ -343,7 +316,7 @@
     <select id="getRoomInfoById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select oc.id,r.room_name as roomName,cp.name as name,cp.create_time as createTime
         from hm_order_child as oc,hm_check_in_person as cp,hm_room as r
-        where oc.order_id=38
+        where oc.order_id=#{orderId}
         and oc.room_id=r.id
         and cp.order_child_id=oc.id
         and cp.status='checkin'
@@ -454,14 +427,16 @@
     </select>
 
     <!--查询所有可用联房-->
-    <select id="getAlRoom" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
+    <select id="getAlRoom" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
         select hm_order_child.id as orderChildId,hm_room.id as roomId,hm_check_in_person.name,hm_order_child.start_time
-        from hm_order_child,hm_room,hm_check_in_person
+        from hm_order_child,hm_room,hm_check_in_person,hm_order
         where hm_order_child.room_id=hm_room.id
         and hm_order_child.main='yes'
         and hm_check_in_person.order_child_id=hm_order_child.id
         and hm_check_in_person.status='checkin'
         and hm_order_child.room_id!=#{roomId}
+        and hm_order.hotel_id=#{hotelId}
+        and hm_order_child.order_id=hm_order.id
         group by hm_order_child.id
     </select>
 

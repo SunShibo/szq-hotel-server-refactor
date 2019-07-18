@@ -19,4 +19,7 @@ public interface CheckInPersonDAO {
 
     //修改入住人信息
     Integer updCheckInPerson(CheckInPersonBO checkInPersonBO);
+
+    //把入住人修改为已经退房
+    Integer updPersonCheckOut(@Param("id") Integer id,@Param("status") String status);
 }

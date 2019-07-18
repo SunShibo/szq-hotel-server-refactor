@@ -3,13 +3,16 @@ package com.szq.hotel.service;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.*;
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.entity.param.OrderChildBackupParam;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.CheckRoomPersonResult;
 import com.szq.hotel.entity.result.OrderResult;
+import com.szq.hotel.pop.Constant;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,13 +127,17 @@ public class OrderService {
         return orderBO.getOrderNumber();
     }
 
-    //预定入住
+    //预定入住 报留当修改用吧 里面逻辑也不对。。
     public void updOrderInfo(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
 
         //旧的子订单信息
         List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildByOrderId(orderBO.getId());
         //新选的房间或者修改了房间的房型 id传过来为null 代表xin子订单
         for (OrderChildBO orderChildBONew : orderChildBOList) {
+            orderChildBONew.setStartTime(orderBO.getCheckTime());
+            orderChildBONew.setEndTime(orderBO.getCheckOutTime());
+            orderChildBONew.setOrderState(Constants.NOTPAY.getValue());//状态
+            orderDAO.updOrderChild(orderChildBONew);
             if (orderChildBONew.getId() == null) {
                 orderDAO.addOrderChild(orderChildBONew);
                 List<CheckInPersonBO> checkInPersonBOS = orderChildBONew.getCheckInPersonBOS();
@@ -150,22 +157,75 @@ public class OrderService {
                 map.put("id", orderChildBONew.getRoomId());
                 map.put("state", Constants.INTHE.getValue());
                 roomService.updateroomMajorState(map);
+            } else {
+                //修改房价信息
+                List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBONew.getEverydayRoomPriceBOS();
+                if (everydayRoomPriceBOList != null) {
+                    for (EverydayRoomPriceBO roomPrice : everydayRoomPriceBOList) {
+                        everydayRoomPriceDAO.updEverydayRoomPrice(roomPrice);
+                    }
+                }
+
+                List<CheckInPersonBO> checkInPersonNewS = orderChildBONew.getCheckInPersonBOS();
+                for (CheckInPersonBO newPerson : checkInPersonNewS) {
+                    //新入住人直接add
+                    if (newPerson.getId() == null || newPerson.getId().equals("")) {
+                        newPerson.setOrderChildId(orderChildBONew.getId());
+                        newPerson.setStatus(Constants.CHECKIN.getValue());
+                        checkInPersonDAO.addCheckInPerson(newPerson);
+                        continue;
+                    }
+
+                }
+
+
+            }
+        }
+
+
+    }
+
+    //预定入住
+    public void reservation(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
+        //旧的子订单信息
+        List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildByOrderId(orderBO.getId());
+        //新添加的房间 代表新的子订单
+        for (OrderChildBO orderChildBONew : orderChildBOList) {
+            if (orderChildBONew.getId() == null) {
+                orderDAO.addOrderChild(orderChildBONew);
+                List<CheckInPersonBO> checkInPersonBOS = orderChildBONew.getCheckInPersonBOS();
+                List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBONew.getEverydayRoomPriceBOS();
+                if (checkInPersonBOS != null) {
+                    for (CheckInPersonBO person : checkInPersonBOS) {
+                        checkInPersonDAO.addCheckInPerson(person);
+                    }
+                }
+                if (everydayRoomPriceBOList != null) {
+                    for (EverydayRoomPriceBO roomPrice : everydayRoomPriceBOList) {
+                        everydayRoomPriceDAO.addEverydayRoomPrice(roomPrice);
+                        //叠加总房价
+                        orderBO.setTotalPrice(orderBO.getTotalPrice().add(roomPrice.getMoney()));
+                    }
+                }
+                //房间状态修改为在住状态
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("id", orderChildBONew.getRoomId());
+                map.put("state", Constants.INTHE.getValue());
+                roomService.updateroomMajorState(map);
             }
             //重新算总价
             //这个房间下的每日价格
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBONew.getEverydayRoomPriceBOS();
             if (everydayRoomPriceBOList != null && everydayRoomPriceBOList.size() != 0) {
                 for (EverydayRoomPriceBO everydayRoomPriceBO : everydayRoomPriceBOList) {
-                    //叠加总房价
-                    orderBO.setTotalPrice(orderBO.getTotalPrice().add(everydayRoomPriceBO.getMoney()));
+
                 }
             }
         }
-        //修改主订单信息
-        orderDAO.updOrder(orderBO);
+
         //旧子订单没传过来 则子订单关闭
         //旧子订单传过来了 则修改子订单信息
-        for (OrderChildBO orderChildOld : orderChildBOS) {// 1 2 3
+        for (OrderChildBO orderChildOld : orderChildBOS) {
             boolean orderChildOldBool = true;//这个房间还在不在
 
             for (OrderChildBO orderChildBONew : orderChildBOList) {//1 2
@@ -224,18 +284,11 @@ public class OrderService {
                     }
                 }
             }
-            System.err.println("bool======================" + orderChildOldBool);
-            if (orderChildOldBool) {
-                //原本预定的被删除了，或者因为修改了房型，id没有传过来 代表已经取消
-                OrderChildBO orderChildCancel = new OrderChildBO();
-                orderChildCancel.setId(orderChildOld.getId());
-                orderChildCancel.setOrderState(Constants.CANCEL.getValue());
-                orderDAO.updOrderChild(orderChildCancel);
-                continue;
-
-            }
+            //修改主订单信息
+            orderDAO.updOrder(orderBO);
 
         }
+
 
     }
 
@@ -393,18 +446,18 @@ public class OrderService {
     }
 
     //获取在住报表
-    public List<OrderResult> getCheckInReport() {
-        return orderDAO.getCheckInReport();
+    public List<OrderResult> getCheckInReport(Integer hotelId) {
+        return orderDAO.getCheckInReport(hotelId);
     }
 
     //获取预离店报表
-    public List<OrderResult> getCheckOutReport(Date beforeTime, Date afterTime, Integer pageNo, Integer pageSize) {
-        return orderDAO.getCheckOutReport(beforeTime, afterTime, pageNo, pageSize);
+    public List<OrderResult> getCheckOutReport(Date beforeTime, Date afterTime, Integer pageNo, Integer pageSize,Integer hotelId) {
+        return orderDAO.getCheckOutReport(beforeTime, afterTime, pageNo, pageSize,hotelId);
     }
 
     //获取预离店总数
-    public Integer getCheckOutReportCount(Date beforeTime, Date afterTime) {
-        return orderDAO.getCheckOutReportCount(beforeTime, afterTime).size();
+    public Integer getCheckOutReportCount(Date beforeTime, Date afterTime,Integer hotelId) {
+        return orderDAO.getCheckOutReportCount(beforeTime, afterTime,hotelId).size();
     }
 
     //把入住未支付超过15分钟的子订单关闭
@@ -498,8 +551,8 @@ public class OrderService {
 
 
     //查询所有可用联房
-    public List<CheckInPersonBO> getAlRoom(Integer roomId) {
-        return orderDAO.getAlRoom(roomId);
+    public List<CheckInPersonBO> getAlRoom(Integer roomId,Integer hotelId) {
+        return orderDAO.getAlRoom(roomId,hotelId);
     }
 
     //解除联房
@@ -597,19 +650,31 @@ public class OrderService {
         orderDAO.updOrderChild(orderChildBO);
     }
 
-
     //退房
-    public void checkOut(Integer orderChildId, Integer userId) throws ParseException {
+    public void checkOut(Integer orderChildId,BigDecimal money, Integer userId) throws ParseException {
+        //备份
+        OrderChildBackupParam backup=new OrderChildBackupParam();
         //当前时间
         Date currentTimeDate = new Date();
         SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat hh = new SimpleDateFormat("HH");
         Date currentTime = ymdhms.parse(ymdhms.format(currentTimeDate));
+        Date currentHH=hh.parse(hh.format(currentTimeDate));
         //订单信息
         OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChildId);
 
-        //滚入住第一天的房费
-        this.addOrderChildRecordAndRoomRate(ymd.format(orderChildBO.getStartTime()), orderChildId, userId);
+        //先不管6点前，或者6点到4点中间入住
+        //1号入住 2号走 2号凌晨四点会滚出1号房费 2号正常6点后退房 这种情况退房时不需要滚房费
+        //1号入住 3号走 2号凌晨四点会滚出1号房费 3号凌晨四点会滚出2号房费 这种情况也不需要滚房费
+        //1号入住 3号走 2号凌晨四点会滚出1号房费 2号中午退房了 这种情况需要2号需要滚超时费
+        //1号入住 3号走 2号凌晨四点前就退房了  这种情况需要滚出1号房费 由于没到6点 没到第二天 2号不用当超时来算
+
+        //小于四点没有夜审呢，所以滚出退房这天的前一天的房费
+        if(new Integer(hh.format(currentTimeDate))<4){
+            Date beforeDate=DateUtils.getYesTaday();
+            this.addOrderChildRecordAndRoomRate(backup,ymd.format(beforeDate), orderChildId, userId);
+        }
 
         //获取离店时间
         Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
@@ -620,14 +685,17 @@ public class OrderService {
             //判断是否提前退房
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
             if (currentDate.compareTo(endDate) < 0 && everydayRoomPriceBOList.size() > 1) {
-                this.addOrderChildRecordAndRoomRate2(ymd.format(currentTimeDate), orderChildId, userId);
+                this.addOrderChildRecordAndRoomRate2(backup,ymd.format(currentTimeDate), orderChildId, userId);
             }
+            backup.setRoomMajorState(Constants.VACANT.getValue());
         } else {
             //超时滚房费
-            this.addOrderChildRecordAndRoomRate3(ymdhms.format(currentTimeDate), orderChildId, userId);
+            this.addOrderChildRecordAndRoomRate3(backup,ymdhms.format(currentTimeDate), orderChildId, userId,money);
+            backup.setRoomMajorState(Constants.TIMEOUT.getValue());
         }
         //修改订单状态
         orderChildBO.setOrderState(Constants.notpaid.getValue());
+        backup.setOrderState(Constants.ADMISSIONS.getValue());
 
         //修改房间状态
         Map<String, Object> map = new HashMap<String, Object>();
@@ -635,43 +703,55 @@ public class OrderService {
         map.put("id", orderChildBO.getRoomId());
         map.put("state", Constants.DIRTY.getValue());
         roomService.updateroomMajorState(map);
+        //修改入住人状态
+        checkInPersonDAO.updPersonCheckOut(orderChildId,Constants.CHECKOUT.getValue());
+        orderDAO.addOrderChildBackup(backup);
     }
 
     //超时滚房费 根据当前时间计算超时房费
-    public void addOrderChildRecordAndRoomRate3(String date, Integer orderChild, Integer userId) throws ParseException {
+    public void addOrderChildRecordAndRoomRate3(OrderChildBackupParam backup,String date, Integer orderChild, Integer userId,BigDecimal money) throws ParseException {
         SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
         OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChild);
         //房型信息
-        RoomTypeBO roomTypeBO = roomTypeDAO.getRoomType(orderChild);
+        RoomTypeBO roomTypeBO = roomTypeDAO.getRoomType(orderChildBO.getRoomTypeId());
         //计算超时费
         Long minute = DateUtils.getQuotMinute(ymdhms.parse(date), orderChildBO.getEndTime());
         //超过4小时
         if (minute <= 4 * 60) {
             //加记录
-            orderRecordService.addOrderRecord(orderChild, ymd.format(date) + "半天超时费",
+            orderRecordService.addOrderRecord(orderChild, ymd.format(date) + "半天超时费，减免"+money+"元",
                     null, new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)), Constants.TIMEOUTCOST.getValue(),
                     userId, null, "no");
-            orderChildBO.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
+            orderChildBO.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)).subtract(money));
+            //备份超时费 减免费
+            backup.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)).subtract(money));
+            backup.setTimeoutRate(money);
         } else {
             //加记录
-            orderRecordService.addOrderRecord(orderChild, ymd.format(date) + "全天超时费",
+            orderRecordService.addOrderRecord(orderChild, ymd.parse(date) + "全天超时费，减免"+money+"元",
                     null, new BigDecimal(roomTypeBO.getBasicPrice()), Constants.TIMEOUTCOST.getValue(),
                     userId, null, "no");
-            orderChildBO.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()));
+            orderChildBO.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).subtract(money));
+            //备份超时费 减免费
+            backup.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).subtract(money));
+            backup.setTimeoutRate(money);
         }
         orderDAO.updOrderChild(orderChildBO);
     }
 
     //提前离店 按超时滚房费 根据时间 子订单id 查询这天的房价 累计到子订单其他房费
-    public void addOrderChildRecordAndRoomRate2(String date, Integer orderChild, Integer userId) {
+    public void addOrderChildRecordAndRoomRate2(OrderChildBackupParam backup,String date, Integer orderChild, Integer userId) {
         OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChild);
         //这天的房价信息
         EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(date, orderChild);
         //退房时间超过下午四点
         SimpleDateFormat hh = new SimpleDateFormat("HH");
         if (new Integer(hh.format(date)) > 18) {
+            //超时费
             orderChildBO.setOtherRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
+            //备份超时费
+            backup.setOtherRate(everydayRoomPriceBO.getMoney());
             //加记录
             orderRecordService.addOrderRecord(orderChild, everydayRoomPriceBO.getTime() + "提前退房收全天超时费",
                     null, everydayRoomPriceBO.getMoney(), Constants.TIMEOUTCOST.getValue(),
@@ -681,13 +761,16 @@ public class OrderService {
             orderRecordService.addOrderRecord(orderChild, everydayRoomPriceBO.getTime() + "提前退房收半天超时费",
                     null, everydayRoomPriceBO.getMoney().divide(new BigDecimal(2)), Constants.TIMEOUTCOST.getValue(),
                     userId, null, "no");
+            //超时费
             orderChildBO.setOtherRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney().divide(new BigDecimal(2))));
+            //备份超时费
+            backup.setOtherRate(everydayRoomPriceBO.getMoney().divide(new BigDecimal(2)));
         }
         orderDAO.updOrderChild(orderChildBO);
     }
 
     //正常滚房费 根据时间 子订单id 查询这天的房价 累计到子订单房费 添加房费记录
-    public void addOrderChildRecordAndRoomRate(String date, Integer orderChild, Integer userId) {
+    public void addOrderChildRecordAndRoomRate(OrderChildBackupParam backup,String date, Integer orderChild, Integer userId) {
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
         OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChild);
         //这天的房价信息
@@ -695,22 +778,46 @@ public class OrderService {
         orderRecordService.addOrderRecord(orderChild, ymd.format(everydayRoomPriceBO.getTime()) + "房费",
                 null, everydayRoomPriceBO.getMoney(), Constants.ROOMRATE.getValue(),
                 userId, "1天", "no");
-
+        //修改房费
         orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
         orderDAO.updOrderChild(orderChildBO);
+        //备份当时交的房费
+        backup.setRoomRate(everydayRoomPriceBO.getMoney());
     }
 
     //退房回滚 子订单信息都撤回原数据 添加回滚记录
     public void checkOutRollback(Integer orderChildId, Integer userId) {
-        OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChildId);
-        //退房时候添加备份
-        //查询备份信息
+        //备份的信息
+        OrderChildBackupParam backup = orderDAO.getOrderChildBackup(orderChildId);
         //修改回子订单
-        //添加回滚记录
-//        orderRecordService.addOrderRecord(orderChildId, ymd.format(everydayRoomPriceBO.getTime()) + "房费",
-//                null, everydayRoomPriceBO.getMoney(), Constants.ROOMRATE.getValue(),
-//                userId, "1天");
+        OrderChildBO orderChildBO=orderDAO.getOrderChildById(orderChildId);
+        orderChildBO.setFreeRateNum(orderChildBO.getFreeRateNum().add(backup.getRoomRate()));
+        orderChildBO.setOtherRate(orderChildBO.getOtherRate().subtract(backup.getOtherRate()));
+        orderChildBO.setOrderState(backup.getOrderState());
+        orderDAO.updOrderChild(orderChildBO);
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("id", orderChildBO.getRoomId());
+        map.put("state", backup.getRoomMajorState());
+        roomService.updateroomMajorState(map);
+
+        //添加回滚记录
+        orderRecordService.addOrderRecord(orderChildId, "误操作回滚(房费)",
+                null, backup.getRoomRate(), Constants.FREEORDER.getValue(),
+                userId, "1天","no");
+
+    }
+
+    //获取超时的子订单 修改他们的房间状态
+    public void updTimeOutOrder(){
+        List<OrderChildBO> orderChildBOS=orderDAO.getTimeOutOrder(Constants.ADMISSIONS.getValue());
+        for (OrderChildBO orderChildBO:orderChildBOS) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", orderChildBO.getRoomId());
+            map.put("state", Constants.TIMEOUT.getValue());
+            roomService.updateroomMajorState(map);
+
+        }
     }
 
 
