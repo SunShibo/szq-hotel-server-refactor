@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.HomeDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.util.DateUtils;
+import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.StringUtils;
 import org.slf4j.Logger;
@@ -72,7 +73,6 @@ public class HomeService {
         log.info("homeDAO.home..................................");
         log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(paramMap));
         List<FloorRoomBO> home = homeDAO.home(paramMap);
-
 
         for(int floori=0;floori<home.size();floori++){
             for(int roomi=0;roomi<home.get(floori).getRooms().size();roomi++){

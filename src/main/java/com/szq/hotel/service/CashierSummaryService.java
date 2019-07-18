@@ -62,7 +62,7 @@ public class CashierSummaryService {
         log.info("start addCard...........................................");
         log.info("name:{}\tmoney:{}\tpayType:{}\torderNumber:{}\tuserId:{}\thotelId:{}",name,money,payType,orderNumber,userId,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject(Constants.APPLYCARD.getValue()); //TODO  应该定义为常量
+        cashierSummaryBO.setProject(Constants.APPLYCARD.getValue());
         cashierSummaryBO.setType(payType);
         cashierSummaryBO.setSettlement(money);
         cashierSummaryBO.setOrderNumber(orderNumber);

@@ -11,6 +11,10 @@
                       VALUES ( #{name}, #{site},#{picture}, #{phone},#{createUserId},NOW(),#{updateUserId}, #{updateTime},'yes')
     </insert>
 
+    <!--为系统添加权限-->
+    <insert id="addRoleHotel"  parameterType="java.lang.Integer" >
+       INSERT INTO  `hm_role_hotel` ( `role_id`, `hotel_id`) VALUES ( 1,#{hotelId})
+    </insert>
     <!--修改酒店-->
     <update id="updateHotel" parameterType="com.szq.hotel.entity.bo.HotelBO">
        UPDATE `hm_hotel`

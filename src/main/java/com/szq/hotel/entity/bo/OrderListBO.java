@@ -19,7 +19,7 @@ public class OrderListBO extends BaseModel {
     private String orderType;//客源 FIXME 存在问题
     private String checkType;//入住方式
     private BigDecimal unitPrice;//首日单价
-
+    private String orderState;//订单状态
 
     public Integer getId() {
         return id;
@@ -117,6 +117,14 @@ public class OrderListBO extends BaseModel {
         this.unitPrice = unitPrice;
     }
 
+    public String getOrderState() {
+        return orderState;
+    }
+
+    public void setOrderState(String orderState) {
+        this.orderState = orderState;
+    }
+
     @Override
     public String toString() {
         return "OrderListBO{" +
@@ -132,6 +140,7 @@ public class OrderListBO extends BaseModel {
                 ", orderType='" + orderType + '\'' +
                 ", checkType='" + checkType + '\'' +
                 ", unitPrice=" + unitPrice +
+                ", orderState='" + orderState + '\'' +
                 '}';
     }
 }

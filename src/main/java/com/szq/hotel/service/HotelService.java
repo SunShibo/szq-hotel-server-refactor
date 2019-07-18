@@ -31,6 +31,7 @@ public class HotelService {
         log.info("start================addHotel");
         hotelBO.setCreateUserId(userId);
         hotelDAO.addHotel(hotelBO);
+        hotelDAO.addRoleHotel(hotelBO.getId());
         log.info("end===================addHotel");
     }
 

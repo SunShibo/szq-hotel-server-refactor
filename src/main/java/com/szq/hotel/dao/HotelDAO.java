@@ -11,7 +11,7 @@ public interface HotelDAO {
      * 添加酒店
      */
     void addHotel(HotelBO  hotelBO);
-
+    void addRoleHotel(Integer hotelId);
     /**
      * 修改酒店
      */
