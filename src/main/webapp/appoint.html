@@ -6,9 +6,9 @@
     <title>预约入住</title>
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
     <style>
-        .layui-laydate-footer {
-            display: none !important;
-        }
+        /*.layui-laydate-footer {*/
+            /*display: none !important;*/
+        /*}*/
 
         .layui-colla-title {
             background: transparent;
@@ -61,8 +61,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label require">姓名</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="name" id="name" lay-verify="required|name" autocomplete="off"
-                                       class="layui-input">
+                                <input type="text" name="orderPlacer"  id="orderPlacer" lay-verify="required|orderPlacer" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -74,17 +73,15 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label require">证件号</label>
+                            <label class="layui-form-label ">证件号</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="credentialNo" onblur="idFlag(1)" id="credentialNo"
-                                       lay-verify="required" autocomplete="off" class="layui-input">
+                                <input type="text" name="IDNumber" onblur="idFlag(1)" id="IDNumber" onchange="clearRoomInfo();" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label require">电话</label>
                             <div class="layui-input-inline">
-                                <input type="tel" name="phoneNumber" onblur="idFlag(2)" id="phoneNumber"
-                                       autocomplete="off" lay-verify="required" class="layui-input">
+                                <input type="tel" name="phone" onblur="idFlag(2)"  id="phone" autocomplete="off"  onchange="clearRoomInfo();"  lay-verify="required" class="layui-input">
                             </div>
                         </div>
 
@@ -95,95 +92,6 @@
 
                     </div>
                 </div>
-                <div class="layui-collapse more layui-hide">
-                    <div class="layui-colla-item">
-                        <h2 class="layui-colla-title">更多资料</h2>
-                        <div class="layui-colla-content">
-                            <div class="layui-form-item layui-form">
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">性别</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="gender" id="gender" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">生日</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" id="birthday" name="birthday"
-                                               placeholder="yyyy-MM-dd">
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">邮箱</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="email" id="email" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">微信</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="wechat" id="wechat" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">qq</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="qq" id="qq" autocomplete="off" class="layui-input">
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">国籍</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="nationality" id="nationality" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">爱好</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="hobby" id="hobby" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">民族</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="nation" id="nation" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-
-
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">地址</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="address" id="address" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">备注</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="remark" id="remark" autocomplete="off"
-                                               class="layui-input">
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">车牌号</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="licensePlateNumber" id="licensePlateNumber"
-                                               autocomplete="off" class="layui-input">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
             </div>
 
@@ -192,72 +100,72 @@
             <p class="border-e6 order-title">订单信息</p>
             <div class="layui-form-item layui-form">
                 <div class="layui-inline" style="padding-left: 20px;">
-                    <input type="checkbox" disabled name="" id="hhzzjjgg" title="合作机构" lay-skin="primary" lay-filter="hzjg">
+                    <input type="checkbox" name="" title="合作机构" lay-skin="primary" id="hhzzjjgg" lay-filter="hzjg">
                     <span style="background: #ccc;width: 200px;height: 45px;line-height: 45px;"></span>
                 </div>
-                <div class="layui-inline channelSelect layui-hide">
-                    <select id="channelSelect" lay-filter="floor" disabled lay-search>
+                <div class="layui-inline channelSelect layui-hide" >
+                    <select id="channelSelect" lay-filter="floor" lay-search>
                     </select>
                 </div>
                 <div class="layui-input-inline" style="float: none">
-                    <input type="text" name="OTA"id="ota" autocomplete="off" class="layui-input" readonly placeholder="OTA">
+                    <input type="text" name="OTA"id="ota" autocomplete="off" class="layui-input" placeholder="OTA">
                 </div>
             </div>
             <div class="pd20  layui-form layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">入住方式</label>
                     <div class="layui-input-inline" style="width:auto;">
-                        <input type="radio" name="inWay" value="1" title="全天房" checked="" disabled class="flagType">
-                        <input type="radio" name="inWay" value="2" title="钟点房" disabled class="flagType">
-                        <input type="radio" name="inWay" value="3" title="免费房" disabled class="flagType">
+                        <input type="radio" name="checkType" value="day" title="全天房" checked="">
+                        <input type="radio" name="checkType" value="hour" title="钟点房">
+                        <input type="radio" name="checkType" value="free" title="免费房">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">接单员</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="ordering" id="ordering" autocomplete="off" class="layui-input">
+                        <input type="text" name="clerkOrderingName" id="clerkOrderingName" autocomplete="off" class="layui-input">
                     </div>
-                </div>
-                <br>
+                </div><br>
                 <div class="layui-inline">
                     <label class="layui-form-label">客源</label>
                     <div class="layui-input-inline">
-                        <input type="text" value="散客 " name="source" id="source" readonly="" style="background: #eee;"
-                               autocomplete="off" class="layui-input">
+                        <input type="text" value="散客 " name="channel" id="channel" readonly="" style="background: #eee;" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">渠道</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="channel" id="channel" value="" readonly="" style="background: #eee;"
-                               autocomplete="off" class="layui-input">
+                        <input type="text" name="channel1" id="channel1" value="预约入住" readonly="" style="background: #eee;" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
                 <br>
-                <div class="layui-inline typea">
-                    <label class="layui-form-label">天数</label>
+
+                <div class="layui-inline ">
+                    <label class="layui-form-label">入住时间</label>
                     <div class="layui-input-inline">
-                        <input type="number" name="dayNumber" disabled oninput="changeDays(this)" id="days" autocomplete="off"
-                               class="layui-input flagType">
+                        <input type="text" class="layui-input" name="startTime" id="startTime"  readonly>
                     </div>
                 </div>
-                <div class="layui-inline typea">
+                <div class="layui-inline typea ">
                     <label class="layui-form-label">离店时间</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled class="flagType layui-input" name="leaveDate" id="leaveDate"
-                               placeholder="yyyy-MM-dd" readonly>
-                    </div>
-                </div>
-                <div class="layui-inline typeb layui-hide">
-                    <label class="layui-form-label">离店时间</label>
-                    <div class="layui-input-inline">
-                        <input class="flagType layui-input" style="display: inline-block;width: 100px;" disabled
-                               type="number" onchange="limitHours(this)" class="layui-input" step="1" value="3"
-                               id="leave1" max="6" min="3"><span>小时</span>
+                        <input type="text" class="layui-input" name="leaveDate1" id="leaveDate1"  readonly>
                     </div>
                 </div>
 
+                <div class="layui-inline typea">
+                    <label class="layui-form-label">共计</label>
+                    <div class="layui-input-inline" >
+                        <input  style="display: inline-block;width: 50px" readonly type="number" name="dayNumber1" id="days1" autocomplete="off" class="layui-input"><span style="">天</span>
+                    </div>
+                </div>
+                <div class="layui-inline typeb layui-hide">
+                    <label class="layui-form-label">共计</label>
+                    <div class="layui-input-inline" >
+                        <input  style="display: inline-block;width: 50px" readonly type="number" name="dayNumber2" value="4" id="days2" autocomplete="off" class="layui-input"><span style="">小时</span>
+                    </div>
+                </div>
             </div>
         </section>
         <section class="border-e6 mg10 pd10">
@@ -294,10 +202,12 @@
     <a class="layui-btn layui-btn-xs" lay-event="tonglai">同来</a>
     <!--<a class="layui-btn layui-btn-xs" lay-event="beizhu">备注</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="yichu">移除</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs needWaite" lay-event="wait">稍后</a>
+    <!--<a class="layui-btn layui-btn-danger layui-btn-xs needWaite" lay-event="wait">稍后</a>-->
 </script>
 <script>
+    var customer_source_before = "散客";//散客-渠道-会员
     var allChannel =[];
+    var yuyueData = {};
     var element, laydate, form, $, layer, index, table, data = [],roomTypeFlag=[];
     var state = {
         channel: 2// 1电话入住  2步入 3网络
@@ -340,47 +250,98 @@
             setInterval(function () {
                 getReport($)
             }, 60000)
-            $.getJSON("https://easy-mock.com/mock/5c78a798cbbdf13dba27f09c/example/query",function (rs) {
-                console.log(rs)
-            })
-        })
 
-        renderSelect("channelSelect", 'id', 'name', api.allChannel, form, function (str, rs) { allChannel = rs;
+        })
+        laydate.render({
+                elem: '#startTime',
+                type:"datetime",
+                min:0,
+                format:'yyyy-MM-dd HH:mm:ss',
+                done: function(value, date, endDate){
+
+                    if(value.indexOf("00:00:00")>0){
+                        var a = value.split(" ")[0] + " 18:00:00";
+                        setTimeout(function () {
+                            $('#startTime').val(a);
+                        },100)
+                    }
+                    clearRoomInfo();
+                    clearTimeInfo();
+                }
+            });
+
+        laydate.render({
+            elem: '#leaveDate1',//全天房和免费房离店时间
+            min:0,
+            format:'yyyy-MM-dd HH:mm:ss',
+            done: function(value, date, endDate){
+
+                if($("#startTime").val()==''){
+                    clearTimeInfo();
+                    layer.msg('请先选择入住时间', {icon: 2,shift:6});
+                    return;
+                }
+
+                if(new Date($("#startTime").val()).getTime()>(new Date(value.split(" ")[0]).getTime()+21600000)){
+                    clearTimeInfo();
+                    layer.msg('入住和离店时间选择有误', {icon: 2,shift:6});
+                    return;
+                }
+
+                var vv =  GetDateDiff($("#startTime").val(),value.split(" ")[0] + LEAVETIME);
+                if(vv==0){
+                    clearTimeInfo();
+                    layer.msg('离店时间有误', {icon: 2,shift:6});
+                    return;
+                }
+                updateTimeInfo(value);
+
+            }
         });
+
+
+        renderSelect("channelSelect", 'id', 'value', api.allChannel, form,function (str,rs) {allChannel = rs;});
         form.on('checkbox(hzjg)', function (data) {
-            updateMySelect(data.elem.checked)
-            dealChange()//合作机构勾选
+            if(data.elem.checked){
+                state.hzjg = true;
+                customer_source_before = document.getElementById("channel").value;
+
+                document.getElementById("channel").value = $("#channelSelect").find("option:selected").text();
+
+                $(".channelSelect").removeClass("layui-hide")
+            }else{
+                state.hzjg = false;
+                document.getElementById("channel").value = customer_source_before;
+                $(".channelSelect").addClass("layui-hide")
+            }
         });
         form.on('select(floor)', function (data) {
-
-            if (data.value != currHZJG && state.channel!=2) {
-                currHZJG = data.value;
-                clearRoomInfo()
-            }
-            dealChange()
-            setTimeout(function () {
-                updateMySelect(true)
-            },200)
+            document.getElementById("channel").value = $("#channelSelect").find("option:selected").text();
         });
-        renderSelect("certificateId", 'id', 'type', api.certificate, form);//证件类型获取
+        renderSelect("certificateId",'id','value',api.certificate,form);//证件类型获取000
         try {
             $("#ordering").val(JSON.parse(localStorage.hotelUserInfo).name)
         } catch (e) {
             console.info(e)
         }
-        form.on('radio', function (data) {
-            if (data.value == 2) {
+
+        form.on('radio', function(data){//小时房全天房免费房
+            if(data.value=="hour"){
                 $(".typea").addClass("layui-hide")
                 $(".typeb").removeClass("layui-hide")
-            } else {
+            }else {
                 $(".typeb").addClass("layui-hide")
                 $(".typea").removeClass("layui-hide")
             }
-            if (data.value != state.roomType) {
-                clearRoomInfo()
+            if(currSel.checkType==data.value){
+
+            }else{
+                currSel.checkType=data.value;
+                state.roomType=data.value;
+                clearRoomInfo();
             }
-            state.roomType = data.value;
         });
+
         element.on('tab(rzfs)', function (data) {if (data.index == 1)location.reload(); else location.href="checkIn.html"});//直接入住和预约入住切换
         if (getUrl("random")) {
             // element.tabChange("rzfs","2");
@@ -414,65 +375,73 @@
 
         }
 
+        function getCheckinData() {
+            var arr = JSON.parse(JSON.stringify(sRooms));
+            for(var i=0;i<arr.length;i++){
+                arr[i]['roomTypeId'] = arr[i]['roomType'];
+                arr[i]['checkInPersonBOS'] = getPersonData(arr[i]['roomId']);
+                arr[i]['everydayRoomPriceBOS'] = getRoomPriceData(arr[i]['roomId']);
+            }
+            return arr;
+
+        }
+        function getRoomPriceData(v) {
+            var o = JSON.parse(JSON.stringify(yuyueData.orderChildBOS));
+            var n = [];
+            for(var i=0;i<o.length;i++){
+                if(o[i]['roomId']==v){
+                    for(var j=0;j<o[i]['everydayRoomPriceBOS'].length;j++){
+                        var e = JSON.parse(JSON.stringify(o[i]['everydayRoomPriceBOS'][j]));
+                        e.time = DateToLStr(new Date(e.time.time)).split(" ")[0].replace(/-/g, "/");
+                        n.push(e)
+                    }
+                }
+            }
+            return n;
+        }
+        function getPersonData(v) {
+            var c = JSON.parse(JSON.stringify(customs));
+            var n = [];
+            for(var i=0;i<c.length;i++){
+               if(c[i]['roomId']==v){
+                    c[i]['certificateNumber'] = c[i]['credentialNo'];
+                    c[i]['phone'] = c[i]['phoneNumber'];
+                    c[i]['certificateType'] = c[i]['certificateId'];
+                    n.push(c[i]);
+               }
+
+            }
+            return n;
+        }
+
         form.on('submit(checksubmit)', function (data) {
 
             var d = data.field;
-            if (d.inWay == 2) {
-                d.leaveDate = DateToLStr2(new Date(Date.now() + 3600000 * Number(document.getElementById("leave1").value)));
-                d.dayNumber = 1;
-                d.hourage = $("#leave1").val();
-
-            } else {
-                if (d.leaveDate == '') {
-                    layer.alert("离店时间不能为空")
-                    return false;
-                }
-                d.leaveDate = d.leaveDate.replace(/-/, "/").replace(/-/, "/");
-                d.birthday = "2018-02-02";
-            }
-            if (document.getElementById("birthday").value == '') {
-                delete d.birthday;
-            } else {
-                d.birthday = d.birthday.replace(/-/, "/").replace(/-/, "/")
-            }
-            d.source = state.source;
-            d.channel = state.channel;
-            d.idType = d.certificateId;
-            d.idNumber = d.credentialNo;
+            d.id = yuyueData.id;
+            d.type = "reservation";
+            d.IDNumberType = d.certificateId + "";
+            d.checkTime = d.startTime.replace(/-/, "/").replace(/-/, "/");
+            d.checkOutTime = d.leaveDate1.replace(/-/, "/").replace(/-/, "/");
+            d.dayCount = d.dayNumber1 + "";
+            d.orderType = "subscribe";
+            d.membersId = currSel.memberRankId;
             if (state.hzjg) {
-                d.cnId = $("#channelSelect").val();
-                d.channel = 4;
+                d.memberIdOrOrganizationId  = $("#channelSelect").val();
             }
             if (sRooms.length == 0) {
                 layer.alert("还没有选房")
                 return false;
             }
-            var peo = checkPeopleNum();
-            if (!peo[0]) {
-                layer.msg(peo[1] + ' 号房间入住人信息不完整', {icon: 2, shift: 6});
-                return false;
-            }
-            if (sRooms.length == 1) {
-                if (peo == 1) {
-                    d.roomMessage = dealOneRoomOnePeople();
-                } else {
-                    d.roomMessage = dealOneRoomMulPeople();
-                }
-            } else {
-                d.roomMessage = dealMulRoomMulPeople();
-            }
+            d.OrderChildJSON = JSON.stringify(getCheckinData());
+            // console.log(d);
+
+            // return false;
 
 
-
-            d.orderNumber = state.orderNumber;
-            if (d.orderNumber == 0) {
-                layer.msg('订单号获取异常，请重新识别信息', {icon: 2, shift: 6});
-                return;
-            }
             urll = api.checkInYuYue;
-            if(localStorage.modifyPrice){
-                d.specialPrice = localStorage.modifyPrice;
-            }
+            // if(localStorage.modifyPrice){
+            //     d.specialPrice = localStorage.modifyPrice;
+            // }
             console.log("以下是预约入住参数")
             console.info(d)
             var index = layer.load(1,{time:10*1000});
@@ -902,47 +871,10 @@
         }
     }
 
-    function updateTable() {
-        var d = sRooms, c = customs;
-        for (var i = 0; i < d.length; i++) {
-            if(!c[0].roomId){
-                for (var j = 0; j < c.length; j++) {
-                    if (d[i].roomType == c[j].typeid ||d[i].houseTypeId == c[j].typeid ) {
-                        d[i].name = c[j].name;
-                        d[i].credentialNo = c[j].credentialNo;
-                        d[i].phoneNumber = c[j].phoneNumber;
-                        d[i].remark = c[j].remark;
-                        // d[i].id = c[j].id;
-                        break;
-                    }
-                }
-            }else
-            for (var j = 0; j < c.length; j++) {
-                if (d[i].roomId == c[j].roomId) {
-                    d[i].name = c[j].name;
-                    d[i].credentialNo = c[j].credentialNo;
-                    d[i].phoneNumber = c[j].phoneNumber;
-                    d[i].remark = c[j].remark;
-                    // d[i].id = c[j].id;
-                    break;
-                }
-            }
-        }
-        // console.info(d);
-        tableObj.reload({data: JSON.parse(JSON.stringify(d))})
-        state.selRow = [];
-        // calcPrice();
-        $("#totalPrice").text(state.totalPrice);
 
-        if(state.channel!=2){
-            $(".needWaite").removeClass("layui-hide")
-        }else{
-            $(".needWaite").addClass("layui-hide")
-        }
-    }
 
     function  updataTableByTogether(rid) {
-        // debugger;
+
         var d = sRooms, c = customs;
         for (var i = 0; i < d.length; i++) {
             if(d[i].roomId == rid){
@@ -1052,33 +984,20 @@
         })
     }
 
-    function calcPrice() {
-        var d = sRooms;
-        var c = saleInfo;
-        state.totalPrice = 0;
-        // if(c.length==0)return;
-        var days = 1;
-        if ($("#days").val() != '') {
-            days = Number($("#days").val());
-        }
-        if (state.roomType == 2) {
-            days = 1;
-        }
-        // if(state.channel==1)days=1;
-        for (var i = 0; i < d.length; i++) {
-            state.totalPrice += (sRooms[i].price * 1);
-        }
-        state.totalPrice = state.totalPrice.toFixed(0)
-        updateTable()
-    }
+
 
     //s=1证件号码，s=2手机号码
     function idFlag(s) {
-        var v = $("#credentialNo").val().trim();
-        var p = $("#phoneNumber").val().trim();
+        var v = $("#IDNumber").val().trim();
+        var p = $("#phone").val().trim();
        if (s == 2 ) {
             //手机号码网络入住
-            $.getJSON(api.yueCheckIn + "&phoneNumber=" + p+"&random="+Date.now()+"&certificateNumber="+v, function (rs) {
+            $.getJSON(api.yueCheckIn + "&mobile=" + p+"&random="+Date.now(), function (rs) {
+                if(!rs.data) {
+                    layer.alert('没有查到预定信息', {icon: 2, shift: 6});
+                    return;
+                }
+                yuyueData = rs.data;
                 if(rs.data.memberId){
                     $("#source").val(rs.data.memberName);
                     userInfo.meLeval = rs.data.memberId;
@@ -1088,17 +1007,19 @@
                     layer.alert('没有查到预定信息', {icon: 2, shift: 6});
                     return;
                 }
-                roomTypeFlag = rs.data.subscribes;
-                renderSchedule(rs.data.subscribes)
-                try{
-                    $("#phoneNumber").val(rs.data.phoneNumber);
-                    $("#credentialNo").val(rs.data.certificateNumber);
-                }catch (e){}
+                roomTypeFlag = rs.data;
+                renderSchedule(rs.data);
+
             })
         } else if (s == 1) {
             //证件号码网络入住
 
-            $.getJSON(api.yueCheckIn + "&certificateNumber=" + v+"&random="+Date.now() + "&phoneNumber=" + p, function (rs) {
+            $.getJSON(api.yueCheckIn + "&idNumber=" + v+"&random="+Date.now() , function (rs) {
+                if(!rs.data) {
+                    layer.alert('没有查到预定信息', {icon: 2, shift: 6});
+                    return;
+                }
+                yuyueData = rs.data;
                 if(rs.data.memberId){
                     $("#source").val(rs.data.memberName);
                     userInfo.meLeval = rs.data.memberId;
@@ -1107,8 +1028,8 @@
                     layer.alert('没有查到预定信息', {icon: 2, shift: 6});
                     return;
                 }
-                roomTypeFlag = rs.data.subscribes;
-                renderSchedule(rs.data.subscribes)
+                roomTypeFlag = rs.data;
+                renderSchedule(rs.data)
                 try{
                     $("#phoneNumber").val(rs.data.phoneNumber);
                     $("#credentialNo").val(rs.data.certificateNumber);
@@ -1139,75 +1060,142 @@
         } else {
             layer.msg('预定信息查询成功', {icon: 1});
         }
-        state.channel = v[0].channel;
-        state.yuyueChannel = v[0].channel;
-        state.orderNumber = v[0].orderNumberStr;
+        state.channel = v.channel;
+        state.yuyueChannel = '预约入住';
+        state.orderNumber = v.id;
         var d = v;
         sRooms = [];//已选房间信息
         customs = [];//同来人员信息
         saleInfo = [];//折扣信息
-        $("#days").val(d[0].daycount);
-        $("#leaveDate").val(DateToLStr(new Date(d[0].leaveTime.time)));
-        $("input[name=inWay][value=" + d[0].inway + "]").prop('checked', true);
-        $("#name").val(d[0].name);
-        // $("#phoneNumber").val(d[0].phoneNumber);
-        // $("#credentialNo").val(d[0].certificateNumber);
-        $("#certificateId").val(d[0].certificateType);
-        $("#ota").val(d[0].OTA);
-        state.channel = d[0].channel;
-        if(d[0].channel==1){
-            $("#channel").val("电话");
+        $("#orderPlacer").val(d.orderPlacer);
+        $("#certificateId").val(d.IDNumberType);
+        $("#IDNumber").val(d.IDNumber);
+        $("#phone").val(d.phone);
+        $("#clerkOrderingName").val(d.clerkOrderingName);
+        try{
+            $("#startTime").val(DateToLStr(new Date(d.checkTime.time)));
+            $("#leaveDate1").val(DateToLStr(new Date(d.checkOutTime.time)));
+        }catch (e){}
+        $("#days1").val(d.dayCount);
+        $("#totalPrice").val(d.totalPrice);
+        $("#ota").val(d.OTA);
+        $("#channel").val(d.channel);
+        if(d.checkType=='hour'){
+            $(".typea").addClass("layui-hide")
+            $(".typeb").removeClass("layui-hide")
         }else{
-            $("#channel").val("网络");
+            $(".typeb").addClass("layui-hide")
+            $(".typea").removeClass("layui-hide")
         }
-
-        if(d[0].cnId){
-            if(d[0].cnId!=0){
-                state.hzjg = true;
-                setOrg(d[0].cnId);
-                function setOrg(v) {
-                    state.hzjg = true;
-                    $("#hhzzjjgg").prop("checked",true);
-                    form.render();
-                    $(".channelSelect").removeClass("layui-hide")
-
-                    setTimeout(function () {
-                        $("#channelSelect").val(v)
-                        form.render();
-                    },3000)
-                }
-            }
-        }
-        var _yuyuePrice = 0;
-
+        $("input[name=checkType][value=" + d.checkType + "]").prop('checked', true);
+        if (d.memberIdOrOrganizationId) {
+            state.hzjg = true;
+            $("#hhzzjjgg").prop("checked", true);
+            form.render();
+            $(".channelSelect").removeClass("layui-hide")
+            setTimeout(function () {
+                $("#channelSelect").val(d.memberIdOrOrganizationId);
+                form.render();
+            }, 2000)
+         }
         form.render();
+        // return false;
+        var orderChildBOS = d.orderChildBOS;
+        _yuyuePrice = 0;
+        for (var i = 0; i < orderChildBOS.length; i++) {
+            // customs.push({
+            //     certificateId: d[i].certificateType,
+            //     phoneNumber: d[i].phoneNumber,
+            //     address: '',
+            //     remark: d[i].remark,
+            //     credentialNo: d[i].certificateNumber,
+            //     roomId: d[i].roomId,
+            //     name:  d[i].name,
+            //     id:d[i].id,
+            //     typeid:d[i].roomType
+            // })
+            var b = orderChildBOS[i];
+            // debugger;
+            for(var j=0;j<b.everydayRoomPriceBOS.length;j++){
+                var erp = b.everydayRoomPriceBOS[j];
+                _yuyuePrice += erp.money;
+            }
 
-        for (var i = 0; i < d.length; i++) {
-            customs.push({
-                certificateId: d[i].certificateType,
-                phoneNumber: d[i].phoneNumber,
-                address: '',
-                remark: d[i].remark,
-                credentialNo: d[i].certificateNumber,
-                roomId: d[i].roomId,
-                name:  d[i].name,
-                id:d[i].id,
-                typeid:d[i].roomType
-            })
-            var b = d[i];
-            _yuyuePrice += b.price;
             sRooms.push({
-                roomType: b.roomType,
+                roomType: b.roomTypeId,
                 roomId: b.roomId,
-                price: b.price,
-                roomNum: b.roomNumber,
-                roomTypeName: b.typeName,
-                id:b.id
+                price: b.everydayRoomPriceBOS[0].money,
+                roomNum: b.roomName,
+                roomTypeName: b.roomTypeName,
+                id:b.id,
+                remark:b.remark
             })
         }
-        $("#yuyuePrice").text(_yuyuePrice);
-        calcPrice();
-        updateMySelect2(d[0].cnId?true:false,d[0].cnId);
+        state.totalPrice = _yuyuePrice;
+        $("#totalPrice").text(_yuyuePrice);
+        // return;
+        // calcPrice();
+        updateTable();
+    }
+
+
+    function updateTable() {
+        var d = sRooms, c = customs;
+        for (var i = 0; i < d.length; i++) {
+            if(c.length!=0&&!c[0].roomId){
+                for (var j = 0; j < c.length; j++) {
+                    if (d[i].roomType == c[j].typeid ||d[i].houseTypeId == c[j].typeid ) {
+                        d[i].name = c[j].name;
+                        d[i].credentialNo = c[j].credentialNo;
+                        d[i].phoneNumber = c[j].phoneNumber;
+                        d[i].remark = c[j].remark;
+                        // d[i].id = c[j].id;
+                        break;
+                    }
+                }
+            }else
+                for (var j = 0; j < c.length; j++) {
+                    if (d[i].roomId == c[j].roomId) {
+                        d[i].name = c[j].name;
+                        d[i].credentialNo = c[j].credentialNo;
+                        d[i].phoneNumber = c[j].phoneNumber;
+                        d[i].remark = c[j].remark;
+                        // d[i].id = c[j].id;
+                        break;
+                    }
+                }
+        }
+        // console.info(d);
+        tableObj.reload({data: JSON.parse(JSON.stringify(d))})
+        state.selRow = [];
+        // calcPrice();
+        $("#totalPrice").text(state.totalPrice);
+
+        if(state.channel!=2){
+            $(".needWaite").removeClass("layui-hide")
+        }else{
+            $(".needWaite").addClass("layui-hide")
+        }
+    }
+
+    function calcPrice() {
+        var d = sRooms;
+        var c = saleInfo;
+        state.totalPrice = 0;
+        // if(c.length==0)return;
+        var days = 1;
+        if ($("#days").val() != '') {
+            days = Number($("#days").val());
+        }
+        if (state.roomType == 2) {
+            days = 1;
+        }
+        // if(state.channel==1)days=1;
+        for (var i = 0; i < d.length; i++) {
+            state.totalPrice += (sRooms[i].price * 1);
+        }
+        state.totalPrice = state.totalPrice.toFixed(0)
+        updateTable()
     }
 
     function payHtml(v) {
@@ -1217,7 +1205,8 @@
         layer.open({
             area: ['520px', '400px'],
             type: 2,
-            content: "iframe_pay.html?v=" + amonut + "&or=" + orderNumber + "&payNumber=" + payNumber+"&random="+Date.now()+"&certificateId="+document.getElementById("credentialNo").value,
+            //content: "iframe_pay.html?v=" + amonut + "&or=" + orderNumber + "&payNumber=" + payNumber+"&random="+Date.now()+"&certificateId="+document.getElementById("credentialNo").value,\
+            content: "iframe_pay.html",
             title: "支付"
         })
     }

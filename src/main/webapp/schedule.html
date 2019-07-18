@@ -232,6 +232,7 @@
             $ = layui.jquery,
             layer = layui.layer,
             table = layui.table;
+
         renderSelect("channelSelect", 'id', 'value', api.allChannel, form,function (str,rs) {allChannel = rs;});
         renderReport($)
         $(function () {
@@ -239,7 +240,19 @@
                 getReport($)
             }, 60000)
         })
-
+        form.on('radio', function (data) {
+            if (data.value == 2) {
+                $(".typea").addClass("layui-hide")
+                $(".typeb").removeClass("layui-hide")
+            } else {
+                $(".typeb").addClass("layui-hide")
+                $(".typea").removeClass("layui-hide")
+            }
+            if (data.value != state.roomType) {
+                clearRoomInfo()
+            }
+            state.roomType = data.value;
+        });
         form.on('checkbox(hzjg)', function(data) {
             if(data.elem.checked){
                 state.hzjg = true;
@@ -951,28 +964,8 @@
         }
         sessionStorage.idandname = JSON.stringify(a);
     }
-    function  clearTimeInfo() {
-        document.getElementById("leaveDate1").value = "";
-        document.getElementById("days1").value = "";
-    }
-    function updateTimeInfo(v) {
-        if(state.roomType!=2){
-            //全天房或者免费房
-			$("#leaveDate1").val(v.split(" ")[0] + LEAVETIME);
-            v.split(" ")[0] + LEAVETIME;
-            document.getElementById("days1").value =
-                GetDateDiff($("#startTime").val(),$("#leaveDate1").val());
-            $(".typea").removeClass("layui-hide")
-            $(".typeb").addClass("layui-hide")
-		}else{
-            // console.info($("#startTime").val(),v)
-			//钟点房
 
-            $(".typea").addClass("layui-hide")
-            $(".typeb").removeClass("layui-hide")
-		}
-        clearRoomInfo();
-    }
+
 	function getIdsByRooms() {
 		var str = sRooms[0].roomId;var d = sRooms;
 		for(var i=1;i<d.length;i++){

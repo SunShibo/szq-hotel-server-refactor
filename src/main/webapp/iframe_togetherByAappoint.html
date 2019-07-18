@@ -67,7 +67,7 @@
 			})
 
 
-        	renderSelect("certificateId",'id','type',api.certificate,form,function (str,d) {
+        	renderSelect("certificateId",'id','value',api.certificate,form,function (str,d) {
                 selectDom = str;
                 selecteData = d;
 				renderInfo();
@@ -111,9 +111,9 @@
 						'<input  name="phoneNumber"  />',
                    		'<input  name="remark"  type="text" value="" />',
 						'<select name="gender" lay-ignore>',
-                        '<option value="2" selected></option>',
-                   		 '<option value="1" selected>男</option>',
-                   		 '<option value="0">女</option>',
+                        '<option value="2" ></option>',
+                   		 '<option value="男" >男</option>',
+                   		 '<option value="女">女</option>',
 						'</select>',
 						'<a class="layui-btn layui-btn-xs IDCardReader">识别证件</a>',
 						'<button class="layui-btn layui-btn-danger layui-btn-xs">移除</button>',
@@ -126,6 +126,7 @@
 		function  renderInfo() {
 		    //打开页面后渲染同来人员信息
 			var d = parent.customs;
+			if(!d)return;
 			for(var i=0;i<d.length;i++){
 			    if(d[i].roomId==roomid){
 					$b.append(
@@ -140,7 +141,7 @@
 							'<input  name="phoneNumber" value="'+d[i].phoneNumber+'"/>',
 							'<input  name="remark" value="'+d[i].remark.trim()+'"/>',
                             '<select name="gender" lay-ignore>',
-                            '<option value="1" ',dealSelectGender1(d[i]),'> </option><option value="1"  ',dealSelectGender2(d[i]),'>男</option><option value="0" ',dealSelectGender3(d[i]),'>女</option>',
+                            '<option value="" ',dealSelectGender1(d[i]),'> </option><option value="男"  ',dealSelectGender2(d[i]),'>男</option><option value="女" ',dealSelectGender3(d[i]),'>女</option>',
                             '</select>',
 							'<a class="layui-btn layui-btn-xs IDCardReader">识别证件</a>',
 							'<button class="layui-btn layui-btn-danger layui-btn-xs">移除</button>',
@@ -156,9 +157,9 @@
 		    var str = '',data = selecteData;
             for(var i=0;i<data.length;i++){
                 if(certificateId==data[i].id){
-                    str+='<option selected="selected" value="'+data[i]['id']+'">'+data[i]['type']+'</option>'
+                    str+='<option selected="selected" value="'+data[i]['id']+'">'+data[i]['value']+'</option>'
 				}else{
-                    str+='<option value="'+data[i]['id']+'">'+data[i]['type']+'</option>'
+                    str+='<option value="'+data[i]['id']+'">'+data[i]['value']+'</option>'
 				}
 			}
 			return str;
@@ -166,21 +167,21 @@
 		}
         function dealSelectGender1(v){
             if(v.gender){
-				if(v.gender==2)return "selected"
+				if(v.gender=="")return "selected"
 				return "";
 			}
 			return "selected"
         }
         function dealSelectGender2(v){
             if(v.gender){
-                if(v.gender==1)return "selected"
+                if(v.gender=="男")return "selected"
 				return "";
             }
             return ""
         }
         function dealSelectGender3(v){
             if(v.gender){
-                if(v.gender==0)return "selected"
+                if(v.gender=="女")return "selected"
 				return "";
             }
             return ""
@@ -211,24 +212,21 @@
                     ids.push(_o[1]);
 				}
 			}
-            $.getJSON(api.checkIdentify+ids.join(",")+"&random="+Date.now(),function (rs) {
-                if(!rs.success) {layer.msg('身份证号码'+rs.data+'已入住了', {icon: 2,shift:6});}
-                else{
-                    var c = parent.customs;
-                    var b = [];
-                    for(var i=0;i<c.length;i++){
-                        if(c[i].roomId!=roomid){
-                            b.push(c[i])
-                        }
-                    }
-                    parent.customs = b.concat(dList);
-                    parent.updataTableByTogether(roomid,dList);
-                    no();
+
+			var c = parent.customs;
+			var b = [];
+			for(var i=0;i<c.length;i++){
+				if(c[i].roomId!=roomid){
+					b.push(c[i])
 				}
-            })
+			}
+			parent.customs = b.concat(dList);
+			parent.updataTableByTogether(roomid,dList);
+			no();
 
         }
         function checkIdentify(t,callback) {
+            return;
 			$.getJSON(api.checkIdentify+t.value+"&random="+Date.now(),function (rs) {
                 if(!rs.success) layer.msg('身份证号码'+t.value+'已入住了', {icon: 2,shift:6});
             })
