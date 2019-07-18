@@ -509,7 +509,9 @@
   </update>
 
   <update id="opeRoom">
-  update hm_room set lock_room_state = 'no',remark = #{remark}
+  update hm_room set lock_room_state = 'no',remark = #{remark},
+    lock_room_start_time = null,
+    lock_room_end_time = null
     where id in <foreach item="item" collection="list" open="(" separator="," close=")">
     #{item}
   </foreach>

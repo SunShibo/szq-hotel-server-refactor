@@ -594,8 +594,8 @@ public class RoomService {
         List<String> dates = querSeTime(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
         log.info("两段时间区间的每一天日期:{}", dates);
 
-        String start = checkTime + " 06:00:00";
-        String end = checkTime + " 05:59:59";
+        String start = checkTime + " 14:00:00";
+        String end = checkTime + " 06:00:00";
 
         log.info("checkTime:{}", checkTime);
         log.info("endTime:{}", endTime);
