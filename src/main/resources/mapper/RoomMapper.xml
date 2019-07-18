@@ -406,6 +406,9 @@
     <if test="roomAuxiliaryStatusStand != null and roomAuxiliaryStatusStand !='' ">
      and  hm_room.room_auxiliary_status_stand = #{roomAuxiliaryStatusStand}
     </if>
+    <if test="roomMajorState != null and roomMajorState != ''">
+      and room_major_state = #{roomMajorState}
+    </if>
     <if test="list != null and list.size() > 0 ">
       and hm_room.id in
       <foreach item="item" collection="list" open="(" separator="," close=")">

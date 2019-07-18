@@ -1,5 +1,6 @@
 package com.szq.hotel.web.controller;
 
+import com.szq.hotel.dao.RoomDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.entity.dto.RoomStateDTO;
@@ -173,7 +174,7 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/quertRm")
     public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime,
                         String endTime, String roomTypeId, String roomAuxiliaryStatus,
-                        String phone){
+                        String phone, String state){
         AdminBO loginUser = super.getLoginAdmin(request);
 
         if(StringUtils.isEmpty(phone)){
@@ -219,6 +220,10 @@ public class RoomController extends BaseCotroller {
         map.put("endTime", endTime);
         map.put("roomTypeId", roomTypeId);
         map.put("phone", phone);
+
+        if("yes".equals(state)){
+            map.put("roomMajorState", "vacant");
+        }
 
 
         List<List<RmBO>> lists = roomService.queryRm(map);
@@ -546,7 +551,6 @@ public class RoomController extends BaseCotroller {
         Integer[] idArr = JsonUtils.getIntegerArray4Json(ids);
         List<Integer> list = Arrays.asList(idArr);
         List<Integer> arrList = new ArrayList(list);
-
         log.info("list:{}",arrList);
         log.info("state:{}",state);
         log.info("checkTime:{}",checkTime);
@@ -555,5 +559,11 @@ public class RoomController extends BaseCotroller {
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
         super.safeJsonPrint(response, result);
         return;
+    }
+
+    @RequestMapping("/todayPictureView")
+    public void todayPictureView(HttpServletRequest request, HttpServletResponse response){
+        //查询今天
+
     }
 }

@@ -6,6 +6,7 @@ import com.szq.hotel.dao.RoomRecordDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.OcDTO;
 import com.szq.hotel.entity.dto.RoomStateDTO;
+import com.szq.hotel.entity.dto.RoomTypeCountDTO;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.web.controller.RoomController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -776,6 +777,34 @@ public class RoomService {
     //锁房时间到了 把锁房状态修改为未锁房
     public Integer updRoom(){
         return roomDAO.updRoom();
+    }
+
+    public Map<String, Object> todayPictureView(Integer hotelId){
+        //查询当天各房型 可用数量 入住中数量 预约中数量 以及计算出入住率
+        HashMap<String, Object> map = new HashMap<String, Object>();
+
+        //获取当前时间
+        Date date = new Date();
+        //获取明天早上六点的时间
+        Date date1 = lDate(quDate(6, 0, 0), 1);
+
+        //查询今天房型可用数量
+        Map<String, Object> mp = new HashMap<String, Object>();
+        mp.put("vacant","vacant");
+        //查询中当前酒店有多少房型
+        mp.put("checkTime", date);
+        mp.put("endTime", date1);
+        List<RtBO> rtBOS = roomDAO.queryRt(hotelId);
+        List<RoomTypeCountDTO> list = new ArrayList<RoomTypeCountDTO>();
+        for (RtBO rtBO : rtBOS) {
+            RoomTypeCountDTO roomTypeCountDTO = new RoomTypeCountDTO();
+            mp.put("roomTypeId",rtBO.getId());
+            List<RmBO> rmBOS = publicQuery(mp);
+            roomTypeCountDTO.setName(rtBO.getRoomTypeName());
+            roomTypeCountDTO.setCount(rmBOS.size());
+            /*roomTypeCountDTO.setCountChinkRoom();*/
+        }
+        return null;
     }
 
 }
