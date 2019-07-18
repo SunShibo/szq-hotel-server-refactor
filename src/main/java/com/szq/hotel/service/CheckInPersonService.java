@@ -1,7 +1,6 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.dao.CheckInPersonDAO;
-import com.szq.hotel.dao.TestDAO;
 import com.szq.hotel.entity.bo.CheckInPersonBO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

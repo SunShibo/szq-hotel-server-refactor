@@ -1,7 +1,6 @@
 package com.szq.hotel.dao;
 
-import com.szq.hotel.entity.bo.BuyerBuyingBO;
-import com.szq.hotel.entity.bo.ChildOrderBO;
+import com.szq.hotel.entity.bo.*;
 import org.apache.ibatis.annotations.Param;
 import java.math.BigDecimal;
 import java.util.List;
@@ -85,8 +84,25 @@ public interface ChildOrderDAO {
 
     void updateOrderUserId(@Param("id") Integer orderChildId,@Param("meId") Integer meId);
 
-    /**
-     * 通过id查询订单记录
-     */
+    List<RoomRateBO> queryOrderChild();
 
+    /**
+     * 查询没有过夜审的房费记录
+     * @param id
+     * @return
+     */
+    List<EverydayRoomPriceBO> queryRoomPrice(@Param("id") Integer id,@Param("time") String time);
+
+    /**
+     * 查询入住人姓名
+     * @param childId
+     * @return
+     */
+    CommonBO queryChildName(Integer childId);
+
+    /**
+     * 修改夜审状态
+     * @param id
+     */
+    void updateRoomPrice(Integer id);
 }

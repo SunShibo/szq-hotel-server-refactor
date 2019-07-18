@@ -712,5 +712,14 @@ public class DateUtils {
 	}
 
 
+	/**
+	 * 获取今天早4点字符串
+	 */
+	public static String getFourPointsStr(){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd 04:00:00");
+		String format = simpleDateFormat.format(new Date());
+		return format;
 	}
+
+}
 

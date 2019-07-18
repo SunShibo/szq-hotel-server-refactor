@@ -26,7 +26,7 @@ public class ChildOrderBO extends BaseModel {
     private String channel;//渠道
     private String passengerSource;//客源
     private String OTA;
-    private String orderNumer;//订单
+    private String orderNumber;//订单
     private String main;//主账房
     private Integer membersId;
 
@@ -191,12 +191,12 @@ public class ChildOrderBO extends BaseModel {
         this.OTA = OTA;
     }
 
-    public String getOrderNumer() {
-        return orderNumer;
+    public String getOrderNumber() {
+        return orderNumber;
     }
 
-    public void setOrderNumer(String orderNumer) {
-        this.orderNumer = orderNumer;
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public String getMain() {

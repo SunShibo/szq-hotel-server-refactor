@@ -92,6 +92,7 @@ public class HomeService {
                         if (homeOrderBO.getCash() < homeOrderBO.getTotal()) {
                             homeRoomBO.setBalance(Constants.YES.getValue());
                         }
+                        //预离状态
                         if (homeOrderBO.getEndTime().compareTo(startTime) == 1 && endTime.compareTo(homeOrderBO.getEndTime()) == 1) {
                             homeRoomBO.setOutStatus(Constants.YES.getValue());
                         }
@@ -155,12 +156,6 @@ public class HomeService {
         return  homeDAO.queryRoomTypeNum(hotelId);
     }
 
-    /**
-     * 查询房态类型数量
-     */
-    public void test(){
-
-    }
 
 
 
