@@ -406,7 +406,7 @@
     <if test="roomAuxiliaryStatusStand != null and roomAuxiliaryStatusStand !='' ">
      and  hm_room.room_auxiliary_status_stand = #{roomAuxiliaryStatusStand}
     </if>
-    <if test="list.size() > 0">
+    <if test="list != null and list.size() > 0 ">
       and hm_room.id in
       <foreach item="item" collection="list" open="(" separator="," close=")">
         #{item}
@@ -500,13 +500,19 @@
   <update id="closeRoom">
     update hm_room set lock_room_state = 'yes',
     lock_room_start_time = #{startTime},
-    lock_room_end_time = #{endTime}
-    where id = #{roomId}
+    lock_room_end_time = #{endTime},
+    remark = #{remark}
+    where id in
+    <foreach item="item" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
   </update>
 
   <update id="opeRoom">
-  update hm_room set lock_room_state = 'no'
-    where id = #{roomId}
+  update hm_room set lock_room_state = 'no',remark = #{remark}
+    where id in <foreach item="item" collection="list" open="(" separator="," close=")">
+    #{item}
+  </foreach>
   </update>
 
   <select id="querRoomTypeCount" resultType="java.lang.Integer">

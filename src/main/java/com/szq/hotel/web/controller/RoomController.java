@@ -147,25 +147,25 @@ public class RoomController extends BaseCotroller {
     public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state) {
         Map<String, Object> map = new HashMap<String, Object>();
         Jedis jedis = new Jedis();
-        UUID requestId = UUID.randomUUID();
+        String requestId = request.getSession().getId();
         System.err.println(requestId);
-        if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId.toString(), 5000))) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("请重试"));
+        if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 5000))) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));
             super.safeJsonPrint(response, result);
             return;
         }
         map.put("id", id);
         map.put("state", state);
         roomService.updateroomMajorState(map);
-        /*try {
+        try {
             Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
         super.safeJsonPrint(response, result);
-        RedisTool.releaseDistributedLock(jedis,"500",requestId.toString());
+        RedisTool.releaseDistributedLock(jedis,"500",requestId);
         return;
     }
 
@@ -451,7 +451,7 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/updatelockRoomState")
     public void updatelockRoomState(HttpServletRequest request, HttpServletResponse response,
                                     String startTime, String endTime,
-                                    Integer roomId, String state){
+                                    String roomId, String state, String remark){
         AdminBO loginAdmin = super.getLoginAdmin(request);
         if(loginAdmin == null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
@@ -471,6 +471,9 @@ public class RoomController extends BaseCotroller {
             log.info("result{}",result);
             return;
         }
+        Integer[] idArr = JsonUtils.getIntegerArray4Json(roomId);
+        List<Integer> list = Arrays.asList(idArr);
+        List<Integer> arrList = new ArrayList(list);
         Jedis jedis = new Jedis();
         UUID requestId = UUID.randomUUID();
         System.err.println(requestId);
@@ -495,13 +498,13 @@ public class RoomController extends BaseCotroller {
             }
 
 
-            roomService.closeRoom(startTime,endTime,roomId);
+            roomService.closeRoom(startTime,endTime,arrList,remark);
 
         }
 
         //开锁
         if("ope".equals(state)){
-            roomService.opeRoom(roomId);
+            roomService.opeRoom(arrList,remark);
         }
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
         super.safeJsonPrint(response, result);
@@ -553,5 +556,4 @@ public class RoomController extends BaseCotroller {
         super.safeJsonPrint(response, result);
         return;
     }
-
 }

@@ -663,12 +663,12 @@ public class RoomService {
         return ls;
     }
 
-    public void closeRoom(String startTime, String endTime, Integer roomId) {
-        roomDAO.closeRoom(startTime, endTime, roomId);
+    public void closeRoom(String startTime, String endTime, List<Integer> list, String remark) {
+        roomDAO.closeRoom(startTime, endTime, list, remark);
     }
 
-    public void opeRoom(Integer roomId) {
-        roomDAO.opeRoom(roomId);
+    public void opeRoom(List<Integer> list, String remark) {
+        roomDAO.opeRoom(list,remark);
     }
 
     public Map<String, Object> verificationRoom(List<Integer> list, String state, String checkTime, String endTime, Integer hotelId) {

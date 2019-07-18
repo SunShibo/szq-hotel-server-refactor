@@ -119,9 +119,10 @@ public interface RoomDAO {
      */
     RoomBO queryRooms(@Param("name")String name, @Param("hotelId")Integer hotelId);
 
-    void closeRoom(@Param("startTime")String startTime, @Param("endTime")String endTime, @Param("roomId")Integer roomId);
+    void closeRoom(@Param("startTime")String startTime, @Param("endTime")String endTime,
+                   @Param("list")List<Integer> list,@Param("remark")String remark);
 
-    void opeRoom(@Param("roomId")Integer roomId);
+    void opeRoom( @Param("list")List<Integer> list,@Param("remark")String remark);
 
     /**
      * 查询酒店下各种房型房间数量
