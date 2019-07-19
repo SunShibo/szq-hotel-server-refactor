@@ -323,7 +323,9 @@ public class OrderController extends BaseCotroller {
         List<OrderChildBO> orderChildBOS=orderService.getPayInfo(orderId);
         for (OrderChildBO orderChild:orderChildBOS) {
             if("yes".equals(orderChild.getMain())){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderChild));
+                List<OrderChildBO> oneOrderChild=new ArrayList<OrderChildBO>();
+                oneOrderChild.add(orderChild);
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(oneOrderChild));
                 super.safeJsonPrint(response, result);
                 return;
             }
