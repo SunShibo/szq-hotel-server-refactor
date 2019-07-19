@@ -129,7 +129,7 @@ public class OrderController extends BaseCotroller {
             for (CheckInPersonBO personBO : personBOS) {
                 idSet.add(personBO.getCertificateNumber());
                 idList.add(personBO.getCertificateNumber());
-                if (checkInPersonService.checkId(personBO.getCertificateNumber(), orderId) > 0) {
+                if (checkInPersonService.checkId(personBO.getCertificateNumber()) > 0) {
                     String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094", personBO.getCertificateNumber() + "此证件信息为在住状态"));
                     return result;
                 }
@@ -520,7 +520,7 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        Integer count=checkInPersonService.checkId(id,null);
+        Integer count=checkInPersonService.checkId(id);
         if(count>0){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094","身份证信息为在住状态")) ;
             super.safeJsonPrint(response, result);
