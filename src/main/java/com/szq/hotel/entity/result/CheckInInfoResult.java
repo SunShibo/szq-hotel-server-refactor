@@ -2,14 +2,15 @@ package com.szq.hotel.entity.result;
 
 import com.szq.hotel.entity.bo.CheckInPersonBO;
 
+import java.util.Date;
 import java.util.List;
 
 //首页在住信息
 public class CheckInInfoResult {
     private Integer orderId;//主订单id
     private Integer orderChildId;//子订单id
-    private String startTime;//入住时间
-    private String endTime;//离店时间
+    private Date startTime;//入住时间
+    private Date endTime;//离店时间
     private String totalConsumption;//花费金额
     private String sumPayment;//支付金额
     private String alRoomCode;//联房码
@@ -75,22 +76,6 @@ public class CheckInInfoResult {
 
     public void setOrderChildId(Integer orderChildId) {
         this.orderChildId = orderChildId;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
     }
 
     public String getTotalConsumption() {

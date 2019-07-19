@@ -122,8 +122,6 @@ public class OrderService {
             }
 
         }
-
-
         //新选的房间或者修改了房间的房型 id传过来为null 代表xin子订单
         for (OrderChildBO orderChildBONew : orderChildBOList) {
             if (orderChildBONew.getId() == null) {
