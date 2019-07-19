@@ -1,8 +1,8 @@
-<!DOCTYPE html><!-  预约入住使用 ->
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>选房</title>
+	<title>预约入住选房间</title>
 	<script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body style="width: 800px;background: #eee;">
@@ -48,15 +48,16 @@
 <section style="height: 50px;"></section>
 <section style="padding: 20px;position: absolute;bottom: 0px;right: 0px;">
 	<button class="layui-btn layui-btn-normal" onclick="yes();">确定</button>
-	<button class="layui-btn layui-btn-warm" onclick="no();">取消</button>
+	<button class="layui-btn layui-btn-warm" onclick="no();">关闭</button>
 </section>
 
 
 
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var $,element,$b,$remove,seleted=parent.sRooms,allRoom,getSel=[];
+    var $,element,$b,$remove,seleted=parent.sRooms1,allRoom,getSel=[];
     var downSelected = [];
+    var yyrzxf  =  JSON.parse(localStorage.yyrzxf);
     layui.use(['element', 'jquery', 'table'], function () {
         element = layui.element,
             $ = jQuery = layui.$;
@@ -68,20 +69,9 @@
         $doc.on("click","#typeList p",function(){
             $("#typeList p").removeClass("room-type-selected");
             $(this).addClass("room-type-selected");
-            var par = "";
-            if($(this).data("id")){
-                par+="&houseTypeId="+$(this).data("id")
-            }
-            if(getUrl("phoneNumber"))par+="&phoneNumber="+getUrl("phoneNumber")
-            if(getUrl("idNumber"))par+="&idNumber="+getUrl("idNumber")
-            if(getUrl("endTime"))par+="&endTime="+getUrl("endTime").replace(/-/, "/").replace(/-/, "/")
-            if(getUrl("startTime"))par+="&startTime="+getUrl("startTime").replace(/-/, "/").replace(/-/, "/")
-            if(getUrl("inWay"))par+="&inWay="+getUrl("inWay")
-            if(getUrl("dayNumber"))par+="&dayNumber="+getUrl("dayNumber")
-            if(getUrl("cnId"))par+="&cnId="+getUrl("cnId")
-            if(getUrl("channel"))par+="&channel="+getUrl("channel")
-            if(getUrl("orderNumber"))par+="&orderNumber="+getUrl("orderNumber")
-            dealHouse(par);
+
+            //点击房型处理数据///根据房型id查询过滤房间数据
+            dealHouse($(this).data("id"));//参数是房型id
         })
         $doc.on("click",".pick-jf",function(){
             var _d = findRoomById($(this).data("id"));
@@ -91,129 +81,123 @@
                 dealUnSel(_d);
             }else{
                 $(this).addClass("pick-jf-selected");
-                console.info(_d)
                 dealSel(_d);
             }
         })
-        var _urll = api.getEditScheduleRoomType+"";
-        if(getUrl("phoneNumber"))_urll+="&phoneNumber="+getUrl("phoneNumber")
-        if(getUrl("idNumber"))_urll+="&idNumber="+getUrl("idNumber")
-        if(getUrl("endTime"))_urll+="&endTime="+getUrl("endTime").replace(/-/, "/").replace(/-/, "/")
-        if(getUrl("startTime"))_urll+="&startTime="+getUrl("startTime").replace(/-/, "/").replace(/-/, "/")
-        if(getUrl("inWay"))_urll+="&inWay="+getUrl("inWay")
-        if(getUrl("dayNumber"))_urll+="&dayNumber="+getUrl("dayNumber")
-        if(getUrl("cnId"))_urll+="&cnId="+getUrl("cnId")
-        if(getUrl("channel"))_urll+="&channel="+getUrl("channel")
-        if(getUrl("orderNumber"))_urll+="&orderNumber="+getUrl("orderNumber")
-        $.getJSON(_urll+"&random="+Date.now(),function (rs) {
-            var $typeList = $("#typeList");
-            var str = '<p class="room-type-selected">不限</p>';
-            $typeList.empty();
-            try{
-                var r = rs.data;
-                for(var i=0;i<r.length;i++){
-                    str+='<p data-id="'+r[i].id+'">'+r[i].name+'（'+r[i].count+'）</p>'
-                }
-                $typeList.append(str);
-            }catch(err){
-                alert(err);
+        $doc.on("click",".pick-zf",function(){
+            var _d = findRoomById($(this).data("id"));
+            if($(this).hasClass("pick-zf-selected")){
+                $(this).removeClass("pick-zf-selected")
+                // console.log($(this).html())
+                dealUnSel(_d);
+            }else{
+                $(this).addClass("pick-zf-selected");
+                dealSel(_d);
             }
         })
 
-        var par = "";
-        if(getUrl("phoneNumber"))par+="&phoneNumber="+getUrl("phoneNumber")
-        if(getUrl("idNumber"))par+="&idNumber="+getUrl("idNumber")
-        if(getUrl("endTime"))par+="&endTime="+getUrl("endTime").replace(/-/, "/").replace(/-/, "/")
-        if(getUrl("startTime"))par+="&startTime="+getUrl("startTime").replace(/-/, "/").replace(/-/, "/")
-        if(getUrl("inWay"))par+="&inWay="+getUrl("inWay")
-        if(getUrl("dayNumber"))par+="&dayNumber="+getUrl("dayNumber")
-        if(getUrl("cnId"))par+="&cnId="+getUrl("cnId")
-        if(getUrl("channel"))par+="&channel="+getUrl("channel")
-        if(getUrl("orderNumber"))par+="&orderNumber="+getUrl("orderNumber")
-        dealHouse(par)
-        dealReShow();
+        //查询房间类型
+        $.ajax({
+            url: "room/queryRoomTypeNum",
+            type: 'post',
+            dataType: "json",
+            data:JSON.parse(localStorage.yyrzxf),
+            success: function (rs) {
+                var $typeList = $("#typeList");
+                var str = '<p class="room-type-selected">不限</p>';
+                $typeList.empty();
+                try{
+                    var r = rs.data;
+                    for(var i=0;i<r.length;i++){
+                        str+='<p data-id="'+r[i].id+'">'+r[i].name+'（'+r[i].count+'）</p>'
+                    }
+                    $typeList.append(str);
+                }catch(err){
+                    alert(err);
+                }
+                dealReShow();
+            }
+        })
+
+        dealHouse()
+
 
 
 
     });
     function yes(){
-        var par = '';
-        if(getUrl("phoneNumber"))par+="&phoneNumber="+getUrl("phoneNumber")
-        if(getUrl("idNumber"))par+="&idNumber="+getUrl("idNumber")
-        if(getUrl("endTime"))par+="&endTime="+getUrl("endTime").replace(/-/, "/").replace(/-/, "/")
-        if(getUrl("startTime"))par+="&startTime="+getUrl("startTime").replace(/-/, "/").replace(/-/, "/")
-        if(getUrl("inWay"))par+="&inWay="+getUrl("inWay")
-        if(getUrl("dayNumber"))par+="&dayNumber="+getUrl("dayNumber")
-        if(getUrl("cnId"))par+="&cnId="+getUrl("cnId")
-        if(getUrl("channel"))par+="&channel="+getUrl("channel")
-        if(getUrl("orderNumber"))par+="&orderNumber="+getUrl("orderNumber");
-        if(getUrl("memberRankId"))par+="&memberRankId="+getUrl("memberRankId");
-        par+="&roomIds="+getRoomIds();
-        var index = layer.load(1,{time:10*1000});
-        $.getJSON("/room/orderCheckIn?v=1"+"&random="+Date.now()+par,function (rs) {
-            if(rs.data){
-                var o = rs.data;
-                parent.parSelectRoom(o);
-                no();
-            }else{
-                layer.alert("房间选择有误")
-                return false;
+        for(var i=0;i<seleted.length;i++){
+            if(!seleted[i]['roomId']){
+                seleted[i]['roomId'] = seleted[i]['id']+"";
             }
-            layer.close(index);
-
-        })
-
-        // parent.parSelectRoom(seleted);
-        // no();
+            if(seleted[i]['roomType']){
+                seleted[i]['roomTypeName'] = seleted[i]['roomType']+"";
+			}
+            if(seleted[i]['roomName']){
+                seleted[i]['roomNum'] = seleted[i]['roomName']+"";
+            }
+		}
+        parent.parSelectRoom(seleted);
+        no();
     }
 
-    function dealHouse(par) {
-        var urll = api.getEditScheduleRoom+par;
+    function dealHouse(typeid) {
+        var par = JSON.parse(JSON.stringify(yyrzxf));
+        if(typeid){
+            par.roomTypeId = typeid;
+        }
         var index = layer.load(1,{time:10*1000});
-        $.getJSON(urll+"&random="+Date.now(),function (rs) {
-            console.info(rs)
-            layer.close(index);
-            var d  = rs.data;
-            allRoom = d;
-            d = d.sort(compare("floorId"));
-            var t = madeArr(d);
-            var $houseList = $("#houseList");
-            var str = '';
-            $houseList.empty();
-            try{
-                // var r = rs.data;
-                for(var i=0;i<t.length;i++){
+        $.ajax({
+            url: api.pickRoomQuery,
+            type: 'post',
+            dataType: "json",
+            data:par,
+            success: function (rs) {
+                layer.close(index);
 
-                    str+=['<div class="prc-row">',
-                        '<p>',
-                        t[i][0].hotelName,
-                        '</p>',
-                        '<p>',
-                        t[i][0].floorName,
-                        '</p>',
-                        '	<div>'].join("");
-                    var aa = t[i];
-                    t[i] = aa.sort(compare("roomNum"));
+                var t = allRoom = rs.data;
 
-                    for(var j=0;j<t[i].length;j++){
-                        // console.info(t[i][j])
-                        str+=['<span data-id="',
-                            t[i][j].roomId,
-                            '" class="',
-                            checkSel(t[i][j]),
-                            ' pick-fj ',
-                            getState(t[i][j].state),
-                            '">',
-                            t[i][j].roomNum,
-                            '</span>'].join("")
+                // d = d.sort(compare("floorId"));
+                // var t = madeArr(d);
+                var $houseList = $("#houseList");
+                var str = '';
+                $houseList.empty();
+                try {
+                    // var r = rs.data;
+                    for (var i = 0; i < t.length; i++) {
+                        if(t[i].length==0)continue;
+                        str += ['<div class="prc-row">',
+                            '<p>',
+                            t[i][0].hotelName,
+                            '</p>',
+                            '<p>',
+                            t[i][0].floorName,
+                            '</p>',
+                            '	<div>'].join("");
+                        var aa = t[i];
+                        t[i] = aa.sort(compare("roomName"));
+
+                        for (var j = 0; j < t[i].length; j++) {
+                            // console.info(t[i][j])
+                            str += ['<span data-id="',
+                                t[i][j].id,
+                                '" class="',
+                                checkSel(t[i][j]),
+                                ' pick-fj ',
+                                getState(t[i][j].roomMajorState),
+                                '">',
+                                t[i][j].roomName,
+                                '</span>'].join("")
+                        }
+                        str += "</div></div>";
                     }
-                    str+="</div></div>";
+
+                    $houseList.append(str);
+                } catch (err) {
+                    // alert(err);
+                    console.log(err)
+
                 }
-
-                $houseList.append(str);
-            }catch(err){
-                alert(err);
-
             }
         })
     }
@@ -234,83 +218,68 @@
     }
 
     function getState(v) {
-        if(v==1)return ' pick-jf';
-        if(v==4)return ' pick-ylf';
-        if(getUrl("vv")&&v==3) return ' pick-jf';
+        // console.log(getUrl("vv"))
+        if(v=='vacant'||v=='inthe'||v=='timeout')return ' pick-jf';//房间主状态 vacant 空房 inthe在住 timeout超时 dirty脏房
+        // if(v==4)return ' pick-ylf';
+        // if(getUrl("vv")&&v==3) return ' pick-jf';
         return ' pick-zf'
     }
 
     function dealSel(d,flag) {
-        // debugger;
         // 处理选择房间
         var str = '';
-        var typeid='';
-        if(d.roomType){
-            typeid = d.roomType;
-        }else if(d.houseTypeId){
-            typeid = d.houseTypeId;
-        }
+
         if(flag){
             if(checkTypeByReShow(d)){
+                $("#houseType"+d.roomTypeId).append( '<span class="pick-fj pick-selected" id="id'+d.id+'">'+d.roomName+'</span>');
 
-                $("#houseType"+typeid).append( '<span class="pick-fj pick-selected" id="roomId'+d.roomId+'">'+d.roomNum+'</span>');
-                $("#selNum"+typeid).text($("#houseType"+typeid).find("span").length)
+                $("#selNum"+d.roomTypeId).text($("#houseType"+d.roomTypeId).find("span").length)
             }else{
                 $("#selList").append([ '<div class="prc-row" id="houseWP',
-                    typeid,
+                    d.roomTypeId,
                     '">',
                     '<p class="pick-room-type-sel">',
-                    d.roomTypeName,
+                    d.roomType,
                     '</p>',
                     '<p id="selNum',
-                    typeid,
+                    d.roomTypeId,
                     '">1</p>',
                     '<div id="houseType',
-                    typeid,
+                    d.roomTypeId,
                     '">',
-                    '<span class="pick-fj pick-selected" id="roomId',
-                    d.roomId,
+                    '<span class="pick-fj pick-selected" id="id',
+                    d.id,
                     '">',
-                    d.roomNum,
+                    d.roomName,
                     '</span></div></div>'].join(""));
             }
 
 
         }else{
 
-// debugger;
-            if(checkType(d)){
-                if(d.houseTypeId){
-                    $("#houseType"+d.houseTypeId).append( '<span class="pick-fj pick-selected" id="roomId'+d.roomId+'">'+d.roomNum+'</span>');
-                    $("#selNum"+d.houseTypeId).text($("#houseType"+d.houseTypeId).find("span").length)
-				}else if(d.roomType){
-                    $("#houseType"+d.roomType).append( '<span class="pick-fj pick-selected" id="roomId'+d.roomId+'">'+d.roomNum+'</span>');
-                    $("#selNum"+d.roomType).text($("#houseType"+d.roomType).find("span").length)
-				}
 
+            if(checkType(d)){
+                $("#houseType"+d.roomTypeId).append( '<span class="pick-fj pick-selected" id="id'+d.id+'">'+d.roomName+'</span>');
+
+
+                $("#selNum"+d.roomTypeId).text($("#houseType"+d.roomTypeId).find("span").length)
             }else{
-                var typeid = '';
-                if(d.houseTypeId){
-                    typeid = d.houseTypeId
-                }else if(d.roomType){
-                    typeid = d.roomType
-				}
                 $("#selList").append([ '<div class="prc-row" id="houseWP',
-                    typeid,
+                    d.roomTypeId,
                     '">',
                     '<p class="pick-room-type-sel">',
-                    d.roomTypeName,
+                    d.roomType,
                     '</p>',
                     '<p id="selNum',
-                    typeid,
+                    d.roomTypeId,
                     '">1</p>',
                     '<div id="houseType',
-                    typeid,
+                    d.roomTypeId,
                     '">',
-                    '<span class="pick-fj pick-selected" id="roomId',
-                    d.roomId,
+                    '<span class="pick-fj pick-selected" id="id',
+                    d.id,
                     '">',
-                    d.roomNum,
+                    d.roomName,
                     '</span></div></div>'].join(""));
 
             }
@@ -320,36 +289,28 @@
 
     }
     function findRoomById(id) {
-        for(var i=0;i<allRoom.length;i++){
-            if(id==allRoom[i].roomId){
-                return allRoom[i];
+        var ttt =  [].concat.apply([],allRoom);
+        for(var i=0;i<ttt.length;i++){
+            if(id==ttt[i].id){
+                return ttt[i];
             }
         }
     }
 
     function checkType(d) {
         var flag = false;
-
         for(var i=0;i<seleted.length;i++){
-            if(seleted[i].roomType&&d.roomType){
-                if(seleted[i].roomType == d.roomType) {
-                    flag = true;
-                    break;
-                }
-			}else if(seleted[i].houseTypeId&&d.houseTypeId){
-                if(seleted[i].houseTypeId == d.houseTypeId) {
-                    flag = true;
-                    break;
-                }
-			}
-
+            if(seleted[i].roomTypeId == d.roomTypeId) {
+                flag = true;
+                break;
+            }
         }
         return flag;
     }
     function dealUnSel(d) {//处理取消选择
         for(var i=0;i<seleted.length;i++){
             // for(var j=0;j<seleted[i].length;j++){
-            if(seleted[i].roomId == d.roomId) {
+            if(seleted[i].id == d.id) {
                 seleted.splice(i,1);
                 dealReShow();
                 break;
@@ -360,7 +321,7 @@
     function checkSel(d) {
         var dd = [].concat.apply([],seleted);
         for(var i=0;i<dd.length;i++){
-            if(dd[i].roomId == d.roomId) {
+            if(dd[i].id == d.id) {
                 return "pick-jf-selected";
                 break;
             }
@@ -368,12 +329,12 @@
     }
     function dealReShow() {//处理已经选择房间回写
         var d  = [].concat.apply([],seleted);
-        console.info('处理已经选择房间回写')
+
         // console.info(d)
         $("#selList").empty();
         tempSel = [];
         if(!d.length)return;
-        if(d[0].roomId==0){
+        if(d[0].id==0){
             seleted = [];
             return;
         }
@@ -388,37 +349,13 @@
         console.info(tempSel)
         var flag = false;
         for(var i=0;i<tempSel.length;i++){
-
-            if(tempSel[i].roomType&&d.roomType){
-                if(tempSel[i].roomType == d.roomType) {
-                    flag = true;
-                    break;
-                }
-			}else if(tempSel[i].houseTypeId && d.houseTypeId){
-                if(tempSel[i].houseTypeId == d.houseTypeId) {
-                    flag = true;
-                    break;
-                }
-			}
+            if(tempSel[i].roomTypeId == d.roomTypeId) {
+                flag = true;
+                break;
+            }
         }
         tempSel.push(d);
         return flag;
-    }
-    function getRoomIds() {
-        console.log(seleted)
-        var ids = [];
-        for(var i=0;i<seleted.length;i++){
-            ids.push(seleted[i]['roomId'])
-        }
-        return ids.join(",")
-    }
-    function getRoomTypes() {
-        console.log(seleted)
-        var ids = [];
-        for(var i=0;i<seleted.length;i++){
-            ids.push(seleted[i]['roomType'])
-        }
-        return ids.join(",")
     }
 </script>
 </body>

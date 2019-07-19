@@ -1,5 +1,6 @@
 clearModifyPrice();
 function modifyPrice() {
+
     //console.log(sRooms)
     var inWay = state.roomType;
     var phoneNumber = $("#phoneNumber").val();
@@ -31,7 +32,6 @@ function modifyPrice() {
 
     layer.open({
         area: ['1000px', '420px'],
-        // area : ['100%', '100%'],
         type: 2,
         content: "iframe_mondifyPrice.html?v=" + Date.now()
         +"&inWay="+inWay
@@ -56,7 +56,7 @@ function getTypeIds() {
 
 function parModifyPrice() {
     if(localStorage.modifyPrice){
-        // debugger;
+
         var _mp = JSON.parse(localStorage.modifyPrice);
         var _total = 0;
         _mp.map(function (curr,index) {
@@ -66,9 +66,19 @@ function parModifyPrice() {
                     _total+=(getRoomQuantity(curr['roomTypeId'])*Number(curr[i]));
                 }
             }
-            for(var i=0;i<sRooms.length;i++){
-                if(sRooms[i].id == curr['id']){
-                    sRooms[i]['hourRoomPrice'] = sRooms[i]['basicPrice'] = getOneDayPrice(_mp,curr['id']);
+            if(window.location.href.indexOf("appoint")>-1){
+                //表示预约入住页面
+                for(var i=0;i<sRooms.length;i++){
+                    if(sRooms[i].roomType == curr['roomTypeId']||sRooms[i].roomType == curr['roomTypeName']){
+                        sRooms[i]['hourRoomPrice'] = sRooms[i]['basicPrice'] = getOneDayPrice(_mp,curr['id']);
+                    }
+                }
+            }else{
+                //表示预约页面
+                for(var i=0;i<sRooms.length;i++){
+                    if(sRooms[i].id == curr['id']){
+                        sRooms[i]['hourRoomPrice'] = sRooms[i]['basicPrice'] = getOneDayPrice(_mp,curr['id']);
+                    }
                 }
             }
         })
@@ -101,8 +111,18 @@ function parModifyPrice() {
 }
 function getRoomQuantity (v){
     var _num=0;
-    sRooms.map(function (curr) {
-        if(curr['id']==v)_num+=1
-    })
+    if(window.location.href.indexOf("appoint")>-1){
+        //表示预约入住页面
+
+        sRooms.map(function (curr) {
+            if(curr['roomType']==v||curr['roomTypeId']==v)_num+=1
+        })
+    }else{
+        //表示预约页面
+
+        sRooms.map(function (curr) {
+            if(curr['id']==v)_num+=1
+        })
+    }
     return _num;
 }

@@ -112,7 +112,7 @@ var api = {
     , addChannel: '/CooperativePrice/add?name='
     , updateChannel: 'CooperativePrice/update'
     , homePage: '/roomMain/homePageInfo?v=1'//获取首页数据
-    , cashPay: '/checkin/cashPayment'//现金支付接口
+    , cashPay: '/order/pay'//现金支付接口000   ??  任何支付方式都走这个接口
     , queryPayment: '/checkin/queryPayment'//查询订单应支付金额
     , homeItemInfo: '/roomDetailsController/queryRoomInfo'//首页弹出层信息
     , delRoomItemPrice: '/room/deleteRoomPrice'//删除特殊价格

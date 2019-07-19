@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>修改价格</title>
-    <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+	<meta charset="UTF-8">
+	<title>修改价格</title>
+	<script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
 	<style>
 		input::-webkit-outer-spin-button,
 		input::-webkit-inner-spin-button {
@@ -20,7 +20,7 @@
 		}
 		.table-row{
 			display: table-row;
-			/*预约入住修改价格;*/
+			/*overflow: scroll;*/
 
 		}
 		.cell{
@@ -64,154 +64,161 @@
 	</style>
 </head>
 <body style="width: 960px;">
-		<div style="padding: 10px 0 0 20px">
-			<span>将每日房价统一修改为:&yen;</span>
-			<input type="number" id="unify" style="width: 100px;height: 30px;">
-			<button class="layui-btn" onclick="dealRsData(1);">批量修改</button>
-			<button class="layui-btn" onclick="dealRsData(2);">恢复标准价</button>
-		</div>
+<div style="padding: 10px 0 0 20px">
+	<span>将每日房价统一修改为:&yen;</span>
+	<input type="number" id="unify" style="width: 100px;height: 30px;">
+	<button class="layui-btn" onclick="dealRsData(1);">批量修改</button>
+	<button class="layui-btn" onclick="dealRsData(2);">恢复标准价</button>
+</div>
 
-    	<form>
+<form>
 
 
-			<div>
-				<section class="table" id="table">
+	<div>
+		<section class="table" id="table">
 
-				</section>
+		</section>
 
-				<section style="padding: 20px;position: absolute;bottom: 0px;right: 0px;">
-					<button class="layui-btn layui-btn-normal" lay-submit  lay-filter="formsubmit" >确定</button>
-					<button class="layui-btn layui-btn-warm" onclick="no();">取消</button>
-				</section>
-			</div>
-		</form>
+		<section style="padding: 20px;position: absolute;bottom: 0px;right: 0px;">
+			<button class="layui-btn layui-btn-normal" lay-submit  lay-filter="formsubmit" >确定</button>
+			<button class="layui-btn layui-btn-warm" onclick="no();">取消</button>
+		</section>
+	</div>
+</form>
 
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
-		var $,element,$b,$remove,selectDom,
-            dayNumber=getUrl("dayNumber"),
-			inWay=1,
-			phoneNumber=getUrl("phoneNumber"),
-			cnId=getUrl("cnId"),
-            roomTypeIds=getUrl("roomTypeIds"),
-            certificateNumnber = getUrl("certificateNumnber"),
-            rsd;
+    var $,element,$b,$remove,selectDom,
 
-  	  layui.use(['element', 'jquery', 'table','form'], function () {
-          element = layui.element,
-              $ = jQuery = layui.$,
-              form = layui.form,
-              $b = $("#body");
-		      // $rtitle = $("#rtitle");
-          	  $table = $("#table");
-		      // dealDays();
-		      getDatas();
-			  form.on('submit(formsubmit)', function(data) {
-				  submitInfo()
-				  return false;
-			  });
-      })
-        function dealDays() {
+        rsd;
 
-        	var str = '<div id="rtitle" class="table-row"><div class="cell "><div class="desc wp"><b>日期</b><b>房型</b></div></div>';
-			for(var i=0;i<dayNumber;i++){
-                str+= ['<div class="cell"><div class="wp">',
-                    DateToLStr(new Date(Date.now()+i*86400000)).split(" ")[0],
-                    '</div></div>'].join("")
-			}
-            $table.append(str+'</div>');
+    layui.use(['element', 'jquery', 'table','form'], function () {
+        element = layui.element,
+            $ = jQuery = layui.$,
+            form = layui.form,
+            $b = $("#body");
+        // $rtitle = $("#rtitle");
+        $table = $("#table");
+        // dealDays();
+        getDatas();
+        form.on('submit(formsubmit)', function(data) {
+            submitInfo()
+            return false;
+        });
+    })
+    function dealDays() {
 
+        var str = '<div id="rtitle" class="table-row"><div class="cell "><div class="desc wp"><b>日期</b><b>房型</b></div></div>';
+        for(var i=0;i<dayNumber;i++){
+            str+= ['<div class="cell"><div class="wp">',
+
+                DateToLStr(i*86400000).split(" ")[0],
+                '</div></div>'].join("")
         }
-		function getDatas() {
-  	      if(localStorage.modifyPrice){
-              rsd = JSON.parse(localStorage.modifyPrice);
-              dealRsData();
-              return;
-          }
-            var index = layer.load(1,{time:10*1000});
-  	      var pd = urlToObj(window.location.search);
+        $table.append(str+'</div>');
 
-            $.ajax({
-                data: pd,
-                type: "POST",
-                dataType: "JSON",
-                url: "/checkin/queryRoomTypePrice",
-                success: function (rs) {
-                    layer.close(index);
-                    // console.log(rs)
-                    if (!rs.success) {
-                    }else{
-                        rsd = rs.data;
-                        dealRsData();
-                    }
+    }
+    function DateToLStr(t) {
+        var dt = null;
+        // new Date(decodeURIComponent(getUrl("startTime"))).getTime();
+        // DateToLStr(new Date(Date.now()+i*86400000)).split(" ")[0];
+        if(!!getUrl("startTime")){
+            dt = new Date(new Date(decodeURIComponent(getUrl("startTime"))).getTime()+t);
+        }else{
+            dt = new Date(Date.now()+t);
+        }
+        try {
+            var y, m, m1, d, d1, h, h1, mm, mm1, s, s1;
+            y = dt.getFullYear();
+            m = dt.getMonth() + 1; //1-12
+            d = dt.getDate();
+            h = dt.getHours();
+            mm = dt.getMinutes();
+            s = dt.getSeconds();
+
+            m1 = (m < 10 ? "0" + m : m);
+            d1 = (d < 10 ? "0" + d : d);
+            h1 = (h < 10 ? "0" + h : h);
+            mm1 = (mm < 10 ? "0" + mm : mm);
+            s1 = (s < 10 ? "0" + s : s);
+            return "" + y + "-" + m1 + "-" + d1 + " " + h1 + ":" + mm1 + ":" + s1;
+        } catch (e) {
+            console.log("error");
+            return "";
+        }
+    }
+    function getDatas() {
+        if(localStorage.modifyPrice){
+            rsd = JSON.parse(localStorage.modifyPrice);
+            dealRsData();
+            return;
+        }
+
+    }
+    function urlToObj(str){
+        var obj = {};
+        var arr1 = str.split("?");
+        var arr2 = arr1[1].split("&");
+        for(var i=0 ; i < arr2.length; i++){
+            var res = arr2[i].split("=");
+            obj[res[0]] = res[1];
+        }
+        return obj;
+    }
+    function dealRsData(ff) {
+        $table.empty();
+        dealDays();
+        var str = '';
+        rsd.map(function(c,i){
+            str+=  ['<div class="table-row">',
+                '<div class="cell">',
+                c.roomTypeName,
+                '</div>',
+                _deal(c),
+                '</div>'].join("");
+        })
+        $table.append(str);
+        function _deal(r) {
+            var _str = '';
+            for(var j in r){
+                if(j.split('-').length>2&&j.indexOf('y')==-1){
+                    _str+=['<div class="cell">',
+                        '<input type="number" data-price="',
+                        r['y'+j] ? r['y'+j] : r[j],
+                        '" data-name="',
+                        r['roomTypeName'],
+                        '" data-date="',
+                        j,
+                        '" class="rti',
+                        r['roomTypeId'],
+                        '" value="',
+                        ff==1 ? $("#unify").val() : (ff==2&&r['y'+j]) ? r['y'+j] : r[j],
+                        '"><span>/',
+                        r['y'+j] ? r['y'+j] : r[j],
+                        '</span>',
+                        '</div>'].join("");
                 }
-            });
-
-        }
-        function urlToObj(str){
-            var obj = {};
-            var arr1 = str.split("?");
-            var arr2 = arr1[1].split("&");
-            for(var i=0 ; i < arr2.length; i++){
-                var res = arr2[i].split("=");
-                obj[res[0]] = res[1];
             }
-            return obj;
+            return _str;
         }
-        function dealRsData(ff) {
-            $table.empty();
-            dealDays();
-            var str = '';
-            rsd.map(function(c,i){
-                str+=  ['<div class="table-row">',
-                    '<div class="cell">',
-                    c.roomTypeName,
-                    '</div>',
-                    _deal(c),
-                    '</div>'].join("");
-            })
-            $table.append(str);
-            function _deal(r) {
-                var _str = '';
-                for(var j in r){
-                    if(j.split('-').length>2&&j.indexOf('y')==-1){
-                        _str+=['<div class="cell">',
-                            '<input type="number" data-price="',
-                            r['y'+j] ? r['y'+j] : r[j],
-							'" data-name="',
-                            r['roomTypeName'],
-							'" data-date="',
-                            j,
-							'" class="rti',
-							r['roomTypeId'],
-							'" value="',
-                       		 ff==1 ? $("#unify").val() : (ff==2&&r['y'+j]) ? r['y'+j] : r[j],
-                            '"><span>/',
-                            r['y'+j] ? r['y'+j] : r[j],
-                            '</span>',
-                            '</div>'].join("");
-                    }
-                }
-                return _str;
-            }
-        }
+    }
 
 
-        function submitInfo() {
-  	      var _arr = [];
-            rsd.map(function (c,i) {
-                var _o={roomTypeId:c['roomTypeId'],roomTypeName:c['roomTypeName']};
-				$(".rti"+c['roomTypeId']).each(function () {
-					// debugger;
-                    _o[this.dataset['date']]=this.value;
-                    _o['y'+this.dataset['date']] = this.dataset['price'];
-                })
-                _arr.push(_o);
+    function submitInfo() {
+        var _arr = [];
+        rsd.map(function (c,i) {
+            var _o={roomTypeId:c['roomTypeId'],roomTypeName:c['roomTypeName']};
+            $(".rti"+c['roomTypeId']).each(function () {
+                // debugger;
+                _o[this.dataset['date']]=this.value;
+                _o['y'+this.dataset['date']] = this.dataset['price'];
             })
-			localStorage.setItem("modifyPrice",JSON.stringify(_arr));
-            parent.parModifyPrice();
-            no();
-        }
+            _arr.push(_o);
+        })
+        localStorage.setItem("modifyPrice",JSON.stringify(_arr));
+        parent.parModifyPrice();
+        no();
+    }
 </script>
 </body>
 </html>

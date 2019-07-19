@@ -104,9 +104,11 @@
               $b = $("#body");
 		      // $rtitle = $("#rtitle");
           	  $table = $("#table");
-		      // dealDays();
+
+
 		      getDatas();
 			  form.on('submit(formsubmit)', function(data) {
+
 				  submitInfo()
 				  return false;
 			  });
@@ -153,8 +155,10 @@
             }
         }
 		function getDatas() {
+
   	      if(localStorage.modifyPrice){
               rsd = JSON.parse(localStorage.modifyPrice);
+
               dealRsData();
               return;
           }
@@ -171,7 +175,7 @@
             return obj;
         }
         function dealRsData(ff) {
-  	      // debugger;
+
             var sRooms = JSON.parse(localStorage.modifyPrice);
             $table.empty();
             dealDays();
@@ -186,9 +190,10 @@
             })
             $table.append(str);
             function _deal(r) {
-              //  debugger;
+
                 var _str = '';
                 for(var j in r){
+
                     if(j.split('-').length>2&&j.indexOf('y')==-1){
                         _str+=['<div class="cell">',
                             '<input type="number" data-price="',
@@ -214,7 +219,7 @@
 
         function submitInfo() {
   	      var _arr = [];
-  	       // debugger;
+
             rsd.map(function (c,i) {
                 var _o={
                     roomTypeId:c['roomTypeId'],
@@ -222,11 +227,16 @@
                     id:c['roomTypeId'],
                     name:c['roomTypeName']
                 };
-				$(".rti"+c['roomTypeId']).each(function () {
-					// debugger;
-                    _o[this.dataset['date']]=this.value;
-                    _o['y'+this.dataset['date']] = this.dataset['price'];
-                })
+
+                try{
+					$(".rti"+c['roomTypeId']).each(function () {
+
+						_o[this.dataset['date']]=this.value;
+						_o['y'+this.dataset['date']] = this.dataset['price'];
+					})
+                }catch (e){
+                    console.log(e)
+                }
                 _arr.push(_o);
             })
 			localStorage.setItem("modifyPrice",JSON.stringify(_arr));
