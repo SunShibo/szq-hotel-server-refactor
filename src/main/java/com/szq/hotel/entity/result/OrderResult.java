@@ -1,5 +1,7 @@
 package com.szq.hotel.entity.result;
 
+import java.util.Date;
+
 //在住 预离报表
 public class OrderResult {
     private String orderNumber;//订单号
@@ -9,8 +11,8 @@ public class OrderResult {
     private String roomName;//房号
     private String roomTypeName;//房型
     private String money;//当天价格
-    private String startTime;//入住日期
-    private String endTime;//结束日期
+    private Date startTime;//入住日期
+    private Date endTime;//结束日期
     private String payCashNum;//现金支付金额
     private String otherPayNum;//其他支付金额
     private String roomRate;//房费
@@ -73,19 +75,19 @@ public class OrderResult {
         this.money = money;
     }
 
-    public String getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 

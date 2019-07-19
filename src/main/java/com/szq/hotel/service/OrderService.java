@@ -53,6 +53,9 @@ public class OrderService {
     RoomTypeDAO roomTypeDAO;
 
     @Resource
+    RoomDAO roomDAO;
+
+    @Resource
     CashierSummaryService cashierSummaryService;
 
     //添加主订单 子订单 入住人 每日价格
@@ -398,6 +401,8 @@ public class OrderService {
     public OrderChildBO getOrderInfoById(Integer id) {
         //消费金额
         OrderChildBO orderChildBO = orderDAO.getOrderChildById(id);
+        //查询房态
+        RoomBO roomBO=roomDAO.getRoomBo(orderChildBO.getRoomId());
         //消费记录
         List<OrderRecoredBO> recordBOS = orderRecordDAO.queryOrderRecord(id);
         orderChildBO.setOrderRecoredBOS(recordBOS);

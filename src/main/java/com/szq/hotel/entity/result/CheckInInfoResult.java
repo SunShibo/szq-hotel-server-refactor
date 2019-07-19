@@ -19,6 +19,22 @@ public class CheckInInfoResult {
     private String OTA;//
     private String money;//当天房价
 
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     public String getOTA() {
         return OTA;
     }

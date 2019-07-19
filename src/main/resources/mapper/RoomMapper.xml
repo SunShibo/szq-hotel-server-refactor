@@ -559,4 +559,8 @@ and hotel_id = #{hotelId}
      hm_room.id IN(SELECT room_id FROM hm_order_child WHERE order_id = #{orderId} )
   </select>
 
+  <select id="getRoomBo" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RoomBO">
+      select * from hm_room where id=#{id}
+  </select>
+
 </mapper>

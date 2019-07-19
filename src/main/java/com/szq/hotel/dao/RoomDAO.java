@@ -153,4 +153,6 @@ public interface RoomDAO {
      * @param orderId
      */
     List<RmBO> queryRoomFx(Integer orderId);
+
+    RoomBO getRoomBo(Integer id);
 }

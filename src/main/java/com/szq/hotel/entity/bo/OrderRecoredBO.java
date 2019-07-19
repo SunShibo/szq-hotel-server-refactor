@@ -11,6 +11,7 @@ public class OrderRecoredBO extends BaseModel {
     private Integer orderChildId;//子订单id
     private String info;//详细信息
     private Integer createUserId;//创建用户id
+    private Integer createUserName;//创建用户id
     private String payType;//支付方式
     private BigDecimal money;//金额
     private String state;//状态

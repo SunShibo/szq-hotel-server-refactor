@@ -38,10 +38,19 @@ public class OrderChildBO extends BaseModel {
     private List<CheckInPersonBO> checkInPersonBOS;//入住人员信息
     private List<OrderRecoredBO> orderRecoredBOS;//消费记录信息
     private String createUserName;//操作员姓名
+    private String roomMajorState;//房态
     private String name;//第一个入住人员姓名
     private String createTime;//第一个入住人员入住时间
     public String getMain() {
         return main;
+    }
+
+    public String getRoomMajorState() {
+        return roomMajorState;
+    }
+
+    public void setRoomMajorState(String roomMajorState) {
+        this.roomMajorState = roomMajorState;
     }
 
     public Date getUpdateTime() {
