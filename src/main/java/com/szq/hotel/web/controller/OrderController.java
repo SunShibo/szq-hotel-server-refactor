@@ -647,7 +647,7 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        orderService.checkOutRollback(orderChildId,userInfo.getId());
+        orderService.checkOutRollback(orderChildId,userInfo.getId(),userInfo.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
         super.safeJsonPrint(response, result);
     }
