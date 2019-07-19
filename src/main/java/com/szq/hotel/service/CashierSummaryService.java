@@ -87,7 +87,7 @@ public class CashierSummaryService {
         log.info("start addStored...........................................");
         log.info("name:{}\tmoney:{}\tpayType:{}\torderNumber:{}\tuserId:{}\thotelId:{}",name,money,payType,orderNumber,userId,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject(Constants.STOREDVALUE.getValue()); //TODO  应该定义为常量
+        cashierSummaryBO.setProject(Constants.STOREDVALUE.getValue());
         cashierSummaryBO.setType(payType);
         cashierSummaryBO.setSettlement(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
@@ -120,7 +120,7 @@ public class CashierSummaryService {
         log.info("money:{}\tpayType:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tremark:{}\thotelId{}",
                money,payType,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,remark,hotelId);
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject(Constants.CASHPLEDGE.getValue()); //TODO  应该定义为常量
+        cashierSummaryBO.setProject(Constants.CASHPLEDGE.getValue());
         cashierSummaryBO.setType(payType);
         cashierSummaryBO.setSettlement(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
@@ -198,7 +198,7 @@ public class CashierSummaryService {
         log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tdesignation:{}\thotelId:{}",
                 money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,hotelId);
                 CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject(Constants.ROOMRATE.getValue()); //TODO 定义常量
+        cashierSummaryBO.setProject(Constants.ROOMRATE.getValue());
         cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);
@@ -234,7 +234,7 @@ public class CashierSummaryService {
                  money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,cause,hotelId);
 
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject(Constants.ADJUSTMENT.getValue()); //TODO 定义常量
+        cashierSummaryBO.setProject(Constants.ADJUSTMENT.getValue());
         cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);

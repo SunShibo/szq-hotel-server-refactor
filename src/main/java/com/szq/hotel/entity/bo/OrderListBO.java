@@ -8,6 +8,7 @@ import java.util.Date;
 public class OrderListBO extends BaseModel {
 
     private Integer id;//订单表
+    private Integer orderId;
     private Date checkTime;//入住时间
     private Date checkOutTime;//离店时间
     private String roomName;//房号
@@ -16,7 +17,7 @@ public class OrderListBO extends BaseModel {
     private String phone;//手机号
     private String channel;//渠道
     private String OTA;//第三方订单号
-    private String orderType;//客源 FIXME 存在问题
+    private String orderType;//客源
     private String checkType;//入住方式
     private BigDecimal unitPrice;//首日单价
     private String orderState;//订单状态
@@ -125,10 +126,20 @@ public class OrderListBO extends BaseModel {
         this.orderState = orderState;
     }
 
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+
     @Override
     public String toString() {
         return "OrderListBO{" +
                 "id=" + id +
+                ", orderId=" + orderId +
                 ", checkTime=" + checkTime +
                 ", checkOutTime=" + checkOutTime +
                 ", roomName='" + roomName + '\'' +

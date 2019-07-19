@@ -360,7 +360,7 @@
     <select id="queryOrderList" parameterType="com.szq.hotel.entity.param.OrderParam"
             resultType="com.szq.hotel.entity.bo.OrderListBO">
         SELECT child.id ,der.check_time ,der.check_out_time ,room.room_name ,type.room_type_name ,
-        der.order_placer,der.phone ,der.order_type ,der.OTA ,der.channel,der.check_type,
+        der.order_placer,der.phone ,der.order_type ,der.OTA ,der.channel,der.check_type,der.id as orderId ,
         child.remark,child.order_state
         FROM hm_order der LEFT JOIN hm_order_child child ON der.id=child.order_id
         INNER JOIN hm_room_type type ON type.id=child.room_type_id INNER JOIN hm_room room ON room.id=child.room_id

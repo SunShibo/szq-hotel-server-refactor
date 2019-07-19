@@ -43,7 +43,7 @@ public class UserDO extends BaseModel implements Serializable {
 		private String country ; //国家
 
 		public UserDO() {
-			// TODO Auto-generated constructor stub
+
 		}
 
 		public String getCountry() {

@@ -72,7 +72,7 @@ public class ChildOrderService {
      * @param orderChildId 子订单id
      * @param money        金额
      * @param designation  费用名称
-     * @param type         消费类型
+     * @param type         消费类型F
      * @param userId       用户id
      * @param hotelId      酒店id
      */
