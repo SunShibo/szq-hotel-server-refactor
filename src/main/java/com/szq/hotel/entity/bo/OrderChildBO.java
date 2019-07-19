@@ -4,6 +4,7 @@ import com.szq.hotel.common.base.BaseModel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class OrderChildBO extends BaseModel {
     public String getMain() {
         return main;
     }
-
+    SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public String getRoomMajorState() {
         return roomMajorState;
     }
@@ -90,7 +91,7 @@ public class OrderChildBO extends BaseModel {
     }
 
     public String getCreateTime() {
-        return createTime;
+        return  ymdhms.format(createTime);
     }
 
     public void setCreateTime(String createTime) {
