@@ -100,7 +100,7 @@ public class RoomService {
      * @param map
      * @return
      */
-    public List<RmBO> publicQuery(Map<String, Object> map) {
+    public List<RmBO> publicQuery(Map<String, Object> map,List<String> ll) {
 
         //获取预入住时间
         String dt = (String) map.get("checkTime");
@@ -123,7 +123,7 @@ public class RoomService {
         List<OcBO> l = null;
         //根据房间id获取符合条件的订单
         if (!CollectionUtils.isEmpty(ls)) {
-            l = roomDAO.queryOc(ls, dt, et);
+            l = roomDAO.queryOc(ls, dt, et,ll);
         }
 
         List<Integer> reId = new ArrayList<Integer>();
@@ -174,8 +174,11 @@ public class RoomService {
         log.info("hotelId:{}", hotelId);
         List<FlrBO> flrList = roomDAO.queryFlr(hotelId);
         log.info("酒店下共有楼层:{}", flrList);
-
-        List<RmBO> list = this.publicQuery(map);
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
+        List<RmBO> list = this.publicQuery(map,ll);
 
         String phone = (String) map.get("phone");
         MemberDiscountBO memberDiscountBO = queryMember(phone);
@@ -215,7 +218,11 @@ public class RoomService {
 
     public List<RoomTypeNumBO> queryRoomTypeNum(Map<String, Object> map) {
         //Map<String, Object> mp = new HashMap<String, Object>();
-        List<RmBO> list = this.publicQuery(map);
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
+        List<RmBO> list = this.publicQuery(map, ll);
         Integer hotelId = (Integer) map.get("hotelId");
         String phone = (String) map.get("phone");
         log.info("phone:{}", phone);
@@ -286,8 +293,6 @@ public class RoomService {
                 }
             }
         }
-
-
         return ls;
     }
 
@@ -595,8 +600,8 @@ public class RoomService {
         List<String> dates = querSeTime(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
         log.info("两段时间区间的每一天日期:{}", dates);
 
-        String start = checkTime + " 14:00:00";
-        String end = checkTime + " 06:00:00";
+        String start = checkTime + " 14:00:01";
+        String end = checkTime + " 13:59:59";
 
         log.info("checkTime:{}", checkTime);
         log.info("endTime:{}", endTime);
@@ -615,7 +620,10 @@ public class RoomService {
         Map<String, Object> mp = new HashMap<String, Object>();
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
         for (RtBO rtBO : rtBOS) {
             Map<String, Object> m = new HashMap<String, Object>();
             m.put("sumCountRoomType", roomDAO.querRoomTypeCount(rtBO.getId(), hotrlId));
@@ -627,7 +635,7 @@ public class RoomService {
                 map.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
                 map.put("roomTypeId", rtBO.getId());
 
-                List<RmBO> rmBOS1 = this.publicQuery(map);
+                List<RmBO> rmBOS1 = this.publicQuery(map, ll);
                 m.put("date" + i, rmBOS1.size());
                 i++;
             }
@@ -686,11 +694,18 @@ public class RoomService {
             map.put("roomAuxiliaryStatus", "no");
             map.put("roomAuxiliaryStatusStand", "yes");
         }
+
         map.put("list", list);
         map.put("checkTime", checkTime);
         map.put("endTime", endTime);
         map.put("hotelId", hotelId);
-        List<RmBO> rmBOS = publicQuery(map);
+
+
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
+        List<RmBO> rmBOS = publicQuery(map,ll);
         List<Integer> ls = new ArrayList<Integer>();
         for (RmBO rmBO : rmBOS) {
             ls.add(rmBO.getId());
@@ -789,24 +804,48 @@ public class RoomService {
         Date date1 = lDate(quDate(6, 0, 0), 1);
 
         //查询今天房型可用数量
-        Map<String, Object> mp = new HashMap<String, Object>();
-        mp.put("vacant","vacant");
         //查询中当前酒店有多少房型
-        mp.put("checkTime", date);
-        mp.put("endTime", date1);
         List<RtBO> rtBOS = roomDAO.queryRt(hotelId);
         List<RoomTypeCountDTO> list = new ArrayList<RoomTypeCountDTO>();
+
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
+        
+      Map<String, Object> mp = new HashMap<String, Object>();
+
+        mp.put("checkTime", date);
+        mp.put("hotelId",hotelId);
+        mp.put("endTime", date1);
+       
+        
         for (RtBO rtBO : rtBOS) {
+            mp.put("roomTypeId", rtBO.getHotelId());
             RoomTypeCountDTO roomTypeCountDTO = new RoomTypeCountDTO();
-            mp.put("roomTypeId",rtBO.getId());
-            List<RmBO> rmBOS = publicQuery(mp);
+            //查询可用房间
+            List<RmBO> rmBOS = publicQuery(mp, ll);
             roomTypeCountDTO.setName(rtBO.getRoomTypeName());
             roomTypeCountDTO.setCount(rmBOS.size());
-            /*roomTypeCountDTO.setCountChinkRoom();*/
+            //查询当前正在入住的
+            List<RmBO> rmBOS1 = roomDAO.queryInthe(rtBO.getHotelId(), hotelId, "inthe", "timeout");
+            roomTypeCountDTO.setCountChinkRoom(rmBOS1.size());
+            List<OrderChildBO> orderChildBOS = roomDAO.querySubscribe(rtBO.getHotelId(), hotelId);
+
+            int integer = roomDAO.querRoomTypeCount(rtBO.getHotelId(), hotelId);
+            rmBOS1.size();
+
         }
         return null;
     }
 
+    /**
+     * 获取预定反显房间
+     * @param orderId
+     */
+    public List<RmBO> queryRoomFx(Integer orderId) {
+        return roomDAO.queryRoomFx(orderId);
+    }
 }
 
 

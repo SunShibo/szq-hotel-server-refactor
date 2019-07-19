@@ -428,7 +428,11 @@
     <foreach item="item" collection="id" open="(" separator="," close=")">
       #{item}
     </foreach>
-    and  order_state IN ('reservation','notpay','admissions')
+    <if test="list != null and list.size > 0">
+      and  order_state IN <foreach item="item" collection="id" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    </if>
       having
     (hm_order_child.start_time  BETWEEN #{checkTime} AND  #{endTime})
     OR (#{checkTime}  between hm_order_child.start_time AND hm_order_child.end_time)
@@ -534,5 +538,25 @@
   <update id="updRoom">
     update hm_room set lock_room_state='no' where lock_room_end_time &lt;=now()
   </update>
+
+
+<select id="queryInthe" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
+  SELECT *  FROM hotel.hm_room
+  WHERE
+ room_type_id = #{roomTypeId}
+and hotel_id = #{hotelId}
+ room_major_state IN
+    (#{inthe},#{timeout})
+</select>
+
+  <select id="queryRoomFx" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RmBO">
+    SELECT hm_room.*,hm_floor.name AS floorName , hm_hotel.name AS hotelName
+    ,hm_room_type.basic_price AS basicPrice ,hm_room_type.hour_room_price AS hourRoomPrice
+     FROM hm_room,hm_floor,hm_hotel,hm_room_type
+     WHERE
+     hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
+      AND hm_room.hotel_id = hm_hotel.id AND
+     hm_room.id IN(SELECT room_id FROM hm_order_child WHERE order_id = #{orderId} )
+  </select>
 
 </mapper>

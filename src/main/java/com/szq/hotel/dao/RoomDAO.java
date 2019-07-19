@@ -3,6 +3,7 @@ package com.szq.hotel.dao;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.OcDTO;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestPart;
 
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,8 @@ public interface RoomDAO {
      */
     List<OcBO> queryOc(@Param("id") List<Integer> id,
                        @Param("checkTime")String checkTime,
-                       @Param("endTime")String endTime);
+                       @Param("endTime")String endTime,
+                       @Param("list")List<String> list);
 
 
     /**
@@ -138,4 +140,17 @@ public interface RoomDAO {
     //锁房时间到了 把锁房状态修改为未锁房
     Integer updRoom();
 
+    List<RmBO> queryInthe(@Param("roomTypeId")Integer roomTypeId,
+                          @Param("hotelId")Integer hotelId,
+                          @Param("inthe")String inthe,
+                          @Param("timeout")String timeout);
+
+    List<OrderChildBO> querySubscribe(@Param("roomTypeId")Integer roomTypeId,@Param("hotelId")Integer hotelId);
+
+
+    /**
+     * 预约订单反显
+     * @param orderId
+     */
+    List<RmBO> queryRoomFx(Integer orderId);
 }

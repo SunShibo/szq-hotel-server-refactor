@@ -11,6 +11,7 @@ import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.RedisTool;
 import com.szq.hotel.util.StringUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
+import io.netty.handler.codec.http.HttpObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -198,8 +199,8 @@ public class RoomController extends BaseCotroller {
             return;
         }
         if("day".equals(roomAuxiliaryStatus)){
-            map.put("roomAuxiliaryStatus", "yes");
-            map.put("roomAuxiliaryStatusStand", "yes");
+           /* map.put("roomAuxiliaryStatus", "yes");
+            map.put("roomAuxiliaryStatusStand", "yes");*/
         }
         if("hour".equals(roomAuxiliaryStatus)){
             map.put("roomAuxiliaryStatus", "yes");
@@ -564,6 +565,36 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/todayPictureView")
     public void todayPictureView(HttpServletRequest request, HttpServletResponse response){
         //查询今天
+
+    }
+
+    /**
+     * 预约房间反显
+     * @param request
+     * @param response
+     * @param orderId
+     */
+    @RequestMapping("/queryRoomFx")
+    public void queryRoomFx(HttpServletRequest request, HttpServletResponse response, Integer orderId){
+
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        if(loginAdmin == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+
+        if(orderId == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }
+
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success( roomService.queryRoomFx(orderId)));
+        super.safeJsonPrint(response, result);
+        return;
 
     }
 }
