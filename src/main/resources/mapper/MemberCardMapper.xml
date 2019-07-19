@@ -27,6 +27,14 @@
             #{list}
         </foreach>
     </select>
+    <!--查询未售出的会员卡是否存在-->
+    <select id="getCartByCartList" parameterType="list"  resultType="com.szq.hotel.entity.bo.MemberCardBO">
+    SELECT * FROM `hm_member_card` WHERE state = 'unsold'AND
+    <foreach separator="," item="list" collection="list" close=")" open="card_number in (">
+        #{list}
+    </foreach>
+
+</select>
     <!--修改会员卡-->
     <update id="updateMemberCard" parameterType="com.szq.hotel.entity.bo.MemberCardBO">
         UPDATE `hm_member_card`

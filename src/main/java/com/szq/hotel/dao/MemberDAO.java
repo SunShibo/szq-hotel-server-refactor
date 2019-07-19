@@ -2,6 +2,7 @@ package com.szq.hotel.dao;
 
 import com.szq.hotel.entity.bo.MemberBO;
 import com.szq.hotel.entity.bo.MemberResultBO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -69,4 +70,9 @@ public interface MemberDAO {
         通过id查找会员卡号级别和积分
      */
     MemberResultBO getMemberCardNumber(Integer memberId);
+
+    //Excel导入会员
+    Integer importMember(MemberBO memberBO);
+    //通过证件号和手机号查询会员
+    MemberBO getMemberByCerNumber(@Param("phone")String phone,@Param("certificateNumber") String certificateNumber);
 }

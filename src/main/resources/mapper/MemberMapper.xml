@@ -124,4 +124,24 @@ WHERE id = #{id}
         LEFT JOIN hm_member_level le ON le.id = ca.member_level_id
         WHERE me.id = #{memberId}
     </select>
+
+    <!--Excel导入会员-->
+    <insert id="importMember" parameterType="com.szq.hotel.entity.bo.MemberBO">
+        INSERT INTO `hm_member` (
+        `phone`,`certificate_type`,`certificate_number`,
+        `name`,`birthday`,`gender`,`address`,`remark`,
+        `salesman`,`state`,`create_user_id`, `create_time`)
+        VALUES(#{phone},#{certificateType},#{certificateNumber},
+        #{name},#{birthday},#{gender},#{address},#{remark},
+        #{salesman},'yes',#{createUserId},NOW())
+    </insert>
+
+    <!--通过证件号和手机号查询会员-->
+    <select id="getMemberByCerNumber" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
+        SELECT * FROM hm_member
+        <where>
+            <if test="certificateNumber!=null and certificateNumber!=''">certificate_number = #{certificateNumber}</if>
+            <if test="phone!=null and phone!=''">phone = #{phone}</if>
+        </where>
+    </select>
 </mapper>

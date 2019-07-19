@@ -16,10 +16,15 @@ public interface MemberCardDAO {
         Excel导入会员卡
      */
     Integer addMemberCardTest(MemberCardBO memberCardBO);
+
     /*
         查询会员卡存在
      */
     List<MemberCardBO> queryCartByCartList(List<String> list);
+    /*
+        查询未售出的会员卡存在
+     */
+    List<MemberCardBO> getCartByCartList(List<String> list);
 
     /*
         修改会员卡
@@ -63,4 +68,6 @@ public interface MemberCardDAO {
         通过卡号查找会员卡信息
      */
     MemberCardBO getCardNumber(String cardNumber);
+
+
 }

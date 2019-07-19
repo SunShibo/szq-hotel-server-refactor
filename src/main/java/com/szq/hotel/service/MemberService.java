@@ -1,21 +1,26 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
+import com.szq.hotel.dao.MemberCardDAO;
 import com.szq.hotel.dao.MemberDAO;
 import com.szq.hotel.entity.bo.MemberBO;
+import com.szq.hotel.entity.bo.MemberCardBO;
 import com.szq.hotel.entity.bo.MemberLevelBO;
 import com.szq.hotel.entity.bo.MemberResultBO;
+import com.szq.hotel.util.DateUtils;
+import com.szq.hotel.util.ReadCardExcelUtil;
+import com.szq.hotel.util.ReadMemberExcelUtil;
 import com.szq.hotel.web.controller.MemberController;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("memberService")
 @Transactional
@@ -24,6 +29,8 @@ public class MemberService {
 
     @Resource
     private MemberDAO memberDAO;
+    @Resource
+    private MemberCardDAO memberCardDAO;
     @Resource
     private StoredValueRecordService storedValueRecordService;
     @Resource
@@ -250,4 +257,68 @@ public class MemberService {
     public MemberResultBO getMemberCardNumber(Integer memberId){
         return memberDAO.getMemberCardNumber(memberId);
     }
+
+    /**
+     * Excel 导入会员
+     *
+     * @param
+     */
+    public String readExcelFile(MultipartFile file,Integer userId) {
+        String result = "";
+        //创建处理EXCEL的类
+        ReadMemberExcelUtil readMemberExcelUtil = new ReadMemberExcelUtil();
+        //解析excel，获取上传的事件单
+        List<Map<String, Object>> memberList = readMemberExcelUtil.getExcelInfo(file);
+        //至此已经将excel中的数据转换到list里面了,接下来就可以操作list,可以进行保存到数据库,或者其他操作,
+        MemberBO memberBO = new MemberBO();
+        MemberCardBO memberCardBO = new MemberCardBO();
+        List<String> list = new ArrayList<String>();
+        for(Map<String, Object> member:memberList) {
+            memberCardBO.setCardNumber(member.get("cardNumber").toString());
+            list.add(memberCardBO.getCardNumber());
+            MemberCardBO memberCardBO1 = memberCardDAO.getCardNumber(member.get("cardNumber").toString());
+            memberBO.setMemberCardId(memberCardBO1.getId());
+            //TODO
+        }
+        List<MemberCardBO> memberCardBOS = memberCardDAO.getCartByCartList(list);
+
+
+
+        if (memberCardBOS.size()==0){
+            result = "会员卡号不存在";
+        }else {
+            for(Map<String, Object> member:memberList) {
+                memberBO.setPhone(member.get("phone").toString());
+                memberBO.setName(member.get("name").toString());
+                memberBO.setBirthday(member.get("birthday").toString());
+                memberBO.setCertificateType(member.get("certificateType").toString());
+                memberBO.setCertificateNumber(member.get("certificateNumber").toString());
+                memberBO.setGender(member.get("gender").toString());
+                memberBO.setAddress(member.get("address").toString());
+                memberBO.setSalesman(member.get("salesman").toString());
+                memberBO.setRemark(member.get("remark").toString());
+                memberCardBO.setCardNumber(member.get("cardNumber").toString());
+                memberCardBO.setSellingTime(DateUtils.parseDate(member.get("sellingTime").toString(),"yyyy-MM-dd HH:mm:ss") );
+                memberBO.setCreateUserId(userId);
+                int ret = memberDAO.importMember(memberBO);
+                if (ret == 0) {
+                    result = "插入数据库失败";
+                }
+
+            }
+            if (memberList != null && !memberList.isEmpty()) {
+                result = "上传成功！";
+            } else {
+                result = "上传失败！";
+            }
+        }
+
+        return result;
+    }
+
+    //通过证件号和手机号查询会员
+    public MemberBO getMemberByCerNumber(String phone,String certificateNumber){
+        return memberDAO.getMemberByCerNumber(phone,certificateNumber);
+    }
+
 }

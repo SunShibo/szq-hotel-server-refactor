@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author wuyang
  *
  */
-public class ReadExcelUtil {
+public class ReadCardExcelUtil {
     // 总行数
     private int totalRows = 0;
     // 总条数
@@ -31,7 +31,7 @@ public class ReadExcelUtil {
     private String errorMsg;
 
     // 构造方法
-    public ReadExcelUtil() {
+    public ReadCardExcelUtil() {
     }
 
     // 获取总行数

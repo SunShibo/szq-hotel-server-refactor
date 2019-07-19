@@ -5,7 +5,7 @@ import com.szq.hotel.dao.MemberCardDAO;
 import com.szq.hotel.entity.bo.MemberCardBO;
 import com.szq.hotel.entity.bo.MemberCardResultBO;
 import com.szq.hotel.util.ObjectUtil;
-import com.szq.hotel.util.ReadExcelUtil;
+import com.szq.hotel.util.ReadCardExcelUtil;
 import com.szq.hotel.web.controller.MemberCardController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,9 +98,9 @@ public class MemberCardService {
     public String readExcelFile(MultipartFile file) {
         String result = "";
         //创建处理EXCEL的类
-        ReadExcelUtil readExcelUtil = new ReadExcelUtil();
+        ReadCardExcelUtil readCardExcelUtil = new ReadCardExcelUtil();
         //解析excel，获取上传的事件单
-        List<Map<String, Object>> memberCardList = readExcelUtil.getExcelInfo(file);
+        List<Map<String, Object>> memberCardList = readCardExcelUtil.getExcelInfo(file);
         //至此已经将excel中的数据转换到list里面了,接下来就可以操作list,可以进行保存到数据库,或者其他操作,
         MemberCardBO memberCardBO = new MemberCardBO();
         List<String> list = new ArrayList<String>();
