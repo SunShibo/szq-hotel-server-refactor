@@ -525,13 +525,13 @@ public class ManagementReportService {
     }
     //停用房间数 =  维修房数+锁房数
     public Integer getDisableRoomSum(Map<String,Object> map){
-        //维修房数
-        Integer maintainSum = managementReportDAO.getMaintainSum(map);
-        //锁房数
-        Integer lockRoomSum = managementReportDAO.getLockRoomSum(map);
-        //停用房间数
-        Integer disableRoomSum = maintainSum + lockRoomSum;
-        return disableRoomSum;
+//        //维修房数
+//        Integer maintainSum = managementReportDAO.getMaintainSum(map);
+//        //锁房数
+//        Integer lockRoomSum = managementReportDAO.getLockRoomSum(map);
+//        //停用房间数
+//        Integer disableRoomSum = maintainSum + lockRoomSum;
+        return managementReportDAO.getLockRoomSum(map);
     }
     //空房数
     public Integer getEmptyRoomSum(Map<String,Object> map){

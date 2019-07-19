@@ -94,11 +94,7 @@
         </select>
         <!--维修房数-->
         <select id="getMaintainSum" resultType="java.lang.Integer" parameterType="java.util.Map">
-            SELECT COUNT(id) FROM hm_room WHERE room_state = 'yes' AND hotel_id = #{hotelId} AND id NOT in (
-            SELECT ch.room_id FROM  hm_order_child ch
-            LEFT JOIN hm_room ro ON ch.room_id = ro.id
-            WHERE ro.room_state = 'no'
-            AND ch.start_time &gt;= #{starTime} AND ch.end_time &lt;= #{endTime})
+            SELECT COUNT(id) FROM hm_room WHERE room_state = 'yes' AND `show`='yes' AND hotel_id = #{hotelId}
         </select>
         <!--会员房数-->
         <select id="getMemberRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
@@ -122,19 +118,11 @@
         </select>
         <!--锁房数-->
         <select id="getLockRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
-            SELECT COUNT(id) FROM hm_room WHERE lock_room_state = 'yes' AND hotel_id = #{hotelId}
-            AND id NOT in (
-            SELECT ch.room_id FROM  hm_order_child ch
-            LEFT JOIN hm_room ro ON ch.room_id = ro.id
-            WHERE ch.start_time &gt;= #{starTime} AND ch.end_time &lt;= #{endTime})
+            SELECT COUNT(id) FROM hm_room WHERE lock_room_state = 'yes'  AND `show`='yes' AND hotel_id = #{hotelId}
         </select>
         <!--空房数-->
         <select id="getEmptyRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
-            SELECT COUNT(id) FROM hm_room WHERE room_major_state = 'vacant' AND hotel_id = #{hotelId}
-            AND id NOT in (
-            SELECT ch.room_id FROM  hm_order_child ch
-            LEFT JOIN hm_room ro ON ch.room_id = ro.id
-            WHERE  ch.start_time &gt;= #{starTime} AND ch.end_time &lt;= #{endTime})
+            SELECT COUNT(id) FROM hm_room WHERE room_major_state = 'vacant' AND `show`='yes'  AND hotel_id = #{hotelId}
         </select>
         <!--钟点房晚数-->
         <select id="getHourRoomSum" parameterType="java.util.Map" resultType="java.lang.Integer">
