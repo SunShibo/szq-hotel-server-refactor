@@ -7,6 +7,7 @@ import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.CheckRoomPersonResult;
 import com.szq.hotel.entity.result.OrderResult;
 import org.apache.ibatis.annotations.Param;
+import org.omg.CORBA.INTERNAL;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -61,14 +62,14 @@ public interface OrderDAO {
     Integer addOrderChildBackup(OrderChildBackupParam orderChildBO);
     //查询备份的子订单
     OrderChildBackupParam getOrderChildBackup(Integer id);
+    //删除备份的子订单
+    Integer delOrderChildBackup(Integer id);
     //获取超时的子订单
     List<OrderChildBO> getTimeOutOrder(String orderState);
     //获取超时的子订单
     List<OrderChildBO> getTimeOutOrder2(String orderState);
     //获取入住支付信息
     List<OrderChildBO> getPayInfo(Integer orderId);
-    //查询入住人信息
-    CheckInPersonBO getCheckInPerson(Integer id);
 
     /**
      * 订单列表

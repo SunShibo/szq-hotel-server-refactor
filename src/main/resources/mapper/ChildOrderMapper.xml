@@ -15,7 +15,7 @@
         LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type
         ON type.id=child.room_type_id  LEFT JOIN hm_check_in_person  per ON per.order_child_id = child.id
 
-        WHERE  per.`status`='checkin'  AND  child.id=#{id}     LIMIT 0,1
+        WHERE  child.id=#{id}     LIMIT 0,1
     </select>
 
 

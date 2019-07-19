@@ -45,8 +45,8 @@
         id=#{id},
         room_rate=#{roomRate},
         other_rate=#{otherRate},
-        timeout_rate=#{timeoutRate},
-        free_rate_num=#{freeRateNum},
+        end_time=#{endTime},
+        practical_departure_time=#{practicalDepartureTime},
         order_state=#{orderState},
         room_major_state=#{roomMajorState}
     </insert>
@@ -54,6 +54,10 @@
     <select id="getOrderChildBackup" resultType="com.szq.hotel.entity.param.OrderChildBackupParam" parameterType="java.lang.Integer">
         select * from hm_order_child_backup where id=#{id}
     </select>
+    <!-- 删除备份的子订单 -->
+    <delete id="delOrderChildBackup" parameterType="java.lang.Integer">
+        delete from hm_order_child_backup where id=#{id}
+    </delete>
 
     <!-- 修改子订单信息 -->
     <update id="updOrderChild" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
@@ -348,13 +352,6 @@
         and hm_order_child.room_id=hm_room.id
     </select>
 
-    <!--根据子订单id查询入住人-->
-    <select id="getCheckInPerson" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
-        select *
-        from hm_check_in_person
-        where order_child_id=#{id} and status='checkin'
-        limit 1
-    </select>
 
     <!--订单列表-->
     <select id="queryOrderList" parameterType="com.szq.hotel.entity.param.OrderParam"

@@ -1,9 +1,11 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.dao.TestDAO;
+import com.szq.hotel.entity.bo.CheckInPersonBO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/2/28.
@@ -20,5 +22,9 @@ public class TestService {
        //模拟出现异常
        int a=5/0;
        testDAO.updateU2(2,100);
+    }
+
+    public List<CheckInPersonBO> getCheckInPersonById(){
+        return testDAO.getCheckInPersonById(null,null);
     }
 }

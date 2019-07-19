@@ -1,11 +1,14 @@
 package com.szq.hotel.web.controller;
 import com.szq.hotel.common.constants.Constants;
+import com.szq.hotel.dao.CheckInPersonDAO;
+import com.szq.hotel.entity.bo.CheckInPersonBO;
 import com.szq.hotel.entity.bo.CommonBO;
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import com.szq.hotel.entity.bo.RoomRateBO;
 import com.szq.hotel.service.CashierSummaryService;
 import com.szq.hotel.service.ChildOrderService;
 import com.szq.hotel.service.OrderRecordService;
+import com.szq.hotel.service.TestService;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.springframework.stereotype.Controller;
@@ -29,6 +32,9 @@ public class TestController extends BaseCotroller {
     private OrderRecordService  orderRecordService;
     @Resource
     private CashierSummaryService cashierSummaryService;
+    @Resource
+    TestService testService;
+
     @RequestMapping("/start")
     public void queryVersion(){
         List<RoomRateBO> roomRateBOS = childOrderService.queryOrderChild();
@@ -53,7 +59,11 @@ public class TestController extends BaseCotroller {
         }
     }
 
-
+    @RequestMapping("/test")
+    public void test(){
+        List<CheckInPersonBO> result= testService.getCheckInPersonById();
+        System.err.println(result.size());
+    }
 }
 
 

@@ -6,7 +6,7 @@
 <mapper namespace="com.szq.hotel.dao.CheckInPersonDAO">
 
     <!-- 根据子订单id查询入住人-->
-    <select id="getCheckInPersonById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
+    <select id="getCheckInPersonById"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
         select * from hm_check_in_person
         where order_child_id=#{id}
         <if test="status!=null and status!=''">

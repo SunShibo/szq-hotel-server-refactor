@@ -54,64 +54,74 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/reservationRoom")
     public void reservationRoom(HttpServletRequest request, HttpServletResponse response,
                                 OrderBO orderBO,String OrderChildJSON,String type) {
-        Jedis jedis = new Jedis();
-        String requestId = request.getSession().getId();
-        if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 5000))) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));
-            super.safeJsonPrint(response, result);
-            return;
-        }
-
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
-        //验证参数
-        if(orderBO== null||OrderChildJSON==null||type==null||type.length()==0){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" )) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
-
-        orderBO.setClerkOrderingId(userInfo.getId());
-        orderBO.setHotelId(userInfo.getHotelId());
-        List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
-
-        Map<String,Object> resultMap=new HashMap<String, Object>();
-
-        //检查入住信息是否正确 证件号是否有重复
-        if(!type.equals("roomReservation")){
-            String result=this.checkInPerson(list,orderBO.getId());
-           if(result!=null){
-               super.safeJsonPrint(response, result);
-               return;
-           }
-        }
-
-        if(type.equals("roomReservation")){
-            //房间预约
-            orderService.addOrderInfo(orderBO,list);
-        }else if(type.equals("reservation")){
-            //预约入住
-            orderService.reservation(list,orderBO);
-        }else if(type.equals("directly")){
-            //直接入住
-            orderService.addOrderInfo(orderBO,list);
-            resultMap.put("orderNumber",orderBO.getOrderNumber());
-        }
-
         try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            Jedis jedis = new Jedis();
+            String requestId = request.getSession().getId();
+            if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 5000))) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
 
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
-        super.safeJsonPrint(response, result);
-        RedisTool.releaseDistributedLock(jedis,"500",requestId);
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return ;
+            }
+            //验证参数
+            if(orderBO== null||OrderChildJSON==null||type==null||type.length()==0){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" )) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return ;
+            }
+
+            orderBO.setClerkOrderingId(userInfo.getId());
+            orderBO.setHotelId(userInfo.getHotelId());
+            List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
+
+            Map<String,Object> resultMap=new HashMap<String, Object>();
+
+            //检查入住信息是否正确 证件号是否有重复
+            if(!type.equals("roomReservation")){
+                String result=this.checkInPerson(list,orderBO.getId());
+                if(result!=null){
+                    super.safeJsonPrint(response, result);
+                    return;
+                }
+            }
+
+            if(type.equals("roomReservation")){
+                //房间预约
+                orderService.addOrderInfo(orderBO,list);
+            }else if(type.equals("reservation")){
+                //预约入住
+                orderService.reservation(list,orderBO);
+            }else if(type.equals("directly")){
+                //直接入住
+                orderService.addOrderInfo(orderBO,list);
+                resultMap.put("orderNumber",orderBO.getOrderNumber());
+            }
+
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
+            super.safeJsonPrint(response, result);
+            RedisTool.releaseDistributedLock(jedis,"500",requestId);
+            log.info("result{}", result);
+        }catch (Exception e){
+            log.error("reservationRoomException", e);
+        }
     }
 
     /**
@@ -151,23 +161,32 @@ public class OrderController extends BaseCotroller {
      * */
     @RequestMapping("/getReservationRoomInfo")
     public void getReservationRoomInfo(HttpServletRequest request, HttpServletResponse response,String idNumber,String mobile){
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                log.info("result{}", result);
+                super.safeJsonPrint(response, result);
+                return ;
+            }
+            //验证参数
+            if((idNumber== null||idNumber.length()==0)&&(mobile==null||mobile.length()==0)){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return ;
+            }
+            //查询信息
+            OrderBO orderBO = orderService.getOrderInfo(idNumber,mobile,userInfo.getHotelId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
             super.safeJsonPrint(response, result);
-            return ;
+            log.info("result{}", result);
+        }catch (Exception e){
+            log.error("getReservationRoomInfo", e);
         }
-        //验证参数
-        if((idNumber== null||idNumber.length()==0)&&(mobile==null||mobile.length()==0)){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
-        //查询信息
-        OrderBO orderBO = orderService.getOrderInfo(idNumber,mobile,userInfo.getHotelId());
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
-        super.safeJsonPrint(response, result);
     }
 
     /**
@@ -176,22 +195,31 @@ public class OrderController extends BaseCotroller {
      * */
     @RequestMapping("/getOrderById")
     public void getOrderById(Integer orderId,HttpServletRequest request, HttpServletResponse response){
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return ;
+            }
+            //验证参数
+            if(orderId== null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return ;
+            }
+            OrderBO orderBO=orderService.getOrderById(orderId);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
             super.safeJsonPrint(response, result);
-            return ;
+            log.info("result{}", result);
+        }catch (Exception e){
+
         }
-        //验证参数
-        if(orderId== null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
-        OrderBO orderBO=orderService.getOrderById(orderId);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
-        super.safeJsonPrint(response, result);
     }
 
     /**

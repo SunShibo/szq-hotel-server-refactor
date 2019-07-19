@@ -9,9 +9,11 @@
       UPDATE  hm_test SET  num=num-#{num}  WHERE  id=#{id}
     </update>
 
-<update id="updateU2"  >
+    <update id="updateU2"  >
         UPDATE  hm_test SET  num=num+#{num}  WHERE  id=#{id}
     </update>
 
-
+    <select id="getCheckInPersonById"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
+        select * from hm_check_in_person
+    </select>
 </mapper>
