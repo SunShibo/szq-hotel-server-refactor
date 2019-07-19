@@ -259,7 +259,14 @@
     <select id="getTimeOutOrder"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select *
         from hm_order_child
-        where order_state=#{orderState} and end_time &lt; now() and  practical_departure_time &lt; now()
+        where order_state=#{orderState} and end_time &lt; now() and  practical_departure_time is null
+    </select>
+
+    <!-- 查询入住超时的子订单  -->
+    <select id="getTimeOutOrder2"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select *
+        from hm_order_child
+        where order_state=#{orderState} and  practical_departure_time &lt; now()
     </select>
 
 
@@ -339,6 +346,14 @@
         where hm_order_child.id=#{id}
         and hm_room.room_type_id=hm_room_type.id
         and hm_order_child.room_id=hm_room.id
+    </select>
+
+    <!--根据子订单id查询入住人-->
+    <select id="getCheckInPerson" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
+        select *
+        from hm_check_in_person
+        where order_child_id=#{id} and status='checkin'
+        limit 1
     </select>
 
     <!--订单列表-->

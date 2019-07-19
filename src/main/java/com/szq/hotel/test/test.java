@@ -116,6 +116,7 @@ public class test {
     }
 
     public static void main(String args[]) throws ParseException {
-
+        SimpleDateFormat hh = new SimpleDateFormat("HH");
+        System.err.println(new Integer(hh.format("2019-07-18 18:00:13")));
     }
 }

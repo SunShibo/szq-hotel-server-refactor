@@ -275,7 +275,7 @@ public class OrderController extends BaseCotroller {
         //获取主订单信息
         OrderBO orderBO=orderService.getOrderById(orderChildResult.getOrderId());
 
-        //添加报表记录
+        //添加收银汇总
         cashierSummaryService.addCheck(money,payType,orderBO.getOrderNumber(),userInfo.getId(),
                 name,orderBO.getOTA(),orderBO.getOrderType(),
                 orderBO.getChannel(),orderChildResult.getRoomName(),orderChildResult.getRoomTypeName(),
@@ -623,7 +623,7 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
-        orderService.checkOut(orderChildId,money,userInfo.getId());
+        orderService.checkOut(orderChildId,money,userInfo.getId(),userInfo.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
         super.safeJsonPrint(response, result);
     }

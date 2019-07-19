@@ -31,6 +31,8 @@ public interface OrderDAO {
     List<OrderChildBO> getOrderChildByOrderId3(@Param("id") Integer id,@Param("orderState") String orderState);
     //根据订单id查询没有入住的子订单
     List<OrderChildBO> getOrderChildByOrderId4(@Param("id") Integer id,@Param("orderState") String orderState);
+    //根据订单id查询所有子订单
+    List<OrderChildBO> getOrderChildByOrderId5(@Param("id") Integer id);
     //根据子订单id查询子订单
     OrderChildBO getOrderChildById(Integer id);
     //修改主订单
@@ -61,8 +63,13 @@ public interface OrderDAO {
     OrderChildBackupParam getOrderChildBackup(Integer id);
     //获取超时的子订单
     List<OrderChildBO> getTimeOutOrder(String orderState);
+    //获取超时的子订单
+    List<OrderChildBO> getTimeOutOrder2(String orderState);
     //获取入住支付信息
     List<OrderChildBO> getPayInfo(Integer orderId);
+    //查询入住人信息
+    CheckInPersonBO getCheckInPerson(Integer id);
+
     /**
      * 订单列表
      * @param param
