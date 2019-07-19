@@ -117,21 +117,4 @@ public class RmBO extends BaseModel {
     public void setHourRoomPrice(Double hourRoomPrice) {
         this.hourRoomPrice = hourRoomPrice;
     }
-
-    @Override
-    public String toString() {
-        return "RmBO{" +
-                "id=" + id +
-                ", roomName='" + roomName + '\'' +
-                ", hotelName='" + hotelName + '\'' +
-                ", hotelId=" + hotelId +
-                ", floorName='" + floorName + '\'' +
-                ", floorId=" + floorId +
-                ", roomMajorState='" + roomMajorState + '\'' +
-                ", roomType='" + roomType + '\'' +
-                ", roomTypeId=" + roomTypeId +
-                ", basicPrice=" + basicPrice +
-                ", hourRoomPrice=" + hourRoomPrice +
-                '}';
-    }
 }

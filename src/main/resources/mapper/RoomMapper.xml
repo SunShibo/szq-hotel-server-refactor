@@ -383,7 +383,7 @@
 
   <select id="queryRm" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
     SELECT hm_room.* , hm_hotel.name AS hotelName, hm_room_type.basic_price,
-    hm_room_type.hour_room_price,
+    hm_room_type.hour_room_price,hm_room_type.room_type_name as roomType,
     hm_floor.name AS floorName,
     hm_room_type.room_type_name AS roomType,
     hm_room_type.basic_price AS basicPrice,
@@ -550,7 +550,7 @@ and hotel_id = #{hotelId}
 </select>
 
   <select id="queryRoomFx" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RmBO">
-    SELECT hm_room.*,hm_floor.name AS floorName , hm_hotel.name AS hotelName
+    SELECT hm_room.*,hm_floor.name AS floorName , hm_hotel.name AS hotelName,hm_room_type.room_type_name as roomType
     ,hm_room_type.basic_price AS basicPrice ,hm_room_type.hour_room_price AS hourRoomPrice
      FROM hm_room,hm_floor,hm_hotel,hm_room_type
      WHERE
