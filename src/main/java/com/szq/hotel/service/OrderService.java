@@ -403,6 +403,7 @@ public class OrderService {
         OrderChildBO orderChildBO = orderDAO.getOrderChildById(id);
         //查询房态
         RoomBO roomBO=roomDAO.getRoomBo(orderChildBO.getRoomId());
+        orderChildBO.setRoomMajorState(roomBO.getRoomMajorState());
         //消费记录
         List<OrderRecoredBO> recordBOS = orderRecordDAO.queryOrderRecord(id);
         orderChildBO.setOrderRecoredBOS(recordBOS);
