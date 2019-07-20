@@ -75,4 +75,14 @@ public interface MemberDAO {
     Integer importMember(MemberBO memberBO);
     //通过证件号和手机号查询会员
     MemberBO getMemberByCerNumber(@Param("phone")String phone,@Param("certificateNumber") String certificateNumber);
+
+    /*
+        通过证件号查询会员是否存在
+     */
+    List<MemberBO> getMemberByNumberList(List<String> list);
+
+    /*
+        通过手机号查询会员是否存在
+     */
+    List<MemberBO> getMemberByPhoneList(List<String> list);
 }

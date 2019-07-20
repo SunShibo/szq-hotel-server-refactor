@@ -68,6 +68,6 @@ public interface MemberCardDAO {
         通过卡号查找会员卡信息
      */
     MemberCardBO getCardNumber(String cardNumber);
-
-
+    //通过卡号修改会员卡状态和售出时间
+    void updateSellingTimeByNum(Map<String,Object> map);
 }

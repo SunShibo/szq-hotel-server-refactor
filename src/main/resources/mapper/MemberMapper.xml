@@ -130,10 +130,10 @@ WHERE id = #{id}
         INSERT INTO `hm_member` (
         `phone`,`certificate_type`,`certificate_number`,
         `name`,`birthday`,`gender`,`address`,`remark`,
-        `salesman`,`state`,`create_user_id`, `create_time`)
+        `salesman`,`member_card_id`,`state`,`create_user_id`, `create_time`)
         VALUES(#{phone},#{certificateType},#{certificateNumber},
         #{name},#{birthday},#{gender},#{address},#{remark},
-        #{salesman},'yes',#{createUserId},NOW())
+        #{salesman},#{memberCardId},'yes',#{createUserId},NOW())
     </insert>
 
     <!--通过证件号和手机号查询会员-->
@@ -143,5 +143,19 @@ WHERE id = #{id}
             <if test="certificateNumber!=null and certificateNumber!=''">certificate_number = #{certificateNumber}</if>
             <if test="phone!=null and phone!=''">phone = #{phone}</if>
         </where>
+    </select>
+    <!--通过证件号查询会员是否存在-->
+    <select id="getMemberByNumberList" parameterType="list"  resultType="com.szq.hotel.entity.bo.MemberBO">
+    SELECT * FROM `hm_member` WHERE state = 'yes'AND
+    <foreach separator="," item="list" collection="list" close=")" open="certificate_number in (">
+        #{list}
+    </foreach>
+    </select>
+    <!--通过手机号查询会员是否存在-->
+    <select id="getMemberByPhoneList" parameterType="list"  resultType="com.szq.hotel.entity.bo.MemberBO">
+        SELECT * FROM `hm_member` WHERE state = 'yes'AND
+        <foreach separator="," item="list" collection="list" close=")" open="phone in (">
+            #{list}
+        </foreach>
     </select>
 </mapper>

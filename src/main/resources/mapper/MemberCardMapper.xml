@@ -127,5 +127,9 @@
     <!--通过卡号查找会员卡信息-->
     <select id="getCardNumber" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.MemberCardBO">
         SELECT * FROM hm_member_card WHERE card_number = #{cardNumber}
-</select>
+    </select>
+    <!--通过卡号修改会员卡状态和售出时间-->
+    <update id="updateSellingTimeByNum" parameterType="java.util.Map">
+        UPDATE `hm_member_card` SET  `state` = 'use', `selling_time` = #{sellingTime} WHERE card_number = #{cardNumber}
+    </update>
 </mapper>

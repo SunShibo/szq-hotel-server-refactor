@@ -272,18 +272,30 @@ public class MemberService {
         //至此已经将excel中的数据转换到list里面了,接下来就可以操作list,可以进行保存到数据库,或者其他操作,
         MemberBO memberBO = new MemberBO();
         MemberCardBO memberCardBO = new MemberCardBO();
-        List<String> list = new ArrayList<String>();
+        List<String> cardNumberList = new ArrayList<String>();
+        List<String> certificateNumberList = new ArrayList<String>();
+        List<String> phoneList = new ArrayList<String>();
         for(Map<String, Object> member:memberList) {
             memberCardBO.setCardNumber(member.get("cardNumber").toString());
-            list.add(memberCardBO.getCardNumber());
-            MemberCardBO memberCardBO1 = memberCardDAO.getCardNumber(member.get("cardNumber").toString());
-            memberBO.setMemberCardId(memberCardBO1.getId());
+            cardNumberList.add(memberCardBO.getCardNumber());
+            certificateNumberList.add(member.get("certificateNumber").toString());
+            phoneList.add(member.get("phone").toString());
+
+
             //TODO
         }
-        List<MemberCardBO> memberCardBOS = memberCardDAO.getCartByCartList(list);
 
-
-
+        List<MemberCardBO> memberCardBOS = memberCardDAO.getCartByCartList(cardNumberList);
+        List<MemberBO> memberBOSNumber = memberDAO.getMemberByNumberList(certificateNumberList);
+        List<MemberBO> memberBOSPhone = memberDAO.getMemberByPhoneList(phoneList);
+        if (memberBOSNumber.size()!=0){
+            result = "会员证件号已存在";
+            return result;
+        }
+        if (memberBOSPhone.size()!=0){
+            result = "会员手机号已存在";
+            return result;
+        }
         if (memberCardBOS.size()==0){
             result = "会员卡号不存在";
         }else {
@@ -299,10 +311,20 @@ public class MemberService {
                 memberBO.setRemark(member.get("remark").toString());
                 memberCardBO.setCardNumber(member.get("cardNumber").toString());
                 memberCardBO.setSellingTime(DateUtils.parseDate(member.get("sellingTime").toString(),"yyyy-MM-dd HH:mm:ss") );
+
+                MemberCardBO memberCardBO1 = memberCardDAO.getCardNumber(memberCardBO.getCardNumber());
+                memberBO.setMemberCardId(memberCardBO1.getId());
+
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("cardNumber",member.get("cardNumber").toString());
+                map.put("sellingTime",member.get("sellingTime").toString());
+                //修改会员卡状态和售出时间
+                memberCardDAO.updateSellingTimeByNum(map);
                 memberBO.setCreateUserId(userId);
                 int ret = memberDAO.importMember(memberBO);
                 if (ret == 0) {
                     result = "插入数据库失败";
+                    return result;
                 }
 
             }
@@ -320,5 +342,6 @@ public class MemberService {
     public MemberBO getMemberByCerNumber(String phone,String certificateNumber){
         return memberDAO.getMemberByCerNumber(phone,certificateNumber);
     }
+
 
 }
