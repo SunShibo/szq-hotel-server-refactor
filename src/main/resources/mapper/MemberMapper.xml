@@ -136,6 +136,18 @@ WHERE id = #{id}
         #{salesman},#{memberCardId},'yes',#{createUserId},NOW())
     </insert>
 
+    <!--Excel导出会员-->
+    <select id="exportMember" resultType="com.szq.hotel.entity.bo.ExportMemberResultBO">
+        SELECT me.id,me.`name`,le.`name` AS memberLevelName,card.card_number,me.birthday,me.phone,
+            le.discount AS memberDiscount,me.stored_value AS storeValueBalance,
+            me.integral AS integralBalance,me.salesman,card.selling_time,me.certificate_type,me.certificate_number
+            FROM hm_member me LEFT JOIN hm_member_card card ON me.member_card_id = card.id
+            LEFT JOIN hm_member_level le ON card.member_level_id = le.id
+            <where>
+                me.state = 'yes' AND le.state = 'yes' AND card.state = 'use'
+            </where>
+    </select>
+
     <!--通过证件号和手机号查询会员-->
     <select id="getMemberByCerNumber" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
         SELECT * FROM hm_member
@@ -157,5 +169,24 @@ WHERE id = #{id}
         <foreach separator="," item="list" collection="list" close=")" open="phone in (">
             #{list}
         </foreach>
+    </select>
+
+
+    <!--消费合计-->
+    <select id="queryPayCount"  parameterType="int"  resultType="java.math.BigDecimal"  >
+        SELECT  SUM(price)  FROM `hm_recar`  WHERE  user_id =#{userId}
+    </select>
+    <!--总储值-->
+    <select id="getMemberSumStoreValue"  parameterType="int"  resultType="java.math.BigDecimal" >
+        SELECT SUM(stored_value_money+presenter_money) FROM hm_stored_value_record WHERE check_in_member_id = #{memberId}
+    </select>
+    <!--已对积分-->
+    <select id="getConversionIntegral"  parameterType="int"  resultType="java.math.BigDecimal"  >
+        SELECT SUM(integral_change) FROM hm_integral_record WHERE check_in_member_id = #{memberId} AND integral_change &lt; 0
+    </select>
+
+    <!--累计积分-->
+    <select id="getSumIntegral"  parameterType="int"  resultType="java.math.BigDecimal" >
+       SELECT SUM(integral_change) FROM hm_integral_record WHERE check_in_member_id = #{memberId} AND integral_change &gt; 0
     </select>
 </mapper>

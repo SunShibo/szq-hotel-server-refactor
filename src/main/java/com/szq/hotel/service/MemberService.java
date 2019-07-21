@@ -3,15 +3,13 @@ package com.szq.hotel.service;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberCardDAO;
 import com.szq.hotel.dao.MemberDAO;
-import com.szq.hotel.entity.bo.MemberBO;
-import com.szq.hotel.entity.bo.MemberCardBO;
-import com.szq.hotel.entity.bo.MemberLevelBO;
-import com.szq.hotel.entity.bo.MemberResultBO;
+import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.ReadCardExcelUtil;
 import com.szq.hotel.util.ReadMemberExcelUtil;
 import com.szq.hotel.web.controller.MemberController;
 import org.apache.ibatis.annotations.Param;
+import org.apache.poi.hssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service("memberService")
@@ -37,6 +37,8 @@ public class MemberService {
     private MemberLevelService memberLevelService;
     @Resource
     private IntegralRecordService integralRecordService;
+    @Resource
+    private HotelService hotelService;
 
     /*
         新增会员
@@ -338,10 +340,227 @@ public class MemberService {
         return result;
     }
 
+
+    /**
+     * 导出会员
+     * @param titles
+     * @param out
+     * @throws Exception
+     */
+    public void export(String[] titles, ServletOutputStream out,Integer hotelId) throws Exception{
+
+        try{
+            // 第一步，创建一个workbook，对应一个Excel文件
+            HSSFWorkbook workbook = new HSSFWorkbook();
+
+            // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+            HSSFSheet hssfSheet = workbook.createSheet("会员总报表");
+
+            // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+            HSSFRow row = hssfSheet.createRow(0);
+            // 第四步，创建单元格，并设置值表头 设置表头居中
+            HSSFCellStyle hssfCellStyle = workbook.createCellStyle();
+
+            //居中样式
+            //hssfCellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+
+            HSSFCell hssfCell = null;
+            for (int i = 0; i < titles.length; i++) {
+                hssfCell = row.createCell(i);//列索引从0开始
+                hssfCell.setCellValue(titles[i]);//列名1
+                hssfCell.setCellStyle(hssfCellStyle);//列居中显示
+            }
+
+            // 第五步，写入实体数据 从数据库查出来大的集合
+
+            List<ExportMemberResultBO> list = this.exportMember();
+
+            if(list==null){
+                return;
+            }
+
+
+            for (int i = 0; i < list.size(); i++) {
+                row = hssfSheet.createRow(i+1);
+                //  Vehicle vehicle = list.get(i);
+                ExportMemberResultBO exportMemberResultBO =list.get(i);
+                // 第六步，创建单元格，并设置值
+                //卡号
+                String  cartNumber = "";
+                if(exportMemberResultBO.getCardNumber()!= null){
+                    cartNumber= exportMemberResultBO.getCardNumber();
+                }
+                row.createCell(0).setCellValue(cartNumber);
+
+                //注册店
+
+                String hotelName= hotelService.queryHotelById(hotelId).getName();
+
+                row.createCell(1).setCellValue(hotelName);
+
+                //姓名
+                String name = "";
+                if( exportMemberResultBO.getName() != null){
+                    name= exportMemberResultBO.getName();
+                }
+                row.createCell(2).setCellValue(name);
+
+                //会员级别
+                String memberLevelName = "";
+                if( exportMemberResultBO.getMemberLevelName() != null){
+                    memberLevelName = exportMemberResultBO.getMemberLevelName();
+                }
+                row.createCell(3).setCellValue(memberLevelName);
+
+                //生日
+                String birthday = "";
+                if( exportMemberResultBO.getBirthday() != null){
+                    birthday=exportMemberResultBO.getBirthday();
+
+                }
+                row.createCell(4).setCellValue(birthday);
+
+
+            //手机号
+            String phone = "";
+            if( exportMemberResultBO.getPhone() != null){
+                phone= exportMemberResultBO.getPhone() ;
+            }
+            row.createCell(5).setCellValue(phone);
+
+            //会员折扣
+            String memberDiscount = "";
+            if( exportMemberResultBO.getMemberDiscount() != null){
+                memberDiscount= exportMemberResultBO.getMemberDiscount();
+            }
+            row.createCell(6).setCellValue(memberDiscount);
+
+            //消费合计
+            String payCount = "";
+            if( exportMemberResultBO.getPayCount() != null){
+                payCount= exportMemberResultBO.getPayCount();
+            }
+            row.createCell(7).setCellValue(payCount);
+
+            //储值总金额
+                String sumStoreValue ="";
+                if (exportMemberResultBO.getId()!=null) {
+                   sumStoreValue = this.getMemberSumStoreValue(exportMemberResultBO.getId()).toString();
+                }
+            row.createCell(8).setCellValue(sumStoreValue);
+
+            //储值余额
+            String storeValueBalance = "";
+            if(exportMemberResultBO.getStoreValueBalance() != null){
+                storeValueBalance= exportMemberResultBO.getStoreValueBalance();
+            }
+            row.createCell(9).setCellValue(storeValueBalance);
+
+            //累计积分
+            String sumIntegral = "";
+            if( exportMemberResultBO.getId() != null){
+                sumIntegral= this.getSumIntegral(exportMemberResultBO.getId()).toString();
+            }
+            row.createCell(10).setCellValue(sumIntegral);
+//"卡号", "注册分店", "姓名", "会员级别" ,"生日","手机号","会员折扣","消费合计","储值总金额","储值余额","累计积分","已兑积分","剩余积分","销售员","发卡日期","证件类型","证件号"
+            //已兑积分
+            String conversionIntegral = "";
+                if( exportMemberResultBO.getId() != null){
+                    conversionIntegral= this.getConversionIntegral(exportMemberResultBO.getId()).toString();
+                }
+            row.createCell(11).setCellValue(conversionIntegral);
+
+            //剩余积分
+            String integralBalance = "";
+                if( exportMemberResultBO.getIntegralBalance() != null){
+                    integralBalance= exportMemberResultBO.getIntegralBalance();
+                }
+            row.createCell(12).setCellValue(integralBalance);
+
+            //销售员
+            String salesman = "";
+                if( exportMemberResultBO.getSalesman() != null){
+                    salesman= exportMemberResultBO.getSalesman();
+                }
+            row.createCell(13).setCellValue(salesman);
+
+            //发卡日期
+            String sellingTime = "";
+                if( exportMemberResultBO.getSellingTime() != null){
+                    Date date= exportMemberResultBO.getSellingTime();
+                    SimpleDateFormat simp=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    sellingTime=simp.format(date);
+                }
+            row.createCell(14).setCellValue(sellingTime);
+
+            //证件类型
+            String certificateType = "";
+                if( exportMemberResultBO.getCertificateType() != null){
+                    certificateType= exportMemberResultBO.getCertificateType();
+                }
+            row.createCell(15).setCellValue(certificateType);
+
+            //证件号
+            String certificateNumber = "";
+                if( exportMemberResultBO.getCertificateNumber() != null){
+                    certificateNumber= exportMemberResultBO.getCertificateNumber();
+                }
+            row.createCell(16).setCellValue(certificateNumber);
+
+            }
+            // 第七步，将文件输出到客户端浏览器
+            try{
+                workbook.write(out);
+                out.flush();
+                out.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new Exception("导出信息失败！");
+
+        }
+    }
+
+    //Excel导出会员
+    public List<ExportMemberResultBO> exportMember(){
+            return memberDAO.exportMember();
+    }
+
     //通过证件号和手机号查询会员
     public MemberBO getMemberByCerNumber(String phone,String certificateNumber){
         return memberDAO.getMemberByCerNumber(phone,certificateNumber);
     }
 
+    //   消费合计
+    public BigDecimal queryPayCount(Integer memberId){
+        BigDecimal bigDecimal = memberDAO.queryPayCount(memberId);
+        return isNullBig(bigDecimal);
+    }
+    //  总储值
+    public BigDecimal  getMemberSumStoreValue(Integer memberId){
+        BigDecimal bigDecimal = memberDAO.getMemberSumStoreValue(memberId);
+        return isNullBig(bigDecimal);
+    }
+    //  已对积分
+    public BigDecimal  getConversionIntegral(Integer memberId){
+        BigDecimal bigDecimal = memberDAO.getConversionIntegral(memberId);
+        return isNullBig(bigDecimal);
+    }
+    // 累计积分
+    public BigDecimal  getSumIntegral(Integer memberId){
+        BigDecimal bigDecimal = memberDAO.getSumIntegral(memberId);
+        return isNullBig(bigDecimal);
+    }
+
+    private BigDecimal  isNullBig(BigDecimal  bigDecimal){
+        if(bigDecimal==null){
+            return  new BigDecimal(0);
+        }
+        return bigDecimal;
+    }
 
 }

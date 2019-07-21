@@ -1,9 +1,11 @@
 package com.szq.hotel.dao;
 
+import com.szq.hotel.entity.bo.ExportMemberResultBO;
 import com.szq.hotel.entity.bo.MemberBO;
 import com.szq.hotel.entity.bo.MemberResultBO;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +75,10 @@ public interface MemberDAO {
 
     //Excel导入会员
     Integer importMember(MemberBO memberBO);
+
+    //Excel导出会员
+    List<ExportMemberResultBO> exportMember();
+
     //通过证件号和手机号查询会员
     MemberBO getMemberByCerNumber(@Param("phone")String phone,@Param("certificateNumber") String certificateNumber);
 
@@ -85,4 +91,14 @@ public interface MemberDAO {
         通过手机号查询会员是否存在
      */
     List<MemberBO> getMemberByPhoneList(List<String> list);
+
+
+    //   消费合计
+    BigDecimal queryPayCount(Integer memberId);
+    //  总储值
+    BigDecimal  getMemberSumStoreValue(Integer memberId);
+    //  已对积分
+    BigDecimal  getConversionIntegral(Integer memberId);
+    // 累计积分
+    BigDecimal  getSumIntegral(Integer memberId);
 }
