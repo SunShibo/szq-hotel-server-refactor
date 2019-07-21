@@ -367,7 +367,7 @@ function DateToLStr(dt) {
         h1 = (h < 10 ? "0" + h : h);
         mm1 = (mm < 10 ? "0" + mm : mm);
         s1 = (s < 10 ? "0" + s : s);
-        return "" + y + "-" + m1 + "-" + d1 + " " + h1 + ":" + mm1 + ":" + s1;
+        return "" + y + "/" + m1 + "/" + d1 + " " + h1 + ":" + mm1 + ":" + s1;
     } catch (e) {
         console.log("error");
         return "";
@@ -406,7 +406,7 @@ function DateToLStr3(dt) {
 
         m1 = (m < 10 ? "0" + m : m);
         d1 = (d < 10 ? "0" + d : d);
-        return y + "-" + m1 + "-" + d1;
+        return y + "/" + m1 + "/" + d1;
     } catch (e) {
         console.log("error");
         return "";
@@ -940,7 +940,7 @@ function addDate(date, days) {
     date.setDate(date.getDate() + days);
     var month = date.getMonth() + 1;
     var day = date.getDate();
-    return date.getFullYear() + '-' + getFormatDate(month) + '-' + getFormatDate(day);
+    return date.getFullYear() + '/' + getFormatDate(month) + '/' + getFormatDate(day);
 }
 
 // 日期月份/天的显示，如果是1位数，则在前面加上'0'

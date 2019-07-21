@@ -181,7 +181,7 @@
         function _deal(r) {
             var _str = '';
             for(var j in r){
-                if(j.split('-').length>2&&j.indexOf('y')==-1){
+                if(j.split('/').length>2&&j.indexOf('y')==-1){
                     _str+=['<div class="cell">',
                         '<input type="number" data-price="',
                         r['y'+j] ? r['y'+j] : r[j],

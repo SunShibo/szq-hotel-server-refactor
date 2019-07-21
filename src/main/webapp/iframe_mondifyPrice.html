@@ -90,11 +90,7 @@
 <script>
 		var $,element,$b,$remove,selectDom,
             dayNumber=getUrl("dayNumber"),
-			inWay=1,
-			phoneNumber=getUrl("phoneNumber"),
-			cnId=getUrl("cnId"),
-            roomTypeIds=getUrl("roomTypeIds"),
-            certificateNumnber = getUrl("certificateNumnber"),
+
             rsd;
 
   	  layui.use(['element', 'jquery', 'table','form'], function () {
@@ -102,7 +98,7 @@
               $ = jQuery = layui.$,
               form = layui.form,
               $b = $("#body");
-		      // $rtitle = $("#rtitle");
+
           	  $table = $("#table");
 
 
@@ -148,7 +144,7 @@
                 h1 = (h < 10 ? "0" + h : h);
                 mm1 = (mm < 10 ? "0" + mm : mm);
                 s1 = (s < 10 ? "0" + s : s);
-                return "" + y + "-" + m1 + "-" + d1 + " " + h1 + ":" + mm1 + ":" + s1;
+                return "" + y + "/" + m1 + "/" + d1 + " " + h1 + ":" + mm1 + ":" + s1;
             } catch (e) {
                 console.log("error");
                 return "";
@@ -187,14 +183,15 @@
                     '</div>',
                     _deal(c),
                     '</div>'].join("");
-            })
+            });
+            // debugger;
             $table.append(str);
             function _deal(r) {
 
                 var _str = '';
                 for(var j in r){
 
-                    if(j.split('-').length>2&&j.indexOf('y')==-1){
+                    if(j.split('/').length>2&&j.indexOf('y')==-1){
                         _str+=['<div class="cell">',
                             '<input type="number" data-price="',
                             r['y'+j] ? r['y'+j] : r[j],

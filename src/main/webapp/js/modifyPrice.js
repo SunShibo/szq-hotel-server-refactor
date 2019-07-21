@@ -8,6 +8,7 @@ function modifyPrice() {
     var dayNumber = $("#days").val();
     var roomTypeIds = getTypeIds();
     var certificateNumnber = $("#credentialNo").val();
+
     if(sRooms.length==0){
         return;
     }
@@ -23,7 +24,7 @@ function modifyPrice() {
     var peo = checkPeopleNum();
     var stime = '';
     if($("#startTime").val()){
-        stime = $("#startTime").val().replace(/-/g, "/")
+        stime = $("#startTime").val()
     }
     if($("input[name='checkType']:checked").val()!="day"){
         return ;
@@ -33,14 +34,7 @@ function modifyPrice() {
     layer.open({
         area: ['1000px', '420px'],
         type: 2,
-        content: "iframe_mondifyPrice.html?v=" + Date.now()
-        +"&inWay="+inWay
-        +"&cnId="+cnId
-        +"&phoneNumber="+phoneNumber
-        +"&dayNumber="+dayNumber
-        +"&roomTypeIds="+roomTypeIds
-        +"&certificateNumnber="+certificateNumnber
-        +"&startTime="+stime,
+        content: "iframe_mondifyPrice.html?v=" + Date.now()+"&dayNumber="+$("#days1").val(),
         title: "修改价格"
     })
 }
@@ -61,7 +55,7 @@ function parModifyPrice() {
         var _total = 0;
         _mp.map(function (curr,index) {
             for(var i in curr){
-                if(i.split('-').length>2&&i.indexOf('y')==-1){
+                if(i.split('/').length>2&&i.indexOf('y')==-1){
 
                     _total+=(getRoomQuantity(curr['roomTypeId'])*Number(curr[i]));
                 }
@@ -89,7 +83,7 @@ function parModifyPrice() {
                     continue;
                 }
                 for (var i in a[j]) {
-                    if (i.split('-').length > 2 && i.indexOf('y') == -1) {
+                    if (i.split('/').length > 2 && i.indexOf('y') == -1) {
                         return a[j][i];
                         break;
                     }
