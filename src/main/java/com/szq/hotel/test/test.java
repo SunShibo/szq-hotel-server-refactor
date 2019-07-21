@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.szq.hotel.entity.bo.CheckInPersonBO;
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import com.szq.hotel.entity.bo.OrderChildBO;
+import com.szq.hotel.entity.bo.RoomBO;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.OrderController;
@@ -116,7 +117,11 @@ public class test {
     }
 
     public static void main(String args[]) throws ParseException {
-        SimpleDateFormat hh = new SimpleDateFormat("HH");
-        System.err.println(new Integer(hh.format("2019-07-18 18:00:13")));
+        String OrderChildJSON="[{\"checkInPersonBOS\":[{\"certificateNumber\":\"131031231291657\",\"certificateType\":\"1\",\"gender\":\"男\",\"name\":\"王洋\",\"phone\":\"6666\",\"remark\":\"王洋说要一瓶水\"},{\"certificateNumber\":\"13102312337832\",\"certificateType\":\"1\",\"gender\":\"女\",\"name\":\"茜茜\",\"phone\":\"55555\",\"remark\":\"女1的备注\"}],\"everydayRoomPriceBOS\":[{\"money\":100,\"time\":\"2019-07-19\"},{\"money\":200,\"time\":\"2019-07-20\"}],\"remark\":\"豪华房不需要任何服务，不要打扰\",\"id\":\"171\",\"roomId\":661,\"roomTypeId\":4}]";
+
+        String json="[{\"basicPrice\":320,\"floorId\":1,\"floorName\":\"一楼\",\"hotelId\":1,\"hotelName\":\"上知湫文化驿站(朝阳店)\",\"hourRoomPrice\":40,\"roomMajorState\":\"inthe\",\"roomName\":\"8\",\"roomType\":\"标准间\",\"roomTypeId\":\"标准间\",\"roomId\":\"8\",\"roomTypeName\":\"标准间\",\"roomNum\":\"8\",\"name\":\"321\",\"credentialNo\":\"321\",\"phoneNumber\":\"312\",\"remark\":\"123\",\"checkInPersonBOS\":[{\"name\":\"321\",\"certificateId\":\"1\",\"credentialNo\":\"321\",\"address\":\"123\",\"phoneNumber\":\"312\",\"remark\":\"123\",\"gender\":\"女\",\"roomId\":\"8\",\"certificateNumber\":\"321\",\"phone\":\"312\",\"certificateType\":\"1\"}],\"everydayRoomPriceBOS\":[]}]";
+        String josn="[{\"roomTypeId\":\"1\",\"roomId\":\"8\",\"roomTypeName\":\"标准间\",\"roomNum\":\"8\",\"name\":\"321\",\"credentialNo\":\"321\",\"phoneNumber\":\"312\",\"remark\":\"123\",\"checkInPersonBOS\":[{\"name\":\"321\",\"certificateId\":\"1\",\"credentialNo\":\"321\",\"address\":\"123\",\"phoneNumber\":\"312\",\"remark\":\"123\",\"gender\":\"女\",\"roomId\":\"8\",\"certificateNumber\":\"321\",\"phone\":\"312\",\"certificateType\":\"1\"}],\"everydayRoomPriceBOS\":[]}]";
+        List<RoomBO> list = JsonUtils.getJSONtoList(josn, RoomBO.class);
+        System.out.println(list.size());
     }
 }

@@ -85,7 +85,8 @@ public class OrderController extends BaseCotroller {
             orderBO.setClerkOrderingId(userInfo.getId());
             orderBO.setHotelId(userInfo.getHotelId());
             List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
-
+            System.out.println("list size"+list.size());
+            System.out.println(OrderChildJSON);
             Map<String,Object> resultMap=new HashMap<String, Object>();
 
             //检查入住信息是否正确 证件号是否有重复

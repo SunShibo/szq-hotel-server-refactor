@@ -162,12 +162,10 @@ public class OrderService {
                 List<CheckInPersonBO> checkInPersonNewS = orderChildBONew.getCheckInPersonBOS();
                 for (CheckInPersonBO newPerson : checkInPersonNewS) {
                     //新入住人直接add
-                    if (newPerson.getId() == null || newPerson.getId().equals("")) {
                         newPerson.setOrderChildId(orderChildBONew.getId());
                         newPerson.setStatus(Constants.CHECKIN.getValue());
                         checkInPersonDAO.addCheckInPerson(newPerson);
                         continue;
-                    }
 
                 }
 
