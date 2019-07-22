@@ -280,19 +280,19 @@
     FROM hm_floor, hm_hotel, hm_room_type, hm_room
   WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
   AND hm_room.hotel_id = hm_hotel.id
-  <if test="roomName != null">
+  <if test="roomName != null and roomName != ''">
    and hm_room.room_name = #{roomName}
   </if>
-  <if test="floorId != null">
+  <if test="floorId != null and floorId != ''">
     and hm_room.floor_id = #{floorId}
   </if>
-  <if test="hotelId != null">
+  <if test="hotelId != null and hotelId != ''">
     and hm_room.hotel_id = #{hotelId}
   </if>
-  <if test="roomTypeId != null">
+  <if test="roomTypeId != null and roomTypeId != ''">
     and hm_room.room_type_id = #{roomTypeId}
   </if>
-    <if test="roomId != null">
+    <if test="roomId != null and roomId != ''">
       and hm_room.id = #{roomId}
     </if>
     and hm_room.show = 'yes'
@@ -304,19 +304,19 @@
     FROM hm_floor, hm_hotel, hm_room_type, hm_room
     WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
     AND hm_room.hotel_id = hm_hotel.id
-    <if test="roomId != null">
+    <if test="roomId != null and roomId != ''">
       and hm_room.id = #{roomId}
     </if>
-    <if test="floorId != null">
+    <if test="floorId != null and floorId != ''">
       and hm_room.floor_id = #{floorId}
     </if>
-    <if test="hotelId != null">
+    <if test="hotelId != null and hotelId != ''">
       and hm_room.hotel_id = #{hotelId}
     </if>
-    <if test="roomTypeId != null">
+    <if test="roomTypeId != null and roomTypeId != ''">
       and hm_room.room_type_id = #{roomTypeId}
     </if>
-    <if test="roomName != null">
+    <if test="roomName != null and roomName != ''">
       and room_name = #{roomName}
     </if>
     and hm_room.show = 'yes'
@@ -536,7 +536,7 @@
   </select>
 
   <update id="updRoom">
-    update hm_room set lock_room_state='no' where lock_room_end_time &lt;=now()
+    update hm_room set lock_room_state = 'no' where lock_room_end_time &lt;=now()
   </update>
 
 

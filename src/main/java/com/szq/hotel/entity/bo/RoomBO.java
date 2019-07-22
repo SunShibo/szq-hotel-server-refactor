@@ -48,6 +48,8 @@ public class RoomBO {
     private String roomType;
     private String  show; //是否显示
     private String network;//网络上下架
+    private double basicPrice;
+    private double hourRoomPrice;
 
     public Integer getId() {
         return id;
@@ -239,5 +241,21 @@ public class RoomBO {
 
     public void setNetwork(String network) {
         this.network = network;
+    }
+
+    public double getBasicPrice() {
+        return basicPrice;
+    }
+
+    public void setBasicPrice(double basicPrice) {
+        this.basicPrice = basicPrice;
+    }
+
+    public double getHourRoomPrice() {
+        return hourRoomPrice;
+    }
+
+    public void setHourRoomPrice(double hourRoomPrice) {
+        this.hourRoomPrice = hourRoomPrice;
     }
 }
