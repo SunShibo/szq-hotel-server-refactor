@@ -197,6 +197,20 @@ public class ReadMemberExcelUtil {
                     }else if (c == 10) {
                         if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
                             String age = String.valueOf(cell.getNumericCellValue());
+                            map.put("memberCardMoney", age.substring(0, age.length() - 2 > 0 ? age.length() - 2 : 1));// 备注
+                        } else {
+                            map.put("memberCardMoney", cell.getStringCellValue());// 会员卡售价
+                        }
+                    }else if (c == 11) {
+                        if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+                            String age = String.valueOf(cell.getNumericCellValue());
+                            map.put("memberLevelName", age.substring(0, age.length() - 2 > 0 ? age.length() - 2 : 1));// 备注
+                        } else {
+                            map.put("memberLevelName", cell.getStringCellValue());// 会员级别名称
+                        }
+                    }else if (c == 12) {
+                        if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+                            String age = String.valueOf(cell.getNumericCellValue());
                             map.put("remark", age.substring(0, age.length() - 2 > 0 ? age.length() - 2 : 1));// 备注
                         } else {
                             map.put("remark", cell.getStringCellValue());// 备注

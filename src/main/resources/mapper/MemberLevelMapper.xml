@@ -44,4 +44,15 @@
         LEFT JOIN hm_member_card ca ON ca.member_level_id = le.id
         WHERE ca.id = #{memberCardId} AND le.type = 'yes'
     </select>
+
+    <!--查询会员级别是否存在-->
+    <select id="queryCartByCartList" resultType="com.szq.hotel.entity.bo.MemberCardBO" parameterType="list">
+        SELECT  * FROM  `hm_member_card` WHERE
+        1=1
+        AND
+        <foreach item="list" collection="list" open="card_number in ("
+                 separator="," close=")">
+            #{list}
+        </foreach>
+    </select>
 </mapper>

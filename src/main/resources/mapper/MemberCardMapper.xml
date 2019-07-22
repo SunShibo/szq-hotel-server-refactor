@@ -128,6 +128,14 @@
     <select id="getCardNumber" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.MemberCardBO">
         SELECT * FROM hm_member_card WHERE card_number = #{cardNumber}
     </select>
+    <!--Excel导入会员添加会员卡信息-->
+    <insert id="addMemberCardExcel" parameterType="com.szq.hotel.entity.bo.MemberCardBO">
+        INSERT INTO `hm_member_card` (`member_level_id`,`card_number`,`money`,`state`,`selling_time`)
+        VALUES
+        <!--<foreach collection="list" item="item" index="index"  separator="," >-->
+            (#{memberLevelId},#{cardNumber},#{money},'use',#{sellingTime})
+        <!--</foreach>-->
+    </insert>
     <!--通过卡号修改会员卡状态和售出时间-->
     <update id="updateSellingTimeByNum" parameterType="java.util.Map">
         UPDATE `hm_member_card` SET  `state` = 'use', `selling_time` = #{sellingTime} WHERE card_number = #{cardNumber}

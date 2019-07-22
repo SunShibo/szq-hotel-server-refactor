@@ -64,10 +64,11 @@ public interface MemberCardDAO {
      */
     void updateSellingTime(String cardNumber);
 
-    /*
-        通过卡号查找会员卡信息
-     */
     MemberCardBO getCardNumber(String cardNumber);
+    /*
+         Excel导入会员添加会员卡信息
+      */
+    void addMemberCardExcel(MemberCardBO memberCardBO);
     //通过卡号修改会员卡状态和售出时间
     void updateSellingTimeByNum(Map<String,Object> map);
 }

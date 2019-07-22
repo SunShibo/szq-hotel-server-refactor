@@ -281,11 +281,15 @@ public class MemberCardService {
     public void updateSellingTime(String cardNumber){
         memberCardDAO.updateSellingTime(cardNumber);
     }
-    /*
-        通过卡号查找会员卡信息
-     */
     public MemberCardBO getCardNumber(String cardNumber){
         return memberCardDAO.getCardNumber(cardNumber);
+    }
+
+    /*
+        Excel导入会员添加会员卡信息
+     */
+    public void addMemberCardExcel(MemberCardBO memberCardBO){
+        memberCardDAO.addMemberCardExcel(memberCardBO);
     }
     //通过卡号修改会员卡状态和售出时间
     void updateSellingTimeByNum(Map<String,Object> map){

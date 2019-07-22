@@ -5,6 +5,7 @@ import com.szq.hotel.dao.MemberCardDAO;
 import com.szq.hotel.dao.MemberDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.util.DateUtils;
+import com.szq.hotel.util.ObjectUtil;
 import com.szq.hotel.util.ReadMemberExcelUtil;
 import com.szq.hotel.web.controller.MemberController;
 import org.apache.poi.hssf.usermodel.*;
@@ -272,32 +273,27 @@ public class MemberService {
         //至此已经将excel中的数据转换到list里面了,接下来就可以操作list,可以进行保存到数据库,或者其他操作,
         MemberBO memberBO = new MemberBO();
         MemberCardBO memberCardBO = new MemberCardBO();
-        List<String> cardNumberList = new ArrayList<String>();
-        List<String> certificateNumberList = new ArrayList<String>();
-        List<String> phoneList = new ArrayList<String>();
+        MemberLevelBO memberLevelBO = new MemberLevelBO();
+        List cardNumberList = new LinkedList();
+        String name = "";
+        String cardNumber = "";
         for(Map<String, Object> member:memberList) {
-            memberCardBO.setCardNumber(member.get("cardNumber").toString());
-            cardNumberList.add(memberCardBO.getCardNumber());
-            certificateNumberList.add(member.get("certificateNumber").toString());
-            phoneList.add(member.get("phone").toString());
-
-
+            name = member.get("memberLevelName").toString();
+            cardNumber = member.get("cardNumber").toString();
+            cardNumberList.add(cardNumber);
             //TODO
-        }
+            //查询会员级别是否
+            memberLevelBO = memberLevelService.selectMemberLevelByName(name);
+            if (memberLevelBO==null){
+                 result = "会员级别不存在";
+                break;
+            }
 
-        List<MemberCardBO> memberCardBOS = memberCardDAO.getCartByCartList(cardNumberList);
-        List<MemberBO> memberBOSNumber = memberDAO.getMemberByNumberList(certificateNumberList);
-        List<MemberBO> memberBOSPhone = memberDAO.getMemberByPhoneList(phoneList);
-        if (memberBOSNumber.size()!=0){
-            result = "会员证件号已存在";
-            return result;
         }
-        if (memberBOSPhone.size()!=0){
-            result = "会员手机号已存在";
-            return result;
-        }
-        if (memberCardBOS.size()==0){
-            result = "会员卡号不存在";
+        //查询会员卡是否存在
+        List<MemberCardBO> memberCardBOList = memberCardDAO.queryCartByCartList(cardNumberList);
+        if (!memberCardBOList.isEmpty()){
+            result = "会员卡号已存在！";
         }else {
             for(Map<String, Object> member:memberList) {
                 memberBO.setPhone(member.get("phone").toString());
@@ -312,14 +308,18 @@ public class MemberService {
                 memberCardBO.setCardNumber(member.get("cardNumber").toString());
                 memberCardBO.setSellingTime(DateUtils.parseDate(member.get("sellingTime").toString(),"yyyy-MM-dd HH:mm:ss") );
 
+                //查询会员级别是否
+                MemberLevelBO memberLevelBO1 = memberLevelService.selectMemberLevelByName(member.get("memberLevelName").toString());
+                if (memberLevelBO1!=null) {
+                    memberCardBO.setMemberLevelId(memberLevelBO1.getId());//会员级别
+                }
+                memberCardBO.setMoney(ObjectUtil.getBigDecimal(member.get("memberCardMoney")));
+
+
+
+                memberCardDAO.addMemberCardExcel(memberCardBO);
                 MemberCardBO memberCardBO1 = memberCardDAO.getCardNumber(memberCardBO.getCardNumber());
                 memberBO.setMemberCardId(memberCardBO1.getId());
-
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("cardNumber",member.get("cardNumber").toString());
-                map.put("sellingTime",member.get("sellingTime").toString());
-                //修改会员卡状态和售出时间
-                memberCardDAO.updateSellingTimeByNum(map);
                 memberBO.setCreateUserId(userId);
                 int ret = memberDAO.importMember(memberBO);
                 if (ret == 0) {
