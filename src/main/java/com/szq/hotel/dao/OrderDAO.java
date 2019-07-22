@@ -7,7 +7,6 @@ import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.CheckRoomPersonResult;
 import com.szq.hotel.entity.result.OrderResult;
 import org.apache.ibatis.annotations.Param;
-import org.omg.CORBA.INTERNAL;
 
 import java.math.BigDecimal;
 import java.util.Date;

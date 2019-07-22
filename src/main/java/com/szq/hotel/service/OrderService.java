@@ -8,12 +8,9 @@ import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.CheckRoomPersonResult;
 import com.szq.hotel.entity.result.OrderResult;
-import com.szq.hotel.pop.Constant;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -423,6 +420,8 @@ public class OrderService {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dateString = df.format(currentTime);
             Date currentTime_2 = df.parse(dateString);
+            System.out.println(orderChildBO.getRoomTypeId());
+
             //计算超时费
             if (currentTime_2.getTime() > orderChildBO.getEndTime().getTime()) {
                 Long minute = DateUtils.getQuotMinute(currentTime_2, orderChildBO.getEndTime());

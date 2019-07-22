@@ -3,7 +3,6 @@ package com.szq.hotel.dao;
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 public interface EverydayRoomPriceDAO {

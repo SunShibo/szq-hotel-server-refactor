@@ -98,6 +98,8 @@ public class OrderController extends BaseCotroller {
                 }
             }
 
+            //验证房间是否可用
+
             if(type.equals("roomReservation")){
                 //房间预约
                 orderService.addOrderInfo(orderBO,list);
@@ -344,7 +346,7 @@ public class OrderController extends BaseCotroller {
             orderService.updOrderChild(orderChildBO);
             //把入住的房间修改为在住
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", orderChildBO.getRoomId());
+            map.put("id", orderChildResult.getRoomId());
             map.put("state", Constants.INTHE.getValue());
             roomService.updateroomMajorState(map);
 
@@ -413,17 +415,26 @@ public class OrderController extends BaseCotroller {
      * */
     @RequestMapping("/getCheckInReport")
     public void getCheckInReport(HttpServletRequest request, HttpServletResponse response){
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
 
-        List<OrderResult> results=orderService.getCheckInReport(userInfo.getHotelId());
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results)) ;
-        super.safeJsonPrint(response, result);
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+
+            List<OrderResult> results=orderService.getCheckInReport(userInfo.getHotelId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results)) ;
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("getCheckInReport",e);
+        }
     }
 
     /**
@@ -432,7 +443,7 @@ public class OrderController extends BaseCotroller {
      * @param afterTime 在这个时间之后 最小时间
      * */
     @RequestMapping("/getCheckOutReport")
-    public void getCheckOutReport(@DateTimeFormat(pattern="yyyy/MM/dd hh:mm:ss")Date beforeTime, @DateTimeFormat(pattern="yyyy/MM/dd hh:mm:ss")Date afterTime,Integer pageNo,Integer pageSize, HttpServletRequest request, HttpServletResponse response){
+    public void getCheckOutReport(Date beforeTime,Date afterTime,Integer pageNo,Integer pageSize, HttpServletRequest request, HttpServletResponse response){
        try {
            log.info(request.getRequestURI());
            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -600,22 +611,29 @@ public class OrderController extends BaseCotroller {
      * */
     @RequestMapping("/addAlRoom")
     public void addAlRoom(Integer orderChildId,String orderChildIds, HttpServletRequest request, HttpServletResponse response){
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+        try {
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //验证参数
+            if (orderChildId==null||orderChildId.equals("")||orderChildIds == null||orderChildIds.length()==0) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            orderService.addAlRoom(orderChildId,orderChildIds,userInfo.getId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
             super.safeJsonPrint(response, result);
-            return ;
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("addAlRoom",e);
         }
-        //验证参数
-        if (orderChildId==null||orderChildId.equals("")||orderChildIds == null||orderChildIds.length()==0) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
-            super.safeJsonPrint(response, result);
-            return;
-        }
-        orderService.addAlRoom(orderChildId,orderChildIds,userInfo.getId());
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
-        super.safeJsonPrint(response, result);
     }
 
     /**
@@ -699,23 +717,33 @@ public class OrderController extends BaseCotroller {
      * */
     @RequestMapping("/changeRoom")
     public void changeRoom(OrderChildBO orderChildBO,String everydayRoomPrice,HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //验证参数
+            if(orderChildBO==null||orderChildBO.getId()==null||everydayRoomPrice==null||everydayRoomPrice.length()<2){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            List<EverydayRoomPriceBO> everydayRoomPriceBOList = JsonUtils.getJSONtoList(everydayRoomPrice, EverydayRoomPriceBO.class);
+            orderService.changeRoom(orderChildBO,everydayRoomPriceBOList);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
             super.safeJsonPrint(response, result);
-            return ;
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("changeRoom",e);
         }
-        //验证参数
-        if(orderChildBO==null||orderChildBO.getId()==null||everydayRoomPrice==null||everydayRoomPrice.length()<2){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
-        List<EverydayRoomPriceBO> everydayRoomPriceBOList = JsonUtils.getJSONtoList(everydayRoomPrice, EverydayRoomPriceBO.class);
-        orderService.changeRoom(orderChildBO,everydayRoomPriceBOList);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
-        super.safeJsonPrint(response, result);
     }
 
     /**
@@ -724,22 +752,32 @@ public class OrderController extends BaseCotroller {
      * */
     @RequestMapping("/getCheckOutInfo")
     public void getCheckOutInfo(Integer orderChildId,HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //验证参数
+            if(orderChildId==null||orderChildId.equals("")){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            OrderChildBO orderChildBO=orderService.getOrderChildById(orderChildId);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderChildBO)) ;
             super.safeJsonPrint(response, result);
-            return ;
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("getCheckOutInfo",e);
         }
-        //验证参数
-        if(orderChildId==null||orderChildId.equals("")){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
-        OrderChildBO orderChildBO=orderService.getOrderChildById(orderChildId);
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderChildBO)) ;
-        super.safeJsonPrint(response, result);
     }
 
     /**
@@ -749,22 +787,31 @@ public class OrderController extends BaseCotroller {
      * */
     @RequestMapping("/checkOut")
     public void checkOut(Integer orderChildId,BigDecimal money,HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //验证参数
+            if(orderChildId==null||orderChildId.equals("")){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            orderService.checkOut(orderChildId,money,userInfo.getId(),userInfo.getHotelId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
             super.safeJsonPrint(response, result);
-            return ;
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("checkOut",e);
         }
-        //验证参数
-        if(orderChildId==null||orderChildId.equals("")){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
-        orderService.checkOut(orderChildId,money,userInfo.getId(),userInfo.getHotelId());
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
-        super.safeJsonPrint(response, result);
     }
 
     /**
@@ -773,22 +820,32 @@ public class OrderController extends BaseCotroller {
      * */
     @RequestMapping("/checkOutRollback")
     public void checkOutRollback(Integer orderChildId,HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        //验证管理员
-        AdminBO userInfo = super.getLoginAdmin(request) ;
-        if(userInfo == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //验证参数
+            if(orderChildId==null||orderChildId.equals("")){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            orderService.checkOutRollback(orderChildId,userInfo.getId(),userInfo.getHotelId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
             super.safeJsonPrint(response, result);
-            return ;
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("checkOutRollback",e);
         }
-        //验证参数
-        if(orderChildId==null||orderChildId.equals("")){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
-        orderService.checkOutRollback(orderChildId,userInfo.getId(),userInfo.getHotelId());
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
-        super.safeJsonPrint(response, result);
     }
 
     /**
@@ -827,7 +884,7 @@ public class OrderController extends BaseCotroller {
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000004"));
             super.safeJsonPrint(response, result);
-            log.error("addFloorException", e);
+            log.error("queryOrderList", e);
          }
        }
     }
