@@ -142,13 +142,13 @@ public class OrderService {
                 orderChildBO.setEndTime(orderBO.getCheckOutTime());
                 orderChildBO.setOrderState(Constants.NOTPAY.getValue());//状态
                 orderChildBO.setAlRoomCode(alCode);
-                orderChildBO.setOrderId(orderChildResult.getId());
+                orderChildBO.setOrderId(orderBO.getId());
                 orderDAO.addOrderChild(orderChildBO);
                 List<CheckInPersonBO> checkInPersonBOS = orderChildBO.getCheckInPersonBOS();
                 List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBO.getEverydayRoomPriceBOS();
                 if (checkInPersonBOS != null) {
                     for (CheckInPersonBO person : checkInPersonBOS) {
-                        person.setOrderChildId(orderChildResult.getId());
+                        person.setOrderChildId(orderChildBO.getId());
                         person.setStatus(Constants.CHECKIN.getValue());
                         checkInPersonDAO.addCheckInPerson(person);
                     }
