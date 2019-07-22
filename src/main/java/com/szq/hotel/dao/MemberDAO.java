@@ -1,5 +1,6 @@
 package com.szq.hotel.dao;
 
+import com.szq.hotel.entity.bo.DictionaryValueBO;
 import com.szq.hotel.entity.bo.ExportMemberResultBO;
 import com.szq.hotel.entity.bo.MemberBO;
 import com.szq.hotel.entity.bo.MemberResultBO;
@@ -92,13 +93,19 @@ public interface MemberDAO {
      */
     List<MemberBO> getMemberByPhoneList(List<String> list);
 
+    //通过value查询证件类型是否存在
+    List<DictionaryValueBO> getCertificateTypeList(List<String> list);
 
-    //   消费合计
-    BigDecimal queryPayCount(Integer memberId);
+
+
     //  总储值
     BigDecimal  getMemberSumStoreValue(Integer memberId);
     //  已对积分
     BigDecimal  getConversionIntegral(Integer memberId);
     // 累计积分
     BigDecimal  getSumIntegral(Integer memberId);
+    //查询证件类型
+    String getValue(Integer valueId);
+    //通过value查询证件类型id
+    Integer getValueId(String value);
 }

@@ -275,31 +275,50 @@ public class MemberService {
         MemberCardBO memberCardBO = new MemberCardBO();
         MemberLevelBO memberLevelBO = new MemberLevelBO();
         List cardNumberList = new LinkedList();
-        String name = "";
-        String cardNumber = "";
+        List numberListParam = new LinkedList();
+        List phoneListParam = new LinkedList();
+       // List certificateTypeList = new LinkedList();
         for(Map<String, Object> member:memberList) {
-            name = member.get("memberLevelName").toString();
-            cardNumber = member.get("cardNumber").toString();
-            cardNumberList.add(cardNumber);
+
+            cardNumberList.add(member.get("cardNumber").toString());
+            numberListParam.add(member.get("certificateNumber").toString());
+            phoneListParam.add(member.get("phone").toString());
+           // certificateTypeList.add(member.get("certificateType").toString());
             //TODO
             //查询会员级别是否
-            memberLevelBO = memberLevelService.selectMemberLevelByName(name);
+            memberLevelBO = memberLevelService.selectMemberLevelByName(member.get("memberLevelName").toString());
             if (memberLevelBO==null){
                  result = "会员级别不存在";
+                break;
+            }
+            Integer i = memberDAO.getValueId(member.get("certificateType").toString());
+            if (i==null){
+                result = "证件类型不存在";
                 break;
             }
 
         }
         //查询会员卡是否存在
         List<MemberCardBO> memberCardBOList = memberCardDAO.queryCartByCartList(cardNumberList);
-        if (!memberCardBOList.isEmpty()){
+        //查询证件号是否存在
+        List<MemberBO> numberList =memberDAO.getMemberByNumberList(numberListParam);
+        //查询手机号是否存在
+        List<MemberBO> phoneList = memberDAO.getMemberByPhoneList(phoneListParam);
+        //通过value查询证件类型是否存在
+        //List<DictionaryValueBO> dictionaryValueBOS = memberDAO.getCertificateTypeList(certificateTypeList);
+
+        if (!phoneList.isEmpty()){
+            result = "手机号已存在！";
+        }else if (!numberList.isEmpty()){
+            result = "证件号已存在！";
+        }else if (!memberCardBOList.isEmpty()){
             result = "会员卡号已存在！";
         }else {
             for(Map<String, Object> member:memberList) {
                 memberBO.setPhone(member.get("phone").toString());
                 memberBO.setName(member.get("name").toString());
                 memberBO.setBirthday(member.get("birthday").toString());
-                memberBO.setCertificateType(Integer.parseInt(member.get("certificateType").toString()));
+                memberBO.setCertificateType(Integer.parseInt(member.get("certificateType").toString()));//证件类型
                 memberBO.setCertificateNumber(member.get("certificateNumber").toString());
                 memberBO.setGender(member.get("gender").toString());
                 memberBO.setAddress(member.get("address").toString());
@@ -433,54 +452,48 @@ public class MemberService {
             }
             row.createCell(6).setCellValue(memberDiscount);
 
-            //消费合计
-            String payCount = "";
-            if( exportMemberResultBO.getPayCount() != null){
-                payCount= exportMemberResultBO.getPayCount();
-            }
-            row.createCell(7).setCellValue(payCount);
 
             //储值总金额
                 String sumStoreValue ="";
                 if (exportMemberResultBO.getId()!=null) {
                    sumStoreValue = this.getMemberSumStoreValue(exportMemberResultBO.getId()).toString();
                 }
-            row.createCell(8).setCellValue(sumStoreValue);
+            row.createCell(7).setCellValue(sumStoreValue);
 
             //储值余额
             String storeValueBalance = "";
             if(exportMemberResultBO.getStoreValueBalance() != null){
                 storeValueBalance= exportMemberResultBO.getStoreValueBalance();
             }
-            row.createCell(9).setCellValue(storeValueBalance);
+            row.createCell(8).setCellValue(storeValueBalance);
 
             //累计积分
             String sumIntegral = "";
             if( exportMemberResultBO.getId() != null){
                 sumIntegral= this.getSumIntegral(exportMemberResultBO.getId()).toString();
             }
-            row.createCell(10).setCellValue(sumIntegral);
+            row.createCell(9).setCellValue(sumIntegral);
 //"卡号", "注册分店", "姓名", "会员级别" ,"生日","手机号","会员折扣","消费合计","储值总金额","储值余额","累计积分","已兑积分","剩余积分","销售员","发卡日期","证件类型","证件号"
             //已兑积分
             String conversionIntegral = "";
                 if( exportMemberResultBO.getId() != null){
                     conversionIntegral= this.getConversionIntegral(exportMemberResultBO.getId()).toString();
                 }
-            row.createCell(11).setCellValue(conversionIntegral);
+            row.createCell(10).setCellValue(conversionIntegral);
 
             //剩余积分
             String integralBalance = "";
                 if( exportMemberResultBO.getIntegralBalance() != null){
                     integralBalance= exportMemberResultBO.getIntegralBalance();
                 }
-            row.createCell(12).setCellValue(integralBalance);
+            row.createCell(11).setCellValue(integralBalance);
 
             //销售员
             String salesman = "";
                 if( exportMemberResultBO.getSalesman() != null){
                     salesman= exportMemberResultBO.getSalesman();
                 }
-            row.createCell(13).setCellValue(salesman);
+            row.createCell(12).setCellValue(salesman);
 
             //发卡日期
             String sellingTime = "";
@@ -489,21 +502,21 @@ public class MemberService {
                     SimpleDateFormat simp=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     sellingTime=simp.format(date);
                 }
-            row.createCell(14).setCellValue(sellingTime);
+            row.createCell(13).setCellValue(sellingTime);
 
             //证件类型
             String certificateType = "";
                 if( exportMemberResultBO.getCertificateType() != null){
-                    certificateType= exportMemberResultBO.getCertificateType();
+                    certificateType= this.getValue(Integer.parseInt(exportMemberResultBO.getCertificateType()));
                 }
-            row.createCell(15).setCellValue(certificateType);
+            row.createCell(14).setCellValue(certificateType);
 
             //证件号
             String certificateNumber = "";
                 if( exportMemberResultBO.getCertificateNumber() != null){
                     certificateNumber= exportMemberResultBO.getCertificateNumber();
                 }
-            row.createCell(16).setCellValue(certificateNumber);
+            row.createCell(15).setCellValue(certificateNumber);
 
             }
             // 第七步，将文件输出到客户端浏览器
@@ -533,11 +546,7 @@ public class MemberService {
         return memberDAO.getMemberByCerNumber(phone,certificateNumber);
     }
 
-    //   消费合计
-    public BigDecimal queryPayCount(Integer memberId){
-        BigDecimal bigDecimal = memberDAO.queryPayCount(memberId);
-        return isNullBig(bigDecimal);
-    }
+
     //  总储值
     public BigDecimal  getMemberSumStoreValue(Integer memberId){
         BigDecimal bigDecimal = memberDAO.getMemberSumStoreValue(memberId);
@@ -561,4 +570,8 @@ public class MemberService {
         return bigDecimal;
     }
 
+    //查询证件类型
+    public String getValue(Integer valueId){
+        return memberDAO.getValue(valueId);
+    }
 }

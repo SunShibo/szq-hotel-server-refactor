@@ -170,12 +170,17 @@ WHERE id = #{id}
             #{list}
         </foreach>
     </select>
-
-
-    <!--消费合计-->
-    <select id="queryPayCount"  parameterType="int"  resultType="java.math.BigDecimal"  >
-        SELECT  SUM(price)  FROM `hm_recar`  WHERE  user_id =#{userId}
+    <!--通过value查询证件类型是否存在-->
+    <select id="getCertificateTypeList" parameterType="list"  resultType="com.szq.hotel.entity.bo.DictionaryValueBO">
+        SELECT va.`id` FROM `hm_dictionaries_value` va
+        LEFT JOIN hm_dictionaries_key ke ON va.kid = ke.id
+        WHERE ke.id = 1 AND
+        <foreach separator="," item="list" collection="list" close=")" open="va.`value` in (">
+            #{list}
+        </foreach>
     </select>
+
+
     <!--总储值-->
     <select id="getMemberSumStoreValue"  parameterType="int"  resultType="java.math.BigDecimal" >
         SELECT SUM(stored_value_money+presenter_money) FROM hm_stored_value_record WHERE check_in_member_id = #{memberId}
@@ -188,5 +193,18 @@ WHERE id = #{id}
     <!--累计积分-->
     <select id="getSumIntegral"  parameterType="int"  resultType="java.math.BigDecimal" >
        SELECT SUM(integral_change) FROM hm_integral_record WHERE check_in_member_id = #{memberId} AND integral_change &gt; 0
+    </select>
+
+    <!--通过valueId查询证件类型-->
+    <select id="getValue" parameterType="int" resultType="java.lang.String">
+        SELECT `value` FROM `hm_dictionaries_value` va
+        LEFT JOIN hm_dictionaries_key ke ON va.kid = ke.id
+        WHERE ke.id = 1 AND va.id = #{valueId}
+    </select>
+    <!--通过value查询证件类型id-->
+    <select id="getValueId" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT va.`id` FROM `hm_dictionaries_value` va
+        LEFT JOIN hm_dictionaries_key ke ON va.kid = ke.id
+        WHERE ke.id = 1 AND va.`value` = #{value}
     </select>
 </mapper>
