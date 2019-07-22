@@ -7,10 +7,7 @@ import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.query.QueryInfo;
-import com.szq.hotel.service.CashierSummaryService;
-import com.szq.hotel.service.CheckInPersonService;
-import com.szq.hotel.service.OrderRecordService;
-import com.szq.hotel.service.OrderService;
+import com.szq.hotel.service.*;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.RedisTool;
 import com.szq.hotel.web.controller.base.BaseCotroller;
@@ -45,6 +42,9 @@ public class OrderController extends BaseCotroller {
 
     @Resource
     OrderRecordService orderRecordService;
+
+    @Resource
+    RoomService roomService;
     /**
      * 房间预定 预约入住 直接入住 修改
      * @param orderBO 预约信息
@@ -59,7 +59,7 @@ public class OrderController extends BaseCotroller {
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             Jedis jedis = new Jedis();
             String requestId = request.getSession().getId();
-            if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 5000))) {
+            if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 1000))) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}", result);
@@ -346,6 +346,14 @@ public class OrderController extends BaseCotroller {
             orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
             orderChildBO.setMain("yes");
             orderService.updOrderChild(orderChildBO);
+            //把入住的房间修改为在住
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", orderChildBO.getRoomId());
+            map.put("state", Constants.INTHE.getValue());
+            roomService.updateroomMajorState(map);
+
+            //修改一起入住的订单信息
+            orderService.updateOrderChildRoom(orderBO.getId());
 
             //插入订单记录
             orderRecordService.addOrderRecord(orderChildBO.getId(),Constants.INTHEDEPOSIT.getValue(),

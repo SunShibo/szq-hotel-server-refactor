@@ -259,6 +259,14 @@
         where order_id=#{id} and order_state=#{orderState}
     </select>
 
+    <!-- 根据主订单查询已经入住，状态为未入住的子订单 -->
+    <select id="getOrderChildByOrderId5" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select * from hm_order_child as oc,hm_check_in_person as cp
+        where oc.id=cp.order_child_id
+        and cp.status='checkin'
+        and order_state=#{orderState}
+        and oc.order_id=#{id}
+    </select>
     <!-- 查询入住超时的子订单  -->
     <select id="getTimeOutOrder"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select *

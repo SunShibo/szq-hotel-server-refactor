@@ -870,6 +870,21 @@ public class OrderService {
         }
     }
 
+    //把已经有入住人 ，订单状态未预约中的房间改为已入住 房间修改为在住
+    public void updateOrderChildRoom(Integer id){
+        List<OrderChildBO> orderChildBOS=orderDAO.getOrderChildByOrderId5(id,Constants.RESERVATION.getValue());
+        for (OrderChildBO orderChildBO:orderChildBOS) {
+            orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
+            orderDAO.updOrderChild(orderChildBO);
+
+            //把入住的房间修改为在住
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", orderChildBO.getRoomId());
+            map.put("state", Constants.INTHE.getValue());
+            roomService.updateroomMajorState(map);
+        }
+    }
+
 
     /**
      * 订单列表
