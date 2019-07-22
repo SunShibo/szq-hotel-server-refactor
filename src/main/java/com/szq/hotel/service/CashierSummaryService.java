@@ -227,14 +227,14 @@ public class CashierSummaryService {
      * @param cause            原因
      * @param hotelId            酒店id
      */
-    public void addFree(BigDecimal money,String orderNumber,Integer userId,String name,String OTA,
-                            String channel,String passengerSource,String roomName,String roomType,String cause,Integer hotelId) {
+    public void addFree(BigDecimal money,String orderNumber,Integer userId,String name,String OTA,String channel,
+                        String passengerSource,String roomName,String roomType,String cause,Integer hotelId,String project) {
         log.info("start addFree...........................................");
         log.info("money:{}\torderNumber:{}\tuserId:{}\tname:{}\tOTA:{}\tchannel:{}\tpassengerSource:{}\troomName:{}\troomType:{}\tcause:{}\thotelId:{}",
                  money,orderNumber,userId,name,OTA,channel,passengerSource,roomName,roomType,cause,hotelId);
 
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
-        cashierSummaryBO.setProject(Constants.ADJUSTMENT.getValue());
+        cashierSummaryBO.setProject(project);
         cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);

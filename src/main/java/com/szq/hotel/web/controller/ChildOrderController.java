@@ -126,7 +126,7 @@ public class ChildOrderController extends BaseCotroller {
      * @param remark 备注
      */
     @RequestMapping("/free")
-    public void free(HttpServletRequest request, HttpServletResponse response,Integer orderChildId, BigDecimal money,String remark) {
+    public void free(HttpServletRequest request, HttpServletResponse response,Integer orderChildId, BigDecimal money,String remark,String type) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -138,14 +138,14 @@ public class ChildOrderController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
-            if (StringUtils.isEmpty(remark)|| orderChildId==null || money==null) {
+            if (StringUtils.isEmpty(remark)|| orderChildId==null || money==null || StringUtils.isEmpty(type)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}", result);
                 return;
             }
 
-            childOrderService.free(orderChildId,money,remark,loginAdmin.getId(),loginAdmin.getHotelId());
+            childOrderService.free(orderChildId,money,remark,loginAdmin.getId(),loginAdmin.getHotelId(),type);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);

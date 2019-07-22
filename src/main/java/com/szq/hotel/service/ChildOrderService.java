@@ -115,11 +115,11 @@ public class ChildOrderService {
      * @param remark
      * @param hotelId
      */
-    public void free(Integer orderChildId, BigDecimal money, String remark, Integer userId, Integer hotelId) {
+    public void free(Integer orderChildId, BigDecimal money, String remark, Integer userId, Integer hotelId,String type) {
         log.info("start free........................................");
-        log.info("orderChildId:{}\tmoney:{}\tremark:{}\tuserId:{}\thotelId:{}", orderChildId, money, remark, userId, hotelId);
+        log.info("orderChildId:{}\tmoney:{}\tremark:{}\tuserId:{}\thotelId:{}\ttype:{}", orderChildId, money, remark, userId, hotelId,type);
         //生成记录
-        orderRecordService.addOrderRecord(orderChildId, remark, null, money, Constants.FREEORDER.getValue(), userId, null, Constants.NO.getValue());
+        orderRecordService.addOrderRecord(orderChildId, remark, null, money,type, userId, null, Constants.NO.getValue());
         log.info("free...................................");
         //变为负数
         BigDecimal negation = money.multiply(new BigDecimal("-1"));
@@ -129,7 +129,7 @@ public class ChildOrderService {
         ChildOrderBO order = childOrderDAO.queryOrderChildById(orderChildId);
         //报表
         cashierSummaryService.addFree(negation, order.getOrderNumber(), userId, order.getName(), order.getOTA(), order.getChannel(),
-                order.getPassengerSource(), order.getRoomName(), order.getRoomTypeName(), remark, hotelId);
+                order.getPassengerSource(), order.getRoomName(), order.getRoomTypeName(), remark, hotelId,type);
         log.info("end  free..........................................");
     }
 
@@ -191,7 +191,9 @@ public class ChildOrderService {
                 childOrderDAO.increaseOtherRate(shiftToId, orderRecoredBO.getMoney());
                 childOrderDAO.reduceOtherRate(rollOutId, orderRecoredBO.getMoney());
 
-            } else if (Constants.FREEORDER.getValue().equals(orderRecoredBO.getProject()) || Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())) {
+            } else if (Constants.ROOMRATEFREE.getValue().equals(orderRecoredBO.getProject()) ||
+                    Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())||Constants.COMMODITYFREE.getValue().equals(orderRecoredBO.getProject())
+                    ||  Constants.COMPENSATIONFREE.getValue().equals(orderRecoredBO.getProject())) {
                 log.info("start transferAccounts....free.....................................................");
                 //免单 超时费减免
                 childOrderDAO.free(shiftToId, orderRecoredBO.getMoney());
@@ -280,7 +282,9 @@ public class ChildOrderService {
                 //商品 赔偿 超时费
                 log.info("start reduceOtherRate....OtherRate.....................................................");
                 childOrderDAO.reduceOtherRate(chilId, orderRecoredBO.getMoney());
-            } else if (Constants.FREEORDER.getValue().equals(orderRecoredBO.getProject()) || Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())) {
+            } else  if (Constants.ROOMRATEFREE.getValue().equals(orderRecoredBO.getProject()) ||
+                    Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())||Constants.COMMODITYFREE.getValue().equals(orderRecoredBO.getProject())
+                    ||  Constants.COMPENSATIONFREE.getValue().equals(orderRecoredBO.getProject())) {
                 log.info("start reducefree....reducefree.....................................................");
                 //免单 超时费减免
                 childOrderDAO.reducefree(chilId, orderRecoredBO.getMoney());

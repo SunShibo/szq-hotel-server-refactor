@@ -830,7 +830,7 @@ public class OrderService {
 
         //添加回滚记录
         orderRecordService.addOrderRecord(orderChildId, "误操作回滚(房费)",
-                null, backup.getRoomRate(), Constants.FREEORDER.getValue(),
+                null, backup.getRoomRate(), null,
                 userId, "1天","no");
 
         //添加反向收银汇总
