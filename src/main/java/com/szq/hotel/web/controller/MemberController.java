@@ -73,7 +73,7 @@ public class MemberController extends BaseCotroller {
                 return ;
             }
             //参数验证
-            if (StringUtils.isEmpty(memberBO.getName())||StringUtils.isEmpty(memberBO.getCertificateNumber())||StringUtils.isEmpty(memberBO.getPhone())){
+            if (StringUtils.isEmpty(memberBO.getName())||StringUtils.isEmpty(memberBO.getCertificateNumber())||StringUtils.isEmpty(memberBO.getPhone())||memberBO.getCertificateType()==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
@@ -81,19 +81,19 @@ public class MemberController extends BaseCotroller {
             }
 
             MemberCardBO memberCardBO = memberCardService.getCardNumber(cardNumber);
+            if (memberCardBO!=null) {
+                //设置会员的会员卡id
+                memberBO.setMemberCardId(memberCardBO.getId());
+                //设置默认积分为0
+                memberBO.setIntegral(BigDecimal.valueOf(0));
+                //设置默认储值为0
+                memberBO.setStoredValue(BigDecimal.valueOf(0));
 
-            //设置会员的会员卡id
-            memberBO.setMemberCardId(memberCardBO.getId());
-            //设置默认积分为0
-            memberBO.setIntegral(BigDecimal.valueOf(0));
-            //设置默认储值为0
-            memberBO.setStoredValue(BigDecimal.valueOf(0));
-
-            String memberCardNumber = memberCardBO.getCardNumber();
-            //BigDecimal money = memberCardBO.getMoney();
-            //修改会员卡的售出时间
-            memberCardService.updateSellingTime(memberCardNumber);
-
+                String memberCardNumber = memberCardBO.getCardNumber();
+                //BigDecimal money = memberCardBO.getMoney();
+                //修改会员卡的售出时间
+                memberCardService.updateSellingTime(memberCardNumber);
+            }
             //向数据库中添加数据
             memberService.addMember(memberBO,loginAdmin.getId());
 

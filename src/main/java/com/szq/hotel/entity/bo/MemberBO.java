@@ -9,7 +9,7 @@ public class MemberBO extends BaseModel {
     private Integer id;//
     private Integer memberCardId;//会员卡id
     private String phone;//手机号
-    private String certificateType;//证件类型
+    private Integer certificateType;//证件类型
     private String certificateNumber;//证件号
     private BigDecimal integral;//积分
     private BigDecimal storedValue;//储值
@@ -52,11 +52,11 @@ public class MemberBO extends BaseModel {
         this.phone = phone;
     }
 
-    public String getCertificateType() {
+    public Integer getCertificateType() {
         return certificateType;
     }
 
-    public void setCertificateType(String certificateType) {
+    public void setCertificateType(Integer certificateType) {
         this.certificateType = certificateType;
     }
 

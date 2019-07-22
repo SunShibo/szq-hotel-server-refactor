@@ -303,7 +303,7 @@ public class MemberService {
                 memberBO.setPhone(member.get("phone").toString());
                 memberBO.setName(member.get("name").toString());
                 memberBO.setBirthday(member.get("birthday").toString());
-                memberBO.setCertificateType(member.get("certificateType").toString());
+                memberBO.setCertificateType(Integer.parseInt(member.get("certificateType").toString()));
                 memberBO.setCertificateNumber(member.get("certificateNumber").toString());
                 memberBO.setGender(member.get("gender").toString());
                 memberBO.setAddress(member.get("address").toString());
