@@ -1,14 +1,14 @@
 package com.szq.hotel.dao;
 
 import com.szq.hotel.entity.bo.CheckInPersonBO;
+import com.szq.hotel.entity.bo.CommonBO;
 import org.apache.ibatis.annotations.Param;
 
-import javax.print.DocFlavor;
 import java.util.List;
 
 public interface CheckInPersonDAO {
     //根据订单查询入住人信息
-    List<CheckInPersonBO> getCheckInPersonById(@Param("id") Integer id,@Param("status") String status);
+    List<CheckInPersonBO> getCheckInPersonById(CommonBO commonBO);
     //添加入住人信息
     Integer addCheckInPerson(CheckInPersonBO checkInPersonBO);
     //根据子订单删除入住人

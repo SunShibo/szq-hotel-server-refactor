@@ -5,14 +5,6 @@
 <!-- 入住人 -->
 <mapper namespace="com.szq.hotel.dao.CheckInPersonDAO">
 
-    <!-- 根据子订单id查询入住人-->
-    <select id="getCheckInPersonById"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
-        select * from hm_check_in_person
-        where order_child_id=#{id}
-        <if test="status!=null and status!=''">
-            and status=#{status}
-        </if>
-    </select>
 
     <!-- 添加入住人-->
     <insert id="addCheckInPerson" parameterType="com.szq.hotel.entity.bo.CheckInPersonBO">
@@ -74,4 +66,10 @@
     <update id="updPersonCheckOut">
         update hm_check_in_person set `status`=#{status} where order_child_id=#{id}
     </update>
+
+    <!-- 根据子订单id查询入住人-->
+    <select id="getCheckInPersonById" parameterType="com.szq.hotel.entity.bo.CommonBO"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO" >
+       SELECT  *  FROM  hm_check_in_person
+      WHERE   (status = #{name} and  order_child_id=#{id} )
+    </select>
 </mapper>

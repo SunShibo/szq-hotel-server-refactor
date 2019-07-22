@@ -28,7 +28,9 @@ public class TestService {
        testDAO.updateU2(2,100);
     }
 
-    public List<CheckInPersonBO> getCheckInPersonById(Integer orderChildId){
-        return checkInPersonDAO.getCheckInPersonById(orderChildId, Constants.CHECKIN.getValue());
+
+    public void test1() {
+        List<CheckInPersonBO> checkInPersonById = testDAO.getCheckInPersonById(null, null);
+        System.out.println(checkInPersonById);
     }
 }

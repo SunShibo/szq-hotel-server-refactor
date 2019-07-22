@@ -13,7 +13,10 @@
         UPDATE  hm_test SET  num=num+#{num}  WHERE  id=#{id}
     </update>
 
-    <select id="getCheckInPersonById"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
-        select * from hm_check_in_person
+
+    <!-- 根据子订单id查询入住人-->
+    <select id="getCheckInPersonById" parameterType="com.szq.hotel.entity.bo.CommonBO"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO" >
+       SELECT  *  FROM  hm_check_in_person
+      WHERE   (status like '%checkin%' and  order_child_id=327 )
     </select>
 </mapper>

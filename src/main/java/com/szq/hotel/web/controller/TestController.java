@@ -60,8 +60,7 @@ public class TestController extends BaseCotroller {
 
     @RequestMapping("/test")
     public void test(){
-        List<CheckInPersonBO> checkInPersonBOS=checkInPersonService.getCheckInPersonById(306,Constants.CHECKIN.getValue());
-        System.err.println(checkInPersonBOS.size());
+        testService.test1();
     }
 }
 

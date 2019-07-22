@@ -202,13 +202,13 @@
 
     <!-- 根据手机号 身份证号 查询订单信息 -->
     <select id="getOrderByIdOrMobile" resultType="com.szq.hotel.entity.bo.OrderBO">
-    select * from hm_order where
-    check_time &lt;= #{date}
-    and (phone=#{mobile} or ID_number=#{idNumber})
-    and hotel_id=#{hotelId}
-    order by update_time desc
-    limit 1
-</select>
+        select * from hm_order where
+        check_time &lt;= #{date}
+        and (phone=#{mobile} or ID_number=#{idNumber})
+        and hotel_id=#{hotelId}
+        order by update_time desc
+        limit 1
+    </select>
 
     <!-- 根据订单id查询订单信息 -->
     <select id="getOrderById" resultType="com.szq.hotel.entity.bo.OrderBO">
@@ -281,7 +281,22 @@
         where order_state=#{orderState} and  practical_departure_time &lt; now()
     </select>
 
-
+    <!--根据房间id查询预约中的子订单-->
+    <select id="getResOrderChildByRoomId"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select id from hm_order_child
+        where order_state='reservation'
+        and room_id=#{roomId}
+        and order_id=#{orderId}
+    </select>
+    <!--根据房型id查询预约中的子订单-->
+    <select id="getResOrderChildByRoomTypeId"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select id from hm_order_child
+        where order_state='reservation'
+        and room_type_id=#{roomTypeId}
+        and room_id is null
+        and order_id=#{orderId}
+        limit 1
+    </select>
     <!-- 修改主订单信息 -->
     <update id="updOrder" parameterType="com.szq.hotel.entity.bo.OrderBO">
         update hm_order
@@ -358,6 +373,11 @@
         where hm_order_child.id=#{id}
         and hm_room.room_type_id=hm_room_type.id
         and hm_order_child.room_id=hm_room.id
+    </select>
+
+    <!--根据子订单id查询子订单-->
+    <select id="getOrderChildById2"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select * from hm_order_child where id=#{id}
     </select>
 
 

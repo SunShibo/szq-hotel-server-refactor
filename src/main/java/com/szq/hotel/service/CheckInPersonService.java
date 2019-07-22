@@ -2,6 +2,8 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.dao.CheckInPersonDAO;
 import com.szq.hotel.entity.bo.CheckInPersonBO;
+import com.szq.hotel.entity.bo.CommodityBO;
+import com.szq.hotel.entity.bo.CommonBO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +20,7 @@ public class CheckInPersonService {
     @Resource
     private CheckInPersonDAO checkInPersonDAO;
 
-    //根据订单查询入住人信息
-    public List<CheckInPersonBO> getCheckInPersonById(Integer id){
-        return checkInPersonDAO.getCheckInPersonById(id,null);
-    }
+
 
     //检查身份证号是否在住
     public Integer checkId(String certificateNumber){
@@ -59,8 +58,9 @@ public class CheckInPersonService {
 
     //根据订单查询入住人信息
     public List<CheckInPersonBO> getCheckInPersonById(Integer id,String status){
-        System.err.println(id);
-        System.err.println(status);
-        return checkInPersonDAO.getCheckInPersonById(id,status);
+        CommonBO x = new CommonBO();
+        x.setId(id);
+        x.setName(status);
+        return checkInPersonDAO.getCheckInPersonById(x);
     }
 }

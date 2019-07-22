@@ -35,6 +35,13 @@ public interface OrderDAO {
     List<OrderChildBO> getOrderChildByOrderId5(@Param("id") Integer id,@Param("orderState") String orderState);
     //根据子订单id查询子订单
     OrderChildBO getOrderChildById(Integer id);
+    //根据子订单id查询子订单
+    OrderChildBO getOrderChildById2(Integer id);
+    //根据房间id查询正在预约中的子订单
+    OrderChildBO getResOrderChildByRoomId(@Param("roomId") Integer roomId,@Param("orderId")Integer orderId);
+    //根据房型id查询正在预约中的子订单
+    OrderChildBO getResOrderChildByRoomTypeId(@Param("roomTypeId")Integer roomTypeId,@Param("orderId")Integer orderId);
+
     //修改主订单
     Integer updOrder(OrderBO orderBO);
     //删除旧子订单
