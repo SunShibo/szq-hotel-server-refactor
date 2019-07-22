@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.szq.hotel.dao.RoomDAO" >
-  <resultMap id="BaseResultMap" type="com.szq.hotel.entity.bo.RoomBO" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="room_name" property="roomName" jdbcType="VARCHAR" />
-    <result column="room_type_id" property="roomTypeId" jdbcType="INTEGER" />
-    <result column="room_major_state" property="roomMajorState" jdbcType="VARCHAR" />
-    <result column="room_state" property="roomState" jdbcType="VARCHAR" />
-    <result column="remark" property="remark" jdbcType="VARCHAR" />
-    <result column="lock_room_state" property="lockRoomState" jdbcType="VARCHAR" />
-    <result column="lock_room_start_time" property="lockRoomStartTime" jdbcType="TIMESTAMP" />
-    <result column="lock_room_end_time" property="lockRoomEndTime" jdbcType="TIMESTAMP" />
-    <result column="room_auxiliary_status" property="roomAuxiliaryStatus" jdbcType="VARCHAR" />
-    <result column="room_auxiliary_status_stand" property="roomAuxiliaryStatusStand" jdbcType="VARCHAR" />
-    <result column="setting" property="setting" jdbcType="VARCHAR" />
-    <result column="character" property="character" jdbcType="VARCHAR" />
-    <result column="create_user_id" property="createUserId" jdbcType="INTEGER" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_user_id" property="updateUserId" jdbcType="INTEGER" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="floor_id" property="floorId" jdbcType="INTEGER" />
-    <result column="hotel_id" property="hotelId" jdbcType="INTEGER" />
-  </resultMap>
-  <sql id="Base_Column_List" >
+<mapper namespace="com.szq.hotel.dao.RoomDAO">
+    <resultMap id="BaseResultMap" type="com.szq.hotel.entity.bo.RoomBO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="room_name" property="roomName" jdbcType="VARCHAR"/>
+        <result column="room_type_id" property="roomTypeId" jdbcType="INTEGER"/>
+        <result column="room_major_state" property="roomMajorState" jdbcType="VARCHAR"/>
+        <result column="room_state" property="roomState" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="lock_room_state" property="lockRoomState" jdbcType="VARCHAR"/>
+        <result column="lock_room_start_time" property="lockRoomStartTime" jdbcType="TIMESTAMP"/>
+        <result column="lock_room_end_time" property="lockRoomEndTime" jdbcType="TIMESTAMP"/>
+        <result column="room_auxiliary_status" property="roomAuxiliaryStatus" jdbcType="VARCHAR"/>
+        <result column="room_auxiliary_status_stand" property="roomAuxiliaryStatusStand" jdbcType="VARCHAR"/>
+        <result column="setting" property="setting" jdbcType="VARCHAR"/>
+        <result column="character" property="character" jdbcType="VARCHAR"/>
+        <result column="create_user_id" property="createUserId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_user_id" property="updateUserId" jdbcType="INTEGER"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="floor_id" property="floorId" jdbcType="INTEGER"/>
+        <result column="hotel_id" property="hotelId" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id, room_name, room_type_id, room_major_state, room_state, remark, lock_room_state, 
     lock_room_start_time, lock_room_end_time, room_auxiliary_status, room_auxiliary_status_stand, 
     setting, `character`, create_user_id, create_time, update_user_id, update_time, floor_id,
     hotel_id
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from hm_room
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from hm_room
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from hm_room
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.szq.hotel.entity.bo.RoomBO" >
+    <insert id="insert" parameterType="com.szq.hotel.entity.bo.RoomBO">
     insert into hm_room (id, room_name, room_type_id, 
       room_major_state, room_state, remark, 
       lock_room_state, lock_room_start_time, lock_room_end_time, 
@@ -54,200 +54,200 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{floorId,jdbcType=INTEGER}, #{hotelId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.szq.hotel.entity.bo.RoomBO" >
-    insert into hm_room
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="roomName != null" >
-        room_name,
-      </if>
-      <if test="roomTypeId != null" >
-        room_type_id,
-      </if>
-      <if test="roomMajorState != null" >
-        room_major_state,
-      </if>
-      <if test="roomState != null" >
-        room_state,
-      </if>
-      <if test="remark != null" >
-        remark,
-      </if>
-      <if test="lockRoomState != null" >
-        lock_room_state,
-      </if>
-      <if test="lockRoomStartTime != null" >
-        lock_room_start_time,
-      </if>
-      <if test="lockRoomEndTime != null" >
-        lock_room_end_time,
-      </if>
-      <if test="roomAuxiliaryStatus != null" >
-        room_auxiliary_status,
-      </if>
-      <if test="roomAuxiliaryStatusStand != null" >
-        room_auxiliary_status_stand,
-      </if>
-      <if test="setting != null" >
-        setting,
-      </if>
-      <if test="character != null" >
-        `character`,
-      </if>
-      <if test="createUserId != null" >
-        create_user_id,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateUserId != null" >
-        update_user_id,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
-      <if test="floorId != null" >
-        floor_id,
-      </if>
-      <if test="hotelId != null" >
-        hotel_id,
-      </if>
-      <if test="show != null" >
-        `show`,
-      </if>
-      <if test="network != null">
-        network,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="roomName != null" >
-        #{roomName,jdbcType=VARCHAR},
-      </if>
-      <if test="roomTypeId != null" >
-        #{roomTypeId,jdbcType=INTEGER},
-      </if>
-      <if test="roomMajorState != null" >
-       'vacant',
-      </if>
-      <if test="roomState != null" >
-        #{roomState,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null" >
-        #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="lockRoomState != null" >
-        #{lockRoomState,jdbcType=VARCHAR},
-      </if>
-      <if test="lockRoomStartTime != null" >
-        #{lockRoomStartTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lockRoomEndTime != null" >
-        #{lockRoomEndTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="roomAuxiliaryStatus != null" >
-        #{roomAuxiliaryStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="roomAuxiliaryStatusStand != null" >
-        #{roomAuxiliaryStatusStand,jdbcType=VARCHAR},
-      </if>
-      <if test="setting != null" >
-        #{setting,jdbcType=VARCHAR},
-      </if>
-      <if test="character != null" >
-        #{character,jdbcType=VARCHAR},
-      </if>
-      <if test="createUserId != null" >
-        #{createUserId,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUserId != null" >
-        #{updateUserId,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="floorId != null" >
-        #{floorId,jdbcType=INTEGER},
-      </if>
-      <if test="hotelId != null" >
-        #{hotelId,jdbcType=INTEGER},
-      </if>
-      <if test="show != null">
-        #{show,jdbcType=VARCHAR}
-      </if>
-      <if test="network != null">
-        #{network,jdbcType=VARCHAR}
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.szq.hotel.entity.bo.RoomBO" >
-    update hm_room
-    <set >
-      <if test="roomName != null" >
-        room_name = #{roomName,jdbcType=VARCHAR},
-      </if>
-      <if test="roomTypeId != null" >
-        room_type_id = #{roomTypeId,jdbcType=INTEGER},
-      </if>
-      <if test="roomMajorState != null" >
-        room_major_state = #{roomMajorState,jdbcType=VARCHAR},
-      </if>
-      <if test="roomState != null" >
-        room_state = #{roomState,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null" >
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="lockRoomState != null" >
-        lock_room_state = #{lockRoomState,jdbcType=VARCHAR},
-      </if>
-      <if test="lockRoomStartTime != null" >
-        lock_room_start_time = #{lockRoomStartTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lockRoomEndTime != null" >
-        lock_room_end_time = #{lockRoomEndTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="roomAuxiliaryStatus != null" >
-        room_auxiliary_status = #{roomAuxiliaryStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="roomAuxiliaryStatusStand != null" >
-        room_auxiliary_status_stand = #{roomAuxiliaryStatusStand,jdbcType=VARCHAR},
-      </if>
-      <if test="setting != null" >
-        setting = #{setting,jdbcType=VARCHAR},
-      </if>
-      <if test="character != null" >
-        `character` = #{character,jdbcType=VARCHAR},
-      </if>
-      <if test="createUserId != null" >
-        create_user_id = #{createUserId,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUserId != null" >
-        update_user_id = #{updateUserId,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="floorId != null" >
-        floor_id = #{floorId,jdbcType=INTEGER},
-      </if>
-      <if test="hotelId != null" >
-        hotel_id = #{hotelId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.szq.hotel.entity.bo.RoomBO" >
+    <insert id="insertSelective" parameterType="com.szq.hotel.entity.bo.RoomBO">
+        insert into hm_room
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="roomName != null">
+                room_name,
+            </if>
+            <if test="roomTypeId != null">
+                room_type_id,
+            </if>
+            <if test="roomMajorState != null">
+                room_major_state,
+            </if>
+            <if test="roomState != null">
+                room_state,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="lockRoomState != null">
+                lock_room_state,
+            </if>
+            <if test="lockRoomStartTime != null">
+                lock_room_start_time,
+            </if>
+            <if test="lockRoomEndTime != null">
+                lock_room_end_time,
+            </if>
+            <if test="roomAuxiliaryStatus != null">
+                room_auxiliary_status,
+            </if>
+            <if test="roomAuxiliaryStatusStand != null">
+                room_auxiliary_status_stand,
+            </if>
+            <if test="setting != null">
+                setting,
+            </if>
+            <if test="character != null">
+                `character`,
+            </if>
+            <if test="createUserId != null">
+                create_user_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUserId != null">
+                update_user_id,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="floorId != null">
+                floor_id,
+            </if>
+            <if test="hotelId != null">
+                hotel_id,
+            </if>
+            <if test="show != null">
+                `show`,
+            </if>
+            <if test="network != null">
+                network,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="roomName != null">
+                #{roomName,jdbcType=VARCHAR},
+            </if>
+            <if test="roomTypeId != null">
+                #{roomTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="roomMajorState != null">
+                'vacant',
+            </if>
+            <if test="roomState != null">
+                #{roomState,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="lockRoomState != null">
+                #{lockRoomState,jdbcType=VARCHAR},
+            </if>
+            <if test="lockRoomStartTime != null">
+                #{lockRoomStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lockRoomEndTime != null">
+                #{lockRoomEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roomAuxiliaryStatus != null">
+                #{roomAuxiliaryStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="roomAuxiliaryStatusStand != null">
+                #{roomAuxiliaryStatusStand,jdbcType=VARCHAR},
+            </if>
+            <if test="setting != null">
+                #{setting,jdbcType=VARCHAR},
+            </if>
+            <if test="character != null">
+                #{character,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                #{updateUserId,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="floorId != null">
+                #{floorId,jdbcType=INTEGER},
+            </if>
+            <if test="hotelId != null">
+                #{hotelId,jdbcType=INTEGER},
+            </if>
+            <if test="show != null">
+                #{show,jdbcType=VARCHAR}
+            </if>
+            <if test="network != null">
+                #{network,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szq.hotel.entity.bo.RoomBO">
+        update hm_room
+        <set>
+            <if test="roomName != null">
+                room_name = #{roomName,jdbcType=VARCHAR},
+            </if>
+            <if test="roomTypeId != null">
+                room_type_id = #{roomTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="roomMajorState != null">
+                room_major_state = #{roomMajorState,jdbcType=VARCHAR},
+            </if>
+            <if test="roomState != null">
+                room_state = #{roomState,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="lockRoomState != null">
+                lock_room_state = #{lockRoomState,jdbcType=VARCHAR},
+            </if>
+            <if test="lockRoomStartTime != null">
+                lock_room_start_time = #{lockRoomStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lockRoomEndTime != null">
+                lock_room_end_time = #{lockRoomEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roomAuxiliaryStatus != null">
+                room_auxiliary_status = #{roomAuxiliaryStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="roomAuxiliaryStatusStand != null">
+                room_auxiliary_status_stand = #{roomAuxiliaryStatusStand,jdbcType=VARCHAR},
+            </if>
+            <if test="setting != null">
+                setting = #{setting,jdbcType=VARCHAR},
+            </if>
+            <if test="character != null">
+                `character` = #{character,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="floorId != null">
+                floor_id = #{floorId,jdbcType=INTEGER},
+            </if>
+            <if test="hotelId != null">
+                hotel_id = #{hotelId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szq.hotel.entity.bo.RoomBO">
     update hm_room
     set room_name = #{roomName,jdbcType=VARCHAR},
       room_type_id = #{roomTypeId,jdbcType=INTEGER},
@@ -270,108 +270,109 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <sql id="limit">
+    <sql id="limit">
         limit #{pageNo},#{pageSize}
     </sql>
 
-  <select id="queryRoom" resultType="com.szq.hotel.entity.bo.RoomBO" parameterType="java.util.Map">
-  SELECT hm_room.* , hm_hotel.name as hotelName, hm_floor.name as floorName, hm_room_type.room_type_name as roomType,
-    hm_room_type.basic_price as basicPrice, hm_room_type.hour_room_price as hourRoomPrice
-    FROM hm_floor, hm_hotel, hm_room_type, hm_room
-  WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
-  AND hm_room.hotel_id = hm_hotel.id
-  <if test="roomName != null and roomName != ''">
-   and hm_room.room_name = #{roomName}
-  </if>
-  <if test="floorId != null and floorId != ''">
-    and hm_room.floor_id = #{floorId}
-  </if>
-  <if test="hotelId != null and hotelId != ''">
-    and hm_room.hotel_id = #{hotelId}
-  </if>
-  <if test="roomTypeId != null and roomTypeId != ''">
-    and hm_room.room_type_id = #{roomTypeId}
-  </if>
-    <if test="roomId != null and roomId != ''">
-      and hm_room.id = #{roomId}
-    </if>
-    and hm_room.show = 'yes'
-    <include refid="limit" />
-  </select>
+    <select id="queryRoom" resultType="com.szq.hotel.entity.bo.RoomBO" parameterType="java.util.Map">
+        SELECT hm_room.* , hm_hotel.name as hotelName, hm_floor.name as floorName, hm_room_type.room_type_name as
+        roomType,
+        hm_room_type.basic_price as basicPrice, hm_room_type.hour_room_price as hourRoomPrice
+        FROM hm_floor, hm_hotel, hm_room_type, hm_room
+        WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
+        AND hm_room.hotel_id = hm_hotel.id
+        <if test="roomName != null and roomName != ''">
+            and hm_room.room_name = #{roomName}
+        </if>
+        <if test="floorId != null and floorId != ''">
+            and hm_room.floor_id = #{floorId}
+        </if>
+        <if test="hotelId != null and hotelId != ''">
+            and hm_room.hotel_id = #{hotelId}
+        </if>
+        <if test="roomTypeId != null and roomTypeId != ''">
+            and hm_room.room_type_id = #{roomTypeId}
+        </if>
+        <if test="roomId != null and roomId != ''">
+            and hm_room.id = #{roomId}
+        </if>
+        and hm_room.show = 'yes'
+        <include refid="limit"/>
+    </select>
 
-  <select id="queryRoomCount" parameterType="java.util.Map" resultType="java.lang.Integer">
-    SELECT count(1)
-    FROM hm_floor, hm_hotel, hm_room_type, hm_room
-    WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
-    AND hm_room.hotel_id = hm_hotel.id
-    <if test="roomId != null and roomId != ''">
-      and hm_room.id = #{roomId}
-    </if>
-    <if test="floorId != null and floorId != ''">
-      and hm_room.floor_id = #{floorId}
-    </if>
-    <if test="hotelId != null and hotelId != ''">
-      and hm_room.hotel_id = #{hotelId}
-    </if>
-    <if test="roomTypeId != null and roomTypeId != ''">
-      and hm_room.room_type_id = #{roomTypeId}
-    </if>
-    <if test="roomName != null and roomName != ''">
-      and room_name = #{roomName}
-    </if>
-    and hm_room.show = 'yes'
-  </select>
+    <select id="queryRoomCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM hm_floor, hm_hotel, hm_room_type, hm_room
+        WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
+        AND hm_room.hotel_id = hm_hotel.id
+        <if test="roomId != null and roomId != ''">
+            and hm_room.id = #{roomId}
+        </if>
+        <if test="floorId != null and floorId != ''">
+            and hm_room.floor_id = #{floorId}
+        </if>
+        <if test="hotelId != null and hotelId != ''">
+            and hm_room.hotel_id = #{hotelId}
+        </if>
+        <if test="roomTypeId != null and roomTypeId != ''">
+            and hm_room.room_type_id = #{roomTypeId}
+        </if>
+        <if test="roomName != null and roomName != ''">
+            and room_name = #{roomName}
+        </if>
+        and hm_room.show = 'yes'
+    </select>
 
-  <update id="updateShow" parameterType="Integer[]">
-    UPDATE hm_room
-    SET
-    `show` = 'no'
-    where id in
-    <foreach item="item" collection="array" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-  </update>
+    <update id="updateShow" parameterType="Integer[]">
+        UPDATE hm_room
+        SET
+        `show` = 'no'
+        where id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
-  <update id="updatelockRoomState" parameterType="java.util.Map">
-    update hm_room
-    set
-    lock_room_state = #{state},
-    remark = #{remark},
-    lock_room_start_time = #{startTime},
-    lock_room_end_time = #{endTime}
-    where id in
-    <foreach item="item" collection="ids" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-  </update>
+    <update id="updatelockRoomState" parameterType="java.util.Map">
+        update hm_room
+        set
+        lock_room_state = #{state},
+        remark = #{remark},
+        lock_room_start_time = #{startTime},
+        lock_room_end_time = #{endTime}
+        where id in
+        <foreach item="item" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
-  <update id="updatelockRoomState2" parameterType="java.util.Map">
-    update hm_room
-    set
-    lock_room_state = #{state}
-    where id in
-    <foreach item="item" collection="ids" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-  </update>
+    <update id="updatelockRoomState2" parameterType="java.util.Map">
+        update hm_room
+        set
+        lock_room_state = #{state}
+        where id in
+        <foreach item="item" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
-  <update id="updatelockRoom" parameterType="Integer[]">
-    update hm_room
-    set
-    lock_room_state = 'open'
-    where is
-    <foreach item="item" collection="array" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-  </update>
+    <update id="updatelockRoom" parameterType="Integer[]">
+        update hm_room
+        set
+        lock_room_state = 'open'
+        where is
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
-  <select id="queryRoomTypeCount" resultType="com.szq.hotel.entity.bo.RoomTypeCountBO">
+    <select id="queryRoomTypeCount" resultType="com.szq.hotel.entity.bo.RoomTypeCountBO">
       SELECT  COUNT(1) AS `count` ,room_type_id, room_type_name FROM
   hm_room,hm_room_type WHERE hm_room.room_type_id = hm_room_type.id
   AND hm_room.hotel_id = 1  GROUP BY hm_room.room_type_id
   </select>
 
-  <update id="updateroomMajorState" parameterType="java.util.Map">
+    <update id="updateroomMajorState" parameterType="java.util.Map">
     UPDATE
       hotel.hm_room
     SET
@@ -381,107 +382,107 @@
     </update>
 
 
-  <select id="queryRm" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
-    SELECT hm_room.* , hm_hotel.name AS hotelName, hm_room_type.basic_price,
-    hm_room_type.hour_room_price,hm_room_type.room_type_name as roomType,
-    hm_floor.name AS floorName,
-    hm_room_type.room_type_name AS roomType,
-    hm_room_type.basic_price AS basicPrice,
-    hm_room_type.hour_room_price AS hourRoomPrice
-    FROM hm_floor,
-    hm_hotel,
-    hm_room_type,
-    hm_room
-    WHERE hm_room.room_type_id = hm_room_type.id
-    AND hm_room.floor_id = hm_floor.id
-    AND hm_room.hotel_id = hm_hotel.id AND
-    hm_room.hotel_id = #{hotelId}
-    AND hm_room.room_state = 'no'
-    <if test="roomTypeId != null and roomTypeId !=''">
-      and hm_room.room_type_id = #{roomTypeId}
-    </if>
-    <if test="roomAuxiliaryStatus != null and roomAuxiliaryStatus !=''">
-     and  hm_room.room_auxiliary_status = #{roomAuxiliaryStatus}
-    </if>
-    <if test="roomAuxiliaryStatusStand != null and roomAuxiliaryStatusStand !='' ">
-     and  hm_room.room_auxiliary_status_stand = #{roomAuxiliaryStatusStand}
-    </if>
-    <if test="roomMajorState != null and roomMajorState != ''">
-      and room_major_state = #{roomMajorState}
-    </if>
-    <if test="list != null and list.size() > 0 ">
-      and hm_room.id in
-      <foreach item="item" collection="list" open="(" separator="," close=")">
-        #{item}
-      </foreach>
-    </if>
+    <select id="queryRm" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
+        SELECT hm_room.* , hm_hotel.name AS hotelName, hm_room_type.basic_price,
+        hm_room_type.hour_room_price,hm_room_type.room_type_name as roomType,
+        hm_floor.name AS floorName,
+        hm_room_type.room_type_name AS roomType,
+        hm_room_type.basic_price AS basicPrice,
+        hm_room_type.hour_room_price AS hourRoomPrice
+        FROM hm_floor,
+        hm_hotel,
+        hm_room_type,
+        hm_room
+        WHERE hm_room.room_type_id = hm_room_type.id
+        AND hm_room.floor_id = hm_floor.id
+        AND hm_room.hotel_id = hm_hotel.id AND
+        hm_room.hotel_id = #{hotelId}
+        AND hm_room.room_state = 'no'
+        <if test="roomTypeId != null and roomTypeId !=''">
+            and hm_room.room_type_id = #{roomTypeId}
+        </if>
+        <if test="roomAuxiliaryStatus != null and roomAuxiliaryStatus !=''">
+            and hm_room.room_auxiliary_status = #{roomAuxiliaryStatus}
+        </if>
+        <if test="roomAuxiliaryStatusStand != null and roomAuxiliaryStatusStand !='' ">
+            and hm_room.room_auxiliary_status_stand = #{roomAuxiliaryStatusStand}
+        </if>
+        <if test="roomMajorState != null and roomMajorState != ''">
+            and room_major_state = #{roomMajorState}
+        </if>
+        <if test="list != null and list.size() > 0 ">
+            and hm_room.id in
+            <foreach item="item" collection="list" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
 
-    AND hm_room.show = 'yes'
-    HAVING   hm_room.lock_room_start_time  &gt;=  #{endTime}   OR
-    hm_room.lock_room_end_time   &lt;= #{checkTime}
-    OR hm_room.lock_room_end_time IS NULL
-  </select>
-  <!--#{checkTime} [NOT]BETWEEN hm_room.lock_room_start_time AND hm_room.lock_room_end_time-->
-  <!--hm_room.lock_room_end_time &lt; #{checkTime} &gt; hm_room.lock_room_start_time-->
-  <select id="queryOc"  resultType="com.szq.hotel.entity.bo.OcBO">
-    SELECT * FROM hm_order_child WHERE room_id IN
-    <foreach item="item" collection="id" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-    <if test="list != null and list.size > 0">
-      and  order_state IN <foreach item="item" collection="id" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-    </if>
-      having
-    (hm_order_child.start_time  BETWEEN #{checkTime} AND  #{endTime})
-    OR (#{checkTime}  between hm_order_child.start_time AND hm_order_child.end_time)
-  </select>
+        AND hm_room.show = 'yes'
+        HAVING hm_room.lock_room_start_time &gt;= #{endTime} OR
+        hm_room.lock_room_end_time &lt;= #{checkTime}
+        OR hm_room.lock_room_end_time IS NULL
+    </select>
+    <!--#{checkTime} [NOT]BETWEEN hm_room.lock_room_start_time AND hm_room.lock_room_end_time-->
+    <!--hm_room.lock_room_end_time &lt; #{checkTime} &gt; hm_room.lock_room_start_time-->
+    <select id="queryOc" resultType="com.szq.hotel.entity.bo.OcBO">
+        SELECT * FROM hm_order_child WHERE room_id IN
+        <foreach item="item" collection="id" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="list != null and list.size > 0">
+            and order_state IN
+            <foreach item="item" collection="id" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        having
+        (hm_order_child.start_time BETWEEN #{checkTime} AND #{endTime})
+        OR (#{checkTime} between hm_order_child.start_time AND hm_order_child.end_time)
+    </select>
 
 
-  <select id="queryRt" resultType="com.szq.hotel.entity.bo.RtBO">
+    <select id="queryRt" resultType="com.szq.hotel.entity.bo.RtBO">
     SELECT room_type_name,id,hotel_id,basic_price, hour_room_price FROM hm_room_type WHERE hotel_id  = #{hotelId}  AND `show` = 'yes'
   </select>
 
 
-  <select id="queryFlr" resultType="com.szq.hotel.entity.bo.FlrBO">
+    <select id="queryFlr" resultType="com.szq.hotel.entity.bo.FlrBO">
     select * from hm_floor
      where  hotel_id = #{hotelId}  order by sort desc
        </select>
-  <!--修改房间是否为维修房-->
+    <!--修改房间是否为维修房-->
     <update id="updateRoomState" parameterType="com.szq.hotel.entity.bo.RoomBO">
         UPDATE hm_room
         SET room_state = #{roomState}
         WHERE id = #{id}
     </update>
-  <!--查询房间维修状态-->
-  <select id="getRoomState" parameterType="java.lang.Integer" resultType="java.lang.String">
+    <!--查询房间维修状态-->
+    <select id="getRoomState" parameterType="java.lang.Integer" resultType="java.lang.String">
     SELECT room_state FROM hm_room
     WHERE id = #{id}
   </select>
-  <!--查询房间主状态-->
-  <select id="getRoomMajorState" parameterType="java.lang.Integer" resultType="java.lang.String">
+    <!--查询房间主状态-->
+    <select id="getRoomMajorState" parameterType="java.lang.Integer" resultType="java.lang.String">
     SELECT room_major_state FROM hm_room
     WHERE id = #{id}
   </select>
-  <!--修改房间备注-->
-  <update id="updateRoomRemark" parameterType="java.util.Map">
+    <!--修改房间备注-->
+    <update id="updateRoomRemark" parameterType="java.util.Map">
     UPDATE hm_room SET remark  = #{remark} WHERE id = #{id}
   </update>
-  <!--查询房间备注-->
-  <select id="getRoomRemark" parameterType="java.lang.Integer" resultType="java.lang.String">
+    <!--查询房间备注-->
+    <select id="getRoomRemark" parameterType="java.lang.Integer" resultType="java.lang.String">
     SELECT remark FROM hm_room WHERE id = #{id}
   </select>
 
-  <!--房屋信息查询-->
-  <select id="getRoomMessage" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RoomMessageBO">
+    <!--房屋信息查询-->
+    <select id="getRoomMessage" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RoomMessageBO">
     SELECT setting,`character`,remark
     FROM hm_room WHERE id = #{id}
   </select>
 
 
-
-  <select id="queryMemberByPhone" resultType="com.szq.hotel.entity.bo.MemberDiscountBO">
+    <select id="queryMemberByPhone" resultType="com.szq.hotel.entity.bo.MemberDiscountBO">
     SELECT hm_member.*, hm_member_level.discount   FROM hm_member, hm_member_card, hm_member_level
     WHERE hm_member_level.id = hm_member_card.member_level_id AND hm_member.member_card_id = hm_member_card.id
     AND hm_member.phone = #{phone}
@@ -489,7 +490,7 @@
   </select>
 
 
-  <select id="queryTc" resultType="com.szq.hotel.entity.dto.OcDTO">
+    <select id="queryTc" resultType="com.szq.hotel.entity.dto.OcDTO">
     SELECT
   id as id,
   order_id as orderId,
@@ -500,47 +501,48 @@
    WHERE room_id = #{roomId}
   </select>
 
-  <select id="queryRooms" resultType="com.szq.hotel.entity.bo.RoomBO">
+    <select id="queryRooms" resultType="com.szq.hotel.entity.bo.RoomBO">
     select * from hm_room where hotel_id = #{hotelId} and room_name = #{name};
   </select>
 
-  <update id="closeRoom">
-    update hm_room set lock_room_state = 'yes',
-    lock_room_start_time = #{startTime},
-    lock_room_end_time = #{endTime},
-    remark = #{remark}
-    where id in
-    <foreach item="item" collection="list" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-  </update>
+    <update id="closeRoom">
+        update hm_room set lock_room_state = 'yes',
+        lock_room_start_time = #{startTime},
+        lock_room_end_time = #{endTime},
+        remark = #{remark}
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
-  <update id="opeRoom">
-  update hm_room set lock_room_state = 'no',remark = #{remark},
-    lock_room_start_time = null,
-    lock_room_end_time = null
-    where id in <foreach item="item" collection="list" open="(" separator="," close=")">
-    #{item}
-  </foreach>
-  </update>
+    <update id="opeRoom">
+        update hm_room set lock_room_state = 'no',remark = #{remark},
+        lock_room_start_time = null,
+        lock_room_end_time = null
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
-  <select id="querRoomTypeCount" resultType="java.lang.Integer">
+    <select id="querRoomTypeCount" resultType="java.lang.Integer">
     select count(1) from hm_room where hotel_id = #{hotelId} and room_type_id = #{roomTypeId};
   </select>
 
-  <select id="queryRoomName" resultType="java.lang.String">
-    select room_name from hm_room where id in
-    <foreach item="item" collection="list" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-  </select>
+    <select id="queryRoomName" resultType="java.lang.String">
+        select room_name from hm_room where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 
-  <update id="updRoom">
+    <update id="updRoom">
     update hm_room set lock_room_state = 'no' where lock_room_end_time &lt;=now()
   </update>
 
 
-<select id="queryInthe" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
+    <select id="queryInthe" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
   SELECT *  FROM hotel.hm_room
   WHERE
  room_type_id = #{roomTypeId}
@@ -549,7 +551,7 @@ and hotel_id = #{hotelId} and
     (#{inthe},#{timeout})
 </select>
 
-  <select id="queryRoomFx" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RmBO">
+    <select id="queryRoomFx" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RmBO">
     SELECT hm_room.*,hm_floor.name AS floorName , hm_hotel.name AS hotelName,hm_room_type.room_type_name as roomType
     ,hm_room_type.basic_price AS basicPrice ,hm_room_type.hour_room_price AS hourRoomPrice
      FROM hm_room,hm_floor,hm_hotel,hm_room_type
@@ -559,30 +561,29 @@ and hotel_id = #{hotelId} and
      hm_room.id IN(SELECT room_id FROM hm_order_child WHERE order_id = #{orderId} )
   </select>
 
-  <select id="getRoomBo" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RoomBO">
+    <select id="getRoomBo" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RoomBO">
       select * from hm_room where id=#{id}
   </select>
 
 
-
-  <select id="querySubscribe" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="querySubscribe" resultType="com.szq.hotel.entity.bo.OrderChildBO">
     SELECT hm_order_child.* FROM hm_order_child, hm_room_type
     WHERE  hm_order_child.room_type_id = hm_room_type.id AND hm_room_type.hotel_id = #{hotelId}
     AND order_state = 'reservation' AND #{endTime} &lt; start_time &gt;= #{checkTime}
   </select>
 
 
-  <select id="queryEverydayRoomPrice" resultType="java.lang.Integer">
+    <select id="queryEverydayRoomPrice" resultType="java.lang.Integer">
     SELECT SUM(money) FROM hm_everyday_room_price WHERE  `time` = #{date} AND `status` = 'no'
     </select>
 
 
-  <select id="queryMemberLevel" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
+    <select id="queryMemberLevel" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
     select * from  hm_member_level where  `state` = 'yes'
     </select>
 
 
-  <select id="queryOrder"  resultType="com.szq.hotel.entity.bo.OrderBO">
+    <select id="queryOrder" resultType="com.szq.hotel.entity.bo.OrderBO">
     SELECT * FROM hm_order WHERE hotel_id = #{hotelId} AND  check_out_time &lt; #{date} &gt;= check_time
     </select>
 </mapper>

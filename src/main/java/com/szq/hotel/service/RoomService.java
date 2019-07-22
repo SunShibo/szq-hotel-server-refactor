@@ -46,11 +46,13 @@ public class RoomService {
     private RoomRecordDAO roomRecordDAO;
 
     public Map<String, Object> queryRoom(Map<String, Object> map) {
+        log.info("map:{}",map);
         Map<String, Object> mp = new HashMap<String, Object>();
         List<RoomBO> list = roomDAO.queryRoom(map);
         Integer count = roomDAO.queryRoomCount(map);
         mp.put("list", list);
         mp.put("count", count);
+        log.info("return:{}",mp);
         return mp;
     }
 
