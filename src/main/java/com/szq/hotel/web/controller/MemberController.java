@@ -446,7 +446,7 @@ public class MemberController extends BaseCotroller {
             }
             MemberBO memberBO = memberService.selectMemberByCerNumber(certificateNumber);
             if (memberBO==null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("证件号有误"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000204"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;
@@ -561,7 +561,7 @@ public class MemberController extends BaseCotroller {
      * @return
      */
     @RequestMapping("/exportMember")
-    public void download(String name,BigDecimal money,Integer cardNumber,String state,HttpServletResponse response, HttpServletRequest request){
+    public void download(HttpServletResponse response, HttpServletRequest request){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -578,12 +578,12 @@ public class MemberController extends BaseCotroller {
                 SimpleDateFormat formatter   =   new   SimpleDateFormat   ("yyyyMMddHHmmss");
                 Date curDate   =   new   Date(System.currentTimeMillis());//获取当前时间
                 String   str   =   formatter.format(curDate);
-                response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("会员信息" +str+ ".xlsx", "UTF-8"));
+                response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("会员信息" +str+ ".xls", "UTF-8"));
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
             }
 
-            String[] titles = { "卡号", "注册分店", "姓名", "会员级别" ,"生日","手机号","会员折扣","消费合计","储值总金额","储值余额","累计积分","已兑积分","剩余积分","销售员","发卡日期","证件类型","证件号"};
+            String[] titles = { "卡号", "注册分店", "姓名", "会员级别" ,"生日","手机号","会员折扣","储值总金额","储值余额","累计积分","已兑积分","剩余积分","销售员","发卡日期","证件类型","证件号"};
             memberService.export(titles, out,loginAdmin.getHotelId());
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("导出成功！"));
             safeTextPrint(response, json);
