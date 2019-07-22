@@ -895,6 +895,10 @@ public class RoomService {
         return result + "%";
     }
 
+    //获取房间信息
+    public RoomBO getRoomBo(Integer id){
+        return roomDAO.getRoomBo(id);
+    }
 
     /**
      * 获取预定反显房间

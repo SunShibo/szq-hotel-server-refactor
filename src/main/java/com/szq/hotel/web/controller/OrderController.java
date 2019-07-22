@@ -85,20 +85,38 @@ public class OrderController extends BaseCotroller {
             orderBO.setClerkOrderingId(userInfo.getId());
             orderBO.setHotelId(userInfo.getHotelId());
             List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
-            System.out.println("list size"+list.size());
-            System.out.println(OrderChildJSON);
             Map<String,Object> resultMap=new HashMap<String, Object>();
 
-            //检查入住信息是否正确 证件号是否有重复
+            //检查入住信息是否正确 证件号是否有重复 验证房间是否可用
             if(!type.equals("roomReservation")){
                 String result=this.checkInPerson(list,orderBO.getId());
                 if(result!=null){
                     super.safeJsonPrint(response, result);
+                    log.info("result{}", result);
                     return;
+                }
+
+                for (OrderChildBO order : list) {
+                    RoomBO roomBO = roomService.getRoomBo(order.getRoomId());
+                    if(roomBO==null){
+                        result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"),"房间异常") ;
+                        super.safeJsonPrint(response, result);
+                        log.info("result{}", result);
+                        return;
+                    }
+                    String status=roomBO.getRoomState();
+                    if(status.equals(Constants.INTHE.getValue())||status.equals(Constants.TIMEOUT.getValue())
+                            ||status.equals(Constants.SHOP.getValue())
+                            ||status.equals(Constants.NETWORK.getValue())
+                            ||status.equals(Constants.ALL.getValue())){
+                        result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"),"房间状态异常") ;
+                        super.safeJsonPrint(response, result);
+                        log.info("result{}", result);
+                    }
+
                 }
             }
 
-            //验证房间是否可用
 
             if(type.equals("roomReservation")){
                 //房间预约

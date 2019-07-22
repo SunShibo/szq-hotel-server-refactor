@@ -16,7 +16,9 @@
     <!--查询子订单详情-->
     <select id="queryOrderRecord"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.OrderRecoredBO">
         select hm_order_record.*,hm_admin.name as createUserName
-        from `hm_order_record`,hm_admin where hm_order_record.create_user_id=hm_admin.id and order_child_id =#{id}
+        from `hm_order_record`,hm_admin
+        where hm_order_record.create_user_id=hm_admin.id
+        and order_child_id =#{id}
     </select>
 
     <!--查询子订单详情通过id-->

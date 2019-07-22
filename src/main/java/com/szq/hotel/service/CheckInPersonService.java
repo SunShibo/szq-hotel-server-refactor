@@ -2,6 +2,7 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.dao.CheckInPersonDAO;
 import com.szq.hotel.entity.bo.CheckInPersonBO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,5 +55,12 @@ public class CheckInPersonService {
         checkInPersonBO.setStatus(status);
         checkInPersonBO.setRemark(remark);
         return checkInPersonDAO.updCheckInPerson(checkInPersonBO);
+    }
+
+    //根据订单查询入住人信息
+    public List<CheckInPersonBO> getCheckInPersonById(Integer id,String status){
+        System.err.println(id);
+        System.err.println(status);
+        return checkInPersonDAO.getCheckInPersonById(id,status);
     }
 }

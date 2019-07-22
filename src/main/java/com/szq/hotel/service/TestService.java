@@ -1,5 +1,7 @@
 package com.szq.hotel.service;
 
+import com.szq.hotel.common.constants.Constants;
+import com.szq.hotel.dao.CheckInPersonDAO;
 import com.szq.hotel.dao.TestDAO;
 import com.szq.hotel.entity.bo.CheckInPersonBO;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ public class TestService {
     @Resource
     private TestDAO testDAO;
 
+    @Resource
+    CheckInPersonDAO checkInPersonDAO;
 
    public void  test() {
        testDAO.updateU1(1,100);
@@ -24,7 +28,7 @@ public class TestService {
        testDAO.updateU2(2,100);
     }
 
-    public List<CheckInPersonBO> getCheckInPersonById(){
-        return testDAO.getCheckInPersonById(null,null);
+    public List<CheckInPersonBO> getCheckInPersonById(Integer orderChildId){
+        return checkInPersonDAO.getCheckInPersonById(orderChildId, Constants.CHECKIN.getValue());
     }
 }

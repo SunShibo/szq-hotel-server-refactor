@@ -45,7 +45,6 @@ public class OrderChildBO extends BaseModel {
     public String getMain() {
         return main;
     }
-    SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public String getRoomMajorState() {
         return roomMajorState;
     }

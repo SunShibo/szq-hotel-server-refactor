@@ -55,6 +55,10 @@ public class OrderService {
     @Resource
     CashierSummaryService cashierSummaryService;
 
+    @Resource
+    CheckInPersonService checkInPersonService;
+
+
     //添加主订单 子订单 入住人 每日价格
     public String addOrderInfo(OrderBO orderBO,List<OrderChildBO> orderChildBOList) {
         //生成订单号
@@ -129,11 +133,14 @@ public class OrderService {
                 orderChildBONew.setEndTime(orderBO.getCheckOutTime());
                 orderChildBONew.setOrderState(Constants.NOTPAY.getValue());//状态
                 orderChildBONew.setAlRoomCode(alCode);
+                orderChildBONew.setOrderId(orderBO.getId());
                 orderDAO.addOrderChild(orderChildBONew);
                 List<CheckInPersonBO> checkInPersonBOS = orderChildBONew.getCheckInPersonBOS();
                 List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBONew.getEverydayRoomPriceBOS();
                 if (checkInPersonBOS != null) {
                     for (CheckInPersonBO person : checkInPersonBOS) {
+                        person.setOrderChildId(orderChildBONew.getId());
+                        person.setStatus(Constants.CHECKIN.getValue());
                         checkInPersonDAO.addCheckInPerson(person);
                     }
                 }
