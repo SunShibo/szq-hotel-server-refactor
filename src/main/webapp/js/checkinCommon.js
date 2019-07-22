@@ -48,7 +48,7 @@ function clearData() {
     location.reload();
 }
 
-//识别渲染会员信息
+//识别渲染会员信息---预约页面使用
 function renderUserInfo(r) {
 
     userInfo = r;
@@ -66,6 +66,34 @@ function renderUserInfo(r) {
         form.render();
     }catch (err){}
 
+}
+
+//生产改价数据
+function getModifyPriceData(days) {
+
+    if($("input[name='checkType']:checked").val()=="hour"){
+        days = 1;
+    }
+
+    var time = $("#startTime").val();
+
+    if(new Date(time).getHours()<6){
+        //如果6点之前，时间取前一天
+        time = addDate(new Date(time),-1)
+    }
+
+    var arr = [
+        {
+            time:time.split(" ").length>1?time.split(" ")[0]:time
+        }
+    ];
+
+    for(var i=1;i<Number(days);i++){
+        arr.push({
+            time:addDate(new Date(time),i)
+        })
+    }
+    return arr;
 }
 
 setTimeout(function () {

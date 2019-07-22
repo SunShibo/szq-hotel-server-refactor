@@ -1,4 +1,4 @@
-//预约房间修改价格
+//预约入住房间修改价格
 clearModifyPrice();
 function modifyPrice() {
 
