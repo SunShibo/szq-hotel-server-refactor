@@ -7,6 +7,7 @@ import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.OcDTO;
 import com.szq.hotel.entity.dto.RoomStateDTO;
 import com.szq.hotel.entity.dto.RoomTypeCountDTO;
+import com.szq.hotel.entity.dto.XxDTO;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.web.controller.RoomController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -22,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import sun.awt.geom.AreaOp;
 
 import javax.annotation.Resource;
+import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -100,7 +103,7 @@ public class RoomService {
      * @param map
      * @return
      */
-    public List<RmBO> publicQuery(Map<String, Object> map,List<String> ll) {
+    public List<RmBO> publicQuery(Map<String, Object> map, List<String> ll) {
 
         //获取预入住时间
         String dt = (String) map.get("checkTime");
@@ -120,11 +123,14 @@ public class RoomService {
             }
         }
         log.info("获取符合条件房间的id:{}", ls);
-        List<OcBO> l = null;
+        List<OcBO>   l = new ArrayList<OcBO>();
         //根据房间id获取符合条件的订单
         if (!CollectionUtils.isEmpty(ls)) {
-            l = roomDAO.queryOc(ls, dt, et,ll);
+             l = roomDAO.queryOc(ls, dt, et, ll);
         }
+
+     /*   List<OcBO>  l = roomDAO.queryOc(ls, dt, et, ll);*/
+        log.info("根据房间id获取符合条件的订单:{}",l);
 
         List<Integer> reId = new ArrayList<Integer>();
         if (!CollectionUtils.isEmpty(l)) {
@@ -178,7 +184,7 @@ public class RoomService {
         ll.add("reservation");
         ll.add("notpay");
         ll.add("admissions");
-        List<RmBO> list = this.publicQuery(map,ll);
+        List<RmBO> list = this.publicQuery(map, ll);
 
         String phone = (String) map.get("phone");
         MemberDiscountBO memberDiscountBO = queryMember(phone);
@@ -677,7 +683,7 @@ public class RoomService {
     }
 
     public void opeRoom(List<Integer> list, String remark) {
-        roomDAO.opeRoom(list,remark);
+        roomDAO.opeRoom(list, remark);
     }
 
     public Map<String, Object> verificationRoom(List<Integer> list, String state, String checkTime, String endTime, Integer hotelId) {
@@ -705,7 +711,7 @@ public class RoomService {
         ll.add("reservation");
         ll.add("notpay");
         ll.add("admissions");
-        List<RmBO> rmBOS = publicQuery(map,ll);
+        List<RmBO> rmBOS = publicQuery(map, ll);
         List<Integer> ls = new ArrayList<Integer>();
         for (RmBO rmBO : rmBOS) {
             ls.add(rmBO.getId());
@@ -718,24 +724,24 @@ public class RoomService {
             boolean listEqual = isListEqual(list, ls);
             log.info("listEqual:{}", listEqual);
             if (listEqual) {
-                mp.put("state",true);
-                mp.put("msg","可直接入住或预定");
+                mp.put("state", true);
+                mp.put("msg", "可直接入住或预定");
                 return mp;
             } else {
                 List<Integer> diffrent2 = getDiffrent2(list, ls);
-                log.info("不能直接入住或者预定的:{}",diffrent2);
+                log.info("不能直接入住或者预定的:{}", diffrent2);
                 List<String> strings = roomDAO.queryRoomName(diffrent2);
-                log.info("strings:{}",strings);
+                log.info("strings:{}", strings);
                 StringBuffer sb = new StringBuffer();
                 sb.append("以下房间已更改了状态:");
                 for (String string : strings) {
-                    log.info("string:{}",string);
-                    sb.append(string+" ");
+                    log.info("string:{}", string);
+                    sb.append(string + " ");
                 }
                 sb.append(" 请重新选择");
-                log.info("sb:{}",sb);
-                mp.put("state",false);
-                mp.put("msg",sb.toString());
+                log.info("sb:{}", sb);
+                mp.put("state", false);
+                mp.put("msg", sb.toString());
                 return mp;
             }
         } else {
@@ -743,14 +749,14 @@ public class RoomService {
             StringBuffer sb = new StringBuffer();
             sb.append("以下房间已更改了状态:");
             for (String string : strings) {
-                log.info("string:{}",string);
-                sb.append(string+" ");
+                log.info("string:{}", string);
+                sb.append(string + " ");
             }
             sb.append(" 请重新选择");
-            log.info("sb:{}",sb);
+            log.info("sb:{}", sb);
             log.info("请重新选择房间");
-            mp.put("state",false);
-            mp.put("msg",sb.toString());
+            mp.put("state", false);
+            mp.put("msg", sb.toString());
             return mp;
         }
     }
@@ -790,11 +796,11 @@ public class RoomService {
     }
 
     //锁房时间到了 把锁房状态修改为未锁房
-    public Integer updRoom(){
+    public Integer updRoom() {
         return roomDAO.updRoom();
     }
 
-    public Map<String, Object> todayPictureView(Integer hotelId){
+    public Map<String, Object> todayPictureView(Integer hotelId) {
         //查询当天各房型 可用数量 入住中数量 预约中数量 以及计算出入住率
         HashMap<String, Object> map = new HashMap<String, Object>();
 
@@ -812,35 +818,87 @@ public class RoomService {
         ll.add("reservation");
         ll.add("notpay");
         ll.add("admissions");
-        
-      Map<String, Object> mp = new HashMap<String, Object>();
 
-        mp.put("checkTime", date);
-        mp.put("hotelId",hotelId);
-        mp.put("endTime", date1);
-       
-        
+        Map<String, Object> mp = new HashMap<String, Object>();
+
+        mp.put("checkTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+        mp.put("hotelId", hotelId);
+        mp.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));
+
+        //获取今天统计房价
+        Integer integer1 = roomDAO.queryEverydayRoomPrice(new SimpleDateFormat("yyyy-MM-dd").format(date));
+        map.put("three", integer1);
         for (RtBO rtBO : rtBOS) {
-            mp.put("roomTypeId", rtBO.getHotelId());
+            mp.put("roomTypeId", rtBO.getId());
             RoomTypeCountDTO roomTypeCountDTO = new RoomTypeCountDTO();
             //查询可用房间
             List<RmBO> rmBOS = publicQuery(mp, ll);
             roomTypeCountDTO.setName(rtBO.getRoomTypeName());
             roomTypeCountDTO.setCount(rmBOS.size());
             //查询当前正在入住的
-            List<RmBO> rmBOS1 = roomDAO.queryInthe(rtBO.getHotelId(), hotelId, "inthe", "timeout");
+            List<RmBO> rmBOS1 = roomDAO.queryInthe(rtBO.getId(), hotelId, "inthe", "timeout");
             roomTypeCountDTO.setCountChinkRoom(rmBOS1.size());
-            List<OrderChildBO> orderChildBOS = roomDAO.querySubscribe(rtBO.getHotelId(), hotelId);
-
-            int integer = roomDAO.querRoomTypeCount(rtBO.getHotelId(), hotelId);
-            rmBOS1.size();
-
+            List<OrderChildBO> orderChildBOS = roomDAO.querySubscribe(rtBO.getId(), hotelId, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));
+            roomTypeCountDTO.setCountOrderRoom(orderChildBOS.size());
+            int integer = roomDAO.querRoomTypeCount(rtBO.getId(), hotelId);
+            roomTypeCountDTO.setRotio(baifenbi(rmBOS1.size(), integer));
+            roomTypeCountDTO.setHotelId(rtBO.getHotelId());
+            roomTypeCountDTO.setTypePrice(rtBO.getBasicPrice());
+            list.add(roomTypeCountDTO);
         }
-        return null;
+
+
+        List<XxDTO> ls = new ArrayList<XxDTO>();
+        //查询全部会员级别
+        List<MemberLevelBO> memberLevelBOS = roomDAO.queryMemberLevel();
+        //查询当前在住的订单
+        List<OrderBO> orderBOS = roomDAO.queryOrder(hotelId, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+        int j = 0;
+        for (MemberLevelBO memberLevelBO : memberLevelBOS) {
+            XxDTO xxDTO = new XxDTO();
+            xxDTO.setName(memberLevelBO.getName());
+            int i = 0;
+            for (OrderBO orderBO : orderBOS) {
+                if(memberLevelBO.getId().equals(orderBO.getMembersId())){
+                    i++;
+                }
+            }
+            xxDTO.setNumber(i);
+            ls.add(xxDTO);
+            j=j+i;
+        }
+        XxDTO xx = new XxDTO();
+        xx.setNumber(orderBOS.size()-j);
+        xx.setName("散客");
+        ls.add(xx);
+
+
+
+        map.put("second",ls);
+        map.put("first", list);
+        return map;
     }
+
+    private String baifenbi(int a, int b) {
+        log.info("a:{}", a);
+        log.info("b:{}", b);
+        if (a == 0 && b == 0) {
+            return "0%";
+        }
+
+        // 创建一个数值格式化对象
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        // 设置精确到小数点后2位
+        numberFormat.setMaximumFractionDigits(2);
+        String result = numberFormat.format((float) a / (float) b * 100);
+        System.out.println("diliverNum和queryMailNum的百分比为:" + result + "%");
+        return result + "%";
+    }
+
 
     /**
      * 获取预定反显房间
+     *
      * @param orderId
      */
     public List<RmBO> queryRoomFx(Integer orderId) {

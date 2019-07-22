@@ -145,7 +145,7 @@ public interface RoomDAO {
                           @Param("inthe")String inthe,
                           @Param("timeout")String timeout);
 
-    List<OrderChildBO> querySubscribe(@Param("roomTypeId")Integer roomTypeId,@Param("hotelId")Integer hotelId);
+    List<OrderChildBO> querySubscribe(@Param("roomTypeId")Integer roomTypeId,@Param("hotelId")Integer hotelId,@Param("checkTime")String checkTime, @Param("endTime")String endTime);
 
 
     /**
@@ -155,4 +155,26 @@ public interface RoomDAO {
     List<RmBO> queryRoomFx(Integer orderId);
 
     RoomBO getRoomBo(Integer id);
+
+    /**
+     * 计算当天未过夜审的房价总和
+     * @param date
+     * @return
+     */
+    Integer queryEverydayRoomPrice(@Param("date")String date);
+
+    /**
+     * 查询所有会员级别
+     * @return
+     */
+    List<MemberLevelBO> queryMemberLevel();
+
+    /**
+     * 查询当前在住的订单
+     * @param hotelId
+     * @param date
+     * @return
+     */
+    List<OrderBO>  queryOrder(@Param("hotelId")Integer hotelId,@Param("date")String date);
+
 }

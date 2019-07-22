@@ -563,4 +563,26 @@ and hotel_id = #{hotelId}
       select * from hm_room where id=#{id}
   </select>
 
+
+
+  <select id="querySubscribe" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    SELECT hm_order_child.* FROM hm_order_child, hm_room_type
+    WHERE  hm_order_child.room_type_id = hm_room_type.id AND hm_room_type.hotel_id = #{hotelId}
+    AND order_state = 'reservation' AND #{endTime} &lt; start_time &gt;= #{checkTime}
+  </select>
+
+
+  <select id="queryEverydayRoomPrice" resultType="java.lang.Integer">
+    SELECT SUM(money) FROM hm_everyday_room_price WHERE  `time` = #{date} AND `status` = 'no'
+    </select>
+
+
+  <select id="queryMemberLevel" resultType="com.szq.hotel.entity.bo.MemberLevelBO">
+    select * from  hm_member_level where  `state` = 'yes'
+    </select>
+
+
+  <select id="queryOrder"  resultType="com.szq.hotel.entity.bo.OrderBO">
+    SELECT * FROM hm_order WHERE hotel_id = #{hotelId} AND  check_out_time &lt; #{date} &gt;= check_time
+    </select>
 </mapper>

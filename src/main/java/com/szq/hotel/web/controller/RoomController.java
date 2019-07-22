@@ -564,8 +564,11 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/todayPictureView")
     public void todayPictureView(HttpServletRequest request, HttpServletResponse response){
-        //查询今天
-
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+        super.safeJsonPrint(response, result);
+        return;
     }
 
     /**

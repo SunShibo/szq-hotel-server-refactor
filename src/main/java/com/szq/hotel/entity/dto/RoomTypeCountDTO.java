@@ -13,7 +13,7 @@ public class RoomTypeCountDTO implements Serializable {
     private Integer hotelId;//酒店id
     private String name;//房型名称
     private String rotio;//入住率
-
+    private double typePrice;
     public Integer getCount() {
         return count;
     }
@@ -60,5 +60,13 @@ public class RoomTypeCountDTO implements Serializable {
 
     public void setRotio(String rotio) {
         this.rotio = rotio;
+    }
+
+    public double getTypePrice() {
+        return typePrice;
+    }
+
+    public void setTypePrice(double typePrice) {
+        this.typePrice = typePrice;
     }
 }
