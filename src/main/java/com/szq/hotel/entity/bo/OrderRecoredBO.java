@@ -11,7 +11,7 @@ public class OrderRecoredBO extends BaseModel {
     private Integer orderChildId;//子订单id
     private String info;//详细信息
     private Integer createUserId;//创建用户id
-    private Integer createUserName;//创建用户id
+    private String createUserName;//创建用户name
     private String payType;//支付方式
     private BigDecimal money;//金额
     private String state;//状态
@@ -19,6 +19,13 @@ public class OrderRecoredBO extends BaseModel {
     private String number;//数量
     private Date createTime;//创建时间
 
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
 
     public OrderRecoredBO() {
     }

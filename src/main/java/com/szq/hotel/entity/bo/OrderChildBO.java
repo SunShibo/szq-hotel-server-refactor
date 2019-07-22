@@ -91,12 +91,14 @@ public class OrderChildBO extends BaseModel {
     }
 
     public String getCreateTime() {
-//        if (this.createTime.indexOf(".")>0){
-//            return this.createTime.substring(0,this.createTime.indexOf(".")-1);
-//        }
         if(this.createTime!=null){
-            return ymdhms.format(this.createTime);
+            if (this.createTime.indexOf(".")>0){
+                return this.createTime.substring(0,this.createTime.indexOf("."));
+            }
         }
+//        if(this.createTime!=null){
+//            return ymdhms.format(this.createTime);
+//        }
         return this.createTime;
     }
 
