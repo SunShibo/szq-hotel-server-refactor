@@ -110,11 +110,7 @@ public class OrderController extends BaseCotroller {
                 resultMap.put("orderNumber",orderBO.getOrderNumber());
             }
 
-            try {
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(1000);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
             super.safeJsonPrint(response, result);
