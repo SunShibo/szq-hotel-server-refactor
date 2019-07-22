@@ -44,7 +44,9 @@ public class RoomRecordService {
     public List<RoomRecordBO> selectRoomRecord(Map<String,Object> map){
         return roomRecordDAO.selectRoomRecord(map);
     }
-
+    /*
+        查询房间记录数量
+     */
     public Integer selectRoomRecordCount(Integer id){
         return roomRecordDAO.selectRoomRecordCount(id);
     }
