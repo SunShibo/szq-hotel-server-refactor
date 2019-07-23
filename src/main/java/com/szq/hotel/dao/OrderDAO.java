@@ -76,8 +76,6 @@ public interface OrderDAO {
     List<OrderChildBO> getTimeOutOrder2(String orderState);
     //获取入住支付信息
     List<OrderChildBO> getPayInfo(Integer orderId);
-    //根据时间查询营收报表
-    IncomeBO getIncome(@Param("afterTime")Date afterTime,@Param("beforeTime")Date beforeTime,@Param("hotelId") Integer hotelId);
 
     /**
      * 订单列表

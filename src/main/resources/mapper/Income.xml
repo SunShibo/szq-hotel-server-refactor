@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szq.hotel.dao.IncomeDAO">
+    <!--根据时间获取营收信息-->
+    <select id="getIncome" resultType="com.szq.hotel.entity.bo.IncomeBO">
+        select
+        sum(room_rate) as roomRate,
+        sum(timeout_room_rate) as timeoutRoomRate,
+        sum(room_rate_adjustment) as roomRateAdjustment,
+        sum(other_rate) as otherRate,
+        sum(commodity) as commodity,
+        sum(compensation) as compensation,
+        sum(member_card_rate) as memberCardRate,
+        sum(debt_sum) as debtSum,
+        sum(cash) as cash,
+        sum(bank_card) as bankCard,
+        sum(wechat) as wechat,
+        sum(alipay) as alipay,
+        sum(online_pay) as onlinePay,
+        sum(credit_sum) as creditSum
+        from hm_operating_income
+        where hotel_id=#{hotelId}
+        <if test="year!=null year!=''">
+            and `year`=year(night_auditor_time)
+        </if>
+        <if test="month!=null month!=''">
+            and `month`=month(night_auditor_time)
+        </if>
+        <if test="day!=null day!=''">
+            and `day`=day(night_auditor_time)
+        </if>
+
+    </select>
+
+    <!--添加营收信息-->
+    <insert id="addIncome" parameterType="com.szq.hotel.entity.bo.IncomeBO">
+        insert into hm_operating_income
+        values
+        (null,#{room_rate},#{timeout_room_rate},#{room_rate_adjustment},
+        #{other_rate},#{commodity},#{compensation},
+        #{member_card_rate},#{debt_sum},#{cash},
+        #{bank_card},#{wechat},#{alipay},#{online_pay},
+        #{credit_sum},now(),#{hotel_id})
+    </insert>
+</mapper>

@@ -202,7 +202,6 @@ public class OrderService {
         String date = this.getDate();
         //主订单信息
         OrderBO orderBO = orderDAO.getOrderByIdOrMobile(idNumber, mobile, date, hotelId);
-        System.err.println(orderBO.getClerkOrderingName());
         if (orderBO == null || orderBO.getOrderNumber() == null) {
             return null;
         }
@@ -814,11 +813,6 @@ public class OrderService {
     //查询备份信息
     public OrderChildBackupParam getOrderChildBackup(Integer id) {
         return orderDAO.getOrderChildBackup(id);
-    }
-
-    //获取营收入报表
-    public void getIncome(){
-
     }
 
 

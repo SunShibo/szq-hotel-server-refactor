@@ -7,22 +7,22 @@ import java.util.Date;
 
 public class IncomeBO extends BaseModel {
     private Integer id;//营业收入
-    private BigDecimal roomRate;//房费
-    private BigDecimal timeoutRoomRate;//超时房费
-    private BigDecimal roomRateAdjustment;//房费调整
-    private BigDecimal otherRate;//其他费用
-    private BigDecimal commodity;//商品
-    private BigDecimal compensation;//赔偿
-    private BigDecimal memberCardRate;//会员卡收入
-    private BigDecimal debtSum;//借方总记
-    private BigDecimal cash;//现金
-    private BigDecimal bankCard;//银行卡
-    private BigDecimal wechat;//微信
-    private BigDecimal alipay;//支付宝
-    private BigDecimal onlinePay;//线上支付
-    private BigDecimal creditSum;//贷方总记
-    private Date nightAuditorTime;//夜审时间
-    private Integer hotelId;//酒店id
+    private String roomRate;//房费
+    private String timeoutRoomRate;//超时房费
+    private String roomRateAdjustment;//房费调整
+    private String otherRate;//其他费用
+    private String commodity;//商品
+    private String compensation;//赔偿
+    private String memberCardRate;//会员卡收入
+    private String debtSum;//借方总记
+    private String cash;//现金
+    private String bankCard;//银行卡
+    private String wechat;//微信
+    private String alipay;//支付宝
+    private String onlinePay;//线上支付
+    private String creditSum;//贷方总记
+    private String nightAuditorTime;//夜审时间
+    private String hotelId;//酒店id
 
     public Integer getId() {
         return id;
@@ -32,131 +32,131 @@ public class IncomeBO extends BaseModel {
         this.id = id;
     }
 
-    public BigDecimal getRoomRate() {
+    public String getRoomRate() {
         return roomRate;
     }
 
-    public void setRoomRate(BigDecimal roomRate) {
+    public void setRoomRate(String roomRate) {
         this.roomRate = roomRate;
     }
 
-    public BigDecimal getTimeoutRoomRate() {
+    public String getTimeoutRoomRate() {
         return timeoutRoomRate;
     }
 
-    public void setTimeoutRoomRate(BigDecimal timeoutRoomRate) {
+    public void setTimeoutRoomRate(String timeoutRoomRate) {
         this.timeoutRoomRate = timeoutRoomRate;
     }
 
-    public BigDecimal getRoomRateAdjustment() {
+    public String getRoomRateAdjustment() {
         return roomRateAdjustment;
     }
 
-    public void setRoomRateAdjustment(BigDecimal roomRateAdjustment) {
+    public void setRoomRateAdjustment(String roomRateAdjustment) {
         this.roomRateAdjustment = roomRateAdjustment;
     }
 
-    public BigDecimal getOtherRate() {
+    public String getOtherRate() {
         return otherRate;
     }
 
-    public void setOtherRate(BigDecimal otherRate) {
+    public void setOtherRate(String otherRate) {
         this.otherRate = otherRate;
     }
 
-    public BigDecimal getCommodity() {
+    public String getCommodity() {
         return commodity;
     }
 
-    public void setCommodity(BigDecimal commodity) {
+    public void setCommodity(String commodity) {
         this.commodity = commodity;
     }
 
-    public BigDecimal getCompensation() {
+    public String getCompensation() {
         return compensation;
     }
 
-    public void setCompensation(BigDecimal compensation) {
+    public void setCompensation(String compensation) {
         this.compensation = compensation;
     }
 
-    public BigDecimal getMemberCardRate() {
+    public String getMemberCardRate() {
         return memberCardRate;
     }
 
-    public void setMemberCardRate(BigDecimal memberCardRate) {
+    public void setMemberCardRate(String memberCardRate) {
         this.memberCardRate = memberCardRate;
     }
 
-    public BigDecimal getDebtSum() {
+    public String getDebtSum() {
         return debtSum;
     }
 
-    public void setDebtSum(BigDecimal debtSum) {
+    public void setDebtSum(String debtSum) {
         this.debtSum = debtSum;
     }
 
-    public BigDecimal getCash() {
+    public String getCash() {
         return cash;
     }
 
-    public void setCash(BigDecimal cash) {
+    public void setCash(String cash) {
         this.cash = cash;
     }
 
-    public BigDecimal getBankCard() {
+    public String getBankCard() {
         return bankCard;
     }
 
-    public void setBankCard(BigDecimal bankCard) {
+    public void setBankCard(String bankCard) {
         this.bankCard = bankCard;
     }
 
-    public BigDecimal getWechat() {
+    public String getWechat() {
         return wechat;
     }
 
-    public void setWechat(BigDecimal wechat) {
+    public void setWechat(String wechat) {
         this.wechat = wechat;
     }
 
-    public BigDecimal getAlipay() {
+    public String getAlipay() {
         return alipay;
     }
 
-    public void setAlipay(BigDecimal alipay) {
+    public void setAlipay(String alipay) {
         this.alipay = alipay;
     }
 
-    public BigDecimal getOnlinePay() {
+    public String getOnlinePay() {
         return onlinePay;
     }
 
-    public void setOnlinePay(BigDecimal onlinePay) {
+    public void setOnlinePay(String onlinePay) {
         this.onlinePay = onlinePay;
     }
 
-    public BigDecimal getCreditSum() {
+    public String getCreditSum() {
         return creditSum;
     }
 
-    public void setCreditSum(BigDecimal creditSum) {
+    public void setCreditSum(String creditSum) {
         this.creditSum = creditSum;
     }
 
-    public Date getNightAuditorTime() {
+    public String getNightAuditorTime() {
         return nightAuditorTime;
     }
 
-    public void setNightAuditorTime(Date nightAuditorTime) {
+    public void setNightAuditorTime(String nightAuditorTime) {
         this.nightAuditorTime = nightAuditorTime;
     }
 
-    public Integer getHotelId() {
+    public String getHotelId() {
         return hotelId;
     }
 
-    public void setHotelId(Integer hotelId) {
+    public void setHotelId(String hotelId) {
         this.hotelId = hotelId;
     }
 }
