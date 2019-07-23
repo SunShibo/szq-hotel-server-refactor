@@ -41,14 +41,33 @@
 
     <!-- 备份子订单 -->
     <insert id="addOrderChildBackup" parameterType="com.szq.hotel.entity.param.OrderChildBackupParam">
-        insert into hm_order_child_backup set
-        id=#{id},
-        room_rate=#{roomRate},
-        other_rate=#{otherRate},
-        end_time=#{endTime},
-        practical_departure_time=#{practicalDepartureTime},
-        order_state=#{orderState},
-        room_major_state=#{roomMajorState}
+        insert into hm_order_child_backup
+        <set>
+            <if test="!=null and !=''">
+                id=#{id},
+            </if>
+
+            <if test="roomRate!=null and roomRate!=''">
+                room_rate=#{roomRate},
+            </if>
+
+            <if test="otherRate!=null and otherRate!=''">
+                other_rate=#{otherRate},
+            </if>
+
+            <if test="practicalDepartureTime!=null and practicalDepartureTime!=''">
+                practical_departure_time=#{practicalDepartureTime},
+            </if>
+
+            <if test="orderState!=null and orderState!=''">
+                order_state=#{orderState},
+            </if>
+
+            <if test="roomMajorState!=null and roomMajorState!=''">
+                room_major_state=#{roomMajorState},
+            </if>
+        </set>
+
     </insert>
     <!-- 查询备份的子订单 -->
     <select id="getOrderChildBackup" resultType="com.szq.hotel.entity.param.OrderChildBackupParam" parameterType="java.lang.Integer">
