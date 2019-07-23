@@ -25,7 +25,7 @@ function modifyPrice() {
             }
         }
     }
-    console.log(typeids)
+    // console.log(typeids)
     var index = layer.load(1,{time:10*1000});
     $.ajax({
         data: {
@@ -65,6 +65,15 @@ function modifyPrice() {
 
                 sRooms1 = JSON.parse(JSON.stringify(sRooms));
                 localStorage.modifyPrice = JSON.stringify(rs.data);
+
+                var dda = checktype=='hour'?1:document.getElementById("days1").value;
+                dda == 0 ? dda = 1 : dda = dda;
+                layer.open({
+                    area: ['1000px', '420px'],
+                    type: 2,
+                    content: "iframe_modifyPriceYYRZ.html?v=" + Date.now()+"&dayNumber=" + dda +"&orderId=" + yuyueData.id,
+                    title: "修改价格"
+                })
             }
         }
     });
@@ -72,14 +81,7 @@ function modifyPrice() {
 
 
 
-    var dda = checktype=='hour'?1:document.getElementById("days1").value;
-    dda == 0 ? dda = 1 : dda = dda;
-    layer.open({
-        area: ['1000px', '420px'],
-        type: 2,
-        content: "iframe_modifyPriceYYRZ.html?v=" + Date.now()+"&dayNumber=" + dda +"&orderId=" + yuyueData.id,
-        title: "修改价格"
-    })
+
 }
 function getTypeIds() {
     var ids = [];
