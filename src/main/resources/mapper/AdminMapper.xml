@@ -173,7 +173,7 @@
     <select id="getAdminCountByCond" parameterType="java.util.Map"  resultType="java.lang.Integer">
         select count(*)
         from hm_admin,hm_role
-        where role_id=role.id
+        where role_id=hm_role.id
         <if test="id!=null and id!=''">
             and admin.id=#{id}
         </if>
