@@ -139,7 +139,7 @@ public class OrderService {
             }
             //子订单id
             if(orderChildResult!=null||orderChildResult.getId()!=null){
-                orderBO.setId(orderChildResult.getId());
+                orderChildBO.setId(orderChildResult.getId());
             }
 
             //查询不到代表新增子订单
