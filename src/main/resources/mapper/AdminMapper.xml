@@ -74,6 +74,9 @@
     <!-- 下拉框展示 查询所有角色  -->
     <select id="getRoleList" resultType="com.szq.hotel.entity.bo.RoleBO">
         SELECT id,role_name FROM hm_role
+        <if test="status!=null and status!=''">
+            where id!='1'
+        </if>
     </select>
 
     <!-- 根据角色id删除对应的所有权限  -->
@@ -162,6 +165,7 @@
         <if test="userName!=null and userName!=''">
             and `name` like '%${userName}%'
         </if>
+
         <include refid="adminLimit" />
     </select>
 

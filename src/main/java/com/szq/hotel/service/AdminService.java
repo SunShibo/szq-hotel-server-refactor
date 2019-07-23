@@ -191,8 +191,8 @@ public class AdminService {
      *
      * @return 角色集合
      */
-    public List<RoleBO> getRoleList() {
-        return adminDAO.getRoleList();
+    public List<RoleBO> getRoleList(String status) {
+        return adminDAO.getRoleList(status);
     }
 
     /**

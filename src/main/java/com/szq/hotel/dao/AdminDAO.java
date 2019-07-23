@@ -50,7 +50,7 @@ public interface AdminDAO {
      * 查询所有角色
      * @return 所有角色
      */
-    List<RoleBO> getRoleList();
+    List<RoleBO> getRoleList(String status);
 
     /**
      * 根据角色id查询菜单信息

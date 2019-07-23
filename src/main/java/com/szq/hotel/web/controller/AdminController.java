@@ -386,8 +386,9 @@ public class AdminController extends BaseCotroller {
      * 查询所有角色
      */
     @RequestMapping("/getRoleList")
-    public void getRoleList(HttpServletRequest request,HttpServletResponse response){
-        List<RoleBO> roleList = adminService.getRoleList();
+    public void getRoleList(String status,HttpServletRequest request,HttpServletResponse response){
+
+        List<RoleBO> roleList = adminService.getRoleList(status);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(roleList)) ;
         super.safeJsonPrint(response, result);
     }
