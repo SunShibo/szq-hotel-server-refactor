@@ -76,6 +76,9 @@ public class UpdatePriceService {
                 map.put("y" + addDate, basicPrice);
                 if(queryPrice!=null && queryPrice.get(addDate)!=null) {
                     map.put(addDate, queryPrice.get(addDate));
+                    if(i==0){
+                        map.put("price",queryPrice.get(addDate));  //第一天有优惠价,覆盖之前的价格
+                    }
                 }else{
                     map.put(addDate,basicPrice);
                 }
