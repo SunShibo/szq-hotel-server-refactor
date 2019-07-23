@@ -11,6 +11,8 @@ import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,12 +59,12 @@ public class OrderService {
 
     @Resource
     CheckInPersonService checkInPersonService;
-
-    @Resource
-    TestDAO  testDAO;
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     //添加主订单 子订单 入住人 每日价格
     public String addOrderInfo(OrderBO orderBO, List<OrderChildBO> orderChildBOList) {
+        log.info("start addOrderInfo..................................");
+        log.info("orderBO:{}\torderChildBOList:{}",orderBO,orderChildBOList);
         //生成订单号
         IDBuilder idBuilder = new IDBuilder(10, 10);
         String orderNumber = idBuilder.nextId() + "";
@@ -74,6 +76,7 @@ public class OrderService {
         String alRoomCode = UUID.randomUUID().toString();
         //总房价
         BigDecimal totalPrice = new BigDecimal(0);
+        System.err.println();
         for (OrderChildBO orderChild : orderChildBOList) {
             //添加子订单
             orderChild.setOrderId(orderBO.getId());//主订单id

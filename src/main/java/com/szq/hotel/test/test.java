@@ -121,7 +121,9 @@ public class test {
 
         String json="[{\"basicPrice\":320,\"floorId\":1,\"floorName\":\"一楼\",\"hotelId\":1,\"hotelName\":\"上知湫文化驿站(朝阳店)\",\"hourRoomPrice\":40,\"roomMajorState\":\"inthe\",\"roomName\":\"8\",\"roomType\":\"标准间\",\"roomTypeId\":\"标准间\",\"roomId\":\"8\",\"roomTypeName\":\"标准间\",\"roomNum\":\"8\",\"name\":\"321\",\"credentialNo\":\"321\",\"phoneNumber\":\"312\",\"remark\":\"123\",\"checkInPersonBOS\":[{\"name\":\"321\",\"certificateId\":\"1\",\"credentialNo\":\"321\",\"address\":\"123\",\"phoneNumber\":\"312\",\"remark\":\"123\",\"gender\":\"女\",\"roomId\":\"8\",\"certificateNumber\":\"321\",\"phone\":\"312\",\"certificateType\":\"1\"}],\"everydayRoomPriceBOS\":[]}]";
         String josn="[{\"roomTypeId\":\"1\",\"roomId\":\"8\",\"roomTypeName\":\"标准间\",\"roomNum\":\"8\",\"name\":\"321\",\"credentialNo\":\"321\",\"phoneNumber\":\"312\",\"remark\":\"123\",\"checkInPersonBOS\":[{\"name\":\"321\",\"certificateId\":\"1\",\"credentialNo\":\"321\",\"address\":\"123\",\"phoneNumber\":\"312\",\"remark\":\"123\",\"gender\":\"女\",\"roomId\":\"8\",\"certificateNumber\":\"321\",\"phone\":\"312\",\"certificateType\":\"1\"}],\"everydayRoomPriceBOS\":[]}]";
-        List<RoomBO> list = JsonUtils.getJSONtoList(josn, RoomBO.class);
+        String js="[{\"basicPrice\":320,\"count\":20,\"hotelId\":1,\"hourRoomPrice\":40,\"id\":1,\"name\":\"标准间\",\"roomNum\":\"\",\"random\":0.6391368210571253,\"everydayRoomPriceBOS\":[{\"money\":320,\"time\":\"2019/07/23\"}],\"roomTypeId\":1},{\"basicPrice\":350,\"count\":11,\"hotelId\":1,\"hourRoomPrice\":60,\"id\":2,\"name\":\"大床房\",\"roomNum\":\"\",\"random\":0.15041628114580763,\"everydayRoomPriceBOS\":[{\"money\":350,\"time\":\"2019/07/23\"}],\"roomTypeId\":2}]";
+
+        List<RoomBO> list = JsonUtils.getJSONtoList(js, OrderChildBO.class);
         System.out.println(list.size());
     }
 }

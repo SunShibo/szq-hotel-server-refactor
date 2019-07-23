@@ -32,6 +32,15 @@ public class OrderBO extends BaseModel {
     private String OTA;
     private String channel;//客源
 
+
+    public String getSubscribeRemark() {
+        return subscribeRemark;
+    }
+
+    public void setSubscribeRemark(String subscribeRemark) {
+        this.subscribeRemark = subscribeRemark;
+    }
+
     public String getChannel() {
         return channel;
     }
