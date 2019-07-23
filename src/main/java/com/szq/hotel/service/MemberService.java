@@ -222,8 +222,9 @@ public class MemberService {
         map.put("subtractMoney",subtractMoney);
         memberDAO.storedValuePay(map);
         MemberBO memberBO1 = this.selectMemberByCerNumber(certificateNumber);
-
-        storedValueRecordService.addStoredValueRecord(memberBO.getId(),subtractMoney,remark,type,presenterMoney,memberBO1.getStoredValue(),userId);
+        if (memberBO!=null&memberBO1!=null) {
+            storedValueRecordService.addStoredValueRecord(memberBO.getId(), subtractMoney, remark, type, presenterMoney, memberBO1.getStoredValue(), userId);
+        }
 
     }
 
