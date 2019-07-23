@@ -765,7 +765,7 @@ public class DateUtils {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date) ;
 		cal.add(Calendar.DATE,i);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		return  simpleDateFormat.format(cal.getTime());
 	}
 

@@ -92,7 +92,7 @@ public class UpdatePriceService {
         List<EverydayRoomPriceBO> everydayRoomPriceBOS = updatePriceDAO.queryPrice(orderId, i);
         if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0) {
             for (EverydayRoomPriceBO price : everydayRoomPriceBOS) {
-                map.put(DateUtils.format(price.getTime()),price.getMoney());
+                map.put(DateUtils.getAddDate(price.getTime(),0),price.getMoney());
             }
         }
         return map;
