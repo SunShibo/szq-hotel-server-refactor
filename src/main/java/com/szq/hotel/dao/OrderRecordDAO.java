@@ -39,10 +39,15 @@ public interface OrderRecordDAO {
 
     /**
      * 查询支付方式
-     * @param list
+     * @param childId
      * @return
      */
-    List<String> queryPayType(@Param("list")List<Integer> list);
+    List<String> queryPayType(Integer childId);
+
+    /**
+     * 查询支付方式
+     */
+    Integer queryChildIdByRecordId(Integer id);
 
     /**
      * 查询消费项

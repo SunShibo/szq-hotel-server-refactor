@@ -21,6 +21,16 @@ public class OrderListBO extends BaseModel {
     private String checkType;//入住方式
     private BigDecimal unitPrice;//首日单价
     private String orderState;//订单状态
+    private String certificateNumber;//证件号
+
+
+    public String getCertificateNumber() {
+        return certificateNumber;
+    }
+
+    public void setCertificateNumber(String certificateNumber) {
+        this.certificateNumber = certificateNumber;
+    }
 
     public Integer getId() {
         return id;
