@@ -71,7 +71,7 @@
     <select id="getCheckInPersonById"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO" >
        SELECT  *  FROM  hm_check_in_person
        WHERE  order_child_id=#{id}
-       <if test="state!=null and state!=''">
+       <if test="status!=null and status!=''">
            and  status = #{status}
        </if>
        (    )
