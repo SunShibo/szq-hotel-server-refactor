@@ -179,7 +179,7 @@
             and c.end_time&gt;=#{afterTime}
         </if>
         <if test="beforeTime!=null and beforeTime!=''">
-            and c.end_time&lt;=#{beforeTime}
+            and c.end_time&lt;#{beforeTime}
         </if>
         and o.hotel_id=#{hotelId}
         group by or.order_child_id
@@ -208,7 +208,7 @@
             and c.end_time&gt;=#{afterTime}
         </if>
         <if test="beforeTime!=null and beforeTime!=''">
-            and c.end_time&lt;=#{beforeTime}
+            and c.end_time&lt;#{beforeTime}
         </if>
         and o.hotel_id=#{hotelId}
         group by or.order_child_id

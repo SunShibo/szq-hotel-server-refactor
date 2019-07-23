@@ -13,7 +13,6 @@ import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +76,6 @@ public class OrderService {
         String alRoomCode = UUID.randomUUID().toString();
         //总房价
         BigDecimal totalPrice = new BigDecimal(0);
-        System.err.println();
         for (OrderChildBO orderChild : orderChildBOList) {
             //添加子订单
             orderChild.setOrderId(orderBO.getId());//主订单id
@@ -118,34 +116,33 @@ public class OrderService {
         order.setId(orderBO.getId());
         order.setTotalPrice(totalPrice);
         orderDAO.updOrder(order);
+
+        log.info("result:{}",orderBO.getOrderNumber());
+        log.info("end addOrderInfo.............................................");
         return orderBO.getOrderNumber();
     }
 
     //预定入住
     public void reservation(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
-        //获取联房码
-        String alCode = "";
-        for (OrderChildBO or : orderChildBOList) {
-            if (or.getId() != null) {
-                OrderChildBO orderChildBO = orderDAO.getOrderChildById2(or.getId());
-                alCode = orderChildBO.getAlRoomCode();
-                break;
-            }
+        log.info("start addOrderInfo..................................");
+        log.info("orderBO:{}\torderChildBOList:{}",orderBO,orderChildBOList);
 
-        }
-        //新选的房间或者修改了房间的房型 id传过来为null 代表xin子订单
+        //生成新联房码
+        String alRoomCode = UUID.randomUUID().toString();
+
         for (OrderChildBO orderChildBO : orderChildBOList) {
+            //根据房间查询子订单
             OrderChildBO orderChildResult = orderDAO.getResOrderChildByRoomId(orderChildBO.getRoomId(), orderBO.getId());
             //根据房间没有这个订单再去根据房型查询
             if (orderChildResult== null||orderChildResult.getId()==null) {
                 orderChildResult = orderDAO.getResOrderChildByRoomTypeId(orderChildBO.getRoomTypeId(), orderBO.getId());
             }
-            //查询到了 代表就是原来选择的房间 查询不到代表新加的
+            //查询不到代表新增子订单
             if (orderChildResult == null || orderChildResult.getId() == null) {
                 orderChildBO.setStartTime(orderBO.getCheckTime());
                 orderChildBO.setEndTime(orderBO.getCheckOutTime());
                 orderChildBO.setOrderState(Constants.NOTPAY.getValue());//状态
-                orderChildBO.setAlRoomCode(alCode);
+                orderChildBO.setAlRoomCode(alRoomCode);
                 orderChildBO.setOrderId(orderBO.getId());
                 orderDAO.addOrderChild(orderChildBO);
                 List<CheckInPersonBO> checkInPersonBOS = orderChildBO.getCheckInPersonBOS();
@@ -178,7 +175,6 @@ public class OrderService {
 
                 List<CheckInPersonBO> checkInPersonNew = orderChildBO.getCheckInPersonBOS();
                 for (CheckInPersonBO newPerson : checkInPersonNew) {
-                    //新入住人直接add
                     newPerson.setOrderChildId(orderChildResult.getId());
                     newPerson.setStatus(Constants.CHECKIN.getValue());
                     checkInPersonDAO.addCheckInPerson(newPerson);
@@ -189,6 +185,7 @@ public class OrderService {
                 orderChildBO.setEndTime(orderBO.getCheckOutTime());
                 orderChildBO.setOrderState(Constants.NOTPAY.getValue());//状态
                 orderChildBO.setId(orderChildResult.getId());
+                orderChildBO.setAlRoomCode(alRoomCode);
                 orderDAO.updOrderChild(orderChildBO);
 
             }
@@ -199,6 +196,8 @@ public class OrderService {
             roomService.updateroomMajorState(map);
         }
 
+        log.info("result:{}",orderBO.getOrderNumber());
+        log.info("end addOrderInfo.............................................");
     }
 
     //预定入住报留当修改用吧 里面逻辑也不对。。

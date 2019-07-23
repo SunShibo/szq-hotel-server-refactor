@@ -153,7 +153,7 @@
 
     <!--根据 用户id\角色id\用户名 查询用户信息-->
     <select id="getAdminByCond" parameterType="java.util.Map"  resultType="com.szq.hotel.entity.bo.AdminBO">
-        select hm_admin.id,`name`,mobile,role_id,role_name,create_time
+        select hm_admin.id,`name`,mobile,role_id,role_name,hm_admin.create_time
         from hm_admin,hm_role
         where role_id=role.id
         <if test="userId!=null and userId!=''">
