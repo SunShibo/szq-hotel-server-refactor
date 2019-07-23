@@ -342,7 +342,10 @@ public class RoomController extends BaseCotroller {
 
 
         List<List<RmBO>> lists = roomService.queryRm(map);
+        //根据全天房手机号查询预约入住房间
 
+        List<RmBO> rmBOS = roomService.queryUserRoom(loginUser.getHotelId(), phone);
+        lists.add(rmBOS);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(lists));
         super.safeJsonPrint(response, result);
         log.info("return:{}", result);

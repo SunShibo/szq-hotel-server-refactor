@@ -429,7 +429,7 @@ public class RoomService {
         Date dat = quDate(5, 59, 59);
         //从当天开始的下一天开始时间
         Date dd = lDate(da, 0);
-        //从开始天使的下一天结束时间
+        //从当天开始的下一天结束时间
         Date d = lDate(dat, 0);
         //从明天开始的下一天开始时间
         Date dad = lDate(da, 1);
@@ -909,6 +909,46 @@ public class RoomService {
      */
     public List<RmBO> queryRoomFx(Integer orderId) {
         return roomDAO.queryRoomFx(orderId);
+    }
+
+
+    /**
+     * 查询出用户之前预约过的房间
+     * @param
+     * @return
+     */
+    public List<RmBO> queryUserRoom(Integer hotelId, String phone){
+        Map<String, Object> mp = new HashMap<String, Object>();
+        mp.put("hotelId",hotelId);
+        mp.put("phone", phone);
+        List<Integer> integers = roomDAO.queryUserRoom(mp);
+        List<RmBO> list = new ArrayList<RmBO>();
+        if (!CollectionUtils.isEmpty(integers)) {
+            mp.put("list",integers);
+
+           list = roomDAO.queryUserRoom2(mp);
+
+        }
+
+
+
+        MemberDiscountBO memberDiscountBO = queryMember(phone);
+        if (memberDiscountBO == null) {
+            //不是会员
+            // mp.put("discount", false);
+        } else {
+            //是会员
+            //获取折扣价格
+            //mp.put("discount", true);
+            Double discount = memberDiscountBO.getDiscount();
+            if (!CollectionUtils.isEmpty(list)) {
+                for (RmBO rmBO : list) {
+                    rmBO.setBasicPrice(rmBO.getBasicPrice() * discount);
+                    rmBO.setHourRoomPrice(rmBO.getHourRoomPrice() * discount);
+                }
+            }
+        }
+        return list;
     }
 }
 

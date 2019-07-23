@@ -177,4 +177,17 @@ public interface RoomDAO {
      */
     List<OrderBO>  queryOrder(@Param("hotelId")Integer hotelId,@Param("date")String date);
 
+    /**
+     * 获取用户预约过的房间id
+     * @param map
+     * @return
+     */
+    List<Integer> queryUserRoom(Map<String, Object> map);
+
+    /**
+     * 根据房间id获取房间信息
+     * @param map
+     * @return
+     */
+    List<RmBO> queryUserRoom2(Map<String, Object> map);
 }

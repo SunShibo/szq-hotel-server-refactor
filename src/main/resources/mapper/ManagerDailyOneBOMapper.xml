@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szq.hotel.dao.ManagerDailyOneDAO" >
+  <resultMap id="BaseResultMap" type="com.szq.hotel.entity.bo.ManagerDailyOneBO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="realized_income" property="realizedIncome" jdbcType="DOUBLE" />
+    <result column="turnover" property="turnover" jdbcType="DOUBLE" />
+    <result column="reserve_noshow_room" property="reserveNoshowRoom" jdbcType="INTEGER" />
+    <result column="maintain_room" property="maintainRoom" jdbcType="INTEGER" />
+    <result column="store_lock_room" property="storeLockRoom" jdbcType="INTEGER" />
+    <result column="leasable_room" property="leasableRoom" jdbcType="INTEGER" />
+    <result column="guest_rooms" property="guestRooms" jdbcType="INTEGER" />
+    <result column="cash_outlay" property="cashOutlay" jdbcType="DOUBLE" />
+    <result column="cash_income" property="cashIncome" jdbcType="DOUBLE" />
+    <result column="daily_rental" property="dailyRental" jdbcType="DOUBLE" />
+    <result column="room_rate_adjustment" property="roomRateAdjustment" jdbcType="DOUBLE" />
+    <result column="hour_room_rate" property="hourRoomRate" jdbcType="DOUBLE" />
+    <result column="timeout_room_rate" property="timeoutRoomRate" jdbcType="DOUBLE" />
+    <result column="auditor_room_rate" property="auditorRoomRate" jdbcType="DOUBLE" />
+    <result column="compensation" property="compensation" jdbcType="DOUBLE" />
+    <result column="member_card_rate" property="memberCardRate" jdbcType="DOUBLE" />
+    <result column="commodity" property="commodity" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, realized_income, turnover, reserve_noshow_room, maintain_room, store_lock_room, 
+    leasable_room, guest_rooms, cash_outlay, cash_income, daily_rental, room_rate_adjustment, 
+    hour_room_rate, timeout_room_rate, auditor_room_rate, compensation, member_card_rate, 
+    commodity
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hm_manager_daily_one
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hm_manager_daily_one
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.szq.hotel.entity.bo.ManagerDailyOneBO" >
+    insert into hm_manager_daily_one (id, realized_income, turnover, 
+      reserve_noshow_room, maintain_room, store_lock_room, 
+      leasable_room, guest_rooms, cash_outlay, 
+      cash_income, daily_rental, room_rate_adjustment, 
+      hour_room_rate, timeout_room_rate, auditor_room_rate, 
+      compensation, member_card_rate, commodity
+      )
+    values (#{id,jdbcType=INTEGER}, #{realizedIncome,jdbcType=DOUBLE}, #{turnover,jdbcType=DOUBLE}, 
+      #{reserveNoshowRoom,jdbcType=INTEGER}, #{maintainRoom,jdbcType=INTEGER}, #{storeLockRoom,jdbcType=INTEGER}, 
+      #{leasableRoom,jdbcType=INTEGER}, #{guestRooms,jdbcType=INTEGER}, #{cashOutlay,jdbcType=DOUBLE}, 
+      #{cashIncome,jdbcType=DOUBLE}, #{dailyRental,jdbcType=DOUBLE}, #{roomRateAdjustment,jdbcType=DOUBLE}, 
+      #{hourRoomRate,jdbcType=DOUBLE}, #{timeoutRoomRate,jdbcType=DOUBLE}, #{auditorRoomRate,jdbcType=DOUBLE}, 
+      #{compensation,jdbcType=DOUBLE}, #{memberCardRate,jdbcType=DOUBLE}, #{commodity,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.szq.hotel.entity.bo.ManagerDailyOneBO" >
+    insert into hm_manager_daily_one
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="realizedIncome != null" >
+        realized_income,
+      </if>
+      <if test="turnover != null" >
+        turnover,
+      </if>
+      <if test="reserveNoshowRoom != null" >
+        reserve_noshow_room,
+      </if>
+      <if test="maintainRoom != null" >
+        maintain_room,
+      </if>
+      <if test="storeLockRoom != null" >
+        store_lock_room,
+      </if>
+      <if test="leasableRoom != null" >
+        leasable_room,
+      </if>
+      <if test="guestRooms != null" >
+        guest_rooms,
+      </if>
+      <if test="cashOutlay != null" >
+        cash_outlay,
+      </if>
+      <if test="cashIncome != null" >
+        cash_income,
+      </if>
+      <if test="dailyRental != null" >
+        daily_rental,
+      </if>
+      <if test="roomRateAdjustment != null" >
+        room_rate_adjustment,
+      </if>
+      <if test="hourRoomRate != null" >
+        hour_room_rate,
+      </if>
+      <if test="timeoutRoomRate != null" >
+        timeout_room_rate,
+      </if>
+      <if test="auditorRoomRate != null" >
+        auditor_room_rate,
+      </if>
+      <if test="compensation != null" >
+        compensation,
+      </if>
+      <if test="memberCardRate != null" >
+        member_card_rate,
+      </if>
+      <if test="commodity != null" >
+        commodity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="realizedIncome != null" >
+        #{realizedIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="turnover != null" >
+        #{turnover,jdbcType=DOUBLE},
+      </if>
+      <if test="reserveNoshowRoom != null" >
+        #{reserveNoshowRoom,jdbcType=INTEGER},
+      </if>
+      <if test="maintainRoom != null" >
+        #{maintainRoom,jdbcType=INTEGER},
+      </if>
+      <if test="storeLockRoom != null" >
+        #{storeLockRoom,jdbcType=INTEGER},
+      </if>
+      <if test="leasableRoom != null" >
+        #{leasableRoom,jdbcType=INTEGER},
+      </if>
+      <if test="guestRooms != null" >
+        #{guestRooms,jdbcType=INTEGER},
+      </if>
+      <if test="cashOutlay != null" >
+        #{cashOutlay,jdbcType=DOUBLE},
+      </if>
+      <if test="cashIncome != null" >
+        #{cashIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="dailyRental != null" >
+        #{dailyRental,jdbcType=DOUBLE},
+      </if>
+      <if test="roomRateAdjustment != null" >
+        #{roomRateAdjustment,jdbcType=DOUBLE},
+      </if>
+      <if test="hourRoomRate != null" >
+        #{hourRoomRate,jdbcType=DOUBLE},
+      </if>
+      <if test="timeoutRoomRate != null" >
+        #{timeoutRoomRate,jdbcType=DOUBLE},
+      </if>
+      <if test="auditorRoomRate != null" >
+        #{auditorRoomRate,jdbcType=DOUBLE},
+      </if>
+      <if test="compensation != null" >
+        #{compensation,jdbcType=DOUBLE},
+      </if>
+      <if test="memberCardRate != null" >
+        #{memberCardRate,jdbcType=DOUBLE},
+      </if>
+      <if test="commodity != null" >
+        #{commodity,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szq.hotel.entity.bo.ManagerDailyOneBO" >
+    update hm_manager_daily_one
+    <set >
+      <if test="realizedIncome != null" >
+        realized_income = #{realizedIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="turnover != null" >
+        turnover = #{turnover,jdbcType=DOUBLE},
+      </if>
+      <if test="reserveNoshowRoom != null" >
+        reserve_noshow_room = #{reserveNoshowRoom,jdbcType=INTEGER},
+      </if>
+      <if test="maintainRoom != null" >
+        maintain_room = #{maintainRoom,jdbcType=INTEGER},
+      </if>
+      <if test="storeLockRoom != null" >
+        store_lock_room = #{storeLockRoom,jdbcType=INTEGER},
+      </if>
+      <if test="leasableRoom != null" >
+        leasable_room = #{leasableRoom,jdbcType=INTEGER},
+      </if>
+      <if test="guestRooms != null" >
+        guest_rooms = #{guestRooms,jdbcType=INTEGER},
+      </if>
+      <if test="cashOutlay != null" >
+        cash_outlay = #{cashOutlay,jdbcType=DOUBLE},
+      </if>
+      <if test="cashIncome != null" >
+        cash_income = #{cashIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="dailyRental != null" >
+        daily_rental = #{dailyRental,jdbcType=DOUBLE},
+      </if>
+      <if test="roomRateAdjustment != null" >
+        room_rate_adjustment = #{roomRateAdjustment,jdbcType=DOUBLE},
+      </if>
+      <if test="hourRoomRate != null" >
+        hour_room_rate = #{hourRoomRate,jdbcType=DOUBLE},
+      </if>
+      <if test="timeoutRoomRate != null" >
+        timeout_room_rate = #{timeoutRoomRate,jdbcType=DOUBLE},
+      </if>
+      <if test="auditorRoomRate != null" >
+        auditor_room_rate = #{auditorRoomRate,jdbcType=DOUBLE},
+      </if>
+      <if test="compensation != null" >
+        compensation = #{compensation,jdbcType=DOUBLE},
+      </if>
+      <if test="memberCardRate != null" >
+        member_card_rate = #{memberCardRate,jdbcType=DOUBLE},
+      </if>
+      <if test="commodity != null" >
+        commodity = #{commodity,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szq.hotel.entity.bo.ManagerDailyOneBO" >
+    update hm_manager_daily_one
+    set realized_income = #{realizedIncome,jdbcType=DOUBLE},
+      turnover = #{turnover,jdbcType=DOUBLE},
+      reserve_noshow_room = #{reserveNoshowRoom,jdbcType=INTEGER},
+      maintain_room = #{maintainRoom,jdbcType=INTEGER},
+      store_lock_room = #{storeLockRoom,jdbcType=INTEGER},
+      leasable_room = #{leasableRoom,jdbcType=INTEGER},
+      guest_rooms = #{guestRooms,jdbcType=INTEGER},
+      cash_outlay = #{cashOutlay,jdbcType=DOUBLE},
+      cash_income = #{cashIncome,jdbcType=DOUBLE},
+      daily_rental = #{dailyRental,jdbcType=DOUBLE},
+      room_rate_adjustment = #{roomRateAdjustment,jdbcType=DOUBLE},
+      hour_room_rate = #{hourRoomRate,jdbcType=DOUBLE},
+      timeout_room_rate = #{timeoutRoomRate,jdbcType=DOUBLE},
+      auditor_room_rate = #{auditorRoomRate,jdbcType=DOUBLE},
+      compensation = #{compensation,jdbcType=DOUBLE},
+      member_card_rate = #{memberCardRate,jdbcType=DOUBLE},
+      commodity = #{commodity,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
