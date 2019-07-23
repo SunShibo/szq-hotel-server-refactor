@@ -68,7 +68,7 @@ public class UpdatePriceService {
 
             Map<String,Object>  map=new HashMap<String, Object>();
             map.put("roomTypeName",roomTypeBOS.get(0).getRoomTypeName());//房型名称
-            map.put("price",roomTypeBOS.get(0).getBasicPrice());
+            map.put("price",basicPrice);
             map.put("roomTypeId",roomTypeBOS.get(0).getId());
 
             for (int i = 0; i < dayNum; i++) {
