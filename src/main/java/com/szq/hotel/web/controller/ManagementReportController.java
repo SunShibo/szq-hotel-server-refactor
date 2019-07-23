@@ -100,7 +100,7 @@ public class ManagementReportController extends BaseCotroller {
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
             super.safeJsonPrint(response, result);
-            log.error("addHotelException",e);
+            log.error("getManagementReportException",e);
         }
     }
 
