@@ -2,6 +2,7 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.dao.UpdatePriceDAO;
 import com.szq.hotel.entity.bo.AddPriceBO;
+import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import com.szq.hotel.entity.bo.MemberDiscountBO;
 import com.szq.hotel.entity.bo.RoomTypeBO;
 import com.szq.hotel.util.DateUtils;
@@ -62,7 +63,7 @@ public class UpdatePriceService {
             log.info("basicPrice:{}",basicPrice);
 
             //查询数据库中保存的价格
-            Map<String, Object> queryPrice = updatePriceDAO.queryPrice(orderId, Integer.parseInt(split[x]));
+            Map<String, Object> queryPrice = this.queryPrice(orderId, Integer.parseInt(split[x]));
             log.info("queryPrice:{}", JsonUtils.getJsonString4JavaPOJO(queryPrice));
 
             Map<String,Object>  map=new HashMap<String, Object>();
@@ -84,6 +85,17 @@ public class UpdatePriceService {
 
         log.info("end  updatePrice......................................................................................");
         return list;
+    }
+
+    private Map<String, Object> queryPrice(Integer orderId, int i) {
+        Map<String,Object>  map=new HashMap<String, Object>();
+        List<EverydayRoomPriceBO> everydayRoomPriceBOS = updatePriceDAO.queryPrice(orderId, i);
+        if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0) {
+            for (EverydayRoomPriceBO price : everydayRoomPriceBOS) {
+                map.put(DateUtils.format(price.getTime()),price.getMoney());
+            }
+        }
+        return map;
     }
 
 

@@ -5,8 +5,8 @@
 <!-- 改价 -->
 <mapper namespace="com.szq.hotel.dao.UpdatePriceDAO">
 
-    <select id="queryPrice"  resultType="java.util.HashMap">
-        SELECT price.time ,price.money 	 FROM  hm_order der LEFT JOIN hm_order_child  child ON child.order_id  =der.id
+    <select id="queryPrice"  resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO">
+        SELECT  *  FROM  hm_order der LEFT JOIN hm_order_child  child ON child.order_id  =der.id
                LEFT JOIN   `hm_everyday_room_price`  price  ON price.order_child_id =child.id
          WHERE  child.room_type_id =#{roomTypeId} AND der.id=#{orderId}
     </select>

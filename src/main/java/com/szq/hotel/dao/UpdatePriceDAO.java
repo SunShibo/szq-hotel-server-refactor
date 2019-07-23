@@ -1,7 +1,7 @@
 package com.szq.hotel.dao;
 
 
-import org.apache.ibatis.annotations.MapKey;
+import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.Map;
  */
 public interface UpdatePriceDAO {
 
-    @MapKey("time")
-    Map<String,Object> queryPrice(@Param("orderId") Integer orderId, @Param("roomTypeId") Integer roomTypeId);
+
+    List<EverydayRoomPriceBO> queryPrice(@Param("orderId") Integer orderId, @Param("roomTypeId") Integer roomTypeId);
 
     List<Integer> queryChildId(@Param("orderId") Integer orderId, @Param("roomTypeId") Integer roomTypeId);
 
