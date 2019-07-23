@@ -7,6 +7,7 @@ public class MemberResultBO extends BaseModel{
     private String cardNumber;//卡号
     private String memberLevelName;//会员级别名称
     private double integral;//积分
+    private double storedValue;//储值
 
     public String getMemberName() {
         return memberName;
@@ -38,5 +39,13 @@ public class MemberResultBO extends BaseModel{
 
     public void setIntegral(double integral) {
         this.integral = integral;
+    }
+
+    public double getStoredValue() {
+        return storedValue;
+    }
+
+    public void setStoredValue(double storedValue) {
+        this.storedValue = storedValue;
     }
 }
