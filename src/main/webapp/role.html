@@ -41,15 +41,19 @@
         </div>
     </div>
 </form>
-<div class="layui-btn-container" style="width: 90%;margin: 0 auto;">
-    <button class="layui-btn layui-btn-sm" id="addItem">新增</button>
+<div class="layui-btn-container" style="width: 20%;margin-left: 60px">
+    <button class="layui-btn layui-btn-sm layui-btn-fluid" id="addItem">新增</button>
 </div>
 <div class="tab-box">
     <table id="roomManage" lay-filter="roomManage" class="layui-table"></table>
 </div>
 <script type="text/html" id="barDemo">
+    {{#  if(d.id !== 1 ){ }}
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{# } else { }}
+        超级管理员禁止操作
+    {{# } }}
 </script>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>

@@ -10,7 +10,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">免单金额</label>
         <div class="layui-input-inline">
-            <input type="number" name="freePrice" required lay-verify="required" placeholder="请输入金额" autocomplete="off"
+            <input type="number" name="money" required lay-verify="required" placeholder="请输入金额" autocomplete="off"
                    class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux" style="color: red !important;">请输入免单金额即可</div>
@@ -18,8 +18,16 @@
     <div class="layui-form-item">
         <label class="layui-form-label">备注</label>
         <div class="layui-input-inline">
-                <textarea name="exemption" required lay-verify="required" placeholder="请输入备注信息"
+                <textarea name="remark" required lay-verify="required" placeholder="请输入备注信息"
                           class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">消费类型</label>
+        <div class="layui-input-block">
+            <input type="radio" name="type" value="商品冲减" title="商品冲减" checked>
+            <input type="radio" name="type" value="赔偿冲减" title="赔偿冲减">
+            <input type="radio" name="type" value="房费冲减" title="房费冲减">
         </div>
     </div>
     <div class="btn-list layui-btn-container">
@@ -30,7 +38,7 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form'], function () {
-        var form = layui.form, $ = layui.$, oId = '';
+        var form = layui.form, $ = layui.$, id = 0, requestData = {}, index = 0;
 
         //取消按钮
         $('#back').on('click', function () {
@@ -39,36 +47,37 @@
         });
 
         $(function () {
-            oId = sessionStorage.getItem('oId');
+            id = getUrl('id');
         });
 
 
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {//订单免单备注
+            requestData = data.field;
+            if(index!=null)clearTimeout(index);
+            index = setTimeout(pay, 1000);
+            return false;
+        });
+
+        function pay() {
+            if(!requestData.money)return false;
+            requestData.orderChildId = id;
             $.ajax({
                 url: api.exemption,
                 type: 'POST',
                 dataType: 'json',
-                data: {
-                    id: oId,
-                    info: data.field.exemption,
-                    price: data.field.freePrice
-                },
+                data: requestData,
                 success: function (data) {
-                    if (data.errCode === '0000010') {
-                        layer.msg(data.errMsg);
-                        return;
-                    }
                     if(!data.success){
                         showMsg(data.errMsg, 2, false);
                         return;
                     }
+                    showMsg('冲减成功', 1, false);
                     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     parent.layer.close(index); //再执行关闭
                 }
             });
-            return false;
-        });
+        }
     });
 </script>
 </body>

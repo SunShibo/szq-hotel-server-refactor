@@ -7,44 +7,23 @@
 
 </head>
 <body>
-<OBJECT id=MSComm1 CLASSID="clsid:648A5600-2C6E-101B-82B6-000000000014" codebase="mscomm32.ocx"
-        type="application/x-oleobject" style="LEFT:54px;TOP:14px">
-    <PARAM NAME="CommPort" VALUE="3"/>
-    <PARAM NAME="DataBits" VALUE="8"/>
-    <PARAM NAME="StopBits" VALUE="1"/>
-    <PARAM NAME="BaudRate" VALUE="9600"/>
-    <PARAM NAME="Settings" VALUE="9600,N,8,1"/>
-    <PARAM NAME="RTSEnable" VALUE="1"/>
-    <PARAM NAME="DTREnable" VALUE="1"/>
-    <PARAM NAME="Handshaking" VALUE="0"/>
-    <PARAM NAME="NullDiscard" VALUE="0"/>
-    <PARAM NAME="ParityReplace" VALUE="?"/>
-    <PARAM NAME="EOFEnable" VALUE="0"/>
-    <PARAM NAME="InputMode" VALUE="0"/>
-    <PARAM NAME="InBufferSize" VALUE="1024"/>
-    <PARAM NAME="InputLen" VALUE="0"/>
-    <PARAM NAME="OutBufferSize" VALUE="512"/>
-    <PARAM NAME="SThreshold" VALUE="0"/>
-    <PARAM NAME="RThreshold" VALUE="1"/>
-</OBJECT>
 <form class="layui-form" lay-filter="formData">
     <div class="layui-form-item">
         <label class="layui-form-label">支付方式</label>
         <div class="layui-input-block">
-            <input type="radio" name="payType" lay-filter="payType" value="1" title="现金" checked>
-            <input type="radio" name="payType" lay-filter="payType" value="2" title="刷卡">
-            <input type="radio" name="payType" lay-filter="payType" value="3" title="微信">
-            <input type="radio" name="payType" lay-filter="payType" value="4" title="支付宝">
-            <input type="radio" name="payType" lay-filter="payType" value="5" title="其他支付">
-            <!--<input type="radio" name="payType" lay-filter="payType" value="6" title="积分支付">-->
-            <input type="radio" name="payType" lay-filter="payType" value="7" title="储值支付">
+            <input type="radio" name="payType" lay-filter="payType" value="cash" title="现金" checked>
+            <input type="radio" name="payType" lay-filter="payType" value="cart" title="银行卡">
+            <input type="radio" name="payType" lay-filter="payType" value="wechat" title="微信">
+            <input type="radio" name="payType" lay-filter="payType" value="alipay" title="支付宝">
+            <input type="radio" name="payType" lay-filter="payType" value="other" title="其他支付">
+            <input type="radio" name="payType" lay-filter="payType" value="stored" title="储值支付">
         </div>
     </div>
     <div class="optional" style="display: none;">
         <div class="layui-form-item">
             <label class="layui-form-label">证件号</label>
             <div class="layui-input-inline">
-                <input type="text" name="IDCard" id="card" placeholder="请输入证件号码"
+                <input type="text" name="certificateNumber" id="card" placeholder="请输入证件号码"
                        autocomplete="off"
                        class="layui-input">
             </div>
@@ -66,47 +45,20 @@
         <div class="layui-inline">
             <label class="layui-form-label">押金</label>
             <div class="layui-input-inline">
-                <input type="number" name="deposit" id="deposit" placeholder="请输入押金金额" autocomplete="off"
+                <input type="number" name="money" id="money" placeholder="请输入押金金额" autocomplete="off"
                        class="layui-input">
             </div>
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label" style="color: #ff3400">提示</label>
-        <div class="layui-input-block" style="color: #ff3400;margin-right: 70px;">
-            POS支付时，选择自动支付会调用 POS机，手动支付不会调用POS机！
-        </div>
-    </div>
     <div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
-        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData">自动支付</button>
-        <button class="layui-btn layui-btn-sm" id="manualPay" lay-submit="" lay-filter="formData" data-id="1">手动支付</button>
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData">支付</button>
         <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
     </div>
 </form>
-<SCRIPT LANGUAGE=javascript FOR=MSComm1 EVENT=OnComm>
-    MSComm1_OnComm()
-
-    function MSComm1_OnComm() {
-        switch (MSComm1.CommEvent) {
-            case 1: {
-                alert("Send OK！");
-                break;
-            } //发送事件
-            case 2: {
-                Receive();
-                break;
-            } //接收事件
-            default:
-                alert("Event Raised!" + MSComm1.CommEvent);
-                ;
-        }
-    }
-</SCRIPT>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var number, _str_, _p, id = 0, _pay_index, payNumber;
     layui.use(['form'], function () {
-        var form = layui.form, $ = layui.$, flag = false, resultData = {}, index = 0;
+        var form = layui.form, $ = layui.$, requestData = {}, index = 0, id = 0;
 
         $('#back').on('click', function () {
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
@@ -124,209 +76,66 @@
             clearIDForm(form, 'formData');
             //判断选中的是否是储值支付和积分支付
             switch (data.value) {
-                case "6":
-                case "7":
+                case "stored":
                     //选中储值支付和积分支付后先控制身份证
                     $('.optional').show();
                     $('.optional_1').hide();
-                    flag = true;
                     break;
                 default:
                     //选中其他支付方式以后隐藏身份证和会员详情
                     $('.optional,.optional_1').hide();
-                    flag = false;
                     break;
             }
         });
 
         //证件号码输入事件绑定
-        $('#card').on('input', debounce(handleInput, 1000));
+        $('#card').on('input', debounce(handleInput, 1500));
 
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {
-            resultData = data.field;
-            if(index!=null)clearTimeout(index);
+            requestData = data.field;
+            //防止重复点击
+            if (index != null) clearTimeout(index);
             index = setTimeout(pay, 1000);
             return false;
         });
 
-        function pay(data) {
-            if (resultData.deposit == '') return false;
-            var state = $('#manualPay').data('id');
+        //支付方法
+        function pay() {
+            //当押金输入 为空 或者 为0时  跳出方法
+            if (!requestData.money) return false;
+            //押金金额不能小于0
+            if (requestData.money <= 0) {
+                showMsg('押金金额不能小于0');
+                return false;
+            }
+            //支付方式
+            var payType = requestData.payType;
 
-            _p = resultData.payType;
-            number = resultData.deposit;
-
-            if (_p == 1 || (_p == 5 && resultData.deposit)) {//现金支付
-                var index = layer.load(1, {time: 10 * 1000});
-                $.ajax({
-                    url: api.cash,
-                    type: 'POST',
-                    dataType: 'json',
-                    beforeSend: function () {
-                        $("#btnSave").addClass('layui-btn-disabled');
-                    },
-                    complete: function () {
-                        layer.close(index);
-                        $("#btnSave").removeClass('layui-btn-disabled');
-                    },
-                    data: {
-                        type: _p == 1 ? 1 : 3,
-                        number1: resultData.deposit,
-                        id: id
-                    },
-                    success: function (data) {
-                        if (data.errCode == '0000010') {
-                            layer.msg(data.errMsg);
-                            return;
-                        }
-                        if (!data.success) {
-                            showMsg(data.errMsg, 2, false);
-                            return;
-                        }
+            //当支付方式不是储值支付时 删除证件号
+            if (payType !== 'stored') {
+                delete requestData.certificateNumber
+            }
+            //子订单ID
+            requestData.orderChildId = id;
+            $.ajax({
+                url: api.cash,
+                type: 'POST',
+                data: requestData,
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
                         showMsg('支付成功', 1, false);
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
+                    } else {
+                        showMsg(response.errMsg, 2, false);
                     }
-                })
-            } else if (_p == 6 || _p == 7) {
-                //积分判断
-                if (_p == "5" && parseInt(payValue.integValue) < resultData.deposit) {
-                    layer.alert("积分不足,交易失败！");
-                    return false;
                 }
-                //储值判断
-                if (_p == "6" && parseInt(payValue.streValue) < resultData.deposit) {
-                    layer.alert("储值余额不足,交易失败！");
-                    return false;
-                }
-                Receive1(JSON.stringify({
-                    type: _p == 6 ? 4 : 5,
-                    number1: resultData.deposit,
-                    id: id,
-                    credentialNumber: resultData.IDCard
-                }))
-            } else {
-                _str_ = '';
-                _pay_index = layer.load(1, {time: 10 * 1000});
-                var payjson = checkPayState(_p);
-                payjson = $.extend({}, PAYJSON, payjson);
-                if (!resultData.deposit) {
-                    layer.alert("交易金额有误")
-                    layer.close(_pay_index);
-                    return false;
-                }
-                payjson.amt = resultData.deposit;
-                // payjson.amt = 0.01;
-                // payjson.orderNo = getUrl("payNumber");
-                payNumber = new Date().getTime()
-                payjson.orderNo = payNumber;
-                if (state) {
-                    var payTp = _p == 2 ? 0 : '';
-                    payTp = _p == 3 ? 1 : payTp;
-                    payTp = _p == 4 ? 2 : payTp;
-                    console.log(payTp);
-                    Receive1(JSON.stringify({payTp: payTp, code: 1, transAmount: resultData.deposit}))
-                } else {
-                    Send(JSON.stringify(payjson));
-                }
-            }
+            });
             return false;
         }
     });
-    setTimeout(function () {
-        MSComm1.PortOpen == false;
-        OperatePort();
-    }, 1000)
-
-    function OperatePort() {
-        if (MSComm1.PortOpen == true) {
-            try {
-                MSComm1.PortOpen = false;
-            } catch (ex) {
-                alert(ex.message);
-            }
-        } else {
-            try {
-                MSComm1.CommPort = localStorage.posport ? localStorage.posport : 6
-                MSComm1.Settings = 115200 +
-                    ",N" +
-                    ",8" +
-                    ",1";
-                MSComm1.OutBufferCount = 0; //清空发送缓冲区
-                MSComm1.InBufferCount = 0; //滑空接收缓冲区
-                MSComm1.PortOpen = true;
-            } catch (ex) {
-                alert(ex.message);
-            }
-        }
-    }
-
-    function Send(orgstr) {
-        try {
-            MSComm1.Output = orgstr;
-            console.info("发送数据到pos机：" + orgstr);
-        } catch (ex) {
-            alert(ex.message);
-        }
-    }
-
-    function Receive() {
-        _str_ += MSComm1.Input;
-        if (_str_.indexOf('}') != -1) {
-            Receive1(_str_)
-        }
-    }
-
-    function Receive1(data) {
-        layer.close(_pay_index);
-
-        var _data = JSON.parse(data);
-        if (_data.code == '-1') {
-            layer.alert(_data.message);
-            return;
-        }
-        var pd = {
-            type: 2,
-            number1: number,
-            id: id,
-            payNumber: payNumber
-        }
-        pd = $.extend({}, pd, _data);
-        // if (_p == 5) {
-        //     pd.amt = _data.transAmount
-        // }
-        console.log("最终提交数据如下");
-        console.info(pd);
-
-        var index = layer.load(1, {time: 10 * 1000});
-        $.ajax({
-            data: pd,
-            type: "POST",
-            dataType: "JSON",
-            url: api.cash,
-            beforeSend: function () {
-                $("#btnSave").addClass('layui-btn-disabled');
-            },
-            complete: function () {
-                layer.close(index);
-                $("#btnSave").removeClass('layui-btn-disabled');
-            },
-            success: function (rs) {
-                layer.close(index);
-                if (rs.errCode == '0000010') {
-                    layer.msg(rs.errMsg);
-                    return;
-                } else if (!rs.success) {
-                    showMsg(rs.errMsg, 2, false);
-                    return;
-                } else {
-                    parent.layer.closeAll();
-                    showMsg('支付成功', 1, false);
-                }
-            }
-        });
-    }
 </script>
 </body>
 </html>

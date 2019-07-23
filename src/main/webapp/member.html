@@ -92,7 +92,7 @@
                     "code":200, //解析接口状态
                     "msg": res.errMsg, //解析提示文本
                     "count": res.data.count, //解析数据长度
-                    "data": res.data //解析数据列表
+                    "data": res.data.memberBOS //解析数据列表
                 };
             }
             , even: true
@@ -107,12 +107,7 @@
                 {field: 'address', title: '地址', minWidth: 120, align: 'center'},
                 {field: 'source', title: '来源', minWidth: 80, align: 'center'},
                 {field: 'cartName', title: '卡类型', minWidth: 80, align: 'center'},
-                {field: 'birthday', title: '生日', minWidth: 110, align: 'center'
-                    ,templet:function (d) {
-                        if(d.birthday) return DateToLStr(new Date(d.birthday.time)).split(' ')[0]
-                        return '-'
-                    }
-                },
+                {field: 'birthday', title: '生日', minWidth: 110, align: 'center'},
                 {field: 'storedValue', title: '储值', minWidth: 120, align: 'center'},
                 {field: 'integral', title: '积分', minWidth: 120, align: 'center'},
                 {field: 'salesman', title: '销售员', minWidth: 90, align: 'center'},

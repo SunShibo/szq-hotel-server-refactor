@@ -43,26 +43,32 @@
     </ul>
 </nav>
 <div style="height: 70px;"></div>
-<form class="layui-form head" style="padding: 10px;">
-    <fieldset class="layui-elem-field">
-        <div class="layui-field-box">
+<fieldset class="layui-elem-field" style="padding: 10px 0; margin: 0 30px 0 10px;">
+    <div class="layui-field-box">
+        <form class="layui-form head">
             <div class="layui-form-item">
-                <label class="layui-form-label">酒店</label>
-                <div class="layui-input-inline">
-                    <select name="hotelId" id="hotel">
-                        <option value="">全部</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
+                <!--下拉多选-->
+                <!--<select name="city" xm-select="select1">-->
+                    <!--<option value="1" disabled="disabled">北京</option>-->
+                    <!--<option value="2" selected="selected">上海</option>-->
+                    <!--<option value="3">广州</option>-->
+                    <!--<option value="4" selected="selected">深圳</option>-->
+                    <!--<option value="5">天津</option>-->
+                <!--</select>-->
                 <label class="layui-form-label">订单类型</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="orderType" class="orderType" value="0" title="全部">
-                    <input type="radio" name="orderType" class="orderType" value="1" title="在住订单">
-                    <input type="radio" name="orderType" class="orderType" value="2" title="历史订单">
-                    <input type="radio" name="orderType" class="orderType" value="3" title="预约订单" checked>
-                    <input type="radio" name="orderType" class="orderType" value="4" title="入住待支付订单">
-                    <input type="radio" name="orderType" class="orderType" value="5" title="退房未结账订单">
+                    <input type="radio" name="orderState" lay-filter="orderState" class="orderType" value=""
+                           title="全部">
+                    <input type="radio" name="orderState" lay-filter="orderState" class="orderType" value="admissions"
+                           title="在住订单">
+                    <input type="radio" name="orderState" lay-filter="orderState" class="orderType" value="accomplish"
+                           title="历史订单">
+                    <input type="radio" name="orderState" lay-filter="orderState" class="orderType" value="reservation"
+                           title="预约订单">
+                    <input type="radio" name="orderState" lay-filter="orderState" class="orderType" value="notpay"
+                           title="入住待支付订单">
+                    <input type="radio" name="orderState" lay-filter="orderState" class="orderType" value="notpaid"
+                           title="退房未结账订单">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -70,14 +76,14 @@
                 <div class="layui-input-block">
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <input type="text" name="outTimeStart" class="layui-input" id="leaveStartTime"
+                            <input type="text" name="departureStartTime" class="layui-input" id="leaveStartTime"
                                    placeholder="开始时间">
                         </div>
                     </div>
                     至
                     <div class="layui-inline" style="margin-left: 20px;">
                         <div class="layui-input-inline">
-                            <input type="text" name="outTimeEnd" class="layui-input" id="leaveEndTime"
+                            <input type="text" name="departureEndTime" class="layui-input" id="leaveEndTime"
                                    placeholder="结束时间">
                         </div>
                     </div>
@@ -88,14 +94,14 @@
                 <div class="layui-input-block">
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <input type="text" name="timeStart" class="layui-input" id="enterStartTime"
+                            <input type="text" name="admissionsStartTime" class="layui-input" id="enterStartTime"
                                    placeholder="开始时间">
                         </div>
                     </div>
                     至
                     <div class="layui-inline" style="margin-left: 20px;">
                         <div class="layui-input-inline">
-                            <input type="text" name="timeEnd" class="layui-input" id="enterEndTime"
+                            <input type="text" name="admissionsEndTime" class="layui-input" id="enterEndTime"
                                    placeholder="结束时间">
                         </div>
                     </div>
@@ -104,25 +110,27 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">入住方式</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="checkIn" value="" title="全部" checked>
-                    <input type="radio" name="checkIn" value="1" title="全天房">
-                    <input type="radio" name="checkIn" value="2" title="钟点房">
-                    <input type="radio" name="checkIn" value="3" title="免费房">
+                    <input type="radio" name="checkType" value="" title="全部" checked>
+                    <input type="radio" name="checkType" value="day" title="全天房">
+                    <input type="radio" name="checkType" value="hour" title="钟点房">
+                    <input type="radio" name="checkType" value="free" title="免费房">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">姓名</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="userName" id="userName" placeholder="请输入姓名" autocomplete="off"
+                    <input type="text" name="orderPlacer" id="orderPlacer" placeholder="请输入姓名" autocomplete="off"
                            class="layui-input">
                 </div>
-                <label class="layui-form-label">证件号</label>
+                <label class="layui-form-label">手机号</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="credentialNo" id="credentialNo" placeholder="请输入证件号" autocomplete="off"
+                    <input type="text" name="phone" id="phone" placeholder="请输入手机号" autocomplete="off"
                            class="layui-input">
                 </div>
-                <div class="layui-input-inline" style="width: 90px;">
-                    <a class="layui-btn" id="IDCardReader">识别证件</a>
+                <label class="layui-form-label">OTA</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="OTA" id="OTA" placeholder="请输入OTA" autocomplete="off"
+                           class="layui-input">
                 </div>
                 <label class="layui-form-label">房号</label>
                 <div class="layui-input-inline">
@@ -130,7 +138,7 @@
                 </div>
                 <label class="layui-form-label">渠道</label>
                 <div class="layui-input-inline">
-                    <select id="cnId" name="cnId" lay-filter="cnId" lay-search>
+                    <select id="channel" name="channel" lay-search>
                         <option value=""></option>
                     </select>
                 </div>
@@ -138,96 +146,73 @@
                     <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
                 </div>
             </div>
-        </div>
-    </fieldset>
-</form>
+        </form>
+    </div>
+</fieldset>
 <div style="width: 95%; margin: 0 auto;">
     <table id="orderManage" lay-filter="orderManage" class="layui-table"></table>
 </div>
 <script type="text/html" id="barDemo">
-    {{#  if(d.payStatus == 1 ){ }}
+    {{#  if(d.orderState == 'reservation' ){ }}
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-xs" lay-event="center">入住</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="cancel">取消</a>
-    {{#  } else if(d.payStatus == 2) { }}
+    {{#  } else if(d.orderState == 'notpay') { }}
     <a class="layui-btn layui-btn-xs" lay-event="payment">支付</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="cancel">取消</a>
-    {{#  } else if(d.payStatus == 3) { }}
+    {{#  } else if(d.orderState == 'admissions' || d.orderState == 'notpaid') { }}
     <a class="layui-btn layui-btn-xs" lay-event="accountManage">客账管理</a>
     <a class="layui-btn layui-btn-xs" lay-event="querySubPrice">打印</a>
-    {{#  } else if(d.payStatus == 4) { }}
-    <a class="layui-btn layui-btn-xs" lay-event="accountManage">客账管理</a>
-    {{#  } else if(d.payStatus == 5) { }}
+    {{#  } else if(d.orderState == 'accomplish') { }}
     <a class="layui-btn layui-btn-xs" lay-event="queryManage">查看详情</a>
     <a class="layui-btn layui-btn-xs" lay-event="queryPrice">打印</a>
-    {{#  } else if(d.payStatus == 6) { }}
+    {{#  } else if(d.orderState == 'cancel') { }}
     <span>已取消</span>
     {{# } }}
 </script>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    layui.use(['form', 'element', 'laydate', 'table'], function () {
-        var $ = layui.$, laydate = layui.laydate, form = layui.form, table = layui.table, orderIndex = 3, obj = {};
+    layui.use(['form', 'element', 'laydate', 'table', 'formSelects'], function () {
+        var $ = layui.$, laydate = layui.laydate, form = layui.form, table = layui.table, orderState = '', obj = {};
         renderReport($)
+
+
+        var formSelects = layui.formSelects;
+
+
         $(function () {
-            IDCardReaderInfo($(document.body));
-            // clearForm();
-            if (!parseInt(sessionStorage.getItem('orderIndex'))) {
-                sessionStorage.setItem('orderIndex', 3);
+            //获取查询的订单状态   如何订单状态为null 则这设置订单状态为预约订单
+            orderState = sessionStorage.getItem('orderState');
+            if (orderState === null) {
+                sessionStorage.setItem('orderState', 'reservation');
+                orderState = 'reservation';
             }
-            orderIndex = parseInt(sessionStorage.getItem('orderIndex'));
-            $('.orderType').prop('checked', 'false');
-            $('.orderType[value=' + orderIndex + ']').prop('checked', 'true');
-            form.render();
+            //判断是全部还是其他
+            if(!orderState){
+                $('.orderType:first').prop('checked', 'true');
+            }else{
+                $('.orderType[value=' + orderState + ']').prop('checked', 'true');
+            }
+
+
+            //获取渠道
             selectData();
+            form.render();
             setInterval(function () {
                 getReport($);
             }, 60000)
         });
 
+        form.on('radio(orderState)', function (data) {
+            //每次选中单选按钮的时候  更新查询的订单状态
+            sessionStorage.setItem('orderState', data.value);
+            orderState = data.value;
+        });
 
         //酒店数据绑定
         function selectData() {
-            renderSelect("cnId", 'id', 'name', api.allChannel, form, function (str, rs) {
-            });
-            $.ajax({
-                url: api.hotel,
-                type: 'POST',
-                dataType: 'json',
-                success: function (data) {
-                    setSelectData(data.data);
-                }
-            })
+            renderSelect("channel", 'id', 'value', api.allChannel, form);
         }
-
-        /**
-         * 绑定下拉框数据
-         * @param three
-         */
-        function setSelectData(three) {
-            for (var i = 0, len = three.length; i < len; i++) {
-                $('#hotel').append("<option value=" + three[i].id + ">" + three[i].name + "</option>");
-            }
-            form.render('select');
-        }
-
-        $(document).on('click', '#IDCardReader', function () {
-            var CVR_IDCard = IDCardReader();
-            if (!!CVR_IDCard) {
-                clearForm();
-                $('#userName').val(CVR_IDCard.Name);
-                $('#credentialNo').val(CVR_IDCard.CardNo);
-                layui.form.render();
-            }
-        });
-
-        //清空form表单
-        function clearForm() {
-            $('#userName').val('');
-            $('#credentialNo').val('');
-            layui.form.render();
-        }
-
 
         //初始化表格数据
         var tab = table.render({
@@ -238,7 +223,7 @@
                 pageName: 'pageNo'
                 , limitName: 'pageSize'
             }
-            , where: {orderType: orderIndex}
+            , where: {orderState: orderState}
             , response: {
                 statusName: 'code' //规定数据状态的字段名称，默认：code
                 , statusCode: 200 //规定成功的状态码，默认：0
@@ -251,67 +236,57 @@
                     "code": 200, //解析接口状态
                     "msg": res.errMsg, //解析提示文本
                     "count": res.data.count, //解析数据长度
-                    "data": res.data.orderInfoBOs //解析数据列表
+                    "data": res.data.data //解析数据列表
                 };
             }
-            , height: 'full'
+            , limit: 10
             , loading: true //是否显示加载条
-            , even: true
-            // , page: true //开启分页
+            , page: true //开启分页
             , cols: [[ //表头
                 {
-                    field: 'startTime', title: '入住', width: 160, align: 'center', templet: function (data) {
-                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
+                    field: 'checkTime', title: '入住', width: 160, align: 'center', templet: function (data) {
+                        return !!data.checkTime ? DateToLStr(new Date(data.checkTime.time)) : '';
                     }
                 }
                 , {
-                    field: 'endTime', title: '离店', width: 160, align: 'center', templet: function (data) {
-                        return !!data.endTime ? DateToLStr(new Date(data.endTime.time)) : '未离店';
+                    field: 'checkOutTime', title: '离店', width: 160, align: 'center', templet: function (data) {
+                        return !!data.checkOutTime ? DateToLStr(new Date(data.checkOutTime.time)) : '未离店';
                     }
                 }
                 , {field: 'roomName', title: '房号', width: 90, align: 'center'}
-                , {field: 'houseName', title: '房型', width: 100, align: 'center'}
-                , {field: 'userName', title: '姓名', width: 100, align: 'center'}
-                , {field: 'idType', title: '证件类型', width: 110, align: 'center'}
-                , {field: 'idNumber', title: '证件号', width: 175, align: 'center'}
-                , {field: 'phoneNumber', title: '电话', width: 120, align: 'center'}
-                , {field: 'channelName', title: '渠道', width: 120, align: 'center'}
-                , {field: 'OTA', title: 'OTA', width: 90, align: 'center'}
-                , {field: 'relationName', title: '客源', width: 90, align: 'center'}
+                , {field: 'roomType', title: '房型', width: 100, align: 'center'}
+                , {field: 'orderPlacer', title: '姓名', width: 100, align: 'center'}
+                , {field: 'phone', title: '电话', width: 120, align: 'center'}
                 , {
-                    field: 'checkIn', title: '入住方式', width: 120, align: 'center', templet: function (data) {
-                        switch (data.checkIn) {
+                    field: 'orderType', title: '渠道', width: 120, align: 'center', templet: function (data) {
+                        switch (data.orderType) {
+                            case 'subscribe':
+                                return '预约订单';
+                            case 'directly':
+                                return '直接入住';
+                        }
+                    }
+                }
+                , {field: 'OTA', title: 'OTA', width: 90, align: 'center'}
+                , {field: 'channel', title: '客源', width: 90, align: 'center'}
+                , {
+                    field: 'checkType', title: '入住方式', width: 120, align: 'center', templet: function (data) {
+                        switch (data.checkType) {
                             case '':
-                            case 0:
-                                return '';
-                            case 1:
+                            case 'day':
                                 return '全天房';
-                            case 2:
+                            case 'hour':
                                 return '钟点房';
-                            case 3:
+                            case 'free':
                                 return '免费房';
                         }
                     }
                 }
-                , {field: 'payCount', title: '总消费', width: 100, align: 'center'}
+                , {field: 'unitPrice', title: '首日单价', width: 100, align: 'center'}
                 , {field: 'remark', title: '备注', width: 100, align: 'center'}
                 , {
-                    field: 'payStatus', title: '订单状态', width: 120, align: 'center', templet: function (data) {
-                        switch (data.payStatus) {
-                            case 0:
-                            case 1:
-                                return '预约中';
-                            case 2:
-                                return '入住待支付';
-                            case 3:
-                                return '入住中';
-                            case 4:
-                                return '退房待结账';
-                            case 5:
-                                return '已结账';
-                            case 6:
-                                return '已取消';
-                        }
+                    field: 'orderState', title: '订单状态', width: 120, align: 'center', templet: function (data) {
+                        return orderState(data.orderState);
                     }
                 }
                 , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barDemo'}
@@ -320,39 +295,12 @@
         //监听提交
         form.on('submit(formData)', function (data) {
             obj = {};
-            sessionStorage.setItem('orderIndex', data.field.orderType);
-            if (data.field.timeEnd) {
-                obj.timeEnd = new Date(data.field.timeEnd.replace(/-/, "/").replace(/-/, "/"))
+            //获取查询条件，去除空字符串项
+            for (var item in data.field) {
+                if (!!data.field[item] || item ==='orderState') {
+                    obj[item] = data.field[item];
+                }
             }
-            if (data.field.timeStart) {
-                obj.timeStart = new Date(data.field.timeStart.replace(/-/, "/").replace(/-/, "/"))
-            }
-            if (data.field.outTimeEnd) {
-                obj.outTimeEnd = new Date(data.field.outTimeEnd.replace(/-/, "/").replace(/-/, "/"))
-            }
-            if (data.field.outTimeStart) {
-                obj.outTimeStart = new Date(data.field.outTimeStart.replace(/-/, "/").replace(/-/, "/"))
-            }
-            if (data.field.orderType) {
-                obj.orderType = data.field.orderType
-            }
-            if (data.field.checkIn) {
-                obj.checkIn = data.field.checkIn
-            }
-            if (data.field.userName) {
-                obj.userName = data.field.userName
-            }
-            if (data.field.credentialNo) {
-                obj.credentialNo = data.field.credentialNo
-            }
-            if (data.field.roomNum) {
-                obj.roomName = data.field.roomNum;
-            }
-            if (data.field.cnId) {
-                obj.cnId = data.field.cnId;
-            }
-            obj.hotelId = data.field.hotelId;
-
             tab.reload({
                 where: obj
                 , page: {
@@ -379,13 +327,12 @@
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
-            console.log(data);
             if (layEvent === 'edit') {//编辑
                 location.href = 'schedule_change.html?id=' + data.number
             } else if (layEvent === 'queryManage') {//查看详情
-                window.open('orderInfo.html?id=' + data.id + '&state=1', '_blank')
+                window.open('orderInfo.html?id=' + data.orderId + '&state=1', '_blank')
             } else if (layEvent === 'accountManage') { //客账管理
-                window.open('orderInfo.html?id=' + data.id + '&back=0&state=0', '_blank')
+                window.open('orderInfo.html?id=' + data.orderId + '&back=0&state=0', '_blank')
             } else if (layEvent === 'center') { //入住
                 location.href = 'appoint.html?phone=' + encodeURI(data.phoneNumber) + "&idNumber=" + data.idNumber + "&random=" + Date.now();
             } else if (layEvent === 'cancel') {//取消订单
@@ -411,7 +358,6 @@
                     },
                     success: function (rs) {
                         if (rs.success) {
-                            // console.log(rs);
                             sessionStorage.setItem('payBO', JSON.stringify(rs.data.payBO));
                             layer.open({
                                 type: 2,
@@ -420,7 +366,7 @@
                                 title: '支付',
                                 shade: 0.6,
                                 shadeClose: true,
-                                content: 'iframe_pay.html?roomid=' + data.roomId + '&s=1&v=' + rs.data.price + "&or=" + rs.data.number + '&payNumber=' + rs.data.payNumber+"&random="+Date.now()+"&certificateId="+data.idNumber,
+                                content: 'iframe_pay.html?roomid=' + data.roomId + '&s=1&v=' + rs.data.price + "&or=" + rs.data.number + '&payNumber=' + rs.data.payNumber + "&random=" + Date.now() + "&certificateId=" + data.idNumber,
                                 end: function () {
                                     tab.reload();
                                 }
@@ -452,9 +398,10 @@
         });
         //离店时间控件
         var start = laydate.render({
-            elem: '#leaveStartTime',
-            type: 'datetime',
-            btns: ['clear', 'confirm'],
+            elem: '#leaveStartTime'
+            , type: 'datetime'
+            , format: 'yyyy/MM/dd'
+            , btns: ['clear', 'confirm'],
             done: function (value, date) {
                 endMax = end.config.max;
                 end.config.min = date;
@@ -469,9 +416,11 @@
         });
 
         var end = laydate.render({
-            elem: '#leaveEndTime',
-            type: 'datetime',
-            done: function (value, date) {
+            elem: '#leaveEndTime'
+            , type: 'datetime'
+            , format: 'yyyy/MM/dd'
+            , btns: ['clear', 'confirm']
+            , done: function (value, date) {
                 if (!$.trim(value)) {
                     var curDate = new Date();
                     date = {'date': curDate.getDate(), 'month': curDate.getMonth() + 1, 'year': curDate.getFullYear()};
@@ -482,11 +431,11 @@
         });
         //入住时间控件
         var enterStart = laydate.render({
-            elem: '#enterStartTime',
-            type: 'datetime',
-            btns: ['clear', 'confirm'],
-            done: function (value, date) {
-                endMax = enterEnd.config.max;
+            elem: '#enterStartTime'
+            , type: 'datetime'
+            , format: 'yyyy/MM/dd'
+            , btns: ['clear', 'confirm']
+            , done: function (value, date) {
                 enterEnd.config.min = date;
                 enterEnd.config.min.month = date.month - 1;
             },
@@ -498,9 +447,11 @@
             }
         });
         var enterEnd = laydate.render({
-            elem: '#enterEndTime',
-            type: 'datetime',
-            done: function (value, date) {
+            elem: '#enterEndTime'
+            , type: 'datetime'
+            , format: 'yyyy/MM/dd'
+            , btns: ['clear', 'confirm']
+            , done: function (value, date) {
                 if (!$.trim(value)) {
                     var curDate = new Date();
                     date = {'date': curDate.getDate(), 'month': curDate.getMonth() + 1, 'year': curDate.getFullYear()};

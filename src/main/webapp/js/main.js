@@ -18,11 +18,6 @@ var OUTPAYJSON = {
     "orderNo": "201712011721520"
 };
 
-var payValue = {
-    integValue: null,
-    streValue: null,
-    integral: null
-};
 
 //身份证号码正则
 var IDREG = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
@@ -42,11 +37,11 @@ var OFFICERS = /^[\u4E00-\u9FA5](字第)([0-9a-zA-Z]{4,8})(号?)$/;
 
 
 var api = {
-    queryUserIntgeralInfo: '/integral/queryUserIntgralInfo?v=1'//积分查询?userId=3
-    , addIntegral: '/integral/updateAddIntegral?v=1'//积分增加?userId=3&number=20
-    , deductionIntegral: '/integral/updateIntegral?v=1'//积分减少?userId=3&number=20
+    queryUserIntgeralInfo: '/member/getMemberInfo'//积分查询?userId=3   已修改
+    , addIntegral: '/member/integralChange'//积分增加?userId=3&number=20
+    // , deductionIntegral: '/integral/updateIntegral?v=1'//积分减少?userId=3&number=20  废弃
     , queryMember: '/member/selectMember'//会员查询?query=张三      已修改
-    , addMember: '/member/add?v=1'//会员信息添加?
+    , addMember: '/member/addMember?v=1'//会员添加   已修改
     , updateMember: '/member/update?v=1'//会员信息修改?userId
     , memberLevel: '/memberLevel/selectmemberLevel?v=1'//获取会员级别000
     , certificate: '/Dictionary/getDic?kid=1'//获取证件000
@@ -62,7 +57,7 @@ var api = {
     , roomAdd: '/room/insertSelective'   //新增客房  已修改
     , updateRoomInfo: '/room/updateByPrimaryKeySelective'//修改客房信息  已修改
     // , roomUnLock: '/room/openLockRoom'   //客房解锁   废弃
-    , roomLockRoom: '/room/updatelockRoomState'    //客房锁房
+    , roomLockRoom: '/room/updatelockRoomState'    //客房锁房   已修改
     , queryMemberById: '/member/detail?userId='//根据会员id查询
     , pickRoomQuery: '/room/quertRm'//选房查询000
     , checkIn: '/checkin/addCheckin?v=1'//入住
@@ -73,20 +68,21 @@ var api = {
     , querySale: '/user/queryDiscountId?cerfiticateNumber='//根据证件号查询折扣信息
     , queryOrder: '/order/queryOrderList'  //订单查询    已修改
     , queryIdFlag: 'member/selectMember?v=1'//通过手机号或者证件号查询会员信息000
-    , queryOrderInfo: 'OrderManage/queryOrderInfoByUser'//查询子订单信息
-    , queryRowsOrderInfo: 'OrderManage/queryOrderInfoById'//点击表格查询子订单信息
+    , queryOrderById: '/order/getRoomInfoById'//查询子订单信息   已修改
+    , queryOrderInfo: '/order/getOrderInfoById'//查询子订单详情信息   已修改
     , checkInYuYue: '/order/reservationRoom?v=1'//预约入住
     , refundOnclick: '/OrderManage/refundOnclick?v=1'//获取结账信息
-    , cash: '/OrderManage/cash'//押金
-    , refundprice: '/OrderManage/refundprice?v=1'//退款
-    , info: '/OrderManage/info?v=1'//其他金额
-    , outRoom: '/OrderManage/outRoomClick'//查看退房信息
-    , outRoomBtn: '/OrderManage/outRoom'//退房
-    , refund: '/OrderManage/refundOnclick'//结账
-    , subitemOnclick: 'OrderManage/subitemOnclick'//结账
-    , refundBtn: '/OrderManage/refund'//结账
+    , cash: '/chilOrder/addCashPledge'//押金  已修改
+    // , refundprice: '/OrderManage/refundprice?v=1'//退款  废弃
+    , info: '/chilOrder/recorded'//客账入账  已修改
+    , outRoom: '/order/getCheckOutInfo'//查看退房信息  已修改
+    , outRoomBtn: '/order/checkOut'//退房按钮   已修改
+    , refund: '/OrderManage/refundOnclick'//查询结账信息
+    , subitemOnclick: '/chilOrder/queryChildleAccounts'//查询子订单单项结账信息   已修改
+    , subitem: '/chilOrder/childleAccounts'//子订单结账  已修改
+    , refundBtn: '/OrderManage/refund'//结账按钮
     , outRoomRefound: '/OrderManage/outRoomRefound'//退房回滚
-    , exemption: '/OrderManage/exemption'//免单
+    , exemption: '/chilOrder/free'//冲减  已修改
     , updatePriceTime: '/room/updatePriceTime'//查询修改时间是否冲突
     , largeUpdatePriceTime: '/room/largeUpdatePriceTime'//批量修改全天房时间
     , updatePriceAll: '/room/largeUpdatePriceTimeByOtherPrice'//批量修改其他价格  除全天房以外的其他价格
@@ -131,7 +127,7 @@ var api = {
     , hotelInfo: '/hotel/queryLoginHotel'//权限页酒店list
     , hotel: '/OrderManage/hotel'//权限页酒店list
     , detail: '/admin/detail'//权限列表
-    , getReport: '/room/todayPictureView?v=1'
+    , getReport: ''///room/todayPictureView?v=1
     , getRoomInfoById: '/roomDetailsController/roomChange?roomId='
     , changeRoomPay: '/checkin/roomChangePay?v=1'
     , adminAdd: '/admin/add'//添加权限
@@ -139,7 +135,7 @@ var api = {
     , adminUpdate: '/admin/update'//权限修改
     , updateStatus: '/admin/updateStatus'//权限注销
     , reportList: '/room/pictureView?v=1'//按时间段查询图表
-    , getCardNoByLeaveId: '/member/queryCart?leaveId='//根据级别id查询卡费用信息
+    , getCardNoByLeaveId: '/member/getMemberCardNumber?memberCardLevelId='//根据级别id查询卡费用信息
     , getCardUpdate: '/member/queryCartUpdate?v=1'//根据用户id卡级别判断是否缴费member/queryCartUpdate?userId=1&leaveId=1
     , cartInfo: '/memberCard/selectMemberCard'//会员卡查询   已修改
     , cartDelete: '/memberCard/deleteMemberCard'//会员卡删除   已修改
@@ -190,7 +186,7 @@ var api = {
     , addHotel: 'hotel/addHotel'//添加酒店000
     , queryHotelInfo: 'hotel/queryHotel'//查询酒店000
     , updateHotelInfo: 'hotel/updateHotel'//编辑酒店000
-    , queryStoreValue: '/checkin/queryStoreValue'//查询会员积分和储值
+    , queryStoreValue: '/member/getStoreValueIntegral'//查询会员积分和储值   已修改
     , queryFloor:'floor/queryFloor'//查询楼层000
     , addFloor:'floor/addFloor'//添加楼层000
     , updateFloor:'floor/updateFloor'//修改楼层000
@@ -201,6 +197,14 @@ var api = {
     , roleAdd: '/admin/addRoleGrantAuthority' //角色添加      已修改
     , permissionsMenu: '/admin/getPermissionsMenu'  //查询所有菜单  已修改
 }
+
+//全局定义一次, 加载formSelects
+layui.config({
+    base: './js/' //此处路径请自行处理, 可以使用绝对路径
+}).extend({
+    formSelects: 'formSelects-v4.min'
+});
+
 layui.use(['jquery', 'element'], function () {
     $ = layui.jquery;
     element = layui.element;
@@ -252,20 +256,14 @@ layui.use(['jquery', 'element'], function () {
             });
             //设置会员详情
             setUserInfo(CVR_IDCard.CardNo, function (res) {
-                $('.integral').text(res.integral);
-                $('.prepaidCard').text(res.streValue);
-                //存储会员信息
-                for (var item in res) {
-                    payValue[item] = res[item];
-                }
+                $('.integral').text(res.integralMoney);
+                $('.prepaidCard').text(res.storeValue);
                 $('.optional_1').show();
             });
         }
         //显示会员详情
         $('.optional_1').show();
     });
-    // //输入框的值改变时触发
-    // $("#card").on("input", );
 
     renderMenu($, element);
     // renderReport($,element)
@@ -274,13 +272,9 @@ layui.use(['jquery', 'element'], function () {
 
 //清空表单
 function clearIDForm(form, formName) {
-    //重新初始化信息
-    for (var item in payValue) {
-        payValue[item] = null;
-    }
     form.val(formName, {
         IDCard: '',
-        glx: ''
+        integral: ''
     });
     $('.optional_1').hide();
 }
@@ -507,8 +501,7 @@ function formatMenu(data) {
             result.exact = true;
         }
         if (item.children) {
-            var children = formatMenu(item.children);
-            result.children = children;
+            result.children = formatMenu(item.children);
         }
         return result;
     }).filter(function (item) {
@@ -655,27 +648,59 @@ function backHome() {
     location.href = HOME;
 }
 
-//状态判断
-function stateJudgment(state) {
-    switch (state) {
+
+//主房态
+function roomMajorState(room) {
+    switch (room){
         case 'vacant':
             return '空房';
         case 'inthe':
             return '已入住';
         case 'dirty':
-            return '待打扫';
-        case 'yes':
-            return '维修';
-        case 'no':
-            return '未维修';
-        case 'ope':
-            return '未锁房';
-        case 'all':
-            return '全部锁房';
-        case 'shop':
-            return '门店锁房';
-        case 'network':
-            return '网络锁房';
+            return '脏房';
+        case 'timeout':
+            return '超时';
+    }
+}
+
+//订单状态
+function orderState(orderState) {
+    switch (orderState) {
+        case '':
+        case 'reservation':
+            return '预约中';
+        case 'notpay':
+            return '入住待支付';
+        case 'admissions':
+            return '入住中';
+        case 'notpaid':
+            return '退房待结账';
+        case 'accomplish':
+            return '已结账';
+        case 'cancel':
+            return '已取消';
+    }
+}
+
+//支付方式
+function orderPayType(payType) {
+    switch (payType){
+        case '':
+            return '';
+        case 'cash':
+            return '现金';
+        case 'cart':
+            return '银行卡';
+        case 'wechat':
+            return '微信';
+        case 'alipay':
+            return '支付宝';
+        case 'other':
+            return '其他支付';
+        case 'stored':
+            return '储值';
+        case 'integral':
+            return '积分';
     }
 }
 
@@ -845,7 +870,7 @@ function setUserInfo(ID, callback) {
         url: api.queryStoreValue,
         type: 'POST',
         dataType: 'json',
-        data: {credentialNumber: ID},
+        data: {certificateNumber: ID},
         success: function (res) {
             if (res.success) {
                 callback(res.data, res.success);
@@ -895,29 +920,17 @@ function handleInput() {
         //获取用户会员信息
         setUserInfo(val, function (res, success) {
             if (success) {
-                $('.integral').text(res.integral);
-                $('.prepaidCard').text(res.streValue);
-                //存储会员信息
-                for (var item in res) {
-                    payValue[item] = res[item];
-                }
+                $('.integral').text(res.integralMoney);
+                $('.prepaidCard').text(res.storeValue);
                 $('.optional_1').show();
             } else {
                 layer.msg(res);
-                //重新初始化信息
-                for (var item in payValue) {
-                    payValue[item] = null;
-                }
                 $('.optional_1').hide();
             }
         });
 
     } else {
         layer.msg('请输入正确的证件号码');
-        //重新初始化信息
-        for (var item in payValue) {
-            payValue[item] = null;
-        }
         $('.optional_1').hide();
     }
 }

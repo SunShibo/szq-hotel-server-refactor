@@ -9,6 +9,12 @@
             padding: 10px 0;
             margin: 0 40px;
         }
+
+        .head .btn-nav{
+            width: 200px;
+            display: inline-block;
+            margin-right: 20px;
+        }
     </style>
 </head>
 <body>
@@ -67,9 +73,15 @@
     </div>
 </form>
 <div class="layui-btn-container head">
-    <button class="layui-btn layui-btn-sm" id="addItem">新增</button>
-    <button class="layui-btn layui-btn-sm" id="batchDelete">批量删除</button>
-    <button class="layui-btn layui-btn-sm" id="lockRoom">批量锁房</button>
+    <div class="btn-nav">
+        <button class="layui-btn layui-btn-sm layui-btn-fluid" id="addItem">新增</button>
+    </div>
+    <div class="btn-nav">
+        <button class="layui-btn layui-btn-sm layui-btn-fluid" id="batchDelete">批量删除</button>
+    </div>
+    <div class="btn-nav">
+        <button class="layui-btn layui-btn-sm layui-btn-fluid" id="lockRoom">批量锁房</button>
+    </div>
     <!--<button class="layui-btn layui-btn-sm" id="unlock">批量解锁</button>-->
 </div>
 <div class="tab-box">
@@ -82,7 +94,7 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['table', 'element', 'form'], function () {
-        var table = layui.table, $ = layui.$, form = layui.form, selectArr = [], buildingArr = [], checkSelect = [],
+        var table = layui.table, $ = layui.$, form = layui.form, selectArr = [], buildingArr = [],
             defaultId = 0;
 
         //初始化表格数据
@@ -119,41 +131,33 @@
                 , {field: 'hotelName', title: '楼栋', width: 150, align: 'center'}
                 , {field: 'floorName', title: '楼层', align: 'center'}
                 , {field: 'roomType', title: '房型', align: 'center'}
-                , {field: 'basicPrice', title: '标准价', align: 'center'}
-                , {field: 'hourRoomPrice', title: '钟点房价格', align: 'center'}
+                // , {field: 'basicPrice', title: '标准价', align: 'center'}
+                // , {field: 'hourRoomPrice', title: '钟点房价格', align: 'center'}
                 , {
                     field: 'roomMajorState', title: '房态', align: 'center', templet: function (data) {
-                        return stateJudgment(data.roomMajorState);
+                        return roomMajorState(data.roomMajorState);
                     }
                 }
                 , {
                     field: 'roomState', title: '维修状态', align: 'center', templet: function (data) {
-                        return stateJudgment(data.roomState);
+                        return data.roomState === 'yes' ? '维修中' : '未维修';
                     }
                 }
                 , {
                     field: 'lockRoomState', title: '锁房状态', width: 90, align: 'center', templet: function (data) {
-                        return stateJudgment(data.lockRoomState);
+                        return data.lockRoomState === 'yes' ? '已锁房' : '未锁房';
                     }
                 }
                 , {
                     field: 'lockRoomStartTime', title: '锁房开始时间', width: 165, align: 'center', templet: function (data) {
-                        return data.lockRoomStartTime != null ? DateToLStr(new Date(data.lockRoomStartTime.time)) : '空'
+                        return !!data.lockRoomStartTime ? DateToLStr(new Date(data.lockRoomStartTime.time)) : '无'
                     }
                 }
                 , {
                     field: 'lockRoomEndTime', title: '锁房结束时间', width: 165, align: 'center', templet: function (data) {
-                        return data.lockRoomEndTime != null ? DateToLStr(new Date(data.lockRoomEndTime.time)) : '空'
+                        return !!data.lockRoomEndTime ? DateToLStr(new Date(data.lockRoomEndTime.time)) : '无'
                     }
                 }
-                // , {
-                //     field: 'lockComment', title: '锁房备注', width: 135, align: 'center', templet: function (data) {
-                //         if (!data.lockComment) {
-                //             return '无';
-                //         }
-                //         return data.lockComment;
-                //     }
-                // }
                 , {field: 'remark', title: '备注', width: 135, align: 'center'}
                 , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barDemo'}
             ]]
@@ -219,10 +223,9 @@
         //监听表格复选框选择
         table.on('checkbox(roomManage)', function (obj) {
             var checkStatus = table.checkStatus('roomManage'), data = checkStatus.data;
-            selectArr = [], checkSelect = [];
+            selectArr = [];
             for (var i = 0, len = data.length; i < len; i++) {
-                selectArr.push(data[i].roomId);
-                checkSelect.push(data[i].state);
+                selectArr.push(data[i].id);
             }
         });
 
@@ -306,15 +309,15 @@
                 layer.msg('请选择客房！');
                 return;
             }
-            sessionStorage.setItem('selectArr', selectArr);
+            sessionStorage.setItem('selectArr', JSON.stringify(selectArr));
             layer.open({
                 type: 2,
                 skin: 'demo-class',
-                area: ['500px', '400px'],
+                area: ['600px', '500px'],
                 title: '批量锁房',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_lockRoom.html?state=1',
+                content: 'iframe_lockRoom.html',
                 end: function () {
                     tab.reload();//刷新表格
                 }

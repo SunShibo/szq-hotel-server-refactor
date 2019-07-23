@@ -571,7 +571,7 @@ body {
   justify-content: space-between;
 }
 .order-info-main .o-left {
-  width: 30%;
+  width: 32%;
   position: relative;
   border-right: 1px #0C0C0C solid;
 }
@@ -579,7 +579,7 @@ body {
   text-align: center;
 }
 .order-info-main .o-reight {
-  width: 69.9%;
+  width: 67.9%;
 }
 .order-info-main .o-reight .btn-box {
   margin: 10px 5px;

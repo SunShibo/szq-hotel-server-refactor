@@ -13,26 +13,23 @@
 </head>
 <body>
 <form class="layui-form">
-    <div class="layui-form-item" id="time" style="display:none;">
+    <div class="layui-form-item" id="time">
+        <label class="layui-form-label">锁房时间</label>
         <div class="layui-input-inline">
-            <input type="text" name="startTime" autocomplete="off" class="layui-input" id="startTime"
-                   placeholder="开始时间">
-        </div>
-        <div class="layui-input-inline" style="margin-left: 20px;">
-            <input type="text" name="endTime" autocomplete="off" class="layui-input" id="endTime"
-                   placeholder="结束时间">
+            <input type="text" class="layui-input" id="dateTime" placeholder="请选择锁房时间段" style="width: 400px;">
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">房间状态</label>
         <div class="layui-input-inline">
-            <input type="checkbox" value="network" name="network" id="network" lay-skin="primary">
-            <input type="checkbox" value="shop" name="room" id="room" lay-skin="primary">
+            <input type="radio" lay-filter="lock" name="lock" value="close" title="锁房" checked>
+            <input type="radio" lay-filter="lock" name="lock" value="ope" title="解锁">
         </div>
     </div>
-    <div class="layui-form-item" id="comment" style="display: none">
+    <div class="layui-form-item" id="comment">
         <label class="layui-form-label">锁房备注</label>
         <div class="layui-input-inline">
-                <textarea name="comment" id="commentText" placeholder="请输入锁房备注"
+                <textarea name="remark" placeholder="请输入锁房备注"
                           class="layui-textarea"></textarea>
         </div>
     </div>
@@ -45,157 +42,67 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form', 'laydate'], function () {
-        var form = layui.form, $ = layui.$, state = 0, laydate = layui.laydate;
+        var form = layui.form, $ = layui.$, laydate = layui.laydate, startTime = 0, endTime = 0;
 
         $('#back').on('click', function () {
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
             parent.layer.close(index); //再执行关闭
         });
 
-        $(function () {
-            state = parseInt(getUrl('state'));
-            if (state === 1) {
-                $('#time').css('display', 'block');
-                $('#comment').css('display', 'block');
-                $('#network').attr({title: '网络锁房'});
-                $('#room').attr({title: '门店锁房'});
-
+        form.on('radio(lock)', function (data) {
+            if (data.value === 'ope') {
+                $('#time').hide();
             } else {
-                $('#network').attr({title: '网络解锁'});
-                $('#room').attr({title: '门店解锁'});
+                $('#time').show();
             }
-            form.render();
         });
 
-        var start = laydate.render({
-            elem: '#startTime',
-            type: 'datetime',
-            min: new Date().getTime(),
-            btns: ['confirm'],
-            done: function (value, date) {
-                end.config.min = date;
-                end.config.min.month = date.month - 1;
-            },
-            change: function (value, date, endDate) {
-                var timestamp2 = Date.parse(new Date(value));
-                timestamp2 = timestamp2 / 1000;
-                end.config.min = timestamp2;
-                end.config.min.month = date.month - 1;
-            }
-        });
-        var end = laydate.render({
-            elem: '#endTime',
-            type: 'datetime',
-            btns: ['confirm'],
-            done: function (value, date) {
-                if (!$.trim(value)) {
-                    var curDate = new Date();
-                    date = {
-                        'date': curDate.getDate(),
-                        'month': curDate.getMonth() + 1,
-                        'year': curDate.getFullYear()
-                    };
-                }
-                start.config.max = date;
-                start.config.max.month = date.month - 1;
+        //日期范围选择
+        laydate.render({
+            elem: '#dateTime'
+            , min: new Date().getTime()
+            , btns: ['clear', 'confirm']
+            , format: 'yyyy/MM/dd HH:mm:ss'
+            , range: true //或 range: '~' 来自定义分割字符
+            , done: function (value, date, endDate) {
+                var dateTime = value.split(' - ');
+                startTime = dateTime[0];
+                endTime = dateTime[1];
             }
         });
 
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {
-            var network = data.field.network, room = data.field.room, selectArr = sessionStorage.getItem('selectArr'),
-                status = '';
 
-            // if (state === 1) {//锁房
-            //     if(!data.field.comment){
-            //         showMsg('备注不能为空', 2, false);
-            //         return false;
-            //     }
-            //     if (network && room) {
-            //         status = 8;
-            //     } else if (network) {
-            //         status = network;
-            //     } else if (room) {
-            //         status = room;
-            //     } else {
-            //         layer.msg('请选择锁房状态(全选为全部锁房)');
-            //         return false;
-            //     }
-            //     lockRoom(data.field, status, selectArr, 0);
-            // } else {//解锁
-            //     if (network && room) {
-            //         status = 13;
-            //     } else if (network) {
-            //         status = network;
-            //     } else if (room) {
-            //         status = room;
-            //     } else {
-            //         layer.msg('请选择解锁状态(全选为全部解锁)');
-            //         return false;
-            //     }
-            //     lockRoom(data.field, status, selectArr, null);
-            // }
+            var obj = {};
+            var selectArr = sessionStorage.getItem('selectArr');
+            if (data.field.lock !== 'ope') {
+                obj.startTime = startTime;
+                obj.endTime = endTime;
+            }
+
+            obj.state = data.field.lock;
+            obj.roomId = selectArr;
+            obj.remark = data.field.remark;
+            $.ajax({
+                url: api.roomLockRoom,
+                type: 'POST',
+                dataType: 'json',
+                data: obj,
+                success: function (data) {
+                    if (data.success) {
+                        showMsg('操作成功', 1, false);
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    } else {
+                        showMsg(data.errMsg, 2, false);
+                    }
+                }
+            });
             return false;
         });
 
 
-        function lockRoom(data, status, selectArr, trueId) {
-            var obj = {};
-            obj.state = status;
-            obj.roomIds = "[" + selectArr + "]";
-            if (trueId != null) {
-                obj.startTime = new Date(data.startTime.replace(/-/, "/").replace(/-/, "/"));
-                obj.endTime = new Date(data.endTime.replace(/-/, "/").replace(/-/, "/"));
-                obj.comment = data.comment;
-                if (trueId === 1) {
-                    obj.trueId = trueId;
-                }
-                //保存当前数据
-                var oldData = data;
-                var oldStatus = status;
-                $.ajax({
-                    url: api.roomLockRoom,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: obj,
-                    success: function (data) {
-                        if (data.errCode === '0000014') {
-                            layer.confirm(data.errMsg, {icon: 3, title: '提示'}, function (index) {
-                                //do something
-                                lockRoom(oldData, oldStatus, selectArr, 1);
-                                layer.close(index);
-                            });
-                        }
-                        if (data.success) {
-                            showMsg('锁房成功', 1, false);
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layer.close(index); //再执行关闭
-                        } else {
-                            showMsg(data.errMsg, 2, false);
-                        }
-
-                    }
-                });
-            } else {
-                $.ajax({
-                    url: api.roomUnLock,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        roomIds: selectArr,
-                        state: status
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layer.close(index); //再执行关闭
-                        } else {
-                            showMsg(data.errMsg, 2, false);
-                        }
-                    }
-                })
-            }
-        }
     });
 </script>
 </body>

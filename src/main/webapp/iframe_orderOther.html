@@ -10,7 +10,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">费用名称:</label>
         <div class="layui-input-inline">
-            <input type="text" name="otherName" lay-verify="required" id="otherName" placeholder="请输入名称"
+            <input type="text" name="designation" lay-verify="required" id="designation" placeholder="请输入名称"
                    autocomplete="off"
                    class="layui-input">
         </div>
@@ -18,7 +18,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">金额:</label>
         <div class="layui-input-inline">
-            <input type="number" name="otherPrice" lay-verify="required" id="otherPrice" placeholder="请输入金额"
+            <input type="number" name="money" lay-verify="required" id="money" placeholder="请输入金额"
                    autocomplete="off"
                    class="layui-input">
         </div>
@@ -26,9 +26,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">消费类型</label>
         <div class="layui-input-block">
-            <input type="radio" name="type" value="1" title="商品" checked>
-            <input type="radio" name="type" value="2" title="赔偿">
-            <input type="radio" name="type" value="3" title="房费">
+            <input type="radio" name="type" value="商品" title="商品" checked>
+            <input type="radio" name="type" value="赔偿" title="赔偿">
+            <input type="radio" name="type" value="房费" title="房费">
         </div>
     </div>
     <div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
@@ -39,7 +39,7 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form'], function () {
-        var form = layui.form, $ = layui.$, id = 0, index = 0, resultData = {};
+        var form = layui.form, $ = layui.$, id = 0, index = 0, requestData = {};
 
         $('#back').on('click', function () {
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
@@ -52,32 +52,26 @@
 
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {
-            resultData = data.field;
+            requestData = data.field;
             if(index!=null)clearTimeout(index);
             index = setTimeout(pay, 1000);
             return false;
         });
 
         function pay() {
+            if(!requestData.money)return false;
+            requestData.orderChildId = id;
             $.ajax({
                 url: api.info,
                 type: 'POST',
                 dataType: 'json',
-                data: {
-                    number: resultData.otherPrice,
-                    info: resultData.otherName,
-                    type: resultData.type,
-                    id: id
-                },
+                data: requestData,
                 success: function (data) {
-                    if (data.errCode == '0000010') {
-                        layer.msg(data.errMsg);
-                        return;
-                    }
                     if(!data.success){
                         showMsg(data.errMsg, 2, false);
                         return;
                     }
+                    showMsg('入账成功', 1, false);
                     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     parent.layer.close(index); //再执行关闭
                 }
