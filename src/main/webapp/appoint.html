@@ -166,6 +166,13 @@
                         <input  style="display: inline-block;width: 50px" readonly type="number" name="dayNumber2" value="4" id="days2" autocomplete="off" class="layui-input"><span style="">小时</span>
                     </div>
                 </div>
+                <br>
+                <div class="layui-inline">
+                    <label class="layui-form-label">预约备注</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="subscribeRemark" id="subscribeRemark"  style="width: 515px;"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
             </div>
         </section>
         <section class="border-e6 mg10 pd10">
@@ -180,7 +187,7 @@
             <div>
                 <a class="layui-btn" onclick="selectRoom()">选房</a>
                 <a class="layui-btn" onclick="modifyPrice()">改价</a>
-                <a class="layui-btn" onclick="remarks()">批量备注</a>
+                <a class="layui-btn" onclick="remarks()">备注</a>
                 <!--<a class="layui-btn" onclick="afterComeIn()">批量稍后入住</a>-->
             </div>
         </section>
@@ -339,7 +346,7 @@
 
                         return arr;
                     }else{
-                        debugger;
+
                         //修改过价格
                         for(var j=0;j<modifyPrice.length;j++){
                             if(modifyPrice[j]['roomTypeId'] == sr[i]['roomType']){
@@ -451,7 +458,7 @@
                 }
             }
             console.info(checkinData);
-            return false;
+            // return false;
             d.OrderChildJSON = JSON.stringify(checkinData);
 
             console.log("以下是预约入住参数")
@@ -636,14 +643,13 @@
             roomAuxiliaryStatus:$("input[name='checkType']:checked").val(),
             orderId:yuyueData.id
         }
-
         localStorage.yyrzxf = JSON.stringify(selectRoomData);
         console.log('下面是预约入住选房的数据')
         console.log(selectRoomData	)
         layer.open({
             area: ['820px', '520px'],
             type: 2,
-            content:  'iframe_pick_room2.html?vv='+Date.now(),
+            content:  'iframe_pick_room2.html?vv='+Date.now()+"&parameter=yyrzxf",
             title: "预约入住选房"
         })
     }
@@ -699,13 +705,55 @@
 
 
     function parSelectRoom(v) {
+        var checktype = $("input[name='checkType']:checked").val();
+        sRooms =  v ;
+        // console.info("选房后获取了如下数据↓")
+        // console.info(sRooms)
 
-        sRooms = [].concat.apply([], v);
-        console.info("选房后获取了如下数据↓")
-        console.info(sRooms)
-        sRooms1 = JSON.parse(JSON.stringify(sRooms));
-        setCustomInfo();
-        calcPrice();
+        var typeids = [];
+        for(var i=0;i<sRooms.length;i++){
+            if(typeids.indexOf(sRooms[i]['roomTypeId'])==-1){
+                typeids.push(sRooms[i]['roomTypeId'])
+            }
+        }
+        var index = layer.load(1,{time:10*1000});
+        $.ajax({
+            data: {
+                phone:document.getElementById("phone").value.trim(),
+                startTime:document.getElementById("startTime").value,//入住时间,
+                dayNum:checktype=='hour'?1:document.getElementById("days1").value,
+                typeIds:typeids.join(","),
+                orderId:yuyueData.id,
+                checkType:checktype,
+            },
+            type: "POST",
+            dataType: "JSON",
+            url: 'updatePrice/updatePrice',
+            beforeSend: function () {
+            },
+            complete: function () {
+                layer.close(index);
+            },
+            success: function (rs) {
+                layer.close(index);
+                if (!rs.success) {
+                    layer.alert(rs.errMsg)
+                }else{
+                    // debugger;
+                    for(var i=0;i<sRooms.length;i++){
+                        for(var j=0;j<rs.data.length;j++){
+                            if(sRooms[i]['roomTypeId']== rs.data[j]['roomTypeId']){
+
+                                sRooms[i]['basicPrice'] = sRooms[i]['hourRoomPrice'] = rs.data[j]['price'];
+                            }
+                        }
+                    }
+                    sRooms1 = JSON.parse(JSON.stringify(sRooms));
+                    setCustomInfo();
+                    calcPrice();
+                }
+            }
+        });
 
     }
 
@@ -893,6 +941,7 @@
         $("#IDNumber").val(d.IDNumber);
         $("#phone").val(d.phone);
         $("#clerkOrderingName").val(d.clerkOrderingName);
+        $("#subscribeRemark").val(d.subscribeRemark);
         try{
             $("#startTime").val(DateToLStr(new Date(d.checkTime.time)));
             $("#leaveDate1").val(DateToLStr(new Date(d.checkOutTime.time)));
@@ -961,8 +1010,6 @@
         }
         state.totalPrice = _yuyuePrice;
         $("#totalPrice").text(_yuyuePrice);
-        // return;
-        // calcPrice();
         updateTable();
     }
 
@@ -996,7 +1043,7 @@
         // console.info(d);
         tableObj.reload({data: JSON.parse(JSON.stringify(d))})
         state.selRow = [];
-        // calcPrice();
+
         $("#totalPrice").text(state.totalPrice);
 
         if(state.channel!=2){
@@ -1007,8 +1054,8 @@
     }
 
     function calcPrice() {
-        var checkType_ = $("input[name='checkType']:checked").val();
 
+        var checkType_ = $("input[name='checkType']:checked").val();
         var d = sRooms;
         var c = saleInfo;
         state.totalPrice = 0;

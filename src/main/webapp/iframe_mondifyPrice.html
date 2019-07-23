@@ -90,7 +90,7 @@
 <script>
 		var $,element,$b,$remove,selectDom,
             dayNumber=getUrl("dayNumber"),
-
+            orderId = getUrl("orderId"),
             rsd;
 
   	  layui.use(['element', 'jquery', 'table','form'], function () {
@@ -154,7 +154,6 @@
 
   	      if(localStorage.modifyPrice){
               rsd = JSON.parse(localStorage.modifyPrice);
-
               dealRsData();
               return;
           }
@@ -175,16 +174,17 @@
             var sRooms = JSON.parse(localStorage.modifyPrice);
             $table.empty();
             dealDays();
+
             var str = '';
             sRooms.map(function(c,i){
                 str+=  ['<div class="table-row">',
                     '<div class="cell">',
-                    c.name,
+                    c.name?c.name:c.roomTypeName,
                     '</div>',
                     _deal(c),
                     '</div>'].join("");
             });
-            // debugger;
+
             $table.append(str);
             function _deal(r) {
 
@@ -213,11 +213,29 @@
             }
         }
 
+        function dealPriceArr(c) {
+  	      // debugger;
+  	      var arr = [];
+  	      for(var i in c){
+  	          // debugger;
+  	          if(i.indexOf("/")>-1&&i.indexOf("y") ==  -1){
+  	              arr.push({
+                      time:i,
+                      price:c[i]
+				  })
+			  }
+		  }
+		  return arr;
+        }
 
         function submitInfo() {
   	      var _arr = [];
-
+			var updatePrice = [];
             rsd.map(function (c,i) {
+
+
+// debugger;
+
                 var _o={
                     roomTypeId:c['roomTypeId'],
 					roomTypeName:c['roomTypeName'],
@@ -227,7 +245,7 @@
 
                 try{
 					$(".rti"+c['roomTypeId']).each(function () {
-
+// debugger;
 						_o[this.dataset['date']]=this.value;
 						_o['y'+this.dataset['date']] = this.dataset['price'];
 					})
@@ -235,10 +253,32 @@
                     console.log(e)
                 }
                 _arr.push(_o);
+                updatePrice.push({
+                    "orderId":orderId,
+                    "roomTypeId":c['roomTypeId'],
+                    "priceBOS":dealPriceArr(_o)
+                })
             })
-			localStorage.setItem("modifyPrice",JSON.stringify(_arr));
-            parent.parModifyPrice();
-            no();
+            var index = layer.load(1,{time:10*1000});
+            $.ajax({
+                data: {data:JSON.stringify(updatePrice)},
+                type: "POST",
+                dataType: "JSON",
+                url: 'updatePrice/addPrice',
+                complete: function () {
+                    layer.close(index);
+                },
+                success: function (rs) {
+                    layer.close(index);
+                    if (!rs.success) {
+                        layer.alert(rs.errMsg)
+                    }
+                    localStorage.setItem("modifyPrice",JSON.stringify(_arr));
+                    parent.parModifyPrice();
+                    no();
+                }
+            });
+
         }
 </script>
 </body>

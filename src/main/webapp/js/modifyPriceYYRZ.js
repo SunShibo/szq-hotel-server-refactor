@@ -1,84 +1,70 @@
 //预约入住房间修改价格
 clearModifyPrice();
 function modifyPrice() {
-
+    var checktype = $("input[name='checkType']:checked").val();
     if(sRooms.length==0){
         return;
     }
-    if($("input[name='checkType']:checked").val()!="day"){
+    if(sRooms[0]['roomId']==0){
+        return;
+    }
+
+    if($("input[name='checkType']:checked").val()=="free"){
         return ;
     }
 
-
-
-        aaa1 = [];
-        var temp = [];
-        var days = getModifyPriceData($("#days1").val());
-        for(var i=0;i<sRooms.length;i++){
-
-            if(temp.indexOf(sRooms[i].roomType) == -1 ){
-                //房間預約的id是房型id，這裡是預約入住，用這個 roomType
-                temp.push(sRooms[i].roomType);
-                var newdata = JSON.parse(JSON.stringify(sRooms[i]));
-                for(var j=0;j<days.length;j++) {
-                    var yudingPrice = yuyueData.orderChildBOS;
-                    var flag = true;
-                    for (var k = 0; k < yudingPrice.length; k++) {
-
-                        if (yudingPrice[k]['roomTypeId'] == sRooms[i].roomType
-                            || yudingPrice[k]['roomTypeName'] == sRooms[i].roomType) {
-                            var ppp = yudingPrice[k]['everydayRoomPriceBOS'];
-                            for (var l = 0; l < ppp.length; l++) {
-                                // debugger;
-                                if (DateToLStr(new Date(ppp[l]['time']['time'])).indexOf(days[j]['time']) > -1) {
-                                    newdata[days[j]['time']] = ppp[l]['money'];
-                                    newdata['y' + days[j]['time']] = ppp[l]['money'];
-                                    break;
-                                }
-                            }
-                            flag = false;
-                        }
-                    }
-
-                    if(flag){
-                        //这种情况下，预定的房型里面没有该房型
-                        if($("input[name='checkType']:checked").val()=="hour"){
-                            //小时房
-                            newdata[days[j]['time']] = newdata['hourRoomPrice'];
-                            newdata['y' + days[j]['time']] = newdata['hourRoomPrice'];
-                        }else{
-                            //全天房
-                            newdata[days[j]['time']] = newdata['basicPrice'];
-                            newdata['y' + days[j]['time']] = newdata['basicPrice'];
+    var typeids = [];
+    for(var i=0;i<sRooms.length;i++){
+        if(typeids.indexOf(sRooms[i]['roomTypeId'])==-1){
+            typeids.push(sRooms[i]['roomTypeId'])
+        }
+    }
+    var index = layer.load(1,{time:10*1000});
+    $.ajax({
+        data: {
+            phone:document.getElementById("phone").value.trim(),
+            startTime:document.getElementById("startTime").value,//入住时间,
+            dayNum:checktype=='hour'?1:document.getElementById("days1").value,
+            typeIds:typeids.join(","),
+            orderId:yuyueData.id,
+            checkType:checktype,
+        },
+        type: "POST",
+        dataType: "JSON",
+        url: 'updatePrice/updatePrice',
+        beforeSend: function () {
+        },
+        complete: function () {
+            layer.close(index);
+        },
+        success: function (rs) {
+            layer.close(index);
+            if (!rs.success) {
+                layer.alert(rs.errMsg)
+            }else{
+                // debugger;
+                for(var i=0;i<sRooms.length;i++){
+                    for(var j=0;j<rs.length;j++){
+                        if(sRooms[i]['roomTypeId']== rs[j]['roomTypeId']){
+                            sRooms[i]['basicPrice'] = sRooms[i]['hourRoomPrice'] = rs[j]['price'];
                         }
                     }
                 }
-
-
-
-
-                if(!newdata['roomTypeId']&&!isNaN(newdata['roomType'])){
-                    newdata['roomTypeId'] =newdata['roomType'];
-                }
-                if(newdata['name']){
-                    newdata['roomTypeName'] = newdata['name']+"";
-                }
-                if(newdata['roomTypeName']){
-                    newdata['name'] = newdata['roomTypeName'] + "";
-                }
-
-                aaa1.push(newdata)
+                sRooms1 = JSON.parse(JSON.stringify(sRooms));
+                localStorage.modifyPrice = JSON.stringify(rs.data);
             }
         }
+    });
 
-        localStorage.modifyPrice = JSON.stringify(aaa1);
 
 
+
+    var dda = checktype=='hour'?1:document.getElementById("days1").value;
 
     layer.open({
         area: ['1000px', '420px'],
         type: 2,
-        content: "iframe_mondifyPrice.html?v=" + Date.now()+"&dayNumber="+$("#days1").val(),
+        content: "iframe_mondifyPrice.html?v=" + Date.now()+"&dayNumber=" + dda +"&orderId=" + yuyueData.id,
         title: "修改价格"
     })
 }

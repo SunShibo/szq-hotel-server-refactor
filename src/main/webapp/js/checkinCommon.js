@@ -21,6 +21,10 @@ function remarks(){
         layer.msg("您还没有勾选房间");
         return;
     }
+    if(!state.selRow[0]['roomId']){
+        layer.msg("您还没有选择房间");
+        return;
+    }
     layer.prompt({
         formType: 2,
         value: '',

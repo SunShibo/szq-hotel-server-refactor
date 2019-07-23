@@ -161,6 +161,13 @@
 						<input  style="display: inline-block;width: 50px" readonly type="number" name="dayNumber2" value="4" id="days2" autocomplete="off" class="layui-input"><span style="">小时</span>
 					</div>
 				</div>
+                <br>
+                <div class="layui-inline">
+                    <label class="layui-form-label">预约备注</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="subscribeRemark" id="subscribeRemark"  style="width: 515px;"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
 			</div>
 		</section>
 		<section class="border-e6 mg10 pd10">
@@ -170,7 +177,7 @@
 			<div>
 				<a class="layui-btn" onclick="selectRoom()">选房</a>
 				<a class="layui-btn" onclick="modifyPrice()">改价</a>
-				<a class="layui-btn" onclick="remarks()">批量备注</a>
+
 
 			</div>
 		</section>
@@ -240,6 +247,8 @@
                 d.checkOutTime = d.leaveDate1;//离店时间(小时房的话，把入住时间和小时数相加)
                 d.dayCount = d.dayNumber1//共住天数
 
+            }else{
+                d.checkOutTime =  DateToLStr(new Date(new Date(d.startTime).getTime() + 4 * 3600 * 1000));
             }
             d.orderType = "subscribe";//渠道
             d.IDNumberType = d.certificateId;//证件类型的id
@@ -266,9 +275,10 @@
                 sRooms[i]['roomTypeId'] = sRooms[i]['id']
 			}
             d.OrderChildJSON =  JSON.stringify(sRooms);
-				console.info(d)
-            // return false;
+
+
             var index = layer.load(1,{time:10*1000});
+
             $.ajax({
                 data: d,
                 type: "POST",
@@ -319,7 +329,7 @@
                     }
                 }
 
-                ,{field:'remark',  title: '备注',}
+                // ,{field:'remark',  title: '备注', type:'hide'}
                 // ,{title:'操作',toolbar:'#barDemo',width:160 }
             ]]
             ,page: false
@@ -328,6 +338,7 @@
     });
 
 
+    //选房
     function selectRoom(){
        	var _leaveTime;
 
@@ -375,6 +386,7 @@
 				})
             }else{
                 layer.confirm('选择房型将清除已选房间，继续选择？', function (index) {
+                    localStorage.modifyPrice = '';
                     sRooms = [];
                     customs = [];
                     calcPrice();
@@ -399,6 +411,7 @@
                 })
             }else{
                 layer.confirm('选择房间将清除已选房型，继续选择？', function (index) {
+                    localStorage.modifyPrice = '';
                     sRooms = [];
                     customs = [];
                     calcPrice();
@@ -414,7 +427,6 @@
             }
         });
     }
-
 
     function parSelectRoomType(v,t) {
         pickRoomTypeData = t;
@@ -432,18 +444,6 @@
         console.info(sRooms)
         calcPrice();
 
-    }
-
-    function removeRooms(id) {
-        var d = sRooms;
-        var dd = [];
-        for(var i=0;i<d.length;i++){
-            if(d[i].roomId!=id){
-                dd.push(d[i]) ;
-            }
-        }
-        sRooms=dd;
-        calcPrice();
     }
 
     //arr=已勾选数组，str=要修改的值
@@ -513,9 +513,9 @@
 
     }
 
-    //提交預約數據
+    //获取-提交预约数据
     function getFormTime(money,days,id) {
-        debugger;
+
         if(!days){
             days = 1;
         }
