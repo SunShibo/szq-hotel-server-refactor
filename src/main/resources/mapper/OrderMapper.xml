@@ -13,13 +13,13 @@
         check_out_time,day_count,phone,ID_number,
         ID_number_type,order_type,clerk_ordering_name,
         clerk_ordering_id,members_id,
-        memberId_or_organizationId,total_price,create_time,hotel_id,channel,OTA)
+        memberId_or_organizationId,total_price,create_time,hotel_id,channel,OTA,subscribe_remark)
         values
         (#{orderPlacer},#{orderNumber},#{checkType},
         #{checkTime},#{checkOutTime},#{dayCount},#{phone},#{IDNumber},
         #{IDNumberType},#{orderType},
         #{clerkOrderingName},#{clerkOrderingId},#{membersId},
-        #{memberIdOrOrganizationId},#{totalPrice},now(),#{hotelId},#{channel},#{OTA})
+        #{memberIdOrOrganizationId},#{totalPrice},now(),#{hotelId},#{channel},#{OTA},#{subscribeRemark})
     </insert>
 
     <!-- 添加子订单 -->
@@ -271,14 +271,17 @@
     <select id="getTimeOutOrder"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select *
         from hm_order_child
-        where order_state=#{orderState} and end_time &lt; now() and  practical_departure_time is null
+        where order_state=#{orderState}
+        and end_time &lt; now()
+        and  practical_departure_time is null
     </select>
 
     <!-- 查询入住超时的子订单  -->
     <select id="getTimeOutOrder2"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select *
         from hm_order_child
-        where order_state=#{orderState} and  practical_departure_time &lt; now()
+        where order_state=#{orderState}
+        and  practical_departure_time &lt; now()
     </select>
 
     <!--根据房间id查询预约中的子订单-->

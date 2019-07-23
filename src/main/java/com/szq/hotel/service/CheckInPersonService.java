@@ -58,9 +58,6 @@ public class CheckInPersonService {
 
     //根据订单查询入住人信息
     public List<CheckInPersonBO> getCheckInPersonById(Integer id,String status){
-        CommonBO x = new CommonBO();
-        x.setId(id);
-        x.setName(status);
-        return checkInPersonDAO.getCheckInPersonById(x);
+        return checkInPersonDAO.getCheckInPersonById(id,status);
     }
 }

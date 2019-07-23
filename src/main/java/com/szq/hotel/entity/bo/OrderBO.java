@@ -25,6 +25,7 @@ public class OrderBO extends BaseModel {
     private Integer hotelId;//酒店id
     private Integer membersId;//会员id
     private Integer memberIdOrOrganizationId;//会员id 合作机构id
+    private String subscribeRemark;//预约备注
     private BigDecimal totalPrice=new BigDecimal(0);//总房价
     private Date createTime;
     private Date updateTime;

@@ -68,8 +68,12 @@
     </update>
 
     <!-- 根据子订单id查询入住人-->
-    <select id="getCheckInPersonById" parameterType="com.szq.hotel.entity.bo.CommonBO"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO" >
+    <select id="getCheckInPersonById"  resultType="com.szq.hotel.entity.bo.CheckInPersonBO" >
        SELECT  *  FROM  hm_check_in_person
-      WHERE   (status = #{name} and  order_child_id=#{id} )
+       WHERE  order_child_id=#{id}
+       <if test="state!=null and state!=''">
+           and  status = #{status}
+       </if>
+       (    )
     </select>
 </mapper>

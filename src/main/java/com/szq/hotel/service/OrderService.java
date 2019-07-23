@@ -263,7 +263,7 @@ public class OrderService {
                     List<CheckInPersonBO> checkInPersonNewS = orderChildBONew.getCheckInPersonBOS();
                     if (checkInPersonNewS != null) {
                         //查询原来入住人员信息
-                        List<CheckInPersonBO> checkInPersonOldS = null;//checkInPersonDAO.getCheckInPersonById(orderChildOld.getId(), null);
+                        List<CheckInPersonBO> checkInPersonOldS = checkInPersonDAO.getCheckInPersonById(orderChildOld.getId(), null);
                         for (CheckInPersonBO newPerson : checkInPersonNewS) {
                             System.err.println("id===========" + newPerson.getId());
                             //新入住人直接add
@@ -367,8 +367,8 @@ public class OrderService {
                 totalPrice = totalPrice.add(money);
 
                 //查询入住人员信息
-                //List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(orderChild.getId(), null);
-                //orderChild.setCheckInPersonBOS(checkInPersonBOS);
+                List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(orderChild.getId(), null);
+                orderChild.setCheckInPersonBOS(checkInPersonBOS);
             }
 
         }
@@ -491,8 +491,8 @@ public class OrderService {
             return null;
         }
         //同住人信息
-        //List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getOrderChildId(), Constants.CHECKIN.getValue());
-        //checkInInfoResult.setCheckInPersonBOS(checkInPersonBOS);
+        List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getOrderChildId(), Constants.CHECKIN.getValue());
+        checkInInfoResult.setCheckInPersonBOS(checkInPersonBOS);
         //联房信息
         List<CheckRoomPersonResult> checkRoomPersonResults = orderDAO.getOrderRoomByCode(checkInInfoResult.getAlRoomCode());
         checkInInfoResult.setCheckRoomPersonResults(checkRoomPersonResults);
@@ -715,13 +715,7 @@ public class OrderService {
             backup.setRoomMajorState(Constants.TIMEOUT.getValue());
         }
 
-        //添加备份信息
-        backup.setEndTime(orderChildBO.getEndTime());
-        backup.setPracticalDepartureTime(orderChildBO.getPracticalDepartureTime());
-        backup.setId(orderChildId);
-        orderDAO.addOrderChildBackup(backup);
-        //修改子订单信息
-        orderDAO.updOrderChild(orderChildBO);
+
 
         List<CheckInPersonBO> checkInPersonBOS=checkInPersonService.getCheckInPersonById(orderChildBO.getId(),Constants.CHECKIN.getValue());
         CheckInPersonBO checkInPersonBO = checkInPersonBOS.get(0);
@@ -740,14 +734,21 @@ public class OrderService {
 
         //修改订单状态
         orderChildBO.setOrderState(Constants.notpaid.getValue());
-        backup.setOrderState(Constants.ADMISSIONS.getValue());
+        orderDAO.updOrderChild(orderChildBO);
 
         //修改房间状态
         Map<String, Object> map = new HashMap<String, Object>();
-        //之前的房间修改为脏房
         map.put("id", orderChildBO.getRoomId());
         map.put("state", Constants.DIRTY.getValue());
         roomService.updateroomMajorState(map);
+
+        //添加备份信息
+        backup.setOrderState(Constants.ADMISSIONS.getValue());
+        backup.setEndTime(orderChildBO.getEndTime());
+        backup.setPracticalDepartureTime(orderChildBO.getPracticalDepartureTime());
+        backup.setId(orderChildId);
+        orderDAO.addOrderChildBackup(backup);
+
         //修改入住人状态
         checkInPersonDAO.updPersonCheckOut(orderChildId, Constants.CHECKOUT.getValue());
     }
@@ -854,7 +855,7 @@ public class OrderService {
 
         //添加反向收银汇总
         OrderBO orderBO = orderDAO.getOrderById(orderChildBO.getOrderId());
-        List<CheckInPersonBO> checkInPersonBOS = null;//checkInPersonDAO.getCheckInPersonById(orderChildId, Constants.CHECKOUT.getValue());
+        List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(orderChildId, Constants.CHECKOUT.getValue());
         CheckInPersonBO checkInPersonBO = checkInPersonBOS.get(0);
         OrderChildBO orderChildResult = this.getOrderChildById(orderChildId);
         cashierSummaryService.addCheck(backup.getRoomRate().multiply(new BigDecimal(-1)), null, orderBO.getOrderNumber(), userId,
