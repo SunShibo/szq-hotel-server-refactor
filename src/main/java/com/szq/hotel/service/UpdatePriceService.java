@@ -113,20 +113,18 @@ public class UpdatePriceService {
         for (int i=0;i<addPriceBOS.size();i++){
             AddPriceBO addPriceBO = addPriceBOS.get(i);
             //查询这个订单下的同一个房型的子订单id
-            List<Integer> childId = updatePriceDAO.queryChildId(addPriceBO.getOrderId(), addPriceBO.getRoomTypeId());
-            for(Integer ids:childId){
-                //删除每日房价
-                log.info("delePrice...................................................................");
-                updatePriceDAO.delePrice(ids);
-                Map<String,Object> paramMap=new HashMap<String, Object>();
-                paramMap.put("childId",ids);
-                paramMap.put("list",addPriceBO.getPriceBOS());
-                //保存每日房价
-                log.info("addPrice.....................................................................");
-                updatePriceDAO.addPrice(paramMap);
-            }
-        }
+            log.info("delePrice...................................................................");
+            updatePriceDAO.delePrice(addPriceBO.getRoomTypeId());
 
+            Map<String,Object> paramMap=new HashMap<String, Object>();
+            paramMap.put("orderId",addPriceBO.getOrderId());
+            paramMap.put("list",addPriceBO.getPriceBOS());
+            paramMap.put("roomTypeId",addPriceBO.getRoomTypeId());
+            //保存每日房价
+            log.info("addPrice.....................................................................");
+            updatePriceDAO.addPrice(paramMap);
+
+        }
         log.info("end  addPrice......................................................................................");
     }
 

@@ -6,9 +6,7 @@
 <mapper namespace="com.szq.hotel.dao.UpdatePriceDAO">
 
     <select id="queryPrice"  resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO">
-        SELECT  *  FROM  hm_order der LEFT JOIN hm_order_child  child ON child.order_id  =der.id
-               LEFT JOIN   `hm_everyday_room_price`  price  ON price.order_child_id =child.id
-         WHERE  child.room_type_id =#{roomTypeId} AND der.id=#{orderId}
+        SELECT * FROM `hm_update_price`  WHERE  order_id=#{orderId}  AND   room_type_id=#{roomTypeId}
     </select>
 
     <select id="queryChildId"  resultType="java.lang.Integer">
@@ -17,17 +15,21 @@
     </select>
     
     <delete id="delePrice"  parameterType="java.lang.Integer" >
-        DELETE FROM hm_everyday_room_price  WHERE order_child_id=#{id}
+        DELETE FROM hm_update_price   WHERE room_type_id=#{id}
     </delete>
 
     <insert id="addPrice"  parameterType="java.util.Map">
-    INSERT INTO `hm_everyday_room_price` ( `order_child_id`, `time`, `money`)
-      VALUES
+
+
+        INSERT INTO `hotel`.`hm_update_price` ( `order_id`, `time`, `room_type_id`, `money`) VALUES
+
        <foreach collection="list"   item="item"  separator=","  >
            (
-            #{childId},
+            #{orderId},
             #{item.time},
+            #{roomTypeId},
             #{item.price}
+
            )
        </foreach>
     </insert>
