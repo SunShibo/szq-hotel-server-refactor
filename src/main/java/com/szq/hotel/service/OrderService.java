@@ -166,7 +166,7 @@ public class OrderService {
                 List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBO.getEverydayRoomPriceBOS();
                 if (everydayRoomPriceBOList != null) {
                     //删除旧每日房价
-                    everydayRoomPriceDAO.delEverydayRoomById(orderChildBO.getId());
+                    //everydayRoomPriceDAO.delEverydayRoomById(orderChildBO.getId());
                     for (EverydayRoomPriceBO roomPrice : everydayRoomPriceBOList) {
                         roomPrice.setOrderChildId(orderChildBO.getId());
                         everydayRoomPriceDAO.addEverydayRoomPrice(roomPrice);

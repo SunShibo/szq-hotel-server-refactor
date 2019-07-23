@@ -148,14 +148,11 @@
         on rh.hotel_id=h.id
         where  rh.role_id=#{roleId} and h.status='yes'
     </select>
-
-
-
     <!--根据 用户id\角色id\用户名 查询用户信息-->
     <select id="getAdminByCond" parameterType="java.util.Map"  resultType="com.szq.hotel.entity.bo.AdminBO">
         select hm_admin.id,`name`,mobile,role_id,role_name,hm_admin.create_time
         from hm_admin,hm_role
-        where role_id=role.id
+        where role_id=hm_role.id
         <if test="userId!=null and userId!=''">
            and admin.id=#{userId}
         </if>
