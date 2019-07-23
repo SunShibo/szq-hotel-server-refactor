@@ -15,12 +15,16 @@
     </insert>
     <!--积分明细-->
     <select id="getIntegralRecord" resultType="com.szq.hotel.entity.bo.IntegralRecordBO" parameterType="java.util.Map">
-      SELECT * FROM `hm_integral_record` WHERE check_in_member_id = #{memberId}
+        SELECT re.*,ad.`name` FROM `hm_integral_record` re
+        LEFT JOIN hm_admin ad ON re.create_user_id = ad.id
+        WHERE re.check_in_member_id = #{memberId}
       <include refid="limit"/>
     </select>
     <!--积分明细数量-->
     <select id="getIntegralRecordCount"  parameterType="java.util.Map" resultType="java.lang.Integer">
-        SELECT COUNT(id) FROM `hm_integral_record` WHERE check_in_member_id = #{memberId}
+        SELECT COUNT(re.id) FROM `hm_integral_record` re
+        LEFT JOIN hm_admin ad ON re.create_user_id = ad.id
+        WHERE re.check_in_member_id = #{memberId}
     </select>
     <!--分页查询-->
     <sql id="limit">
