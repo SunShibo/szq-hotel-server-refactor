@@ -119,7 +119,8 @@ public class OrderRecordService {
      * @return
      */
     public List<String> queryPayType(List<Integer> list) {
-        return  orderRecordDAO.queryPayType(list);
+        Integer id = orderRecordDAO.queryChildIdByRecordId(list.get(0));
+        return  orderRecordDAO.queryPayType(id);
     }
 
     /**

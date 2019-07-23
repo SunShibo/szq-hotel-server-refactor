@@ -1,12 +1,17 @@
 package com.szq.hotel.job;
 
-import com.szq.hotel.service.OrderService;
-import com.szq.hotel.service.RoomService;
+import com.szq.hotel.common.constants.Constants;
+import com.szq.hotel.entity.bo.CommonBO;
+import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
+import com.szq.hotel.entity.bo.RoomRateBO;
+import com.szq.hotel.service.*;
+import com.szq.hotel.util.DateUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @Component("CheckOrderState")
 public class CheckOrderState {
@@ -15,6 +20,14 @@ public class CheckOrderState {
     OrderService orderService;
     @Resource
     RoomService roomService;
+    @Resource
+    ChildOrderService childOrderService;
+    @Resource
+    OrderRecordService orderRecordService;
+    @Resource
+    CashierSummaryService cashierSummaryService;
+
+
 
     int count = 0;
     @Scheduled(cron = "0 0/5 * * * *")    // 13.15 启动项目
@@ -39,14 +52,27 @@ public class CheckOrderState {
      */
     @Scheduled(cron = "0 0 4 * * *")    // 13.15 启动项目
     public void nightAuditor() {
-        //查询所有子订单  在住中的...
 
-        //判断6点来的还是6点后来的
-        //查出所有符合日期之前的没有滚过的房费
-
-        //查出没有滚过房费的房费
-
-        //  滚动房费生成记录 生成报表
+            List<RoomRateBO> roomRateBOS = childOrderService.queryOrderChild();
+            for(int i=0;i<roomRateBOS.size();i++){
+                RoomRateBO roomRateBO = roomRateBOS.get(i);
+                List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(), DateUtils.getFourPointsStr());
+                if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
+                    for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){
+                        //生成房费
+                        childOrderService.increaseRoomRate(priceBO.getOrderChildId(),priceBO.getMoney());
+                        orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime())+"房费",
+                                null,priceBO.getMoney(), Constants.ROOMRATE.getValue(),1,"1天", Constants.NO.getValue());
+                        //把夜审状态修改回去
+                        childOrderService.updateRoomPrice(priceBO.getId());
+                        //生成报表
+                        CommonBO commonBO = childOrderService.queryChildName(priceBO.getOrderChildId());
+                        cashierSummaryService.addRoomRate(priceBO.getMoney(),roomRateBO.getOrderNumber(),1,commonBO.getName(),
+                                roomRateBO.getOTA(),roomRateBO.getChannel(),roomRateBO.getPassengerSource(),roomRateBO.getRoomName(),
+                                roomRateBO.getRoomTypeName(),roomRateBO.getHotelId());
+                    }
+            }
+        }
     }
 
 

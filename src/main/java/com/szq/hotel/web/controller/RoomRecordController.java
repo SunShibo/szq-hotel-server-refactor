@@ -42,6 +42,14 @@ public class RoomRecordController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
+            //参数验证
+            if (id == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
             Map<String,Object> map=new HashMap<String, Object>();
             map.put("id",id);
 
