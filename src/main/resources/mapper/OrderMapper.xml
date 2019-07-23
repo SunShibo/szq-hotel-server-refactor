@@ -510,6 +510,29 @@
         group by hm_order_child.id
     </select>
 
+    <!--根据时间获取营收信息-->
+    <select id="getIncome" resultType="com.szq.hotel.entity.bo.IncomeBO">
+        select
+        sum(room_rate) as roomRate,
+        sum(timeout_room_rate) as timeoutRoomRate,
+        sum(room_rate_adjustment) as roomRateAdjustment,
+        sum(other_rate) as otherRate,
+        sum(commodity) as commodity,
+        sum(compensation) as compensation,
+        sum(member_card_rate) as memberCardRate,
+        sum(debt_sum) as debtSum,
+        sum(cash) as cash,
+        sum(bank_card) as bankCard,
+        sum(wechat) as wechat,
+        sum(alipay) as alipay,
+        sum(online_pay) as onlinePay,
+        sum(credit_sum) as creditSum
+        from hm_operating_income
+        where hotel_id=#{hotelId}
+        and night_auditor_time &gt;=#{afterTime}
+        and night_auditor_time &lt;=#{beforeTime}
+    </select>
+
     <!--找查首日房价-->
     <select id="queryUnitPrice" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
         SELECT  money  FROM `hm_everyday_room_price` where order_child_id =#{id}  limit 0,1

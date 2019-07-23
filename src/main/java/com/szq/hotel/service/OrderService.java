@@ -816,6 +816,12 @@ public class OrderService {
         return orderDAO.getOrderChildBackup(id);
     }
 
+    //获取营收入报表
+    public void getIncome(){
+
+    }
+
+
     /**
      * 订单列表
      *
