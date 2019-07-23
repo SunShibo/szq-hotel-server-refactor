@@ -425,21 +425,48 @@
     <!--#{checkTime} [NOT]BETWEEN hm_room.lock_room_start_time AND hm_room.lock_room_end_time-->
     <!--hm_room.lock_room_end_time &lt; #{checkTime} &gt; hm_room.lock_room_start_time-->
     <select id="queryOc" resultType="com.szq.hotel.entity.bo.OcBO">
-        SELECT * FROM hm_order_child WHERE room_id IN
+        SELECT
+        id,
+        order_id,
+        start_time,
+        end_time,
+        pay_cash_num,
+        other_pay_num,
+        room_rate,
+        other_rate,
+        timeout_rate,
+        free_rate_num,
+        order_state,
+        practical_departure_time,
+        remark,
+        room_id as roomId,
+        room_type_id,
+        al_room_code,
+        night_auditor_state,
+        print_state,
+        main,
+        update_time
+        FROM hm_order_child WHERE room_id IN
         <foreach item="item" collection="id" open="(" separator="," close=")">
             #{item}
         </foreach>
         <if test="list != null and list.size > 0">
             and order_state IN
-            <foreach item="item" collection="id" open="(" separator="," close=")">
+            <foreach item="item" collection="list" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
         having
-        (hm_order_child.start_time BETWEEN #{checkTime} AND #{endTime})
-        OR (#{checkTime} between hm_order_child.start_time AND hm_order_child.end_time)
+        (start_time BETWEEN DATE_ADD( #{checkTime},
+        INTERVAL 1 SECOND)  AND   DATE_SUB( #{endTime}, INTERVAL 1 SECOND))
+        OR (DATE_ADD(#{checkTime},
+        INTERVAL 1 SECOND) BETWEEN start_time AND end_time)
     </select>
 
+    <!--
+          (hm_order_child.start_time BETWEEN #{checkTime} AND #{endTime})
+        OR (#{checkTime} between hm_order_child.start_time AND hm_order_child.end_time)
+        -->
 
     <select id="queryRt" resultType="com.szq.hotel.entity.bo.RtBO">
     SELECT room_type_name,id,hotel_id,basic_price, hour_room_price FROM hm_room_type WHERE hotel_id  = #{hotelId}  AND `show` = 'yes'
@@ -542,14 +569,14 @@
   </update>
 
 
-    <select id="queryInthe" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
-  SELECT *  FROM hotel.hm_room
-  WHERE
- room_type_id = #{roomTypeId}
-and hotel_id = #{hotelId} and
- room_major_state IN
-    (#{inthe},#{timeout})
-</select>
+     <select id="queryInthe" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.RmBO">
+      SELECT *  FROM hotel.hm_room
+      WHERE
+     room_type_id = #{roomTypeId}
+    and hotel_id = #{hotelId} and
+     room_major_state IN
+        (#{inthe},#{timeout})
+     </select>
 
     <select id="queryRoomFx" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RmBO">
     SELECT hm_room.*,hm_floor.name AS floorName , hm_hotel.name AS hotelName,hm_room_type.room_type_name as roomType

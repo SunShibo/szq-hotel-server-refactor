@@ -10,6 +10,7 @@ public class PriceBO extends BaseModel {
     private BigDecimal price;
 
 
+
     public Date getTime() {
         return time;
     }

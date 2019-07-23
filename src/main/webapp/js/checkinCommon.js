@@ -80,7 +80,10 @@ function getModifyPriceData(days) {
     }
 
     var time = $("#startTime").val();
-
+    if(!time){
+        time = DateToLStr(new Date()).split(" ")[0]
+    }
+    // debugger;
     if(new Date(time).getHours()<6){
         //如果6点之前，时间取前一天
         time = addDate(new Date(time),-1)

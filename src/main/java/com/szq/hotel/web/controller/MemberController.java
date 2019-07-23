@@ -552,7 +552,7 @@ public class MemberController extends BaseCotroller {
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
-            log.error("importMemberCardException", e);
+            log.error("importMemberException", e);
         }
     }
 
@@ -591,7 +591,7 @@ public class MemberController extends BaseCotroller {
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
-            log.error("exportMemberCardException", e);
+            log.error("exportMemberException", e);
         }
     }
 

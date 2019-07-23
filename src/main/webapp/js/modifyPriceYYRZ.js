@@ -15,10 +15,17 @@ function modifyPrice() {
 
     var typeids = [];
     for(var i=0;i<sRooms.length;i++){
-        if(typeids.indexOf(sRooms[i]['roomTypeId'])==-1){
-            typeids.push(sRooms[i]['roomTypeId'])
+        if(sRooms[i]['roomTypeId']){
+            if(typeids.indexOf(sRooms[i]['roomTypeId']+"")==-1){
+                typeids.push(sRooms[i]['roomTypeId']+"")
+            }
+        }else {
+            if(typeids.indexOf(sRooms[i]['roomType']+"")==-1){
+                typeids.push(sRooms[i]['roomType']+"")
+            }
         }
     }
+    console.log(typeids)
     var index = layer.load(1,{time:10*1000});
     $.ajax({
         data: {
@@ -32,24 +39,30 @@ function modifyPrice() {
         type: "POST",
         dataType: "JSON",
         url: 'updatePrice/updatePrice',
-        beforeSend: function () {
-        },
         complete: function () {
             layer.close(index);
         },
         success: function (rs) {
+
             layer.close(index);
             if (!rs.success) {
                 layer.alert(rs.errMsg)
             }else{
-                // debugger;
                 for(var i=0;i<sRooms.length;i++){
-                    for(var j=0;j<rs.length;j++){
-                        if(sRooms[i]['roomTypeId']== rs[j]['roomTypeId']){
-                            sRooms[i]['basicPrice'] = sRooms[i]['hourRoomPrice'] = rs[j]['price'];
+                    for(var j=0;j<rs.data.length;j++){
+                        if(sRooms[i]['roomTypeId']){
+                            if(sRooms[i]['roomTypeId']== rs.data[j]['roomTypeId']){
+                                sRooms[i]['basicPrice'] = sRooms[i]['hourRoomPrice'] = rs.data[j]['price'];
+                            }
+                        }else{
+                            if(sRooms[i]['roomType']== rs.data[j]['roomTypeId']){
+                                sRooms[i]['basicPrice'] = sRooms[i]['hourRoomPrice'] = rs.data[j]['price'];
+                            }
                         }
+
                     }
                 }
+
                 sRooms1 = JSON.parse(JSON.stringify(sRooms));
                 localStorage.modifyPrice = JSON.stringify(rs.data);
             }
@@ -60,11 +73,11 @@ function modifyPrice() {
 
 
     var dda = checktype=='hour'?1:document.getElementById("days1").value;
-
+    dda == 0 ? dda = 1 : dda = dda;
     layer.open({
         area: ['1000px', '420px'],
         type: 2,
-        content: "iframe_mondifyPrice.html?v=" + Date.now()+"&dayNumber=" + dda +"&orderId=" + yuyueData.id,
+        content: "iframe_modifyPriceYYRZ.html?v=" + Date.now()+"&dayNumber=" + dda +"&orderId=" + yuyueData.id,
         title: "修改价格"
     })
 }

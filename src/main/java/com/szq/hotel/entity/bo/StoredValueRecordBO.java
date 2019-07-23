@@ -16,6 +16,15 @@ public class StoredValueRecordBO extends BaseModel {
     private Integer createUserId; //操作人id
     private Date createTime; //创建时间
     private String remark; //备注
+    private String name;//收银员
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;

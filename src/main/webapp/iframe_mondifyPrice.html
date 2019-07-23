@@ -232,10 +232,6 @@
   	      var _arr = [];
 			var updatePrice = [];
             rsd.map(function (c,i) {
-
-
-// debugger;
-
                 var _o={
                     roomTypeId:c['roomTypeId'],
 					roomTypeName:c['roomTypeName'],
@@ -245,7 +241,6 @@
 
                 try{
 					$(".rti"+c['roomTypeId']).each(function () {
-// debugger;
 						_o[this.dataset['date']]=this.value;
 						_o['y'+this.dataset['date']] = this.dataset['price'];
 					})

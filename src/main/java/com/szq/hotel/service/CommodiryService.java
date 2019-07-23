@@ -49,7 +49,7 @@ public class CommodiryService {
         if(payType.equals(Constants.STORED.getValue())){
             memberService.storedValuePay(certificateNumber,money,info,"储值支付",new BigDecimal("0"),userId);
             MemberBO memberBO = memberService.selectMemberByCerNumber(certificateNumber);
-            memberService.accountIntegral( memberBO.getMemberCardId(),money,info,userId);
+            memberService.accountIntegral( memberBO.getId(),money,info,userId);
         }
         log.info("end  addFloor..........................");
         return commodityBO.getId();
