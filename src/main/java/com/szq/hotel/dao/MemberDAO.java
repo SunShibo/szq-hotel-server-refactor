@@ -1,9 +1,6 @@
 package com.szq.hotel.dao;
 
-import com.szq.hotel.entity.bo.DictionaryValueBO;
-import com.szq.hotel.entity.bo.ExportMemberResultBO;
-import com.szq.hotel.entity.bo.MemberBO;
-import com.szq.hotel.entity.bo.MemberResultBO;
+import com.szq.hotel.entity.bo.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
@@ -108,4 +105,8 @@ public interface MemberDAO {
     String getValue(Integer valueId);
     //通过value查询证件类型id
     Integer getValueId(String value);
+    //查询会员消费明细
+    List<ConsumptionRecordBO> getConsumptionRecord(Map<String,Object> map);
+    //查询会员消费明细数量
+    Integer getConsumptionRecordCount(Map<String,Object> map);
 }

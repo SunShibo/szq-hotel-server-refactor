@@ -574,4 +574,13 @@ public class MemberService {
     public String getValue(Integer valueId){
         return memberDAO.getValue(valueId);
     }
+
+    //查询会员消费明细
+    public List<ConsumptionRecordBO> getConsumptionRecord(Map<String,Object> map){
+        return memberDAO.getConsumptionRecord(map);
+    }
+    //查询会员消费明细数量
+    public Integer getConsumptionRecordCount(Map<String,Object> map){
+        return memberDAO.getConsumptionRecordCount(map);
+    }
 }
