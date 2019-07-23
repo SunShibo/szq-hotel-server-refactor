@@ -9,24 +9,14 @@ import com.szq.hotel.entity.dto.RoomStateDTO;
 import com.szq.hotel.entity.dto.RoomTypeCountDTO;
 import com.szq.hotel.entity.dto.XxDTO;
 import com.szq.hotel.util.DateUtils;
-import com.szq.hotel.web.controller.RoomController;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.ibatis.annotations.Param;
-import org.apache.velocity.runtime.log.LogChute;
-import org.omg.CORBA.OBJ_ADAPTER;
-import org.redisson.core.RList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.awt.geom.AreaOp;
 
 import javax.annotation.Resource;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMResult;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -125,11 +115,14 @@ public class RoomService {
             }
         }
         log.info("获取符合条件房间的id:{}", ls);
-        List<OcBO>   l = new ArrayList<OcBO>();
+        log.info("时间dt:{}",dt);
+        log.info("时间et:{}",et);
+        log.info("ll:{}",ll);
+        List<OcBO> l = roomDAO.queryOc(ls, dt, et, ll);
         //根据房间id获取符合条件的订单
-        if (!CollectionUtils.isEmpty(ls)) {
+       /* if (!CollectionUtils.isEmpty(ls)) {
              l = roomDAO.queryOc(ls, dt, et, ll);
-        }
+        }*/
 
      /*   List<OcBO>  l = roomDAO.queryOc(ls, dt, et, ll);*/
         log.info("根据房间id获取符合条件的订单:{}",l);
@@ -577,7 +570,7 @@ public class RoomService {
     }
 
 
-    private boolean isDate(Date leftStartDate, Date leftEndDate, Date rightStartDate, Date rightEndDate) {
+    public boolean isDate(Date leftStartDate, Date leftEndDate, Date rightStartDate, Date rightEndDate) {
         /*判断*/
         if (((leftStartDate.getTime() >= rightStartDate.getTime())
                 && leftStartDate.getTime() < rightEndDate.getTime())
@@ -594,6 +587,8 @@ public class RoomService {
         return false;
     }
 
+
+
     /**
      * 查询某一时间段下每天剩下多少房
      *
@@ -608,8 +603,8 @@ public class RoomService {
         List<String> dates = querSeTime(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
         log.info("两段时间区间的每一天日期:{}", dates);
 
-        String start = checkTime + " 14:00:01";
-        String end = checkTime + " 13:59:59";
+        String start = checkTime + " 14:00:00";
+        String end = checkTime + " 14:00:00";
 
         log.info("checkTime:{}", checkTime);
         log.info("endTime:{}", endTime);

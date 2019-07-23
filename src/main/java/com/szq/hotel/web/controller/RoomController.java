@@ -23,6 +23,8 @@ import redis.clients.jedis.Jedis;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -736,11 +738,11 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/queryRoomFx")
     public void queryRoomFx(HttpServletRequest request, HttpServletResponse response, Integer orderId) {
         log.info("queryRoomFx************************************************************************");
-        log.info("orderId:{}",orderId);
+        log.info("orderId:{}", orderId);
 
         AdminBO loginAdmin = super.getLoginAdmin(request);
 
-        log.info("loginAdmin:{}",loginAdmin);
+        log.info("loginAdmin:{}", loginAdmin);
 
         if (loginAdmin == null) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
@@ -760,5 +762,13 @@ public class RoomController extends BaseCotroller {
         super.safeJsonPrint(response, result);
         log.info("return:{}", result);
         return;
+    }
+
+    @RequestMapping("/test")
+    public void test() throws Exception {
+        boolean date = roomService.isDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 06:00:00"), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-02 06:00:00"),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-02 06:00:00"),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-03 05:59:59"));
+        System.out.println(date);
+
     }
 }
