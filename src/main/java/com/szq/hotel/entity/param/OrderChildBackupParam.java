@@ -1,5 +1,7 @@
 package com.szq.hotel.entity.param;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -10,7 +12,9 @@ public class OrderChildBackupParam {
     private BigDecimal otherRate;//其他费用 超时费存这就行
     private String orderState;//订单状态
     private String roomMajorState;//房态
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;//预离店时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date practicalDepartureTime;//实际离店时间
 
     public Date getEndTime() {

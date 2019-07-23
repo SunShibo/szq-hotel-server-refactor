@@ -13,6 +13,7 @@ import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -158,6 +159,7 @@ public class OrderService {
                 }
                 if (everydayRoomPriceBOList != null) {
                     for (EverydayRoomPriceBO roomPrice : everydayRoomPriceBOList) {
+                        roomPrice.setOrderChildId(orderChildBO.getId());
                         everydayRoomPriceDAO.addEverydayRoomPrice(roomPrice);
                     }
                 }
@@ -166,13 +168,16 @@ public class OrderService {
                 //修改房价信息
                 List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBO.getEverydayRoomPriceBOS();
                 if (everydayRoomPriceBOList != null) {
+                    //删除旧每日房价
+                    everydayRoomPriceDAO.delEverydayRoomById(orderChildBO.getId());
                     for (EverydayRoomPriceBO roomPrice : everydayRoomPriceBOList) {
-                        everydayRoomPriceDAO.updEverydayRoomPrice(roomPrice);
+                        roomPrice.setOrderChildId(orderChildBO.getId());
+                        everydayRoomPriceDAO.addEverydayRoomPrice(roomPrice);
                     }
                 }
 
-                List<CheckInPersonBO> checkInPersonNewS = orderChildBO.getCheckInPersonBOS();
-                for (CheckInPersonBO newPerson : checkInPersonNewS) {
+                List<CheckInPersonBO> checkInPersonNew = orderChildBO.getCheckInPersonBOS();
+                for (CheckInPersonBO newPerson : checkInPersonNew) {
                     //新入住人直接add
                     newPerson.setOrderChildId(orderChildResult.getId());
                     newPerson.setStatus(Constants.CHECKIN.getValue());
@@ -438,7 +443,6 @@ public class OrderService {
     public OrderChildBO getOrderChildById(Integer orderChildId) {
         try {
             OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChildId);
-            //OrderBO orderBO=orderDAO.getOrderById(orderChildBO.getOrderId());
             //获取当前
             Date currentTime = new Date();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -457,6 +461,10 @@ public class OrderService {
                     orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()));
                 }
             }
+
+            //计算房费
+
+
             return orderChildBO;
         } catch (ParseException e) {
             e.printStackTrace();
@@ -688,10 +696,23 @@ public class OrderService {
         c0.set(Calendar.MINUTE, 0);
         c0.set(Calendar.SECOND, 0);
         Date m4 = c0.getTime();
+        //获取今天凌晨六点
+        Calendar c6 = Calendar.getInstance();
+        c0.set(Calendar.HOUR_OF_DAY, 06);
+        c0.set(Calendar.MINUTE, 0);
+        c0.set(Calendar.SECOND, 0);
+        Date m6 = c0.getTime();
+        //获取下午两点
+        Calendar c2 = Calendar.getInstance();
+        c0.set(Calendar.HOUR_OF_DAY, 14);
+        c0.set(Calendar.MINUTE, 0);
+        c0.set(Calendar.SECOND, 0);
+        Date m2 = c0.getTime();
+
         //订单信息
         OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChildId);
-        //判断当天房费滚没滚 有可能当天入住 当天就退房了
-        if (ymd.format(currentTimeDate).equals(ymd.format(orderChildBO.getStartTime()))) {
+        //六点后入住 判断当天房费滚没滚 有可能当天入住 当天就退房了
+        if (orderChildBO.getStartTime().getTime() > m6.getTime() &&ymd.format(currentTimeDate).equals(ymd.format(orderChildBO.getStartTime()))) {
             this.addOrderChildRecordAndRoomRate(backup, currentTimeDate, orderChildId, userId);
         }
         //入住时间不是当天的凌晨四点以前 并且 退房时间小于凌晨四点没有夜审，所以滚出退房这天的房费
@@ -708,7 +729,7 @@ public class OrderService {
             Date endDate = ymd.parse(ymd.format(endTime));
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
             //判断是否提前退房
-            if (currentDate.compareTo(endDate) < 0 && everydayRoomPriceBOList.size() > 1) {
+            if (currentDate.compareTo(endDate) < 0 && everydayRoomPriceBOList.size() > 1&&currentDate.compareTo(m2) > 0 ) {
                 this.addOrderChildRecordAndRoomRate2(backup, currentTime, orderChildId, userId);
             }
             backup.setRoomMajorState(Constants.VACANT.getValue());
@@ -735,8 +756,20 @@ public class OrderService {
                 orderBO.getChannel(), orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                 "超时费", hotelId);
 
+
+
+        //添加备份信息
+        backup.setOrderState(Constants.ADMISSIONS.getValue());
+        System.err.println(orderChildBO.getEndTime());
+        backup.setEndTime(orderChildBO.getEndTime());
+        backup.setPracticalDepartureTime(orderChildBO.getPracticalDepartureTime());
+        backup.setId(orderChildId);
+        orderDAO.addOrderChildBackup(backup);
+
         //修改订单状态
         orderChildBO.setOrderState(Constants.notpaid.getValue());
+        SimpleDateFormat dateTimeFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        orderChildBO.setPracticalDepartureTime(dateTimeFormat.parse(dateTimeFormat.format(new Date())));
         orderDAO.updOrderChild(orderChildBO);
 
         //修改房间状态
@@ -744,13 +777,6 @@ public class OrderService {
         map.put("id", orderChildBO.getRoomId());
         map.put("state", Constants.DIRTY.getValue());
         roomService.updateroomMajorState(map);
-
-        //添加备份信息
-        backup.setOrderState(Constants.ADMISSIONS.getValue());
-        backup.setEndTime(orderChildBO.getEndTime());
-        backup.setPracticalDepartureTime(orderChildBO.getPracticalDepartureTime());
-        backup.setId(orderChildId);
-        orderDAO.addOrderChildBackup(backup);
 
         //修改入住人状态
         checkInPersonDAO.updPersonCheckOut(orderChildId, Constants.CHECKOUT.getValue());
@@ -907,6 +933,10 @@ public class OrderService {
         }
     }
 
+    //查询备份信息
+    public OrderChildBackupParam getOrderChildBackup(Integer id){
+        return orderDAO.getOrderChildBackup(id);
+    }
 
     /**
      * 订单列表

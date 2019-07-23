@@ -3,6 +3,7 @@ package com.szq.hotel.web.controller;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
+import com.szq.hotel.entity.param.OrderChildBackupParam;
 import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.OrderResult;
@@ -97,8 +98,9 @@ public class OrderController extends BaseCotroller {
                 }
 
                 for (OrderChildBO order : list) {
+                    System.err.println(order.getRoomId());
                     RoomBO roomBO = roomService.getRoomBo(order.getRoomId());
-                    if(roomBO==null){
+                    if(roomBO==null||roomBO.getId()==null){
                         result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"),"房间异常") ;
                         super.safeJsonPrint(response, result);
                         log.info("result{}", result);
@@ -789,6 +791,15 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
+            //验证是否已经退房
+            OrderChildBackupParam orderChildBackupParam = orderService.getOrderChildBackup(orderChildId);
+            if(orderChildBackupParam!=null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000095" , "不能重复退房")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+
             OrderChildBO orderChildBO=orderService.getOrderChildById(orderChildId);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderChildBO)) ;
             super.safeJsonPrint(response, result);
@@ -823,6 +834,8 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
+
+
             orderService.checkOut(orderChildId,money,userInfo.getId(),userInfo.getHotelId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
             super.safeJsonPrint(response, result);
@@ -857,6 +870,15 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
+            //验证是否已经退房
+            OrderChildBackupParam orderChildBackupParam = orderService.getOrderChildBackup(orderChildId);
+            if(orderChildBackupParam==null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000096" , "该房间未退房")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+
             orderService.checkOutRollback(orderChildId,userInfo.getId(),userInfo.getHotelId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
             super.safeJsonPrint(response, result);

@@ -43,10 +43,9 @@
     <insert id="addOrderChildBackup" parameterType="com.szq.hotel.entity.param.OrderChildBackupParam">
         insert into hm_order_child_backup
         <set>
-            <if test="!=null and !=''">
+            <if test="id!=null and id!=''">
                 id=#{id},
             </if>
-
             <if test="roomRate!=null and roomRate!=''">
                 room_rate=#{roomRate},
             </if>
