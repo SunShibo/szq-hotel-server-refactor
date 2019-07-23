@@ -664,9 +664,10 @@ function roomMajorState(room) {
 }
 
 //订单状态
-function orderState(orderState) {
+function queryOrderState(orderState) {
     switch (orderState) {
         case '':
+            return '';
         case 'reservation':
             return '预约中';
         case 'notpay':

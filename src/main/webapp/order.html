@@ -286,7 +286,7 @@
                 , {field: 'remark', title: '备注', width: 100, align: 'center'}
                 , {
                     field: 'orderState', title: '订单状态', width: 120, align: 'center', templet: function (data) {
-                        return orderState(data.orderState);
+                        return queryOrderState(data.orderState);
                     }
                 }
                 , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barDemo'}

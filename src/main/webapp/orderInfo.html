@@ -290,7 +290,7 @@
                         roomRate: data.roomRate,  //房费
                         otherRate: data.otherRate,  //其他费用
                         freeRateNum: data.freeRateNum //免单金额
-                    }, roomMajorState(data.roomMajorState), orderState(data.orderState));
+                    }, roomMajorState(data.roomMajorState), queryOrderState(data.orderState));
                     orderInfo.reload({data: data.orderRecoredBOS});
                 }
             })
