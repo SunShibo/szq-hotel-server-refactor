@@ -1,79 +1,60 @@
-//预约房间修改价格
+//直接入住房间修改价格
 clearModifyPrice();
 function modifyPrice() {
-
+    var price = '';
     if(sRooms.length==0){
         return;
     }
-    if($("input[name='checkType']:checked").val()!="day"){
+    if($("input[name='checkType']:checked").val() =="free"){
         return ;
     }
-
-
-
-        aaa1 = [];
+    if($("input[name='checkType']:checked").val() =="day"){
+        price = 'basicPrice';
+    }
+    if($("input[name='checkType']:checked").val() =="hour"){
+        price = 'hourRoomPrice';
+    }
+    var aaa1 = [];//处理过改价格用的房间数据
+    var dayss = $("#days1").val();//几天
+    if($("input[name='checkType']:checked").val()=="hour"){
+        dayss = 1;//几天
+    }
+    if(localStorage.modifyPrice==''){
         var temp = [];
         var days = getModifyPriceData($("#days1").val());
+
         for(var i=0;i<sRooms.length;i++){
+            if(!sRooms[i]['yhourRoomPrice']){
+                sRooms[i]['yhourRoomPrice'] = sRooms[i]['hourRoomPrice'] +'';
+            }
+            if(!sRooms[i]['ybasicPrice']){
+                sRooms[i]['ybasicPrice'] = sRooms[i]['basicPrice'] +'';
+            }
+            var yuanjia = 0;//原价
+            if($("input[name='checkType']:checked").val() =="day"){
+                yuanjia = sRooms[i]['ybasicPrice'] + '';
+            }else if($("input[name='checkType']:checked").val() =="hour"){
+                yuanjia = sRooms[i]['yhourRoomPrice'] + '';
+            }
 
-            if(temp.indexOf(sRooms[i].roomType) == -1 ){
-                //房間預約的id是房型id，這裡是預約入住，用這個 roomType
-                temp.push(sRooms[i].roomType);
+            if(temp.indexOf(sRooms[i].id) == -1 ){
+                temp.push(sRooms[i].id);
                 var newdata = JSON.parse(JSON.stringify(sRooms[i]));
-                for(var j=0;j<days.length;j++) {
-                    var yudingPrice = yuyueData.orderChildBOS;
-                    var flag = true;
-                    for (var k = 0; k < yudingPrice.length; k++) {
+                for(var j=0;j<days.length;j++){
+                    newdata[days[j]['time']] = newdata[price];
+                    newdata['roomTypeId'] = newdata['id'];
+                    newdata['roomTypeName'] = newdata['name'];
 
-                        if (yudingPrice[k]['roomTypeId'] == sRooms[i].roomType
-                            || yudingPrice[k]['roomTypeName'] == sRooms[i].roomType) {
-                            var ppp = yudingPrice[k]['everydayRoomPriceBOS'];
-                            for (var l = 0; l < ppp.length; l++) {
-                                // debugger;
-                                if (DateToLStr(new Date(ppp[l]['time']['time'])).indexOf(days[j]['time']) > -1) {
-                                    newdata[days[j]['time']] = ppp[l]['money'];
-                                    newdata['y' + days[j]['time']] = ppp[l]['money'];
-                                    break;
-                                }
-                            }
-                            flag = false;
-                        }
-                    }
-
-                    if(flag){
-                        //这种情况下，预定的房型里面没有该房型
-                        if($("input[name='checkType']:checked").val()=="hour"){
-                            //小时房
-                            newdata[days[j]['time']] = newdata['hourRoomPrice'];
-                            newdata['y' + days[j]['time']] = newdata['hourRoomPrice'];
-                        }else{
-                            //全天房
-                            newdata[days[j]['time']] = newdata['basicPrice'];
-                            newdata['y' + days[j]['time']] = newdata['basicPrice'];
-                        }
+                    if( !newdata['y'+days[j]['time']]){
+                        newdata['y'+days[j]['time']] = yuanjia;
                     }
                 }
-
-
-
-
-                if(!newdata['roomTypeId']&&!isNaN(newdata['roomType'])){
-                    newdata['roomTypeId'] =newdata['roomType'];
-                }
-                if(newdata['name']){
-                    newdata['roomTypeName'] = newdata['name']+"";
-                }
-                if(newdata['roomTypeName']){
-                    newdata['name'] = newdata['roomTypeName'] + "";
-                }
-
                 aaa1.push(newdata)
             }
         }
 
         localStorage.modifyPrice = JSON.stringify(aaa1);
-
-
+    }
 
     layer.open({
         area: ['1000px', '420px'],

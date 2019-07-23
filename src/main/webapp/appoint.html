@@ -291,7 +291,7 @@
                     arr[i]['roomTypeId'] = arr[i]['roomType'];
                 }
                 arr[i]['checkInPersonBOS'] = getPersonData(arr[i]['roomId']);
-                arr[i]['everydayRoomPriceBOS'] = getRoomPriceData(par);
+                // arr[i]['everydayRoomPriceBOS'] = getRoomPriceData(par);
             }
             return arr;
 
@@ -314,10 +314,12 @@
             }
 
 
-                if(o[0]['roomId'] == 0 ){//预定的是房型
+                if(o[0]['roomId'] == 0 ){
+                    //预定的是房型
 
                     //先判断是否改过价格-改过价格以改的价格为准
                     if(modifyPrice.length==0){
+
                         //没修改过价格---并且这个页面没有点过修改价格
                         var days = $("#days1").val();
                         var time = $("#startTime").val();
@@ -346,8 +348,7 @@
 
                         return arr;
                     }else{
-
-                        //修改过价格
+debugger                        //修改过价格
                         for(var j=0;j<modifyPrice.length;j++){
                             if(modifyPrice[j]['roomTypeId'] == sr[i]['roomType']){
 
@@ -372,7 +373,9 @@
                         }
                     }
 
-                }else{
+                }
+                else{
+
                     //预定的是房间
                     if(o[i]['roomId']==v['roomId']){
                         for(var j=0;j<o[i]['everydayRoomPriceBOS'].length;j++){
@@ -423,74 +426,99 @@
                 layer.alert("还没有选房")
                 return false;
             }
-            var checkinData = getCheckinData();
-            var  yuyueOrder = yuyueData.orderChildBOS;
 
-            if(yuyueOrder[0]['roomId']!=0){
-                //预约房间的情况下
-                for(var i=0;i<checkinData.length;i++){
-                    var flag = true;
-                    for(var j=0;j<yuyueOrder.length;j++){
-                        if(checkinData[i]['roomName']==yuyueOrder[j]['roomName']||checkinData[i]['roomNum']==yuyueOrder[j]['roomName']){
-                            checkinData[i]['id'] = yuyueOrder[j]['id'];
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if(flag)delete checkinData[i]['id']
-                }
-            }else{
-                //预约房型的情况下
-                for(var i=0;i<checkinData.length;i++){
-                    var flag = true;
-                    for(var j=0;j<yuyueOrder.length;j++){
-                        if(checkinData[i]['roomType']==yuyueOrder[j]['roomTypeMame']||checkinData[i]['roomTypeId']==yuyueOrder[j]['roomTypeName']){
-                            if(yuyueOrder[j]['id']){
-                                checkinData[i]['id'] = yuyueOrder[j]['id']+"";
-                                flag = false;
-                                delete yuyueOrder[j]['id'];
-                                break;
-                            }
 
-                        }
+            var typeids = [];
+            var checktype = $("input[name='checkType']:checked").val();
+            for(var i=0;i<sRooms.length;i++){
+                if(sRooms[i]['roomTypeId']){
+                    if(typeids.indexOf(sRooms[i]['roomTypeId'])==-1){
+                        typeids.push(sRooms[i]['roomTypeId'])
                     }
-                    if(flag)delete checkinData[i]['id']
+                }else {
+                    if(typeids.indexOf(sRooms[i]['roomType'])==-1){
+                        typeids.push(sRooms[i]['roomType'])
+                    }
                 }
+
             }
-            console.info(checkinData);
-            // return false;
-            d.OrderChildJSON = JSON.stringify(checkinData);
-
-            console.log("以下是预约入住参数")
-            console.info(d)
-            // return false;
             var index = layer.load(1,{time:10*1000});
             $.ajax({
-                data: d,
+                data: {
+                    phone:document.getElementById("phone").value.trim(),
+                    startTime:document.getElementById("startTime").value,//入住时间,
+                    dayNum:checktype=='hour'?1:document.getElementById("days1").value,
+                    typeIds:typeids.join(","),
+                    orderId:yuyueData.id,
+                    checkType:checktype,
+                },
                 type: "POST",
                 dataType: "JSON",
-                url: api.checkInYuYue,
-                beforeSend: function () {
-                    $("#btnSave").addClass('layui-btn-disabled');
-                },
+                url: 'updatePrice/updatePrice',
                 complete: function () {
                     layer.close(index);
-                    $("#btnSave").removeClass('layui-btn-disabled');
                 },
                 success: function (rs) {
-
                     layer.close(index);
                     if (!rs.success) {
                         layer.alert(rs.errMsg)
-                        return false;
+                    }else{
+                        // debugger;
+                        var checkinData = getCheckinData();
+                        for(var i=0;i<checkinData.length;i++){
+                            for(var j=0;j<rs.data.length;j++){
+                                if(checkinData[i]["roomTypeId"] == rs.data[j]['roomTypeId']){
+// debugger;
+                                    var c = rs.data[j];
+                                    var arr = [];
+                                    for(var b in c){
+                                        if(b.indexOf("/")>-1&&b.indexOf("y") ==  -1){
+                                            arr.push({
+                                                time:b,
+                                                money:c[b]
+                                            })
+                                        }
+                                    }
+
+                                    checkinData[i]['everydayRoomPriceBOS'] = arr;
+                                    break;
+                                }
+                            }
+                        }
+
+                        d.OrderChildJSON = JSON.stringify(checkinData);
+                        console.log("以下是预约入住参数")
+                        console.info(d)
+                        var index = layer.load(1,{time:10*1000});
+                        $.ajax({
+                            data: d,
+                            type: "POST",
+                            dataType: "JSON",
+                            url: api.checkInYuYue,
+                            beforeSend: function () {
+                                $("#btnSave").addClass('layui-btn-disabled');
+                            },
+                            complete: function () {
+                                layer.close(index);
+                                $("#btnSave").removeClass('layui-btn-disabled');
+                            },
+                            success: function (rs) {
+                                layer.close(index);
+                                if (!rs.success) {
+                                    layer.alert(rs.errMsg)
+                                    return false;
+                                }
+                                payHtml(rs.data);
+                            }
+                        });
+
+
                     }
-                    // sessionStorage.setItem('payBO', JSON.stringify(rs.data.payBO));
-                    // getIdName();
-                    payHtml(rs.data);
                 }
             });
-
             return false;
+
+
         });
 
 
