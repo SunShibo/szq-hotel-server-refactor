@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 改价 -->
+<mapper namespace="com.szq.hotel.dao.UpdatePriceDAO">
+
+    <select id="queryPrice"  resultType="java.util.HashMap">
+        SELECT price.time ,price.money 	 FROM  hm_order der LEFT JOIN hm_order_child  child ON child.order_id  =der.id
+               LEFT JOIN   `hm_everyday_room_price`  price  ON price.order_child_id =child.id
+         WHERE  child.room_type_id =#{roomTypeId} AND der.id=#{orderId}
+    </select>
+
+    <select id="queryChildId"  resultType="java.lang.Integer">
+        SELECT child.id		 FROM  hm_order der LEFT JOIN hm_order_child  child ON child.order_id  =der.id
+          WHERE  child.room_type_id =#{roomTypeId} AND der.id=#{orderId}
+    </select>
+    
+    <delete id="delePrice"  parameterType="java.lang.Integer" >
+        DELETE FROM hm_everyday_room_price  WHERE order_child_id=#{id}
+    </delete>
+
+    <insert id="addPrice"  parameterType="java.util.Map">
+    INSERT INTO `hm_everyday_room_price` ( `order_child_id`, `time`, `money`)
+      VALUES
+       <foreach collection="list"   item="item"  separator=","  >
+           (
+            #{childId},
+            #{item.time},
+            #{item.price}
+           )
+       </foreach>
+    </insert>
+</mapper>

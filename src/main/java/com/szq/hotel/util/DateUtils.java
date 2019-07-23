@@ -728,7 +728,6 @@ public class DateUtils {
 	 * @throws Exception
 	 */
 	public static String getSpecifiedDayBefore(String specifiedDay){
-//SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		Date date=null;
 		try {
@@ -742,6 +741,32 @@ public class DateUtils {
 
 		String dayBefore=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
 		return dayBefore;
+	}
+
+	/**
+	 * 是早6点前获取上一天
+	 * @param date
+	 * @return
+	 */
+	public static Date getBeforeSix(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date) ;
+		if(cal.get(Calendar.HOUR_OF_DAY)<6){
+			cal.add(Calendar.DATE,-1);
+		}
+		return  cal.getTime();
+	}
+
+
+	/**
+	 * 获取时间字符串
+	 */
+	public static String getAddDate(Date date,int i){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date) ;
+		cal.add(Calendar.DATE,i);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return  simpleDateFormat.format(cal.getTime());
 	}
 
 }
