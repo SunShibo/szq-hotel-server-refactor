@@ -251,34 +251,11 @@
             table = layui.table;
 
         if (getUrl("random")) {
-            // element.tabChange("rzfs","2");
-            var a = Number(getUrl("random"));
-            var b = Date.now();
-            if ((b - a) < 10000) {
-                var urlll = api.yueCheckIn;
-                if (decodeURIComponent(getUrl('phone'))) {
-                    urlll += "&phoneNumber=" + decodeURIComponent(getUrl('phone'));
-                } else if (getUrl("idNumber")) {
-                    urlll += "&certificateNumber=" + getUrl("idNumber");
-                }
-                $.getJSON(urlll+"&random="+Date.now(), function (rs) {
-                    if (!rs.success) {
-                        layer.alert('没有查到预定信息', {icon: 2, shift: 6});
-                        return;
-                    }
-                    if(rs.data.memberId){
-                        $("#source").val(rs.data.memberName)
-                    }
-                    roomTypeFlag = rs.data.subscribes;
-                    renderSchedule(rs.data.subscribes)
-                    try{
-                        $("#phoneNumber").val(rs.data.phoneNumber);
-                        $("#credentialNo").val(rs.data.certificateNumber);
-                    }catch (e){}
-                })
 
 
-            }
+                $("#phone").val(decodeURIComponent(getUrl('phone')))
+                idFlag(2);
+
 
         }
 
@@ -348,7 +325,7 @@
 
                         return arr;
                     }else{
-debugger                        //修改过价格
+                 //修改过价格
                         for(var j=0;j<modifyPrice.length;j++){
                             if(modifyPrice[j]['roomTypeId'] == sr[i]['roomType']){
 
@@ -468,7 +445,7 @@ debugger                        //修改过价格
                         for(var i=0;i<checkinData.length;i++){
                             for(var j=0;j<rs.data.length;j++){
                                 if(checkinData[i]["roomTypeId"] == rs.data[j]['roomTypeId']){
-// debugger;
+
                                     var c = rs.data[j];
                                     var arr = [];
                                     for(var b in c){

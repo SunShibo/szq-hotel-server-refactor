@@ -852,6 +852,28 @@
         return true;
     }
 
+
+    function  updataTableByTogether(rid) {
+
+        var d = sRooms, c = customs;
+        for (var i = 0; i < d.length; i++) {
+            if(d[i].roomId == rid){
+                for (var j = 0; j < c.length; j++) {
+                    if (rid == c[j].roomId) {
+                        d[i].name = c[j].name;
+                        d[i].credentialNo = c[j].credentialNo;
+                        d[i].phoneNumber = c[j].phoneNumber;
+                        d[i].remark = c[j].remark;
+                        // d[i].id = c[j].id;
+                        break;
+                    }
+                }
+            }
+        }
+        tableObj.reload({data: JSON.parse(JSON.stringify(d))})
+        state.selRow = [];
+    }
+
 </script>
 <script src="js/checkinCommon.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/modifyPrice.js" type="text/javascript" charset="utf-8"></script>
