@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class CommodityBO {
     private Integer id;
+    private Integer memberId;
     private String orderNumber;//订单号
     private Date createTime;//创建时间
     private String payType;//支付方式
@@ -31,6 +32,14 @@ public class CommodityBO {
         this.createUserId = createUserId;
         this.consumptionDetails = consumptionDetails;
         this.hotelId=hotelId;
+    }
+
+    public Integer getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
     }
 
     public String getHotelName() {

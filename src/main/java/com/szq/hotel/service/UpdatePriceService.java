@@ -64,6 +64,8 @@ public class UpdatePriceService {
 
             //查询数据库中保存的价格
             Map<String, Object> queryPrice = this.queryPrice(orderId, Integer.parseInt(split[x]));
+            Map<String, Object> queryChildPrice = this.queryChildPrice(orderId, Integer.parseInt(split[x]));
+
             log.info("queryPrice:{}", JsonUtils.getJsonString4JavaPOJO(queryPrice));
 
             Map<String,Object>  map=new HashMap<String, Object>();
@@ -79,6 +81,11 @@ public class UpdatePriceService {
                     if(i==0){
                         map.put("price",queryPrice.get(addDate));  //第一天有优惠价,覆盖之前的价格
                     }
+                 }else if(queryChildPrice!=null && queryChildPrice.get(addDate)!=null) {
+                    map.put(addDate, queryChildPrice.get(addDate));
+                    if(i==0){
+                        map.put("price",queryPrice.get(addDate));  //第一天有优惠价,覆盖之前的价格
+                    }
                 }else{
                     map.put(addDate,basicPrice);
                 }
@@ -90,18 +97,26 @@ public class UpdatePriceService {
         return list;
     }
 
-    private Map<String, Object> queryPrice(Integer orderId, int i) {
-        Map<String,Object>  map=new HashMap<String, Object>();
+    private Map<String, Object> queryPrice(Integer orderId, Integer i) {
+
         List<EverydayRoomPriceBO> everydayRoomPriceBOS = updatePriceDAO.queryPrice(orderId, i);
-        if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0) {
-            for (EverydayRoomPriceBO price : everydayRoomPriceBOS) {
-                map.put(DateUtils.getAddDate(price.getTime(),0),price.getMoney());
-            }
-        }
-        return map;
+        return everydayRoomPriceBOSTOMap(everydayRoomPriceBOS);
+    }
+
+    private Map<String,Object> queryChildPrice(Integer orderId,Integer roomTypeId){
+        return everydayRoomPriceBOSTOMap( updatePriceDAO.queryChildPrice(orderId, roomTypeId));
     }
 
 
+    private Map<String,Object>   everydayRoomPriceBOSTOMap(List<EverydayRoomPriceBO> list){
+        Map<String,Object>  map=new HashMap<String, Object>();
+        if(list!=null && list.size()>0) {
+            for (EverydayRoomPriceBO price : list) {
+                map.put(DateUtils.getAddDate(price.getTime(),0),price.getMoney());
+            }
+        }
+        return  map;
+    }
     /**
      * 保存改价
      * @param data

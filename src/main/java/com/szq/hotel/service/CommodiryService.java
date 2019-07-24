@@ -45,12 +45,13 @@ public class CommodiryService {
         log.info("start addFloor..........................");
         log.info("payType:{}\tconsumptionType:{}\tmoney:{}\tinfo:{}\torderNumber:{}\tuserId:{}\thotelId:{}",payType,consumptionType,money,info,orderNumber,userId,hotelId);
         CommodityBO commodityBO = new CommodityBO(orderNumber, payType, consumptionType, money, userId, info, hotelId);
-        commodiryDAO.addCommodiry(commodityBO);
         if(payType.equals(Constants.STORED.getValue())){
             memberService.storedValuePay(certificateNumber,money,info,"储值支付",new BigDecimal("0"),userId);
             MemberBO memberBO = memberService.selectMemberByCerNumber(certificateNumber);
             memberService.accountIntegral( memberBO.getId(),money,info,userId);
+            commodityBO.setMemberId(memberBO.getId());
         }
+        commodiryDAO.addCommodiry(commodityBO);
         log.info("end  addFloor..........................");
         return commodityBO.getId();
 

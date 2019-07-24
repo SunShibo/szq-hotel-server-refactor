@@ -390,7 +390,7 @@ public class ChildOrderService {
     /**
      * 退款方法
      */
-    public void outMoney(Integer childId, PayTypeBO param, Integer userId, ChildOrderBO childOrderBO, Integer hotelId) {
+    public void outMoney(Integer childId,PayTypeBO    param, Integer userId, ChildOrderBO childOrderBO, Integer hotelId) {
         //退款
         log.info("start outMoney...........................................................");
         if (param.getCash() != null) {  //现金

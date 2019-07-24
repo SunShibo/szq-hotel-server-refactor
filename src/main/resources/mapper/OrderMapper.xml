@@ -433,7 +433,7 @@
             <if test="channel!=null and channel!=''">and der.channel LIKE '%${channel}%'</if>
             <if test="OTA!=null and OTA!=''">and der.OTA LIKE '%${OTA}%'</if>
         </where>
-
+        ORDER  BY  der.create_time DESC
         <include refid="orderLimit"/>
     </select>
 
