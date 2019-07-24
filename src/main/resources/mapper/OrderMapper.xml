@@ -379,7 +379,6 @@
         where oc.order_id=#{orderId}
         and oc.room_id=r.id
         and cp.order_child_id=oc.id
-        and cp.status='checkin'
         group by order_child_id
     </select>
 

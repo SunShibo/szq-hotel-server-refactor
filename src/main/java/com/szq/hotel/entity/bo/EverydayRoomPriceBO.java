@@ -52,4 +52,15 @@ public class EverydayRoomPriceBO {
     public void setMoney(BigDecimal money) {
         this.money = money;
     }
+
+    @Override
+    public String toString() {
+        return "EverydayRoomPriceBO{" +
+                "id=" + id +
+                ", orderChildId=" + orderChildId +
+                ", time=" + time +
+                ", money=" + money +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

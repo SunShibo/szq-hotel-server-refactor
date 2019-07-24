@@ -84,7 +84,7 @@ public class UpdatePriceService {
                  }else if(queryChildPrice!=null && queryChildPrice.get(addDate)!=null) {
                     map.put(addDate, queryChildPrice.get(addDate));
                     if(i==0){
-                        map.put("price",queryPrice.get(addDate));  //第一天有优惠价,覆盖之前的价格
+                        map.put("price",queryChildPrice.get(addDate));  //第一天有优惠价,覆盖之前的价格
                     }
                 }else{
                     map.put(addDate,basicPrice);

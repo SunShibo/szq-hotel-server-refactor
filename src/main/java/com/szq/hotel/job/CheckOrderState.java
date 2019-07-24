@@ -6,6 +6,9 @@ import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import com.szq.hotel.entity.bo.RoomRateBO;
 import com.szq.hotel.service.*;
 import com.szq.hotel.util.DateUtils;
+import com.szq.hotel.web.controller.CommoditytController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +18,7 @@ import java.util.List;
 
 @Component("CheckOrderState")
 public class CheckOrderState {
-
+    private static final Logger log = LoggerFactory.getLogger(CheckOrderState.class);
     @Resource
     OrderService orderService;
     @Resource
@@ -52,20 +55,26 @@ public class CheckOrderState {
      */
     @Scheduled(cron = "0 0 4 * * *")    // 13.15 启动项目
     public void nightAuditor() {
-
+            log.info("start  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             List<RoomRateBO> roomRateBOS = childOrderService.queryOrderChild();
+            log.info("roomRateBOS:{}",roomRateBOS);
             for(int i=0;i<roomRateBOS.size();i++){
                 RoomRateBO roomRateBO = roomRateBOS.get(i);
+                log.info("roomRateBO:{} , i:{}",roomRateBO,i);
                 List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(), DateUtils.getFourPointsStr());
+                log.info("everydayRoomPriceBOS:{}",everydayRoomPriceBOS);
                 if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
                     for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){
+                        log.info("start  room price  ...............................................");
                         //生成房费
                         childOrderService.increaseRoomRate(priceBO.getOrderChildId(),priceBO.getMoney());
                         orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime())+"房费",
                                 null,priceBO.getMoney(), Constants.ROOMRATE.getValue(),1,"1天", Constants.NO.getValue());
                         //把夜审状态修改回去
+                        log.info("update  room price  status................................................");
                         childOrderService.updateRoomPrice(priceBO.getId());
                         //生成报表
+                        log.info("start  make a repor.....................................................");
                         CommonBO commonBO = childOrderService.queryChildName(priceBO.getOrderChildId());
                         cashierSummaryService.addRoomRate(priceBO.getMoney(),roomRateBO.getOrderNumber(),1,commonBO.getName(),
                                 roomRateBO.getOTA(),roomRateBO.getChannel(),roomRateBO.getPassengerSource(),roomRateBO.getRoomName(),
@@ -73,7 +82,11 @@ public class CheckOrderState {
                     }
             }
         }
+        log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 
 
+    public static void main(String[] args) {
+
+    }
 }
