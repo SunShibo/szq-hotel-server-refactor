@@ -973,6 +973,24 @@
                 form.render();
             }, 2000)
          }
+         if(d.membersId){
+            //会员预约
+             var v = '';
+             //查询是否是会员
+             $.getJSON(api.queryIdFlag + "&query=" + d.phone + "&random="+Date.now(), function (rs) {
+
+                 if (rs.success&&rs.data.memberBOS.length==1) {
+                     userInfo = rs.data.memberBOS[0];
+                     $("#userLevel").text(userInfo.memberLevelName);
+                     form.render();
+                     state.idFlag = true;
+                 } else {
+                     state.idFlag = false;
+                     userInfo = {};
+                     $("#userLevel").text("");
+                 }
+             })
+         }
         form.render();
         // return false;
         var orderChildBOS = d.orderChildBOS;

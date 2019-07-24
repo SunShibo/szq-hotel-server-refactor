@@ -3,9 +3,11 @@ clearModifyPrice();
 function modifyPrice() {
     var checktype = $("input[name='checkType']:checked").val();
     if(sRooms.length==0){
+        layer.msg('请先选房', {icon: 2, shift: 6})
         return;
     }
     if(sRooms[0]['roomId']==0){
+        layer.msg('请先选房', {icon: 2, shift: 6})
         return;
     }
 
