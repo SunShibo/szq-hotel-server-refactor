@@ -263,7 +263,7 @@
             var urll = api.reserveRoom;
 
 			if(state.hzjg)d.memberIdOrOrganizationId = document.getElementById("channelSelect").value;
-
+            if(userInfo&&userInfo.id) d.membersId = userInfo.id;
 			for(var i=0;i<sRooms.length;i++ ){
 			    if(d.checkType=="hour"){
                     sRooms[i]['everydayRoomPriceBOS'] = getFormTime(sRooms[i].hourRoomPrice,1,sRooms[i].id)

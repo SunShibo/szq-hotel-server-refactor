@@ -241,82 +241,111 @@
 
 
         form.on('submit(checksubmit)', function (data) {
-            //入住提交表单
             var d = data.field;
-            if (d.inWay == 2) {//钟点房
-                d.leaveDate = DateToLStr2(new Date(Date.now() + 3600000 * Number(document.getElementById("leave1").value)));
-                d.dayNumber = 1;
-                d.hourage = 3;
-            } else {
-                if (d.leaveDate == '') {
-                    layer.alert("离店时间不能为空")
-                    return false;
-                }
-                d.leaveDate = d.leaveDate.replace(/-/, "/").replace(/-/, "/");
-                d.birthday = "2017-02-02";
-            }
-            if (document.getElementById("birthday").value == '') {
-                delete d.birthday;
-            } else {
-                d.birthday = d.birthday.replace(/-/, "/").replace(/-/, "/")
-            }
-            d.source = state.source;
-            d.channel = state.channel;
-            d.idType = d.certificateId;
-            d.idNumber = d.credentialNo;
-            if (state.hzjg) {
-                d.cnId = $("#channelSelect").val();
-                d.channel = 4;
-            }
-            if (sRooms.length == 0) {
+            d.type = "directly";
+            d.IDNumberType = d.certificateId + "";
+            d.checkTime = d.startTime;
+            d.checkOutTime = d.leaveDate1;
+            d.dayCount = d.dayNumber1 + "";
+            d.orderType = "directly";
+            if(userInfo&&userInfo.id) d.membersId = userInfo.id;
+
+            if (state.hzjg)   d.memberIdOrOrganizationId  = $("#channelSelect").val();
+
+            if (sRooms.length == 0 || !sRooms[0]['roomId']) {
                 layer.alert("还没有选房")
                 return false;
             }
-            var peo = checkPeopleNum();
-            if (!peo[0]) {
-                layer.msg(peo[1] + ' 号房间入住人信息不完整', {icon: 2, shift: 6});
-                return false;
-            }
-            if (sRooms.length == 1) {
-                if (peo == 1) {
-                    d.roomMessage = dealOneRoomOnePeople();
-                } else {
-                    d.roomMessage = dealOneRoomMulPeople();
+
+
+            var typeids = [];
+            var checktype = $("input[name='checkType']:checked").val();
+            for(var i=0;i<sRooms.length;i++){
+                if(sRooms[i]['roomTypeId']){
+                    if(typeids.indexOf(sRooms[i]['roomTypeId'])==-1){
+                        typeids.push(sRooms[i]['roomTypeId'])
+                    }
+                }else {
+                    if(typeids.indexOf(sRooms[i]['roomType'])==-1){
+                        typeids.push(sRooms[i]['roomType'])
+                    }
                 }
-            } else {
-                d.roomMessage = dealMulRoomMulPeople();
+
             }
-            if(localStorage.modifyPrice){
-                d.specialPrice = localStorage.modifyPrice;
-            }
-            var urll = api.checkIn;
-            console.log("以下是入住参数")
-            console.info(d)
             var index = layer.load(1,{time:10*1000});
             $.ajax({
-                data: d,
+                data: {
+                    phone:document.getElementById("phone").value.trim(),
+                    startTime:document.getElementById("startTime").value,//入住时间,
+                    dayNum:checktype=='hour'?1:document.getElementById("days1").value,
+                    typeIds:typeids.join(","),
+                    orderId:yuyueData.id,
+                    checkType:checktype,
+                },
                 type: "POST",
                 dataType: "JSON",
-                url: urll,
-                beforeSend: function () {
-                    $("#btnSave").addClass('layui-btn-disabled');
-                },
+                url: 'updatePrice/updatePrice',
                 complete: function () {
                     layer.close(index);
-                    $("#btnSave").removeClass('layui-btn-disabled');
                 },
                 success: function (rs) {
                     layer.close(index);
                     if (!rs.success) {
                         layer.alert(rs.errMsg)
-                        return false;
+                    }else{
+                        // debugger;
+                        var checkinData = getCheckinData();
+                        for(var i=0;i<checkinData.length;i++){
+                            for(var j=0;j<rs.data.length;j++){
+                                if(checkinData[i]["roomTypeId"] == rs.data[j]['roomTypeId']){
+
+                                    var c = rs.data[j];
+                                    var arr = [];
+                                    for(var b in c){
+                                        if(b.indexOf("/")>-1&&b.indexOf("y") ==  -1){
+                                            arr.push({
+                                                time:b,
+                                                money:c[b]
+                                            })
+                                        }
+                                    }
+
+                                    checkinData[i]['everydayRoomPriceBOS'] = arr;
+                                    break;
+                                }
+                            }
+                        }
+
+                        d.OrderChildJSON = JSON.stringify(checkinData);
+                        console.log("以下是预约入住参数")
+                        console.info(d)
+                        var index = layer.load(1,{time:10*1000});
+                        $.ajax({
+                            data: d,
+                            type: "POST",
+                            dataType: "JSON",
+                            url: api.checkInYuYue,
+                            beforeSend: function () {
+                                $("#btnSave").addClass('layui-btn-disabled');
+                            },
+                            complete: function () {
+                                layer.close(index);
+                                $("#btnSave").removeClass('layui-btn-disabled');
+                            },
+                            success: function (rs) {
+                                layer.close(index);
+                                if (!rs.success) {
+                                    layer.alert(rs.errMsg)
+                                    return false;
+                                }
+                                payHtml(rs.data);
+                            }
+                        });
                     }
-                    sessionStorage.setItem('payBO', JSON.stringify(rs.data.payBO));
-                    getIdName();
-                    payHtml(rs.data);
                 }
             });
             return false;
+
         });
 
 
