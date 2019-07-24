@@ -49,11 +49,11 @@
             <div class="layui-form-item">
                 <!--下拉多选-->
                 <!--<select name="city" xm-select="select1">-->
-                    <!--<option value="1" disabled="disabled">北京</option>-->
-                    <!--<option value="2" selected="selected">上海</option>-->
-                    <!--<option value="3">广州</option>-->
-                    <!--<option value="4" selected="selected">深圳</option>-->
-                    <!--<option value="5">天津</option>-->
+                <!--<option value="1" disabled="disabled">北京</option>-->
+                <!--<option value="2" selected="selected">上海</option>-->
+                <!--<option value="3">广州</option>-->
+                <!--<option value="4" selected="selected">深圳</option>-->
+                <!--<option value="5">天津</option>-->
                 <!--</select>-->
                 <label class="layui-form-label">订单类型</label>
                 <div class="layui-input-block">
@@ -188,9 +188,9 @@
                 orderState = 'reservation';
             }
             //判断是全部还是其他
-            if(!orderState){
+            if (!orderState) {
                 $('.orderType:first').prop('checked', 'true');
-            }else{
+            } else {
                 $('.orderType[value=' + orderState + ']').prop('checked', 'true');
             }
 
@@ -297,7 +297,7 @@
             obj = {};
             //获取查询条件，去除空字符串项
             for (var item in data.field) {
-                if (!!data.field[item] || item ==='orderState') {
+                if (!!data.field[item] || item === 'orderState') {
                     obj[item] = data.field[item];
                 }
             }
@@ -328,13 +328,13 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
             if (layEvent === 'edit') {//编辑
-                location.href = 'schedule_change.html?id=' + data.number
+                location.href = 'schedule_change.html?id=' + data.orderId + "&idNum=" + data.certificateNumber;
             } else if (layEvent === 'queryManage') {//查看详情
                 window.open('orderInfo.html?id=' + data.orderId + '&state=1', '_blank')
             } else if (layEvent === 'accountManage') { //客账管理
                 window.open('orderInfo.html?id=' + data.orderId + '&back=0&state=0', '_blank')
             } else if (layEvent === 'center') { //入住
-                location.href = 'appoint.html?phone=' + encodeURI(data.phoneNumber) + "&idNumber=" + data.idNumber + "&random=" + Date.now();
+                location.href = 'appoint.html?phone=' + data.phone + "&idNum=" + data.certificateNumber + "&random=" + Date.now();
             } else if (layEvent === 'cancel') {//取消订单
                 layer.open({
                     type: 2,
