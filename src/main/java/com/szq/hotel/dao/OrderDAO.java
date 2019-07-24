@@ -46,6 +46,9 @@ public interface OrderDAO {
 
     //根据主订单删除预约中的子订单
     Integer delOrderChild(Integer id);
+    //获取预约状态的子订单的联房码
+    String getOrderChildAlRoomCode(Integer id);
+
     //根据主订单id查询房间信息（客帐管理）
     List<OrderChildBO> getRoomInfoById(Integer orderId);
     //获取在住报表
