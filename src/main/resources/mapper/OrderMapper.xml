@@ -277,7 +277,7 @@
         where order_id=#{id} and order_state=#{orderState}
     </select>
 
-    <!-- 根据主订单查询已经入住，状态为未入住的子订单 -->
+    <!-- 根据主订单查询已经入住，状态为未支付的子订单 -->
     <select id="getOrderChildByOrderId5" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select * from hm_order_child as oc,hm_check_in_person as cp
         where oc.id=cp.order_child_id
@@ -285,6 +285,7 @@
         and order_state=#{orderState}
         and oc.order_id=#{id}
     </select>
+
     <!-- 查询入住超时的子订单  -->
     <select id="getTimeOutOrder"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select *
@@ -362,9 +363,9 @@
         </set>
         where id=#{id}
     </update>
-    <!-- 删除订单信息 -->
+    <!-- 根据主订单删除预约中的子订单信息 -->
     <delete id="delOrderChild" parameterType="java.lang.Integer">
-        delete from hm_order_child where order_id=#{id}
+        delete from hm_order_child where order_id=#{id} and orderState='reservation'
     </delete>
 
     <!--根据主订单id查询房间信息（客帐管理）-->
@@ -378,7 +379,7 @@
         group by order_child_id
     </select>
 
-    <!--获取入住支付信息-->
+    <!--获取入住支付信息 查询付款人-->
     <select id="getPayInfo" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select oc.id,ip.name,main
         from hm_order_child as oc,hm_check_in_person as ip

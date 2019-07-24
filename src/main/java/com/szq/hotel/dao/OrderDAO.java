@@ -41,10 +41,10 @@ public interface OrderDAO {
     OrderChildBO getResOrderChildByRoomId(@Param("roomId") Integer roomId,@Param("orderId")Integer orderId);
     //根据房型id查询正在预约中的子订单
     OrderChildBO getResOrderChildByRoomTypeId(@Param("roomTypeId")Integer roomTypeId,@Param("orderId")Integer orderId);
-
     //修改主订单
     Integer updOrder(OrderBO orderBO);
-    //删除旧子订单
+
+    //根据主订单删除预约中的子订单
     Integer delOrderChild(Integer id);
     //根据主订单id查询房间信息（客帐管理）
     List<OrderChildBO> getRoomInfoById(Integer orderId);

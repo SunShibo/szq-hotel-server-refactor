@@ -119,7 +119,6 @@ public class OrderController extends BaseCotroller {
                 }
             }
 
-
             if(type.equals("roomReservation")){
                 //房间预约
                 orderService.addOrderInfo(orderBO,list);
@@ -130,6 +129,8 @@ public class OrderController extends BaseCotroller {
                 //直接入住
                 orderService.addOrderInfo(orderBO,list);
                 resultMap.put("orderNumber",orderBO.getOrderNumber());
+            }else if(type.equals("updateInfo")){
+
             }
 
             Thread.sleep(1000);
@@ -411,6 +412,7 @@ public class OrderController extends BaseCotroller {
                return;
            }
            List<OrderChildBO> orderChildBOS=orderService.getPayInfo(orderId);
+           //所有支付人
            for (OrderChildBO orderChild:orderChildBOS) {
                if("yes".equals(orderChild.getMain())){
                    List<OrderChildBO> oneOrderChild=new ArrayList<OrderChildBO>();
