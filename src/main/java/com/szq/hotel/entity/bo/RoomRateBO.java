@@ -113,4 +113,22 @@ public class RoomRateBO extends BaseModel {
     public void setHotelId(Integer hotelId) {
         this.hotelId = hotelId;
     }
+
+    @Override
+    public String toString() {
+        return "RoomRateBO{" +
+                "id=" + id +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", orderState='" + orderState + '\'' +
+                ", roomName='" + roomName + '\'' +
+                ", roomTypeName='" + roomTypeName + '\'' +
+                ", alRoomCode='" + alRoomCode + '\'' +
+                ", channel='" + channel + '\'' +
+                ", passengerSource='" + passengerSource + '\'' +
+                ", OTA='" + OTA + '\'' +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", hotelId=" + hotelId +
+                '}';
+    }
 }
