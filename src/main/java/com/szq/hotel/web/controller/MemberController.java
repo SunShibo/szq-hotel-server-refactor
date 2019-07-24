@@ -596,7 +596,7 @@ public class MemberController extends BaseCotroller {
     }
 
     /**
-     * 条件分页查询会员用户信息
+     * 查询会员消费明细
      * @param memberId 会员id
      * @param request
      * @param response

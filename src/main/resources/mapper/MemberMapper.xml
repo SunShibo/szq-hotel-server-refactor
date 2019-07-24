@@ -211,28 +211,13 @@ WHERE id = #{id}
 
     <!--查询会员消费明细-->
     <select id="getConsumptionRecord" parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.ConsumptionRecordBO">
-        SELECT ro.room_name,re.pay_type,`or`.order_number,`or`.OTA,re.money,
-                re.project,re.create_time,ch.remark,ad.`name`,`or`.members_id
-        FROM hm_order_record re
-        LEFT JOIN hm_order_child ch ON re.order_child_id = ch.id
-        LEFT JOIN hm_order `or` ON ch.order_id = `or`.id
-        LEFT JOIN hm_room ro ON ch.room_id = ro.id
-        LEFT JOIN hm_admin ad ON re.create_user_id = ad.id
-        WHERE ch.order_state !='cancel' AND ch.order_state !='reservation'
-        AND `or`.members_id = #{memberId}
+        SELECT * from consumption_detail WHERE member_id = #{memberId} ORDER BY create_time DESC
         <include refid="limit" />
     </select>
 
     <!--查询会员消费明细数量-->
     <select id="getConsumptionRecordCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-        SELECT  COUNT(`or`.order_number)
-        FROM hm_order_record re
-        LEFT JOIN hm_order_child ch ON re.order_child_id = ch.id
-        LEFT JOIN hm_order `or` ON ch.order_id = `or`.id
-        LEFT JOIN hm_room ro ON ch.room_id = ro.id
-        LEFT JOIN hm_admin ad ON re.create_user_id = ad.id
-        WHERE ch.order_state !='cancel' AND ch.order_state !='reservation'
-			AND `or`.members_id = #{memberId}
+        SELECT COUNT(room_name) from consumption_detail WHERE member_id = #{memberId}
     </select>
 
 </mapper>
