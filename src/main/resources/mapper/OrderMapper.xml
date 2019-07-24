@@ -365,8 +365,12 @@
     </update>
     <!-- 根据主订单删除预约中的子订单信息 -->
     <delete id="delOrderChild" parameterType="java.lang.Integer">
-        delete from hm_order_child where order_id=#{id} and orderState='reservation'
+        delete from hm_order_child where order_id=#{id} and order_state='reservation'
     </delete>
+    <!-- 获取预约状态的子订单的联房码 -->
+    <select id="getOrderChildAlRoomCode" parameterType="java.lang.Integer">
+        select al_room_code from hm_order_child where order_id=#{id} and order_state='reservation' limit 1
+    </select>
 
     <!--根据主订单id查询房间信息（客帐管理）-->
     <select id="getRoomInfoById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
