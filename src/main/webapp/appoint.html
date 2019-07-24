@@ -395,7 +395,7 @@
             d.checkOutTime = d.leaveDate1;
             d.dayCount = d.dayNumber1 + "";
             d.orderType = "subscribe";
-            d.membersId = currSel.memberRankId;
+            if(userInfo&&userInfo.id) d.membersId = userInfo.id;
             if (state.hzjg) {
                 d.memberIdOrOrganizationId  = $("#channelSelect").val();
             }
