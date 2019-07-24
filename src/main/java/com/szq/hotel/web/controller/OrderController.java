@@ -412,6 +412,7 @@ public class OrderController extends BaseCotroller {
                return;
            }
            List<OrderChildBO> orderChildBOS=orderService.getPayInfo(orderId);
+           //判断选择的人 是不是会员 返回个会员id 前端判断 能不能储值支付  支付那 如果是储值支付 调用会员支付接口
            //所有支付人
            for (OrderChildBO orderChild:orderChildBOS) {
                if("yes".equals(orderChild.getMain())){
