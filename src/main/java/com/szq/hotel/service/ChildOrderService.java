@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("ChildOrderService")
 @Transactional
@@ -219,7 +216,10 @@ public class ChildOrderService {
         log.info("ids:{}", ids);
         List<Integer> list = StringUtils.strToList(ids);
         log.info("query PayType.................................................................");
-        List<String> payType = orderRecordService.queryPayType(list);
+        Set<String> payType = orderRecordService.queryPayType(list);
+        if(payType.isEmpty()){
+            payType.add(Constants.CASH.getValue());
+        }
         payType.removeAll(Collections.singleton(null));
         log.info("PayType:{}", payType);
         //查询消费多少

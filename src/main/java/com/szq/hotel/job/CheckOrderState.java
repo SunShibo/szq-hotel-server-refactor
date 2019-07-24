@@ -86,7 +86,4 @@ public class CheckOrderState {
     }
 
 
-    public static void main(String[] args) {
-
-    }
 }
