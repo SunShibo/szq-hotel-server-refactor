@@ -162,7 +162,6 @@ public class OrderService {
                 orderChildBO.setStartTime(orderBO.getCheckTime());
                 orderChildBO.setEndTime(orderBO.getCheckOutTime());
                 orderChildBO.setOrderState(Constants.NOTPAY.getValue());//状态
-                orderChildBO.setId(orderChildResult.getId());
                 orderChildBO.setAlRoomCode(alRoomCode);
                 orderDAO.updOrderChild(orderChildBO);
 
