@@ -255,12 +255,21 @@ public class OrderService {
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
                         orderChildNew.setOrderState("yes");
+
+                        //删除旧每日房价
+                        everydayRoomPriceDAO.delEverydayRoomById(orderChildOld.getId());
+                        //添加新的每日房价
+                        List<EverydayRoomPriceBO> everydayRoomPriceBOList=orderChildNew.getEverydayRoomPriceBOS();
+                        for (EverydayRoomPriceBO everydayRoomPriceBO:everydayRoomPriceBOList){
+                            everydayRoomPriceBO.setOrderChildId(orderChildOld.getId());
+                            everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
+                        }
                     }
                 }
             }
             //添加新子订单
             for (OrderChildBO orderChildNew : orderChildBOList) {
-                if (!orderChildNew.getOrderState().equals("yes")) {
+                if (!"yes".equals(orderChildNew.getOrderState())) {
                     this.addOrderChildEveryRoomPrice(orderChildNew,orderBO,alRoomCode);
                 }
             }
