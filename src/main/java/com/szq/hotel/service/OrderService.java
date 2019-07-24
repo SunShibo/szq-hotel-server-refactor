@@ -133,13 +133,17 @@ public class OrderService {
         for (OrderChildBO orderChildBO : orderChildBOList) {
             //根据房间查询子订单
             OrderChildBO orderChildResult = orderDAO.getResOrderChildByRoomId(orderChildBO.getRoomId(), orderBO.getId());
+            System.err.println(orderChildResult.getId()+"null");
             //根据房间没有这个订单再去根据房型查询
             if (orderChildResult == null || orderChildResult.getId() == null) {
                 orderChildResult = orderDAO.getResOrderChildByRoomTypeId(orderChildBO.getRoomTypeId(), orderBO.getId());
+                System.err.println(orderChildResult.getId()+"id null");
             }
             //子订单id
             if(orderChildResult!=null&&orderChildResult.getId()!=null){
                 orderChildBO.setId(orderChildResult.getId());
+            }else{
+                orderChildBO.setId(null);
             }
 
             //查询不到代表新增子订单
@@ -151,6 +155,7 @@ public class OrderService {
                 orderChildBO.setAlRoomCode(alRoomCode);
                 orderChildBO.setOrderId(orderBO.getId());
                 orderDAO.addOrderChild(orderChildBO);
+                System.err.println("aaa");
             } else {
                 //修改房价信息
                 List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBO.getEverydayRoomPriceBOS();
@@ -172,6 +177,7 @@ public class OrderService {
             map.put("state", Constants.INTHE.getValue());
             roomService.updateroomMajorState(map);
 
+            System.err.println(orderChildBO.getId());
             //添加入住人
             List<CheckInPersonBO> checkInPersonBOS = orderChildBO.getCheckInPersonBOS();
             if (checkInPersonBOS != null) {
@@ -200,6 +206,47 @@ public class OrderService {
     public void updateInfo(List<OrderChildBO> orderChildBOList,OrderBO orderBO){
         //查询出旧预约中子订单信息
         List<OrderChildBO> orderChildBOListOld=orderDAO.getOrderChildByOrderId2(orderBO.getId(),Constants.ADMISSIONS.getValue());
+
+        //旧预约信息和新预约信息 预约的类型不一样
+        if((orderChildBOListOld.get(0).getRoomId()==null&&orderChildBOList.get(0).getRoomId()!=null) ||
+                ((orderChildBOListOld.get(0).getRoomId()!=null&&orderChildBOList.get(0).getRoomId()==null))){
+            //所有旧预约信息 变为取消
+            for (OrderChildBO orderChildOld : orderChildBOListOld) {
+                orderChildOld.setOrderState(Constants.CANCEL.getValue());
+                orderDAO.updOrderChild(orderChildOld);
+            }
+            //添加新预约信息
+            for (OrderChildBO orderChildBO : orderChildBOList) {
+                //总房价
+                BigDecimal totalPrice = new BigDecimal(0);
+                for (OrderChildBO orderChild : orderChildBOList) {
+                    //添加子订单
+                    orderChild.setOrderId(orderBO.getId());//主订单id
+                    //orderChild.setAlRoomCode(alRoomCode);//联房码
+                    //预约状态
+                    orderChild.setOrderState(Constants.RESERVATION.getValue());//状态
+                    orderChild.setStartTime(orderBO.getCheckTime());//入住时间
+                    orderChild.setEndTime(orderBO.getCheckOutTime());//离店时间
+                    orderDAO.addOrderChild(orderChild);//返回子订单id
+
+                    //这个房型下的每日价格
+                    List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChild.getEverydayRoomPriceBOS();
+                    if (everydayRoomPriceBOList != null && everydayRoomPriceBOList.size() != 0) {
+                        for (EverydayRoomPriceBO everydayRoomPriceBO : everydayRoomPriceBOList) {
+                            everydayRoomPriceBO.setOrderChildId(orderChild.getId());
+                            everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
+                            //叠加总房价
+                            totalPrice = totalPrice.add(everydayRoomPriceBO.getMoney());
+                        }
+                    }
+                }
+                //修改主订单信息
+                orderBO.setTotalPrice(totalPrice);
+                orderDAO.updOrder(orderBO);
+
+            }
+        }
+
 
 
         for (OrderChildBO orderChildBO : orderChildBOList) {
