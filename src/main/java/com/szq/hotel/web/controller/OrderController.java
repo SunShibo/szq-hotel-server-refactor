@@ -92,7 +92,7 @@ public class OrderController extends BaseCotroller {
             Map<String,Object> resultMap=new HashMap<String, Object>();
 
             //检查入住信息是否正确 证件号是否有重复 验证房间是否可用
-            if(!type.equals("roomReservation")){
+            if(!type.equals("roomReservation")&&!type.equals("updateInfo")){
                 String result=this.checkInPerson(list,orderBO.getId());
                 if(result!=null){
                     super.safeJsonPrint(response, result);
@@ -133,11 +133,11 @@ public class OrderController extends BaseCotroller {
                 orderService.addOrderInfo(orderBO,list);
                 resultMap.put("orderId",orderBO.getId());
             }else if(type.equals("updateInfo")){
-
+                //预约修改
+                orderService.updateInfo(list,orderBO);
             }
 
             Thread.sleep(1000);
-
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap)) ;
             super.safeJsonPrint(response, result);
             RedisTool.releaseDistributedLock(jedis,"500",requestId);
@@ -175,6 +175,40 @@ public class OrderController extends BaseCotroller {
         }
         return null;
     }
+
+    /**
+     * 取消预约订单
+     * @param orderChildId 主订单id
+     * */
+    @RequestMapping("closeOrder")
+    public void closeOrder(Integer orderChildId,HttpServletResponse response,HttpServletRequest request){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return ;
+            }
+            //验证参数
+            if(orderChildId== null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return ;
+            }
+            orderService.closeOrderChild(orderChildId);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+        }catch (Exception e){
+            log.error("closeOrder",e);
+        }
+    }
+
 
     /**
      * 预约入住 获取信息

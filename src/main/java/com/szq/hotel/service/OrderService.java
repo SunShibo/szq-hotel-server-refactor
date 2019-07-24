@@ -207,7 +207,7 @@ public class OrderService {
     //预约修改
     public void updateInfo(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
         //查询出旧预约中子订单信息
-        List<OrderChildBO> orderChildBOListOld = orderDAO.getOrderChildByOrderId2(orderBO.getId(), Constants.ADMISSIONS.getValue());
+        List<OrderChildBO> orderChildBOListOld = orderDAO.getOrderChildByOrderId2(orderBO.getId(), Constants.RESERVATION.getValue());
         //获取旧联房码
         String alRoomCode = orderChildBOListOld.get(0).getAlRoomCode();
         //旧预约信息和新预约信息 预约的类型不一样
@@ -294,48 +294,6 @@ public class OrderService {
         }
     }
 
-    //预约修改
-    public void updateInfo2(List<OrderChildBO> orderChildBOList, OrderBO orderBO) {
-
-        //获取旧联房码
-        String alRoomCode = orderDAO.getOrderChildAlRoomCode(orderBO.getId());
-        //查询预约中的子订单
-        List<OrderChildBO> orderChildBOResult = orderDAO.getOrderChildByOrderId2(orderBO.getId(), Constants.RESERVATION.getValue());
-        //删除旧每日价格
-        for (OrderChildBO orderChildBO : orderChildBOList) {
-            everydayRoomPriceDAO.delEverydayRoomById(orderChildBO.getId());
-        }
-        //删除旧的预约中的子订单
-        orderDAO.delOrderChild(orderBO.getId());
-
-        //总房价
-        BigDecimal totalPrice = new BigDecimal(0);
-        for (OrderChildBO orderChild : orderChildBOList) {
-            //添加子订单
-            orderChild.setOrderId(orderBO.getId());//主订单id
-            orderChild.setAlRoomCode(alRoomCode);//联房码
-            //预约状态
-            orderChild.setOrderState(Constants.RESERVATION.getValue());//状态
-            orderChild.setStartTime(orderBO.getCheckTime());//入住时间
-            orderChild.setEndTime(orderBO.getCheckOutTime());//离店时间
-            orderDAO.addOrderChild(orderChild);//返回子订单id
-
-            //这个房型下的每日价格
-            List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChild.getEverydayRoomPriceBOS();
-            if (everydayRoomPriceBOList != null && everydayRoomPriceBOList.size() != 0) {
-                for (EverydayRoomPriceBO everydayRoomPriceBO : everydayRoomPriceBOList) {
-                    everydayRoomPriceBO.setOrderChildId(orderChild.getId());
-                    everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
-                    //叠加总房价
-                    totalPrice = totalPrice.add(everydayRoomPriceBO.getMoney());
-                }
-            }
-        }
-        //修改主订单信息
-        orderBO.setTotalPrice(totalPrice);
-        orderDAO.updOrder(orderBO);
-
-    }
 
     //根据身份证号 手机号查询预约信息
     public OrderBO getOrderInfo(String idNumber, String mobile, Integer hotelId) {
@@ -445,6 +403,14 @@ public class OrderService {
         OrderBO orderBO = orderDAO.getOrderById(orderId);
         orderBO.setOrderChildBOS(this.getOrderChildById(orderBO));
         return orderBO;
+    }
+
+    //取消预约中的子订单
+    public void closeOrderChild(Integer orderChildId){
+        OrderChildBO orderChildBO=new OrderChildBO();
+        orderChildBO.setId(orderChildId);
+        orderChildBO.setOrderState(Constants.CANCEL.getValue());
+        orderDAO.updOrderChild(orderChildBO);
     }
 
     //根据主订单id查询房间信息（客帐管理）
