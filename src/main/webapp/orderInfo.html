@@ -148,43 +148,38 @@
             , limit: 10000
             , even: true
             , done: function (res, curr, count) {
-                var data = res;
+                var data = res.data;
+                //如果第一次进入时无数据，跳出方法
+                if (data.length == 0) return;
+                if (!data[0]['state']) return;
+                // 禁止全选方法
                 var allck = true;
-                if (res.data.length == 0) return;
-                if (!res.data[0]['status']) return;
-                for (var item in data) {
-                    if (data[item].status == 'yes') { //关键点如果data中score包含57那么就不能全选
+                for (var j = 0, len = data.length; j < len; j++) {
+                    if (data[j].state === 'yes') { //查找每条数据中是否存在state=yes
                         allck = false;
+                        break;
                     }
-                    break;
                 }
+                //如果为false将禁用layui-table-header中的全选按钮
                 if (!allck) {
-                    $(".o-reight .layui-table-header").find("input[name = 'layTableCheckbox'][lay-filter='layTableAllChoose']").each(
+                    $(".o-reight .layui-table-header").find("input[name='layTableCheckbox'][lay-filter='layTableAllChoose']").each(
                         function () {
-                            $(this).attr("disabled", 'disabled').next().removeClass("layui-form-checked");
+                            console.log($(this).attr("disabled", 'disabled').next())
+                            $(this).attr("disabled", 'disabled').next().removeClass("layui-form-checked layui-unselect");
                             form.render('checkbox');
                         });
                 }
+
                 var i = 0;
                 $(".o-reight .layui-table-body.layui-table-main").find("input[name='layTableCheckbox']").each(function () {
-                    if (res.data.length == i) return false;
-                    if (res.data[i].status == 'yes') { //关键点如果当前行数据中score包含57那么就不可选
-
+                    if (data.length == i) return false;
+                    if (data[i].state == 'yes') { //关键点如果当前行数据中state为yes那么就不可选
                         $(this).attr("disabled", 'disabled').removeAttr("checked");
                         form.render('checkbox');
                     }
                     i++;
                 });
-                i = 0;
-                $(".o-reight .layui-table-fixed.layui-table-fixed-l").find(".layui-table-body").find("input[name='layTableCheckbox']")
-                    .each(function () {
-                        if (res.data.length == i) return false;
-                        if (res.data[i].status == 'yes') { //关键点如果当前行数据中score包含57那么就不可选
-                            $(this).attr("disabled", 'disabled').removeAttr("checked");
-                            form.render('checkbox');
-                        }
-                        i++;
-                    });
+
             }
             , cols: [[ //表头
                 {
@@ -429,29 +424,17 @@
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        id: oId
+                        orderChildId: oId
                     },
                     success: function (data) {
-                        if (data.errCode === '0000001') {
+                        if (!data.success) {
                             layer.alert(data.errMsg, function () {
                                 layer.closeAll('dialog');
                             });
                             return;
                         }
                         if (data.success) {
-                            parent.layer.open({
-                                area: ['520px', '320px'],
-                                type: 2,
-                                content: "iframe_makeCard1.html?roomid=" + roomId,
-                                title: "制卡消卡",
-                                shade: 0.6,
-                                shadeClose: true,
-                                end: function () {
-                                    manageState = 1;
-                                    parent.layer.closeAll();
-                                    getRightData(oId);
-                                }
-                            });
+                            showMsg('退房回滚成功', 1, false);
                         }
                     }
                 })
@@ -465,14 +448,13 @@
                 layer.msg('请选择需要支付的订单！');
                 return;
             }
-            sessionStorage.setItem('oIds', oIds);
+            sessionStorage.setItem('ids', JSON.stringify(oIds));
             $.ajax({
                 url: api.refund,
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    ids: oIds.join(','),
-                    typeState: 0
+                    ids: oIds.join(',')
                 },
                 success: function (data) {
                     if (data.errCode === '00100010') {
@@ -481,7 +463,7 @@
                         });
                         return;
                     }
-                    sessionStorage.setItem('data', JSON.stringify(data.data));
+                    sessionStorage.setItem('payData', JSON.stringify(data.data));
                     layer.open({
                         type: 2,
                         skin: 'demo-class',
@@ -489,7 +471,7 @@
                         title: '结账',
                         shade: 0.6,
                         shadeClose: true,
-                        content: 'iframe_orderCheckOut.html?state=2&back=' + getUrl('back'),
+                        content: 'iframe_orderSettleAccounts.html?s=1',
                         end: function () {
                             if (parseInt(sessionStorage.getItem('backState'))) {
                                 location.href = "order.html";
@@ -514,7 +496,7 @@
 
         //子订单消费项复选框选中事件
         layui.table.on('checkbox(orderInfo)', function (obj) {
-            console.log(table.checkStatus('orderInfo').data)
+            // console.log(table.checkStatus('orderInfo').data)
             state.selRow = table.checkStatus('orderInfo').data;
         });
 
@@ -549,7 +531,7 @@
             }
         }
 
-        //挂账
+        //消费项目转账
         $('#transfer').on('click', function () {
             state.selRow = table.checkStatus('orderInfo').data;
             if (!state.selRow) {
@@ -565,7 +547,7 @@
                 rids.push(state.selRow[i].id)
             }
 
-            var uu = 'iframe_tally2.html?v=' + Date.now() + '&ids=' + rids.join(",") + "&oldId=" + oId;
+            var uu = 'iframe_orderTally.html?v=' + Date.now() + '&ids=' + rids.join(",") + "&id=" + oId;
             parent.layer.open({
                 type: 2,
                 skin: 'demo-class',
@@ -582,6 +564,7 @@
             });
         });
 
+        //消费项目结账
         $('#gopay').on('click', function () {
             if (!state.selRow) {
                 layer.alert("没有选择");
@@ -622,7 +605,6 @@
                         layer.alert(data.errMsg, function () {
                             layer.closeAll();
                         });
-                        return;
                     }
                 }
             })

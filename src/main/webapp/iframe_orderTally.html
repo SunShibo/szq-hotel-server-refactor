@@ -46,8 +46,8 @@
                 },
                 success: function (rs) {
                     if (rs.success) {
-                        sessionStorage.setItem('tallyInfo2', JSON.stringify(rs.data));
-                        var uu = 'iframe_tallyInfo2.html?v='+Date.now()+'&ids='+getUrl("ids")+"&oldId="+getUrl("oldId")
+                        sessionStorage.setItem('orderTallyInfo', JSON.stringify(rs.data));
+                        var uu = 'iframe_orderTallyInfo.html?v='+Date.now()+'&ids='+getUrl("ids")+"&id="+getUrl("id");
                         parent.layer.open({
                             type: 2,
                             skin: 'demo-class',

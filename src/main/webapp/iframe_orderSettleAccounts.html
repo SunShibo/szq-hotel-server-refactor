@@ -6,7 +6,7 @@
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
     <style>
         .layui-form-label {
-            width: 120px;
+            width: 130px;
         }
 
         .height-block {
@@ -28,7 +28,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">积分减免</label>
             <div class="layui-input-inline height-block">
-                <input type="checkbox" name="integralReduction" id="integralReduction" lay-filter="integralReduction" lay-skin="primary" value="1"
+                <input type="checkbox" name="integralReduction" id="integralReduction" lay-filter="integralReduction"
+                       lay-skin="primary" value="1"
                        title="是否减免">
             </div>
         </div>
@@ -81,7 +82,7 @@
 <script>
     layui.use(['form'], function () {
         var form = layui.form, state = 0, flag = false, checked = false, $ = layui.$, sessionData = {},
-            requestData = {}, index = 0;
+            requestData = {}, index = 0, s = 0;
 
 
         $('#back').on('click', function () {
@@ -92,12 +93,17 @@
         $(function () {
             //绑定Activex标签
             IDCardReaderInfo($(document.body));
+
+            s = getUrl('s');
+
             //先获取存储的数据
             sessionData = JSON.parse(sessionStorage.getItem('payData'));
             //再获取chilId和ids
             sessionData.ids = JSON.parse(sessionStorage.getItem('ids'));
-            sessionData.chilId = getUrl('id');
             dataInfo();
+            if(!s){//消费项目结账
+                sessionData.chilId = getUrl('id');
+            }
         });
 
         //证件号码输入事件绑定
@@ -159,7 +165,7 @@
                 $('#payType').show();
             }
             //动态设置退款
-            if (sessionData.payType.length > 0) {
+            if (sessionData.payType.length > 0 && sessionData.status === 'no') {
                 for (var i = 0, len = sessionData.payType.length; i < len; i++) {
                     var div = '<div class="layui-form-item" style="margin-top: 10px">' +
                         '    <label class="layui-form-label">' + orderPayType(sessionData.payType[i]) + '退款金额</label>\n' +
@@ -177,20 +183,35 @@
         form.on('submit(formData)', function (data) {
             requestData = data.field;
             //防止重复点击
-            if(index!=null)clearTimeout(index);
+            if (index != null) clearTimeout(index);
             index = setTimeout(pay, 1000);
             return false;
         });
 
         //支付方法
         function pay() {
-            requestData.chilId = sessionData.chilId;
-            requestData.ids = sessionData.ids.join(',');
-            requestData.money = sessionData.money;
-            requestData.status = sessionData.status;
+            //判断收款时是否填写减免金额
+            if (sessionData.status === 'yes' && ((requestData.integralReduction && !requestData.integral) || ((requestData.integralReduction || requestData.payType === 'stored') && !requestData.certificateNumber))) return false;
+            if (sessionData.status === 'yes' && (requestData.integral > Math.abs(sessionData.money))) {
+                showMsg('减免金额不能大于应付金额', 2, false);
+                return false;
+            }
+            //退款时判断退款金额是否大于总金额
+            if (sessionData.status === "no") {
+                var total = parseInt(requestData.cash) + parseInt(requestData.cart) + parseInt(requestData.wechat) + parseInt(requestData.alipay) + parseInt(requestData.other) + parseInt(requestData.stored);
+                if(total > parseInt(sessionData.money)){
+                    showMsg('退款金额不能大于总金额', 2, false);
+                    return false;
+                }
+            }
 
+            requestData.ids = sessionData.ids.join(',');
+            requestData.status = sessionData.status;
+            if (sessionData.status !== 'no') {
+                requestData.money = Math.abs(sessionData.money) - requestData.integral;
+            }
             //删除不用的数据
-            if(!requestData.integralReduction || requestData.payType !== 'stored'){
+            if (!requestData.integralReduction || requestData.payType !== 'stored') {
                 delete requestData.integral;
                 delete requestData.certificateNumber;
             }
@@ -198,15 +219,41 @@
 
             console.log(requestData);
 
-            // $.ajax({
-            //     url: api.subitem,
-            //     type: 'POST',
-            //     dataType: 'json',
-            //     data: requestData,
-            //     success: function (res) {
-            //         console.log(res);
-            //     }
-            // });
+            //消费项目结账
+            if(!s){
+                requestData.chilId = sessionData.chilId;
+                $.ajax({
+                    url: api.subitem,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: requestData,
+                    success: function (res) {
+                        if (res.success) {
+                            showMsg('结账成功', 1, false);
+                        } else {
+                            showMsg('结账失败', 2, false);
+                        }
+
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: api.refundBtn,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: requestData,
+                    success: function (res) {
+                        if (res.success) {
+                            showMsg('结账成功', 1, false);
+                        } else {
+                            showMsg('结账失败', 2, false);
+                        }
+
+                    }
+                });
+            }
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
         }
     });
 </script>

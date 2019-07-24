@@ -90,7 +90,9 @@
         var layer = layui.layer
             , form = layui.form
             , element = layui.element
-            , $ = layui.jquery;
+            , $ = layui.jquery
+            , requestData = {}
+            , index = 0;
         $.getJSON(api.queryUserIntgeralInfo + '?memberId=' + getUrl("id") + "&random=" + Date.now(), function (rs) {
             // console.info(rs)
             try {
@@ -102,13 +104,6 @@
                 alert(err);
             }
         });
-        // form.on('radio', function(data){
-        //     if(data.value==1){
-        //         type = 1;
-        //     }else if (data.value==2) {
-        //         type = 2;
-        //     }
-        // });
         //关闭
         $('#back').on('click', function () {
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
@@ -118,10 +113,16 @@
 
         form.on('submit(formData)', function (data) {
 
-            // alert(JSON.stringify(data.field));
-            data.field['id'] = getUrl("id");
-            // return;
-            $.post(api.addIntegral, data.field, function (r) {
+            requestData = data.field;
+            //防止重复点击
+            if (index != null) clearTimeout(index);
+            index = setTimeout(pay, 1000);
+            return false;
+        });
+
+        function pay() {
+            requestData['id'] = getUrl("id");
+            $.post(api.addIntegral, requestData, function (r) {
                 try {
                     // r = JSON.parse(r);
                     if (r.success) {
@@ -137,10 +138,7 @@
                     alert(err);
                 }
             })
-            return false;
-        });
-
-
+        }
     });
 </script>
 </body>
