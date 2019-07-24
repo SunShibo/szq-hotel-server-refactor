@@ -58,8 +58,8 @@ public class UpdatePriceService {
                     basicPrice = roomTypeBOS.get(0).getHourRoomPrice();
                 }
             }
-            //四舍五入
-            basicPrice = new BigDecimal(basicPrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            //向上取整 bd.setScale( 0, BigDecimal.ROUND_UP ).longValue()
+            basicPrice = new BigDecimal(basicPrice).setScale( 0, BigDecimal.ROUND_UP ).doubleValue();
             log.info("basicPrice:{}",basicPrice);
 
             //查询数据库中保存的价格
