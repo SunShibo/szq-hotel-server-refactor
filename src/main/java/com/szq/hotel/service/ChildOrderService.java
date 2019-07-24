@@ -344,7 +344,9 @@ public class ChildOrderService {
         log.info("start accounts........................................................");
         //找出主订单
         String[] split = ids.split(",");
-        Integer childMain = childOrderDAO.queryOrderChildMain(split[0]);
+
+        ChildOrderBO child = childOrderDAO.queryOrderChildById(Integer.parseInt(split[0]));
+        Integer childMain = this.queryOrderChildMain(child.getAlRoomCode());
         ChildOrderBO childOrderBO = childOrderDAO.queryOrderChildById(childMain);
         if (status.equals("yes")) {
             log.info("start gathering........................................................");

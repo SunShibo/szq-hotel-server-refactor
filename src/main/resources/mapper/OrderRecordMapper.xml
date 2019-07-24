@@ -88,7 +88,7 @@
     <!--完成订单-->
     <select id="completeAccount" >
         UPDATE  hm_order_child child LEFT JOIN hm_order_record rd ON rd.order_child_id=child.id  SET
-        od.state='yes'  , child.order_state='accomplish'  WHERE child.id IN
+        rd.state='yes'  , child.order_state='accomplish'  WHERE child.id IN
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
