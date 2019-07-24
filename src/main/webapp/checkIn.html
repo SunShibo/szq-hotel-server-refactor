@@ -158,8 +158,8 @@
                     <label class="layui-form-label">离店时间</label>
                     <div class="layui-input-inline">
                         <input class="flagType layui-input" style="display: inline-block;width: 100px;" disabled
-                               type="number" onchange="limitHours(this)" class="layui-input" step="1" value="3"
-                               id="leave1" max="6" min="3"><span>小时</span>
+                               type="number" onchange="limitHours(this)" class="layui-input" step="1" value="4"
+                               id="leave1" ><span>小时</span>
                     </div>
                 </div>
 
@@ -230,6 +230,34 @@
         roomIds:getUrl("roomId"),
         ok:true
     };
+    function getPersonData(v) {
+        var c = JSON.parse(JSON.stringify(customs));
+        var n = [];
+        for(var i=0;i<c.length;i++){
+            if(c[i]['roomId']==v){
+                c[i]['certificateNumber'] = c[i]['credentialNo'];
+                c[i]['phone'] = c[i]['phoneNumber'];
+                c[i]['certificateType'] = c[i]['certificateId'];
+                n.push(c[i]);
+            }
+
+        }
+        return n;
+    }
+    function getCheckinData() {
+
+        var arr = JSON.parse(JSON.stringify(sRooms));
+        for(var i=0;i<arr.length;i++){
+            var par = JSON.parse(JSON.stringify(arr[i]));
+            if(!isNaN(arr[i]['roomType'])){
+                arr[i]['roomTypeId'] = arr[i]['roomType'];
+            }
+            arr[i]['checkInPersonBOS'] = getPersonData(arr[i]['roomId']);
+            // arr[i]['everydayRoomPriceBOS'] = getRoomPriceData(par);
+        }
+        return arr;
+
+    }
     // clearModifyPrice();
     layui.use(['element', 'form', 'laydate', 'jquery', 'layer', 'table'], function () {
         element = layui.element,
@@ -244,87 +272,98 @@
             var d = data.field;
             d.type = "directly";
             d.IDNumberType = d.certificateId + "";
-            d.checkTime = d.startTime;
-            d.checkOutTime = d.leaveDate1;
-            d.dayCount = d.dayNumber1 + "";
+            d.checkTime = DateToLStr(new Date());
+            d.checkOutTime = d.leaveDate;
+            d.dayCount = d.dayNumber + "";
             d.orderType = "directly";
             if(userInfo&&userInfo.id) d.membersId = userInfo.id;
-
             if (state.hzjg)   d.memberIdOrOrganizationId  = $("#channelSelect").val();
-
             if (sRooms.length == 0 || !sRooms[0]['roomId']) {
                 layer.alert("还没有选房")
                 return false;
             }
 
 
-            var typeids = [];
-            var checktype = $("input[name='checkType']:checked").val();
-            for(var i=0;i<sRooms.length;i++){
-                if(sRooms[i]['roomTypeId']){
-                    if(typeids.indexOf(sRooms[i]['roomTypeId'])==-1){
-                        typeids.push(sRooms[i]['roomTypeId'])
-                    }
-                }else {
-                    if(typeids.indexOf(sRooms[i]['roomType'])==-1){
-                        typeids.push(sRooms[i]['roomType'])
-                    }
-                }
 
-            }
-            var index = layer.load(1,{time:10*1000});
-            $.ajax({
-                data: {
-                    phone:document.getElementById("phone").value.trim(),
-                    startTime:document.getElementById("startTime").value,//入住时间,
-                    dayNum:checktype=='hour'?1:document.getElementById("days1").value,
-                    typeIds:typeids.join(","),
-                    orderId:yuyueData.id,
-                    checkType:checktype,
-                },
-                type: "POST",
-                dataType: "JSON",
-                url: 'updatePrice/updatePrice',
-                complete: function () {
-                    layer.close(index);
-                },
-                success: function (rs) {
-                    layer.close(index);
-                    if (!rs.success) {
-                        layer.alert(rs.errMsg)
-                    }else{
-                        // debugger;
                         var checkinData = getCheckinData();
-                        for(var i=0;i<checkinData.length;i++){
-                            for(var j=0;j<rs.data.length;j++){
-                                if(checkinData[i]["roomTypeId"] == rs.data[j]['roomTypeId']){
 
-                                    var c = rs.data[j];
-                                    var arr = [];
-                                    for(var b in c){
-                                        if(b.indexOf("/")>-1&&b.indexOf("y") ==  -1){
-                                            arr.push({
-                                                time:b,
-                                                money:c[b]
-                                            })
+                        if(localStorage.modifyPrice=='') {
+                            //没有修改过价格
+                            var days = Number($("#days").val());
+                            var money = 0;
+                            if($("input[name='checkType']:checked").val()=="hour"){
+                                money = 'hourRoomPrice'
+                            } else if($("input[name='checkType']:checked").val()=="day"){
+                                money = 'basicPrice'
+                            }
+                            for(var i=0;i<checkinData.length;i++){
+                                var arr = [{
+                                    money:checkinData[i][money],
+                                    time:DateToLStr(new Date()).split(" ")[0]
+                                }];
+                                for(var j=1;j<days;j++){
+                                    arr.push({
+                                        money:checkinData[i][money],
+                                        time:addDate(new Date(),i)
+                                    })
+                                }
+                                checkinData[i]['everydayRoomPriceBOS'] = arr;
+                            }
+
+                        }else{
+
+                            var rs = JSON.parse(localStorage.modifyPrice);
+                            for(var i=0;i<checkinData.length;i++){
+                                for(var j=0;j<rs.length;j++){
+                                    if(checkinData[i]["roomTypeId"] == rs[j]['roomTypeId']) {
+                                        var c = rs[j];
+                                        var arr = [];
+                                        for (var b in c) {
+                                            if (b.indexOf("/") > -1 && b.indexOf("y") == -1) {
+                                                arr.push({
+                                                    time: b,
+                                                    money: c[b]
+                                                })
+                                            }
                                         }
+                                        checkinData[i]['everydayRoomPriceBOS'] = arr;
+                                        break;
                                     }
-
-                                    checkinData[i]['everydayRoomPriceBOS'] = arr;
-                                    break;
                                 }
                             }
+
+                            debugger;
                         }
+                        // for(var i=0;i<checkinData.length;i++){
+                        //     for(var j=0;j<rs.data.length;j++){
+                        //         if(checkinData[i]["roomTypeId"] == rs.data[j]['roomTypeId']){
+                        //
+                        //             var c = rs.data[j];
+                        //             var arr = [];
+                        //             for(var b in c){
+                        //                 if(b.indexOf("/")>-1&&b.indexOf("y") ==  -1){
+                        //                     arr.push({
+                        //                         time:b,
+                        //                         money:c[b]
+                        //                     })
+                        //                 }
+                        //             }
+                        //
+                        //             checkinData[i]['everydayRoomPriceBOS'] = arr;
+                        //             break;
+                        //         }
+                        //     }
+                        // }
 
                         d.OrderChildJSON = JSON.stringify(checkinData);
-                        console.log("以下是预约入住参数")
+                        console.log("以下是直接入住参数")
                         console.info(d)
                         var index = layer.load(1,{time:10*1000});
                         $.ajax({
                             data: d,
                             type: "POST",
                             dataType: "JSON",
-                            url: api.checkInYuYue,
+                            url: 'order/reservationRoom',
                             beforeSend: function () {
                                 $("#btnSave").addClass('layui-btn-disabled');
                             },
@@ -338,12 +377,10 @@
                                     layer.alert(rs.errMsg)
                                     return false;
                                 }
-                                payHtml(rs.data);
+                                payHtml(rs.data.orderId);
                             }
                         });
-                    }
-                }
-            });
+
             return false;
 
         });
@@ -479,7 +516,7 @@
         });
     });
     //渲染用户信息
-    function renderUserInfo(d) {
+    function    renderUserInfo(d) {
         var r = d;
         userInfo = r;
         $("#userLevel").text(r.memberRank)
@@ -569,16 +606,14 @@
                 layer.msg('离店时间未填写', {icon: 2,shift:6});
                 return;
             }
-            dayNumber = $("#dayNumber1").val();
         }else{
-            _leaveTime = DateToLStr(new Date(new Date(document.getElementById("startTime").value).setHours(new Date(document.getElementById("startTime").value).getHours() + 4)))
+            _leaveTime = DateToLStr(new Date(new Date().setHours(new Date().getHours() + 4)))
         }
         var selectRoomData =  {
             checkTime:	DateToLStr(new Date()),
             endTime:_leaveTime?_leaveTime:document.getElementById("leaveDate").value,
             phone:document.getElementById("phone").value.trim(),
             roomAuxiliaryStatus:$("input[name='checkType']:checked").val(),
-            // orderId:yuyueData.id
             state:'yes'//直接入住
         }
         localStorage.zjrzxf = JSON.stringify(selectRoomData);
@@ -611,6 +646,7 @@
 
     function parSelectRoom(v) {
         sRooms =  v;
+        sRooms = productRoomS(v);//处理房间数据，改成和房型数据统一
         console.info("直接入住选房后获取了如下数据↓")
         console.info(sRooms)
         setCustomInfo();
@@ -698,7 +734,7 @@
     }
 
     function calcPrice() {
-
+// debugger;
         var checkType_ = $("input[name='checkType']:checked").val();
         var d = sRooms;
         var c = saleInfo;
@@ -706,7 +742,7 @@
         // if(c.length==0)return;
         var days = 1;
         if(checkType_=="day"){
-            days = Number($("#days1").val());
+            days = Number($("#days").val());
         }
         else if(checkType_=="hour"){
             days = 1;
@@ -835,13 +871,14 @@
     }
 
     function payHtml(v) {
-        var amonut = v.price;
-        var orderNumber = v.number;
-        var payNumber = v.payNumber;
+        var pp = $("#totalPrice").html();
+        if(pp.indexOf("/")>-1){
+            pp = pp.split("/")[0];
+        }
         layer.open({
             area: ['520px', '400px'],
             type: 2,
-            content: "iframe_pay.html?v=" + amonut + "&or=" + orderNumber + "&payNumber=" + payNumber+"&random="+Date.now()+"&certificateId="+document.getElementById("credentialNo").value,
+            content: "iframe_pay.html?r="+Date.now()+"&orderId="+ v + "&totalPrice="+pp,
             title: "支付"
         })
     }
@@ -903,6 +940,22 @@
         state.selRow = [];
     }
 
+    function productRoomS(v) {//处理房间数据格式，改成和房型的格式一致/参数是已经选择的房间数据
+
+        var rs = [];
+        for(var i=0;i<v.length;i++){
+            var td = JSON.parse(JSON.stringify(v[i]));
+            v[i]['roomId'] = td.id;
+            v[i]['id'] = td.roomTypeId;
+            v[i]['name'] = td.roomType;
+            v[i]['roomNum'] = td.roomName;
+            v[i]['random'] = td.id;;
+            rs.push(v[i]);
+        }
+        return rs;
+
+    }
+
 </script>
 <script src="js/checkinCommon.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/modifyPrice.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/modifyPriceZJRZ.js" type="text/javascript" charset="utf-8"></script>

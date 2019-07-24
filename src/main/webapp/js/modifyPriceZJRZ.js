@@ -1,7 +1,7 @@
-//预约房间修改价格
+//直接入住房间修改价格
 clearModifyPrice();
 function modifyPrice() {
-    debugger;
+
     var price = '';
     if(sRooms.length==0){
         return;
@@ -16,13 +16,13 @@ function modifyPrice() {
         price = 'hourRoomPrice';
     }
     var aaa1 = [];//处理过改价格用的房间数据
-    var dayss = $("#days1").val();//几天
+    var dayss = $("#days").val();//几天
     if($("input[name='checkType']:checked").val()=="hour"){
         dayss = 1;//几天
     }
     if(localStorage.modifyPrice==''){
         var temp = [];
-        var days = getModifyPriceData($("#days1").val());
+        var days = getModifyPriceData($("#days").val());
 
         for(var i=0;i<sRooms.length;i++){
             if(!sRooms[i]['yhourRoomPrice']){
@@ -44,7 +44,8 @@ function modifyPrice() {
                 for(var j=0;j<days.length;j++){
                     newdata[days[j]['time']] = newdata[price];
                     newdata['roomTypeId'] = newdata['id'];
-                    newdata['roomTypeName'] = newdata['name'];
+                    if(!newdata['roomTypeName'])newdata['roomTypeName'] = newdata['name'];
+
 
                     if( !newdata['y'+days[j]['time']]){
                         newdata['y'+days[j]['time']] = yuanjia;
@@ -61,7 +62,7 @@ function modifyPrice() {
     layer.open({
         area: ['1000px', '420px'],
         type: 2,
-        content: "iframe_modifyPriceYY.html?v=" + Date.now()+"&dayNumber="+dayss,
+        content: "iframe_modifyPriceZJRZ.html?v=" + Date.now()+"&dayNumber="+dayss,
         title: "修改价格"
     })
 }

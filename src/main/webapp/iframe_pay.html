@@ -17,8 +17,7 @@
             <input type="radio" name="payType" lay-filter="payType" value="cart" title="刷卡">
             <input type="radio" name="payType" lay-filter="payType" value="wechat" title="微信">
             <input type="radio" name="payType" lay-filter="payType" value="alipay" title="支付宝">
-            <!--<input type="hidden" name="payType" lay-filter="payType" value="5" title="积分支付">-->
-            <input type="radio" name="payType" lay-filter="payType" value="stored" title="储值支付">
+            <input type="radio" name="payType" lay-filter="payType" value="stored" title="储值支付" id="czzf">
 
         </div>
     </div>
@@ -45,7 +44,6 @@
         </div>
     </div>
     <div class="layui-input-block" style="position: fixed; right: 10px; bottom: 10px;">
-
         <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formData" data-id="1">支付</button>
         <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="back">取消</button>
     </div>
@@ -53,10 +51,10 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
-    var _str_, money, chilId, payBO, s = '', _p, _pay_index = 0;
+    var _str_, money, chilId, payBO, s = '', _p, _pay_index = 0;var form;
     layui.use(['form', 'jquery'], function () {
-        var form = layui.form, $ = layui.$, id = 0;
-
+        form = layui.form, $ = layui.$, id = 0;
+        var payer = [];//付款人 LIST 信息
         $('#back').on('click', function () {
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
             parent.layer.close(index); //再执行关闭
@@ -75,13 +73,12 @@
                 success: function (rs) {
                     console.log(rs.data)
                     $("#deposit").val(getUrl('totalPrice'))
+                    payer = rs.data;
                     setSelectData(rs.data)
                 }
 
             })
 
-            // setSelectData(payBO);
-            // $("#deposit").val(v)
         });
 
         /**
@@ -92,45 +89,42 @@
             for (var i = 0, len = three.length; i < len; i++) {
                 $('#drawee').append("<option value=" + three[i].id + ">" + three[i].name + "</option>");
             }
-            form.render('select');
-        }
-        //查询积分和储值余额
-        form.on('radio', function(data){
-            if(data.value==6||data.value==7){
-                var index = layer.load(1,{time:10*1000});
-                var certificateId = getUrl("certificateId");
-                $.ajax({
-                    data: {credentialNumber:certificateId},
-                    type: "POST",
-                    dataType: "JSON",
-                    url: "/checkin/queryStoreValue",
-                    complete: function () {
-                        layer.close(index);
-                    },
-                    success: function (rs) {
-                        layer.close(index);
-                        if(!rs.success){
-                            layer.alert(rs.errMsg)
-                            return false;
-                        }
-                        if(data.value==6){
-                            layer.alert("积分余额： "+ rs.data.integral+"<br>可抵现金： "+rs.data.integValue +" 元")
-                        }
-                        if(data.value==7){
-                            layer.alert("储值余额: "+ rs.data.streValue +" 元")
-                        }
-
-                    }
-                });
+            if(three&&three.length&&three[0]['nameStatus']=='no'){
+                $("#czzf").attr("disabled",true)
             }
+            form.render();
+        }
+
+        form.on('select(drawee)', function (data) {
+            for(var i=0;i<payer.length;i++){
+                if(data.value==payer[i].id){
+                    if(payer[i]['nameStatus']=='no'){
+                        $("#czzf").attr("disabled",true)
+                    }else{
+                        $("#czzf").attr("disabled",false)
+                    }
+                    form.render();
+                    break;
+                }
+            }
+
+            // debugger;
         });
+
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {
             data.field.id =  data.field.chilId;
             data.field.name = $("#drawee").find("option:selected").text();
-            console.log(data.field)
-            // return false;
 
+            // return false;
+            for(var i=0;i<payer.length;i++){
+                if(data.field.id==payer[i].id){
+                    data.field['nameStatus'] = payer[i]['nameStatus'];
+                    data.field['certificateNumber'] = payer[i]['certificateNumber'];
+                    break;
+                }
+            }
+            console.log(data.field)
                 var index = layer.load(1, {time: 10 * 1000});
                 $.ajax({
                     data: data.field,

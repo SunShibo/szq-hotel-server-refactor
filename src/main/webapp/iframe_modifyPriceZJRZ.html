@@ -152,7 +152,7 @@
             }
         }
 		function getDatas() {
-debugger;
+
   	      if(localStorage.modifyPrice){
               rsd = JSON.parse(localStorage.modifyPrice);
 
@@ -161,16 +161,7 @@ debugger;
           }
 
         }
-        function urlToObj(str){
-            var obj = {};
-            var arr1 = str.split("?");
-            var arr2 = arr1[1].split("&");
-            for(var i=0 ; i < arr2.length; i++){
-                var res = arr2[i].split("=");
-                obj[res[0]] = res[1];
-            }
-            return obj;
-        }
+
         function dealRsData(ff) {
 
             var sRooms = JSON.parse(localStorage.modifyPrice);
@@ -178,9 +169,17 @@ debugger;
             dealDays();
             var str = '';
             sRooms.map(function(c,i){
+                var name = '';
+                if(c.name){
+                    name = c.name
+				}else if(c.roomTypeName){
+                    name = c.roomTypeName;
+				}else if(c.roomType){
+                    name = c.roomType
+				}
                 str+=  ['<div class="table-row">',
                     '<div class="cell">',
-                    c.name?c.name:c.roomTypeName,
+                    name,
                     '</div>',
                     _deal(c),
                     '</div>'].join("");

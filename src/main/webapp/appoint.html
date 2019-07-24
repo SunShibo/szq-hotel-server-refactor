@@ -274,10 +274,6 @@
 
         }
 
-        function aabb() {
-            return [];
-        }
-
         //参数是某间房---everydayRoomPriceBOS---得到每间房屋每天的价格
         function getRoomPriceData(v) {
             // debugger;
@@ -910,6 +906,7 @@
                 return;
             }
             yuyueData = rs.data;
+            debugger;
             if(rs.data.memberId){
                 $("#source").val(rs.data.memberName);
                 userInfo.meLeval = rs.data.memberId;
