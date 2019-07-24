@@ -7,9 +7,9 @@
 
     <!--添加商品交易-->
     <insert id="addCommodiry"  parameterType="com.szq.hotel.entity.bo.CommodityBO"  useGeneratedKeys="true"  keyProperty="id"   >
-          INSERT INTO `hm_commodity_transaction` ( `order_number`, `create_time`, `pay_type`, `consume_type`, `money`,
+          INSERT INTO `hm_commodity_transaction` (`member_id`, `order_number`, `create_time`, `pay_type`, `consume_type`, `money`,
                                                       `create_user_id`, `consumption_details`,`hotel_id`)
-                                            VALUES (#{orderNumber}, NOW(),#{payType},#{consumeType},#{money},
+                                            VALUES (#{memberId},#{orderNumber}, NOW(),#{payType},#{consumeType},#{money},
                                                       #{createUserId}, #{consumptionDetails},#{hotelId});
     </insert>
 

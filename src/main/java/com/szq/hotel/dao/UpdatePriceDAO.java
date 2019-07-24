@@ -15,7 +15,8 @@ public interface UpdatePriceDAO {
 
     List<EverydayRoomPriceBO> queryPrice(@Param("orderId") Integer orderId, @Param("roomTypeId") Integer roomTypeId);
 
-    List<Integer> queryChildId(@Param("orderId") Integer orderId, @Param("roomTypeId") Integer roomTypeId);
+    List<EverydayRoomPriceBO> queryChildPrice(@Param("orderId") Integer orderId, @Param("roomTypeId") Integer roomTypeId);
+
 
 
     void delePrice(Integer id);

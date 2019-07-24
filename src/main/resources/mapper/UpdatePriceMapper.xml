@@ -6,9 +6,15 @@
 <mapper namespace="com.szq.hotel.dao.UpdatePriceDAO">
 
     <select id="queryPrice"  resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO">
-        SELECT * FROM `hm_update_price`  WHERE  order_id=#{orderId}  AND   room_type_id=#{roomTypeId}
+        SELECT  `time`,`money`   FROM `hm_update_price`  WHERE  order_id=#{orderId}  AND   room_type_id=#{roomTypeId}
     </select>
 
+    <select id="queryChildPrice"  resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO"  >
+         SELECT price.time ,price.money FROM hm_order der LEFT JOIN  hm_order_child child  on
+          child.order_id =der.id   LEFT JOIN hm_everyday_room_price price on
+          price.order_child_id = child.id
+      WHERE  der.id=#{orderId} AND child.room_type_id=#{roomTypeId}
+    </select>
     <select id="queryChildId"  resultType="java.lang.Integer">
         SELECT child.id		 FROM  hm_order der LEFT JOIN hm_order_child  child ON child.order_id  =der.id
           WHERE  child.room_type_id =#{roomTypeId} AND der.id=#{orderId}
