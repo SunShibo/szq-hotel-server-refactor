@@ -128,7 +128,7 @@ public class OrderController extends BaseCotroller {
             }else if(type.equals("directly")){
                 //直接入住
                 orderService.addOrderInfo(orderBO,list);
-                resultMap.put("orderNumber",orderBO.getOrderNumber());
+                resultMap.put("orderId",orderBO.getId());
             }else if(type.equals("updateInfo")){
 
             }
@@ -343,6 +343,11 @@ public class OrderController extends BaseCotroller {
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;
+            }
+
+            //判断是否是会员卡储值支付
+            if(payType.equals(Constants.STORED.getValue())){
+
             }
 
             //获取主订单信息

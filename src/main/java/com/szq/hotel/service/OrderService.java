@@ -60,6 +60,10 @@ public class OrderService {
 
     @Resource
     CheckInPersonService checkInPersonService;
+
+    @Resource
+    MemberService memberService;
+
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     //添加主订单 子订单 入住人 每日价格
@@ -460,7 +464,17 @@ public class OrderService {
 
     //获取入住支付信息
     public List<OrderChildBO> getPayInfo(Integer orderId) {
-        return orderDAO.getPayInfo(orderId);
+        List<OrderChildBO> orderChildBOS=orderDAO.getPayInfo(orderId);
+        for (OrderChildBO orderChildBO:orderChildBOS){
+            MemberBO memberBO=memberService.selectMemberByCerNumber(orderChildBO.getCertificateNumber());
+            if(memberBO==null){
+                orderChildBO.setNameStatus("no");
+            }else{
+                orderChildBO.setNameStatus("yes");
+            }
+        }
+
+        return orderChildBOS;
     }
 
     //根据子订单id查询子订单
@@ -747,7 +761,7 @@ public class OrderService {
             if (currentDate.compareTo(endDate) < 0 && everydayRoomPriceBOList.size() > 1 && currentDate.compareTo(m2) > 0) {
                 this.addOrderChildRecordAndRoomRate2(backup, currentTime, orderChildId, userId);
             }
-            backup.setRoomMajorState(Constants.VACANT.getValue());
+            backup.setRoomMajorState(Constants.INTHE.getValue());
         } else {
             //超时滚房费
             this.addOrderChildRecordAndRoomRate3(backup, endTime, orderChildId, userId, money);
@@ -776,6 +790,7 @@ public class OrderService {
         backup.setEndTime(orderChildBO.getEndTime());
         backup.setPracticalDepartureTime(orderChildBO.getPracticalDepartureTime());
         backup.setId(orderChildId);
+        backup.setPracticalDepartureTime(orderChildBO.getPracticalDepartureTime());
         orderDAO.addOrderChildBackup(backup);
 
         //修改订单状态
@@ -883,11 +898,14 @@ public class OrderService {
         orderChildBO.setEndTime(backup.getEndTime());
         orderChildBO.setPracticalDepartureTime(backup.getPracticalDepartureTime());
         orderDAO.updOrderChild(orderChildBO);
-
+        //修改房态
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", orderChildBO.getRoomId());
         map.put("state", backup.getRoomMajorState());
         roomService.updateroomMajorState(map);
+
+        //修改入住人状态
+        checkInPersonDAO.updPersonCheckOut(orderChildId, Constants.CHECKIN.getValue());
 
         //添加回滚记录
         orderRecordService.addOrderRecord(orderChildId, "误操作回滚(房费)",
@@ -896,7 +914,7 @@ public class OrderService {
 
         //添加反向收银汇总
         OrderBO orderBO = orderDAO.getOrderById(orderChildBO.getOrderId());
-        List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(orderChildId, Constants.CHECKOUT.getValue());
+        List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(orderChildId, Constants.CHECKIN.getValue());
         CheckInPersonBO checkInPersonBO = checkInPersonBOS.get(0);
         OrderChildBO orderChildResult = this.getOrderChildById(orderChildId);
         cashierSummaryService.addCheck(backup.getRoomRate().multiply(new BigDecimal(-1)), null, orderBO.getOrderNumber(), userId,
