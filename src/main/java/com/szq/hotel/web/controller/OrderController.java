@@ -46,6 +46,9 @@ public class OrderController extends BaseCotroller {
 
     @Resource
     RoomService roomService;
+
+    @Resource
+    MemberService memberService;
     /**
      * 房间预定 预约入住 直接入住 修改
      * @param orderBO 预约信息
@@ -317,7 +320,7 @@ public class OrderController extends BaseCotroller {
      * @param name 付款人姓名
      * */
     @RequestMapping("/pay")
-    public void pay(BigDecimal money, String payType,Integer id,String name, HttpServletRequest request, HttpServletResponse response){
+    public void pay(BigDecimal money, String payType,Integer id,String name,String certificateNumber, HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -347,7 +350,7 @@ public class OrderController extends BaseCotroller {
 
             //判断是否是会员卡储值支付
             if(payType.equals(Constants.STORED.getValue())){
-
+                memberService.storedValuePay(certificateNumber,money,"入住支付",Constants.ROOMRATE.getValue(),null,userInfo.getId());
             }
 
             //获取主订单信息
@@ -417,7 +420,6 @@ public class OrderController extends BaseCotroller {
                return;
            }
            List<OrderChildBO> orderChildBOS=orderService.getPayInfo(orderId);
-           //判断选择的人 是不是会员 返回个会员id 前端判断 能不能储值支付  支付那 如果是储值支付 调用会员支付接口
            //所有支付人
            for (OrderChildBO orderChild:orderChildBOS) {
                if("yes".equals(orderChild.getMain())){
