@@ -58,6 +58,10 @@
                 practical_departure_time=#{practicalDepartureTime},
             </if>
 
+            <if test="endTime!=null and endTime!=''">
+                end_time=#{endTime},
+            </if>
+
             <if test="orderState!=null and orderState!=''">
                 order_state=#{orderState},
             </if>
