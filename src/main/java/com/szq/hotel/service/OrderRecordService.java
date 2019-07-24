@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /**
  *  子订单详情
@@ -118,7 +119,7 @@ public class OrderRecordService {
      * @param list
      * @return
      */
-    public List<String> queryPayType(List<Integer> list) {
+    public Set<String> queryPayType(List<Integer> list) {
         Integer id = orderRecordDAO.queryChildIdByRecordId(list.get(0));
         return  orderRecordDAO.queryPayType(id);
     }

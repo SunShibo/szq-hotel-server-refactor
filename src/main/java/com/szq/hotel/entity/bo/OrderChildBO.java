@@ -41,12 +41,31 @@ public class OrderChildBO extends BaseModel {
     private String createUserName;//操作员姓名
     private String roomMajorState;//房态
     private String name;//第一个入住人员姓名
+    private String certificateNumber;//身份证号
+    private String nameStatus;//入住人员是否是会员
     private String createTime;//第一个入住人员入住时间
     public String getMain() {
         return main;
     }
     public String getRoomMajorState() {
         return roomMajorState;
+    }
+
+
+    public String getCertificateNumber() {
+        return certificateNumber;
+    }
+
+    public void setCertificateNumber(String certificateNumber) {
+        this.certificateNumber = certificateNumber;
+    }
+
+    public String getNameStatus() {
+        return nameStatus;
+    }
+
+    public void setNameStatus(String nameStatus) {
+        this.nameStatus = nameStatus;
     }
 
     public void setRoomMajorState(String roomMajorState) {

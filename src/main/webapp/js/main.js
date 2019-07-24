@@ -37,8 +37,13 @@ var OFFICERS = /^[\u4E00-\u9FA5](字第)([0-9a-zA-Z]{4,8})(号?)$/;
 
 
 var api = {
-    queryUserIntgeralInfo: '/member/getMemberInfo'//积分查询?userId=3   已修改
-    , addIntegral: '/member/integralChange'//积分增加?userId=3&number=20
+    admin: '/admin/getAdminById' //管理员列表查询   已修改
+    , delAdmin: '/admin/delAdmins' //管理员删除   已修改
+    , updateAdmin: '/admin/updateAdminUser' //管理员编辑   已修改
+    , addAdmin: '/admin/adminRegister' //管理员添加   已修改
+    , queryUserIntgeralInfo: '/member/getMemberInfo'//积分查询   已修改
+    , addIntegral: '/member/integralChange'//积分增加  已修改
+    , storedValue: '/member/storedValueChange'//储值调整  已修改
     // , deductionIntegral: '/integral/updateIntegral?v=1'//积分减少?userId=3&number=20  废弃
     , queryMember: '/member/selectMember'//会员查询?query=张三      已修改
     , addMember: '/member/addMember?v=1'//会员添加   已修改
@@ -76,12 +81,12 @@ var api = {
     // , refundprice: '/OrderManage/refundprice?v=1'//退款  废弃
     , info: '/chilOrder/recorded'//客账入账  已修改
     , outRoom: '/order/getCheckOutInfo'//查看退房信息  已修改
-    , outRoomBtn: '/order/checkOut'//退房按钮   已修改
-    , refund: '/OrderManage/refundOnclick'//查询结账信息
     , subitemOnclick: '/chilOrder/queryChildleAccounts'//查询子订单单项结账信息   已修改
     , subitem: '/chilOrder/childleAccounts'//子订单结账  已修改
-    , refundBtn: '/OrderManage/refund'//结账按钮
-    , outRoomRefound: '/OrderManage/outRoomRefound'//退房回滚
+    , outRoomBtn: '/order/checkOut'//退房按钮   已修改
+    , outRoomRefound: '/order/checkOutRollback'//退房回滚  已修改
+    , refund: '/chilOrder/queryAccounts'//查询总结账信息  已修改
+    , refundBtn: '/chilOrder/accounts'//总结账按钮  已修改
     , exemption: '/chilOrder/free'//冲减  已修改
     , updatePriceTime: '/room/updatePriceTime'//查询修改时间是否冲突
     , largeUpdatePriceTime: '/room/largeUpdatePriceTime'//批量修改全天房时间
@@ -169,14 +174,13 @@ var api = {
     , scheduleUpdate: '/subcribe/updateSub?v=1'//选房确定后需要调用算价格
     , otherView: '/room/otherView'//数据表格
     , orderInfoHistory: 'OrderManage/orderInfoHistory'//消费明细
-    , queryOrderByRoom: 'commodity/querySuspend'//商品交易挂账000
+    , queryOrderByRoom: '/commodity/querySuspend'//商品交易挂账000
     , buying: 'OrderManage/buying'//挂账
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
     , FormManangeResponse: '/FormAccountDetailController/FormManangeResponse'//管理层报表
     , cancelSubQuery: '/subcribe/cancelSubQuery'//取消查询
     , cancelSubUpdate: '/subcribe/cancelSubUpdate'//取消订单
     , beforehandDuty: '/dealShiftServiceController/beforehandDuty'//预交班
-    , subitem: '/OrderManage/subitem'//子订单结账
     , stamOrder: '/OrderManage/stamOrder'//在住打印
     , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人
     , delRoomPerson: '/roomDetailsController/delRoomPerson'//删除同来人
@@ -192,6 +196,7 @@ var api = {
     , updateFloor:'floor/updateFloor'//修改楼层000
     , deleteFloor:'floor/deleteFloor'//删除楼层000
     , roleAllData: '/admin/getAllRoleMenu'//查询角色     已修改
+    , roleAll: '/admin/getRoleList'//查询所有角色（下拉框）     已修改
     , roleDelete: '/admin/delRoleByIds' //角色删除      已修改
     , roleUpdate: '/admin/grantAuthority' //角色编辑      已修改
     , roleAdd: '/admin/addRoleGrantAuthority' //角色添加      已修改
@@ -204,9 +209,8 @@ layui.config({
 }).extend({
     formSelects: 'formSelects-v4.min'
 });
-
 layui.use(['jquery', 'element'], function () {
-    $ = layui.jquery;
+    $ = layui.$;
     element = layui.element;
     $(document).on("click", '.outLogin', function () {
         $.ajax({
@@ -267,7 +271,22 @@ layui.use(['jquery', 'element'], function () {
 
     renderMenu($, element);
     // renderReport($,element)
+
 })
+
+function renderSelect(id, key, value, url, f, callback) {
+    layui.$.getJSON(url + "&random=" + Date.now(), function (rs) {
+        var dom = $("#" + id);
+        var str = '';
+        if (rs.success) {
+            for (var i = 0; i < rs.data.length; i++) {str += '<option value="' + rs.data[i][key] + '">' + rs.data[i][value] + '</option>';}
+            dom.append(str)
+        }
+        f.render("select");
+        if (callback) callback(str, rs.data);
+
+    })
+}
 
 
 //清空表单
@@ -426,20 +445,6 @@ function DateToLStr4(dt) {
 //判断字符是否为空的方法
 function isEmpty(obj) {
     return typeof obj === "undefined" || obj == null || obj === "";
-}
-
-function renderSelect(id, key, value, url, f, callback) {
-    $.getJSON(url + "&random=" + Date.now(), function (rs) {
-        var dom = $("#" + id);
-        var str = '';
-        if (rs.success) {
-            for (var i = 0; i < rs.data.length; i++) {str += '<option value="' + rs.data[i][key] + '">' + rs.data[i][value] + '</option>';}
-            dom.append(str)
-        }
-        f.render("select");
-        if (callback) callback(str, rs.data);
-
-    })
 }
 
 function getUrl(name) {
@@ -881,35 +886,6 @@ function setUserInfo(ID, callback) {
             }
         }
     })
-}
-
-//格式化支付传值
-function formatPayTp(_p) {
-    var payTp = 0;
-    payTp = _p == 2 ? 0 : '';
-    payTp = _p == 3 ? 1 : payTp;
-    payTp = _p == 4 ? 2 : payTp;
-    payTp = _p == 5 ? 3 : payTp;
-    payTp = _p == 6 ? 4 : payTp;
-    payTp = _p == 7 ? 5 : payTp;
-    return payTp;
-}
-
-//格式化POS支付方式
-function checkPayState(_p) {
-    var obj = {}
-    if (_p == 2) {
-        obj.payTp = 0;
-    }
-    if (_p == 3) {
-        obj.payTp = 11;
-        obj.procCd = 660000;
-    }
-    if (_p == 4) {
-        obj.payTp = 12;
-        obj.procCd = 660000;
-    }
-    return obj;
 }
 
 //身份证验证并查询会员信息

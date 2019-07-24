@@ -11,31 +11,7 @@
     </style>
 </head>
 <body>
-<OBJECT id=MSComm1 CLASSID="clsid:648A5600-2C6E-101B-82B6-000000000014" codebase="mscomm32.ocx"
-        type="application/x-oleobject" style="LEFT:54px;TOP:14px">
-    <PARAM NAME="CommPort" VALUE="3"/>
-    <PARAM NAME="DataBits" VALUE="8"/>
-    <PARAM NAME="StopBits" VALUE="1"/>
-    <PARAM NAME="BaudRate" VALUE="9600"/>
-    <PARAM NAME="Settings" VALUE="9600,N,8,1"/>
-
-    <PARAM NAME="RTSEnable" VALUE="1"/>
-    <PARAM NAME="DTREnable" VALUE="1"/>
-    <PARAM NAME="Handshaking" VALUE="0"/>
-    <PARAM NAME="NullDiscard" VALUE="0"/>
-    <PARAM NAME="ParityReplace" VALUE="?"/>
-
-    <PARAM NAME="EOFEnable" VALUE="0"/>
-    <PARAM NAME="InputMode" VALUE="0"/>
-    <PARAM NAME="InBufferSize" VALUE="1024"/>
-    <PARAM NAME="InputLen" VALUE="0"/>
-    <PARAM NAME="OutBufferSize" VALUE="512"/>
-
-    <PARAM NAME="SThreshold" VALUE="0"/>
-    <PARAM NAME="RThreshold" VALUE="1"/>
-
-</OBJECT>
-<form class="tab-box layui-form">
+<form class="tab-box layui-form" lay-filter="form">
     <fieldset class="layui-elem-field layui-field-title">
         <legend style="text-align: center">会员信息</legend>
         <div class="layui-field-box">
@@ -43,14 +19,14 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">会员姓名 </label>
                     <div class="layui-input-inline">
-                        <input type="tel" id="userName" autocomplete="off"
+                        <input type="tel" name="memberName" id="memberName" autocomplete="off"
                                class="layui-input layui-disabled" disabled>
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">会员卡号</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="cart" autocomplete="off"
+                        <input type="text" name="cardNumber" id="cardNumber" autocomplete="off"
                                class="layui-input layui-disabled" disabled>
                     </div>
                 </div>
@@ -59,14 +35,14 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">会员类型</label>
                     <div class="layui-input-inline">
-                        <input type="tel" id="name" autocomplete="off"
+                        <input type="tel" name="memberLevelName" id="memberLevelName" autocomplete="off"
                                class="layui-input layui-disabled" disabled>
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">余额</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="storedValue" autocomplete="off"
+                        <input type="text" name="storedValue" id="storedValue" autocomplete="off"
                                class="layui-input layui-disabled" disabled>
                     </div>
                 </div>
@@ -87,14 +63,9 @@
                 </div>
             </div>
             <div class="layui-form-item" style="text-align: right">
-                <label class="layui-form-label">变动状态</label>
-                <div class="layui-input-inline">
-                    <input type="radio" name="status" value="1" title="增加" checked>
-                    <input type="radio" name="status" value="2" title="减少">
-                </div>
                 <label class="layui-form-label">支付金额</label>
                 <div class="layui-input-inline">
-                    <input type="number" name="number" lay-verify="required" placeholder="请输入金额" autocomplete="off"
+                    <input type="number" name="storedValueChange" lay-verify="required" placeholder="请输入金额" autocomplete="off"
                            class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux" style="color:#ff0000;">*</div>
@@ -102,7 +73,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">优惠价格</label>
                 <div class="layui-input-inline">
-                    <input type="number" name="give" lay-verify="required" placeholder="请输入金额" autocomplete="off"
+                    <input type="number" name="presenterMoney" lay-verify="required" placeholder="请输入金额" autocomplete="off"
                            class="layui-input">
                 </div>
             </div>
@@ -118,170 +89,68 @@
     </fieldset>
     <div style="position: fixed; bottom: 10px; right: 10px;">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit="" lay-filter="formData">自动支付</button>
-            <button class="layui-btn" lay-submit="" lay-filter="formData" data-id="1">手动支付</button>
+            <button class="layui-btn" lay-submit="" lay-filter="formData">确定</button>
             <button class="layui-btn" id="back">取消</button>
         </div>
     </div>
 </form>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
-<SCRIPT LANGUAGE=javascript FOR=MSComm1 EVENT=OnComm>
-    MSComm1_OnComm()
-
-    function MSComm1_OnComm() {
-        switch (MSComm1.CommEvent) {
-            case 1: {
-                alert("Send OK！");
-                break;
-            } //发送事件
-            case 2: {
-                Receive();
-                break;
-            } //接收事件
-            default:
-                alert("Event Raised!" + MSComm1.CommEvent);
-        }
-    }
-</SCRIPT>
 <script>
     layui.use(['layer', 'form', 'element', 'jquery'], function () {
         var type = 1;
         var layer = layui.layer
             , form = layui.form
             , element = layui.element
-            , $ = layui.jquery;
-        $.getJSON(api.queryUserIntgeralInfo + '&userId=' + getUrl("id") + "&random=" + Date.now(), function (rs) {
-            // console.info(rs)
+            , $ = layui.jquery
+            , requestData = {}
+            , index = 0;
+        $.getJSON(api.queryUserIntgeralInfo + '?memberId=' + getUrl("id") + "&random=" + Date.now(), function (rs) {
+            console.info(rs)
             try {
                 var r = rs.data;
-                delete r['userId']
-                delete r['integral']
-                for (var i in r) {
-                    document.getElementById(i).value = r[i];
-                }
+                form.val('form',r);
             } catch (err) {
                 alert(err);
             }
         })
-        $('#back').on('click', function () {
 
+        //取消按钮
+        $('#back').on('click', function () {
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
             parent.layer.close(index); //再执行关闭
             return false;
         });
+
+        //确认按钮
         form.on('submit(formData)', function (data) {
-            var flag = $(this).data('id'), type = data.field.type, index = layer.load(1, {time: 10 * 1000});;
-            data.field['userId'] = getUrl("id");
-            if (data.field.status == 1) {//增加
-                //根据支付方式选择
-                switch (type){
-                    case '1'://现金
-                        Receive1(JSON.stringify(data.field));
-                        layer.close(index);
-                        break;
-                    case '2'://POS
-                    case '3':
-                    case '4':
-                        if(flag){//手动
-                            data.field['transAmount'] = data.field.number;
-                            data.field['payTp'] = formatPayTp(data.field.type);
-                            Receive1(JSON.stringify(data.field));
-                        }else {
-                            //判断POS付款方式用于调起POS机
-                            var payjson = checkPayState(data.field.type);
-                            payjson = $.extend({}, PAYJSON, payjson);
-                            if (!data.field.number) {
-                                layer.alert("交易金额有误");
-                                layer.close(index);
-                                return false;
-                            }
-                            payjson.amt = data.field.number;
-                            payjson.orderNo = new Date().getTime();
-                            Send(JSON.stringify(payjson));
-                        }
-                        layer.close(index);
-                        break;
-                }
-            } else {//减少
-                console.log('减少')
-            }
+
+            requestData = data.field;
+            //防止重复点击
+            if (index != null) clearTimeout(index);
+            index = setTimeout(pay, 1000);
             return false;
         });
-    });
 
-    setTimeout(function () {
-        MSComm1.PortOpen == false;
-        OperatePort();
-    }, 1000)
-
-    function OperatePort() {
-        try {
-            MSComm1.CommPort = localStorage.posport ? localStorage.posport : 6
-            MSComm1.Settings = 115200 +
-                ",N" +
-                ",8" +
-                ",1";
-            MSComm1.OutBufferCount = 0; //清空发送缓冲区
-            MSComm1.InBufferCount = 0; //滑空接收缓冲区
-            MSComm1.PortOpen = true;
-        } catch (ex) {
-            alert(ex.message);
-        }
-    }
-
-    function Send(orgstr) {
-        try {
-            MSComm1.Output = orgstr;
-            console.info("发送数据到pos机：" + orgstr);
-        } catch (ex) {
-            alert(ex.message);
-        }
-    }
-
-    function Receive() {
-        str += MSComm1.Input;
-        console.info(str)
-        console.log(str.indexOf('}') != -1)
-        if (str.indexOf('}') != -1) {
-            Receive1(str)
-        }
-    }
-
-    function Receive1(data) {
-        console.log("接收到的数据:" + data)
-        // var index = layer.load(1);
-        var _data = JSON.parse(data), index = layer.load(1, {time: 10 * 1000});
-        if (_data.code == '-1') {
-            layer.close(index);
-            showMsg(_data.message, 2, false);
-            return;
-        }
-        $.ajax({
-            data: _data,
-            type: "POST",
-            dataType: "JSON",
-            url: '/integral/updateStoredValue',
-            beforeSend: function () {
-                $("#btn").addClass('layui-btn-disabled').prop('disabled', 'true');
-            },
-            complete: function () {
-                layer.close(index);
-                $("#btn").removeClass('layui-btn-disabled').prop('disabled', 'false');
-            },
-            success: function (r) {
-                layer.close(index);
-                if (r.success) {
-                    // 确保在最后关闭窗体
-                    layer.alert("操作成功", function (index) {
-                        layer.close(index);
-                        parent.location.reload();
-                    })
-                } else {
-                    alert(r.errMsg)
+        function pay() {
+            requestData['id'] = getUrl("id");
+            $.post(api.storedValue, requestData, function (r) {
+                try {
+                    // r = JSON.parse(r);
+                    if (r.success) {
+                        // 确保在最后关闭窗体
+                        layer.alert("操作成功", function (index) {
+                            layer.close(index);
+                            parent.location.reload();
+                        })
+                    } else {
+                        alert(r.errMsg)
+                    }
+                } catch (err) {
+                    alert(err);
                 }
-            }
-        });
-    }
+            })
+        }
+    });
 </script>
 </body>
 </html>

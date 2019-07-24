@@ -6,26 +6,6 @@
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
-<OBJECT id=MSComm1 CLASSID="clsid:648A5600-2C6E-101B-82B6-000000000014" codebase="mscomm32.ocx"
-        type="application/x-oleobject" style="LEFT:54px;TOP:14px">
-    <PARAM NAME="CommPort" VALUE="3"/>
-    <PARAM NAME="DataBits" VALUE="8"/>
-    <PARAM NAME="StopBits" VALUE="1"/>
-    <PARAM NAME="BaudRate" VALUE="9600"/>
-    <PARAM NAME="Settings" VALUE="9600,N,8,1"/>
-    <PARAM NAME="RTSEnable" VALUE="1"/>
-    <PARAM NAME="DTREnable" VALUE="1"/>
-    <PARAM NAME="Handshaking" VALUE="0"/>
-    <PARAM NAME="NullDiscard" VALUE="0"/>
-    <PARAM NAME="ParityReplace" VALUE="?"/>
-    <PARAM NAME="EOFEnable" VALUE="0"/>
-    <PARAM NAME="InputMode" VALUE="0"/>
-    <PARAM NAME="InBufferSize" VALUE="1024"/>
-    <PARAM NAME="InputLen" VALUE="0"/>
-    <PARAM NAME="OutBufferSize" VALUE="512"/>
-    <PARAM NAME="SThreshold" VALUE="0"/>
-    <PARAM NAME="RThreshold" VALUE="1"/>
-</OBJECT>
 <form class="layui-form" lay-filter="formData">
     <div class="layui-form-item">
         <label class="layui-form-label">支付方式</label>
@@ -42,7 +22,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">证件号</label>
             <div class="layui-input-inline">
-                <input type="text" name="IDCard" id="card" placeholder="请输入证件号码"
+                <input type="text" name="certificateNumber" id="card" placeholder="请输入证件号码"
                        autocomplete="off"
                        class="layui-input">
             </div>
@@ -92,24 +72,6 @@
     </div>
 </form>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
-<SCRIPT LANGUAGE=javascript FOR=MSComm1 EVENT=OnComm>
-    MSComm1_OnComm()
-
-    function MSComm1_OnComm() {
-        switch (MSComm1.CommEvent) {
-            case 1: {
-                alert("Send OK！");
-                break;
-            } //发送事件
-            case 2: {
-                Receive();
-                break;
-            } //接收事件
-            default:
-                alert("Event Raised!" + MSComm1.CommEvent);
-        }
-    }
-</SCRIPT>
 <script>
     var dataInfo = {}, str = "", layer_index;
     layui.use(['form'], function () {
@@ -178,7 +140,6 @@
         form.on('submit(formData)', function (data) {
             str = "";
             dataInfo = data.field;
-            console.log(dataInfo);
             Receive1(dataInfo)
             return false;
         });
@@ -201,9 +162,11 @@
                         //do something
                         window.open('shopPrinting.html?id=' + rs.data, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
                         parent.layer.closeAll();
+                    },function () {
+                        parent.layer.closeAll();
                     });
                 }else {
-                    layer.msg(data.errMsg);
+                    layer.msg(rs.errMsg);
                 }
             }
         });

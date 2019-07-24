@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("ChildOrderService")
 @Transactional
@@ -161,7 +158,7 @@ public class ChildOrderService {
         log.info("userId:{}\tids:{}\tshiftToId:{}\trollOutId:{}", userId, ids, shiftToId, rollOutId);
         String[] split = ids.split(",");
         for (int i = 0; i < split.length; i++) {
-            OrderRecoredBO orderRecoredBO = orderRecordService.queryOrderRecordById(split.length);
+            OrderRecoredBO orderRecoredBO = orderRecordService.queryOrderRecordById(Integer.parseInt(split[i]));
 
             //押金
             if (Constants.CASHPLEDGE.getValue().equals(orderRecoredBO.getProject())) {
@@ -219,7 +216,10 @@ public class ChildOrderService {
         log.info("ids:{}", ids);
         List<Integer> list = StringUtils.strToList(ids);
         log.info("query PayType.................................................................");
-        List<String> payType = orderRecordService.queryPayType(list);
+        Set<String> payType = orderRecordService.queryPayType(list);
+        if(payType.isEmpty()){
+            payType.add(Constants.CASH.getValue());
+        }
         payType.removeAll(Collections.singleton(null));
         log.info("PayType:{}", payType);
         //查询消费多少
@@ -344,7 +344,9 @@ public class ChildOrderService {
         log.info("start accounts........................................................");
         //找出主订单
         String[] split = ids.split(",");
-        Integer childMain = childOrderDAO.queryOrderChildMain(split[0]);
+
+        ChildOrderBO child = childOrderDAO.queryOrderChildById(Integer.parseInt(split[0]));
+        Integer childMain = this.queryOrderChildMain(child.getAlRoomCode());
         ChildOrderBO childOrderBO = childOrderDAO.queryOrderChildById(childMain);
         if (status.equals("yes")) {
             log.info("start gathering........................................................");

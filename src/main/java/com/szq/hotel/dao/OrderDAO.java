@@ -80,6 +80,7 @@ public interface OrderDAO {
     //获取入住支付信息
     List<OrderChildBO> getPayInfo(Integer orderId);
 
+
     /**
      * 订单列表
      * @param param

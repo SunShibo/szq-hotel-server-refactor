@@ -7,6 +7,7 @@ import com.szq.hotel.entity.bo.OrderRecoredBO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 子订单详情
@@ -42,7 +43,7 @@ public interface OrderRecordDAO {
      * @param childId
      * @return
      */
-    List<String> queryPayType(Integer childId);
+    Set<String> queryPayType(Integer childId);
 
     /**
      * 查询支付方式
