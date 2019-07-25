@@ -167,6 +167,29 @@ public class DateUtils {
 		return cal.getTime();
 	}
 
+	//获取前一天
+	public static String getLastDay(String time){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		Date date=null;
+		try {
+			date = sdf.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		calendar.setTime(date);
+		int day=calendar.get(Calendar.DATE);
+		//                      此处修改为+1则是获取后一天
+		calendar.set(Calendar.DATE,day-1);
+
+		String lastDay = sdf.format(calendar.getTime());
+		return lastDay;
+	}
+public static void main(String[] args) {
+	Date startTime = DateUtils.getYesTaday();
+	Date endTime = DateUtils.getDateByType(new Date(),"yyyy-MM-dd 04:00:00");
+	DateUtils.getLastDay(endTime.toString());
+}
 	/**
 	 * 得到指定 增加或者减去 天数 Date类型
 	 */
@@ -577,7 +600,7 @@ public class DateUtils {
 		return cal.get(Calendar.DAY_OF_MONTH);
 	}
 
-	public static void main(String[] args) {
+	//public static void main(String[] args) {
 
 //		Date date1 = DateUtils.parseDate("2016-05-18", DATE_PATTERN);
 //		Date date2 = DateUtils.parseDate("2016-12-31", DATE_PATTERN);
@@ -603,7 +626,7 @@ public class DateUtils {
 //		System.out.println("...." +
 //				DateUtils.formatDate(DateUtils.CNLONG_DATE_PATTERN , DateUtils.getBeforeDay(new Date(), -1)));
 
-	}
+	//}
 
 	//获取当日日期的未来N天
 	public static synchronized String[] getSpecifiedDayBefore(Date date, int dayNumber, Date starTime) {

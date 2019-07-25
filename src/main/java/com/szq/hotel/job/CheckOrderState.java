@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component("CheckOrderState")
 public class CheckOrderState {
@@ -35,6 +37,8 @@ public class CheckOrderState {
     IncomeService incomeService;
     @Resource
     HotelDAO hotelDAO;
+    @Resource
+    ManagementReportService managementReportService;
 
 
     int count = 0;
@@ -91,7 +95,14 @@ public class CheckOrderState {
         List<HotelBO> hotelBOS = hotelDAO.queryHotel();
         for (HotelBO hotelBO:hotelBOS) {
             incomeService.addIncome(hotelBO.getId());
-
+            //管理层报表
+            String endTime = DateUtils.getStringData(new Date(),"yyyy-MM-dd");
+            String startTime = DateUtils.getLastDay(endTime);
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("startTime",startTime+" 04:00:00");
+            map.put("endTime",endTime+" 04:00:00");
+            map.put("hotelId",hotelBO.getId());
+            managementReportService.addData(map,hotelBO.getId());
         }
         log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
