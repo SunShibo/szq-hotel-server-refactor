@@ -112,9 +112,6 @@
             <if test="orderState!=null and orderState!=''">
                 order_state=#{orderState},
             </if>
-            <if test="practicalDepartureTime!=null and practicalDepartureTime!=''">
-                practical_departure_time=#{practicalDepartureTime},
-            </if>
             <if test="remark!=null and remark!=''">
                 remark=#{remark},
             </if>
@@ -136,6 +133,7 @@
             <if test="main!=null and main!=''">
                 main=#{main},
             </if>
+            practical_departure_time=#{practicalDepartureTime},
             update_time=now()
         </set>
         where id=#{id}
@@ -406,7 +404,7 @@
         from hm_order as o inner join hm_order_child as oc on  oc.order_id=o.id
         inner join hm_room_type as rt on oc.room_type_id=rt.id
         left join hm_room as r on oc.room_id=r.id
-        where oc.order_id=#{orderId} and order_state=#{orderState}
+        where oc.order_id=#{orderId} and (order_state=#{orderState} or order_state='notpay')
         group by oc.id
     </select>
 

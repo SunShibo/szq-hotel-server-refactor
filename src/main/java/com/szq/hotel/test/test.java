@@ -114,19 +114,31 @@ public class test {
     }
 
     public static void main(String args[]) throws ParseException {
-        //获取今天日期
+        SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat hh = new SimpleDateFormat("HH");
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if(hour<=6){
-            calendar.add(Calendar.DATE, -1);
-        }
-        int year = calendar.get(Calendar.YEAR);//获取年份
+        Date currentTimeDate = calendar.getTime();
+        Date currentTime = ymdhms.parse(ymdhms.format(currentTimeDate));
+        //获取今天凌晨四点
+        calendar.set(Calendar.HOUR_OF_DAY, 04);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        Date m4 = calendar.getTime();
+        //获取今天凌晨六点
+        calendar.set(Calendar.HOUR_OF_DAY, 06);
+        Date m6 = calendar.getTime();
+        //获取下午两点
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.set(Calendar.MINUTE, 0);
+        calendar2.set(Calendar.SECOND, 0);
 
-        int month=calendar.get(Calendar.MONTH);//获取月份
+        //获取下午两点
+        calendar2.set(Calendar.HOUR_OF_DAY, 14);
+        Date m2 = calendar2.getTime();
+        System.err.println(ymdhms.format(m2));
+        System.err.println(currentTime.getTime());
+        System.err.println(m2.getTime());
 
-        int day=calendar.get(Calendar.DATE);//获取日
-        System.err.println(year);
-        System.err.println(month);
-        System.err.println(day);
     }
 }
