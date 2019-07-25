@@ -68,7 +68,7 @@
                 </if>-->
     <!--查询是否有预约-->
     <select id="querySubStatus"  parameterType="java.util.Map" resultType="java.lang.Integer">
-      SELECT  id  FROM `hm_order_child` WHERE start_time BETWEEN #{startTime} AND #{endTime} AND  order_state='reservation' AND room_id=#{roomId}
+      SELECT  id  FROM `hm_order_child` WHERE start_time BETWEEN #{startTime} AND #{endTime} AND  order_state='reservation'  AND room_id=#{roomId}
       LIMIT 0,1
     </select>
 
@@ -77,8 +77,8 @@
         SELECT child.id,child.end_time,pay_cash_num+other_pay_num as cash ,room_rate+other_rate+free_rate_num as total ,
         oder.check_type
          FROM `hm_order_child` child INNER  JOIN  hm_order oder ON oder.id=child.order_id
-
           WHERE  order_state='admissions' OR  order_state='notpay'  AND  room_id=#{roomId}
+           ORDER BY  child.end_time DESC  LIMIT 0,1
     </select>
 
     <!--查询房型数量-->

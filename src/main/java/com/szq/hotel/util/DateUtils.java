@@ -722,6 +722,15 @@ public static void main(String[] args) {
 	}
 
 	/**
+	 * 获取时间字符串
+	 */
+	public static  String getThisBrightSiceStringData(Date time){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd 06:00:00");
+		String format = simpleDateFormat.format(time);
+		return format;
+	}
+
+	/**
 	 * 把字符串转为Data
 	 */
 	public static Date getDataByStr(String strDate) {

@@ -64,7 +64,7 @@ public class HomeService {
       /*  paramMap.put("network",network);*/
         if(!StringUtils.isEmpty(types))
              paramMap.put("type",types.split(","));
-        paramMap.put("startTime",DateUtils.getStringData(new Date(),DateUtils.LONG_DATE_PATTERN));
+        paramMap.put("startTime",DateUtils.getThisBrightSiceStringData(new Date()));
         paramMap.put("endTime",DateUtils.getBrightSiceStringData());
 
         Date startTime=new Date();
@@ -81,8 +81,10 @@ public class HomeService {
                     //判断是否有预约
                     paramMap.put("roomId", homeRoomBO.getRoomId());
                     Integer count = homeDAO.querySubStatus(paramMap);
-                    if (count !=null)
+                    if (count !=null) {
                         homeRoomBO.setMakeStatus(count);
+                        typeBO.setSubscribe();
+                    }
                     //是否是在住中
                     if (homeRoomBO.getStatus().equals(Constants.INTHE.getValue()) || homeRoomBO.getStatus().equals(Constants.TIMEOUT.getValue())) {
                         HomeOrderBO homeOrderBO = homeDAO.queryChildOrder(paramMap);
