@@ -4,6 +4,7 @@ import com.szq.hotel.dao.ManagementReportDAO;
 import com.szq.hotel.entity.bo.ManagementReportResponseBO;
 import com.szq.hotel.entity.bo.FormUtilBO;
 import com.szq.hotel.entity.bo.ManagementReportBO;
+import com.szq.hotel.util.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +25,16 @@ public class ManagementReportService {
 
     /**
      * 添加数据
-     *  startTime 起始时间
-     *  endTime 终止时间
-     *  hotelId 酒店id
-     * @param map
      * @param hotelId 酒店id
      */
-    public void addData(Map<String,Object> map,Integer hotelId){
+    public void addData(Integer hotelId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        String endTime = DateUtils.getStringData(new Date(),"yyyy-MM-dd");
+        String startTime = DateUtils.getLastDay(endTime);
+        map.put("startTime",startTime+" 04:00:00");
+        map.put("endTime",endTime+" 04:00:00");
+        map.put("hotelId",hotelId);
+
         ManagementReportBO managementReportBO = new ManagementReportBO();
 
         managementReportBO.setReceivableSum(this.getReceivableSum(map));

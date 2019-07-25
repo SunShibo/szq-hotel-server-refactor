@@ -96,13 +96,7 @@ public class CheckOrderState {
         for (HotelBO hotelBO:hotelBOS) {
             incomeService.addIncome(hotelBO.getId());
             //管理层报表
-            String endTime = DateUtils.getStringData(new Date(),"yyyy-MM-dd");
-            String startTime = DateUtils.getLastDay(endTime);
-            Map<String,Object> map = new HashMap<String, Object>();
-            map.put("startTime",startTime+" 04:00:00");
-            map.put("endTime",endTime+" 04:00:00");
-            map.put("hotelId",hotelBO.getId());
-            managementReportService.addData(map,hotelBO.getId());
+            managementReportService.addData(hotelBO.getId());
         }
         log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }

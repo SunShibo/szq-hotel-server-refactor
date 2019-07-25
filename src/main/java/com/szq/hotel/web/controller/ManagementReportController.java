@@ -29,7 +29,7 @@ public class ManagementReportController extends BaseCotroller {
 
 
     @RequestMapping("/addtest")
-    public void addtest(String start,String end,HttpServletResponse response,HttpServletRequest request){
+    public void addtest(HttpServletResponse response,HttpServletRequest request){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -41,13 +41,8 @@ public class ManagementReportController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            Map<String,Object> map = new HashMap<String, Object>();
-            String startTime  = start + " 04:00:00";
-            String endTime = end + " 04:00:00";
-            map.put("startTime",startTime);
-            map.put("endTime",endTime);
-            map.put("hotelId",loginAdmin.getHotelId());
-            managementReportService.addData(map,loginAdmin.getHotelId());
+
+            managementReportService.addData(loginAdmin.getHotelId());
 
 
         }catch (Exception e){
