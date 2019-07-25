@@ -2,7 +2,6 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberCardDAO;
-import com.szq.hotel.dao.MemberLevelDAO;
 import com.szq.hotel.entity.bo.MemberCardBO;
 import com.szq.hotel.entity.bo.MemberCardResultBO;
 import com.szq.hotel.entity.bo.MemberLevelBO;
@@ -30,8 +29,6 @@ public class MemberCardService {
 
     @Resource
     private MemberCardDAO memberCardDAO;
-    @Resource
-    private MemberLevelDAO memberLevelDAO;
     @Resource
     private MemberLevelService memberLevelService;
 
