@@ -424,6 +424,7 @@ public class OrderService {
 
     //根据主订单id查询房间信息（客帐管理）
     public List<OrderChildBO> getRoomInfoById(Integer orderId) {
+        //多加一个房型 订单号
         return orderDAO.getRoomInfoById(orderId);
     }
 
