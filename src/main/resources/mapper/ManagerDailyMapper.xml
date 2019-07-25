@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szq.hotel.dao.ManagerDailyDAO">
+
+
+    <!--计算昨天预约未到的房间数-->
+    <select id="queryNumberOrder" resultType="com.szq.hotel.entity.bo.OcBO">
+      SELECT * FROM hm_order_child
+      WHERE order_state = 'reservation' AND  #{startTime} &lt;= start_time &lt; #{endTime}
+      and  hotel_id = #{hotelID};
+  </select>
+
+
+    <select id="queryMaintenanceroomNumber" resultType="com.szq.hotel.entity.bo.RoomRecordBO">
+      SELECT * FROM hm_room
+      WHERE room_state = 'yes'
+      AND hotel_id = #{hotelId}
+     </select>
+
+    <select id="queryNumberlockedStores" resultType="com.szq.hotel.entity.bo.RoomBO">
+        SELECT * FROM hm_room
+        WHERE hotel_id = #{hotelId}
+        AND lock_room_state = 'yes'
+        AND  (lock_room_start_time BETWEEN DATE_ADD( #{startTime},
+            INTERVAL 1 SECOND)  AND   DATE_SUB( #{endTime}, INTERVAL 1 SECOND))
+            OR (DATE_ADD(#{startTime},
+            INTERVAL 1 SECOND) BETWEEN lock_room_start_time AND lock_room_end_time)
+    </select>
+
+    <select id="queryTotalnumberGuestrooms" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM hm_room
+        WHERE hotel_id = #{hotelId}
+    </select>
+
+    <select id="queryCash" resultType="com.szq.hotel.entity.bo.CommodityBO">
+        SELECT * FROM hm_commodity_transaction
+        WHERE #{startTime}  &lt;= create_time &lt; #{endTime}
+        AND hotel_id = #{hotelId}
+        and pay_type = 'cash';
+    </select>
+
+    <select id="queryThroughoutDayrent" resultType="com.szq.hotel.entity.bo.CashierSummaryBO">
+        SELECT * FROM hm_cashier_summary
+        WHERE #{startTime} &lt;= create_time &lt; #{endTime}
+                                         AND project = '押金';
+    </select>
+</mapper>

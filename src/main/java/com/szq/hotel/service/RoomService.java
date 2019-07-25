@@ -106,7 +106,9 @@ public class RoomService {
         List<RmBO> list = roomDAO.queryRm(map);
 
         log.info("获取符合条件的房间集合:{}", list);
-
+        if(CollectionUtils.isEmpty(list)){
+            return list ;
+        }
         List<Integer> ls = new ArrayList<Integer>();
         //获取出房间的id
         if (!CollectionUtils.isEmpty(list)) {
@@ -193,8 +195,8 @@ public class RoomService {
             Double discount = memberDiscountBO.getDiscount();
             if (!CollectionUtils.isEmpty(list)) {
                 for (RmBO rmBO : list) {
-                    rmBO.setBasicPrice(rmBO.getBasicPrice() * discount);
-                    rmBO.setHourRoomPrice(rmBO.getHourRoomPrice() * discount);
+                    rmBO.setBasicPrice(Math.ceil(rmBO.getBasicPrice() * discount));
+                    rmBO.setHourRoomPrice(Math.ceil(rmBO.getHourRoomPrice() * discount));
                 }
             }
         }
@@ -275,8 +277,8 @@ public class RoomService {
                     roomTypeBO.setName(rtBO.getRoomTypeName());
                     roomTypeBO.setId(rtBO.getId());
                     roomTypeBO.setHotelId(rtBO.getHotelId());
-                    roomTypeBO.setBasicPrice(rtBO.getBasicPrice() * memberDiscountBO.getDiscount());
-                    roomTypeBO.setHourRoomPrice(rtBO.getHourRoomPrice() * memberDiscountBO.getDiscount());
+                    roomTypeBO.setBasicPrice(Math.ceil(rtBO.getBasicPrice() * memberDiscountBO.getDiscount()));
+                    roomTypeBO.setHourRoomPrice(Math.ceil(rtBO.getHourRoomPrice() * memberDiscountBO.getDiscount()));
                     //roomTypeBO.setName(rtBO.getRoomType());
                     Integer i = 0;
                     for (RmBO rmBO : list) {
