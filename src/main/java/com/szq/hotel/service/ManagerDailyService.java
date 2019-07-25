@@ -1,16 +1,17 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.dao.ManagerDailyDAO;
+import com.szq.hotel.dao.ManagerdailyBOMapper;
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.util.DateUtils;
 import org.apache.ibatis.annotations.Param;
+import org.openxmlformats.schemas.drawingml.x2006.main.STGeomGuideFormula;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Author: Bin Wang
@@ -25,28 +26,79 @@ public class ManagerDailyService {
     @Resource
     private RoomService roomService;
 
+    @Resource
+    private ManagerdailyBOMapper managerdailyBOMapper;
+
     /**
-     * 经理日报
-     * 每天凌晨十二点开始统计数据 并且记录到数据库内
-     * 营业状况统计:
-     *      实际总收入
-     *      总营业额
-     *      预定未到房数
-     *      维修房数
-     *      锁房数
-     *      可出租房数
-     *      客房总数
-     *      现金支出
-     *      现金收入
-     * 营业状况统计
+     * 插入经理日报
+     * @param hotelId
      */
-    public void insertManagerDaliy(){
+    public void insertManagerDaliy(Integer hotelId,String date){
+        String startTime = date + " 00:00:00";
+        String endTime = date + " 23:59:59";
+        ManagerdailyBO managerdailyBO = new ManagerdailyBO();
+
+        //添加营业状况统计
+       /* managerdailyBO.setGrossrealIncome();//总实际收入 //todo
+        managerdailyBO.setTotalTurnover();//总营业额  //todo*/
+        managerdailyBO.setNumberOrder(numberOrder(hotelId, startTime, endTime));//预定未到房数
+        managerdailyBO.setMaintenanceroomNumber(maintenanceroomNumber(hotelId));//计算维修房数
+        managerdailyBO.setNumberlockedStores(numberlockedStores(hotelId, startTime, endTime));//计算锁房数
+        managerdailyBO.setNumberroomsAvailablerent(numberroomsAvailablerent(hotelId, startTime, endTime));//计算可租房数
+        managerdailyBO.setTotalnumberGuestrooms(totalnumberGuestrooms(hotelId));//计算客房总数
+        managerdailyBO.setCashDisbursements(cashDisbursements());//计算现金支出
+        managerdailyBO.setCash(cash(hotelId, startTime, endTime));//计算现金收入
+        managerdailyBO.setDailyType(1);
+        managerdailyBO.setHotelId(hotelId);
+        managerdailyBO.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        managerdailyBOMapper.insertSelective(managerdailyBO);
+        //添加营业收入明细
+        ManagerdailyBO managerdailyBO2 = new ManagerdailyBO();
+        managerdailyBO2.setThroughoutDayrent(throughoutDayrent(hotelId, startTime, endTime));//全天日租
+        managerdailyBO2.setRateAdjustment(rateAdjustment(startTime, endTime));//计算房费调整
+        managerdailyBO2.setHourRate(hourRate(hotelId, startTime, endTime));//计算钟点房费
+        managerdailyBO2.setTimeoutRate(timeoutRate(startTime, endTime));//计算超时房费
+        managerdailyBO2.setNuclearnightRoomcharge(nuclearnightRoomcharge(startTime, endTime));//计算夜核房费
+        managerdailyBO2.setCompensation(compensation(startTime, endTime));//赔偿
+        managerdailyBO2.setMembershipFee(membershipFee(startTime, endTime));//计算会员卡费
+        managerdailyBO2.setGoods(goods(startTime, endTime));//计算商品
+        managerdailyBO2.setDailyType(2);
+        managerdailyBO2.setHotelId(hotelId);
+        managerdailyBO2.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        managerdailyBOMapper.insertSelective(managerdailyBO2);
+
+        //房费收入分析
+        ManagerdailyBO managerdailyBO3 = new ManagerdailyBO();
+        //会员
+        double members = members(hotelId, startTime, endTime);
+        managerdailyBO3.setMembers(members);
+        //协议单位
+        double v = agreementUnit(hotelId, startTime, endTime);
+        managerdailyBO3.setAgreementUnit(v);
+        //散客
+        double v1 = individualTraveler(hotelId, startTime, endTime);
+        managerdailyBO3.setIndividualTraveler(v1);
+        //直接入住
+        double enter = enter(hotelId, startTime, endTime);
+        //预约入住
+        double v2 = directBooking(hotelId, startTime, endTime);
+        managerdailyBO3.setSubtotal(members+v+v1+enter+v2);
+        managerdailyBO3.setDailyType(2);
+        managerdailyBO3.setHotelId(hotelId);
+        managerdailyBO3.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        managerdailyBOMapper.insertSelective(managerdailyBO3);
+
+        //房晚数分析
+        ManagerdailyBO managerdailyBO4 = new ManagerdailyBO();
+        managerdailyBO4.setMembers((double)FwMembers(hotelId, startTime, endTime));
+        managerdailyBO4.setAgreementUnit((double)FwAgreementUnit(hotelId, startTime, endTime));
+       /* managerdailyBO4.setIndividualTraveler();*/
         return;
     }
 
 
     /**
-     * 计算昨天预定未到房数
+     * 计算预定未到房数
      * @param hotelId 酒店id
      * @param startTime 一天时间范围 开始时间
      * @param endTime   结束时间
@@ -95,7 +147,7 @@ public class ManagerDailyService {
     }
 
     /**
-     * 计算昨天客房总数
+     * 计算客房总数
      * @return
      */
     private int totalnumberGuestrooms(Integer hotelId){
@@ -126,33 +178,273 @@ public class ManagerDailyService {
 
 
 
-
-
-
     /**
-     * 计算日租金额
+     * 计算全天日租  计算全天日租出去的房间数量
      *
      * @return
      */
-    private double throughoutDayrent(@Param("startTime")String startTime, @Param("endTime")String endTime){
-        List<HmCashierSummaryBO> hmCashierSummaryBOS = managerDailyDAO.queryThroughoutDayrent(startTime, endTime);
-        double n = 0.0;
-        for (HmCashierSummaryBO hmCashierSummaryBO : hmCashierSummaryBOS) {
-            n = n + hmCashierSummaryBO.getSettlement();
-        }
+    private int  throughoutDayrent(Integer hotelId, String startTime, String endTime){
+        Integer integer = managerDailyDAO.queryThroughoutDayrent(hotelId, startTime, endTime);
+        return integer;
+    }
 
+    /**
+     * 房费调整
+     * @return
+     */
+    private double rateAdjustment(String startTime, String endTime){
+        List<CashierSummary> cashierSummaries = managerDailyDAO.queryRateAdjustment(startTime, endTime);
+        double n = 0.0;
+        for (CashierSummary cashierSummary : cashierSummaries) {
+            n = n + cashierSummary.getConsumption();
+        }
         return n;
     }
 
     /**
-     * 房费调整 TODO 标记
+     * 钟点房费
+     * @param hotelId
+     * @param startTime
+     * @param endTime
      * @return
      */
-    private double rateAdjustment(){
-        return 0.0;
+    private double hourRate(Integer hotelId, String startTime, String endTime){
+        List<Order> orders = managerDailyDAO.queryhourRate(hotelId, startTime, endTime);
+        double n = 0.0;
+        for (Order order : orders) {
+            n = n + order.getTotalPrice();
+        }
+        return n;
     }
 
 
+    /**
+     * 计算超时房费
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double timeoutRate(String startTime, String endTime){
+        List<CashierSummary> cashierSummaries = managerDailyDAO.querytimeoutRate(startTime, endTime);
+        double n = 0;
+        for (CashierSummary cashierSummary : cashierSummaries) {
+            n = n + cashierSummary.getConsumption();
+        }
+        return n ;
+    }
+
+
+    /**
+     * 计算夜核房费
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double nuclearnightRoomcharge(String startTime, String endTime){
+        List<CashierSummary> cashierSummaries = managerDailyDAO.querynuclearnightRoomcharge1(startTime, endTime);
+        double n1 = 0.0;
+        for (CashierSummary cashierSummary : cashierSummaries) {
+            n1 = n1 + cashierSummary.getConsumption();
+        }
+
+        List<CashierSummary> cashierSummaries2 = managerDailyDAO.querynuclearnightRoomcharge2(startTime, endTime);
+        double n2 = 0.0;
+        for (CashierSummary cashierSummary : cashierSummaries2) {
+            n2 = n2 + cashierSummary.getConsumption();
+        }
+        return n1 - n2 ;
+    }
+
+
+    /**
+     * 计算赔偿
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double compensation(String startTime, String endTime){
+        List<CashierSummary> querycompensation = managerDailyDAO.querycompensation(startTime, endTime);
+        double n = 0.0;
+        for (CashierSummary cashierSummary : querycompensation) {
+            n = n + cashierSummary.getConsumption();
+        }
+        return n;
+    }
+
+    /**
+     * 会员卡费
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double membershipFee(String startTime, String endTime){
+        List<CashierSummary> cashierSummaries = managerDailyDAO.querymembershipFee(startTime, endTime);
+        double n = 0.0;
+        for (CashierSummary cashierSummary : cashierSummaries) {
+            n = n + cashierSummary.getConsumption();
+        }
+        return n ;
+    }
+
+    /**
+     * 商品
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double goods(String startTime, String endTime){
+        List<CashierSummary> querygoods = managerDailyDAO.querygoods(startTime, endTime);
+        double n = 0.0 ;
+        for (CashierSummary querygood : querygoods) {
+            n = n + querygood.getConsumption();
+        }
+       return n ;
+    }
+
+    /**
+     *  房费收入分析
+     *  会员
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double members(Integer hotelId, String startTime, String endTime){
+        List<Order> querymembers = managerDailyDAO.querymembers(hotelId, startTime, endTime);
+        double n =0.0;
+        for (Order querymember : querymembers) {
+            n = n + querymember.getTotalPrice();
+        }
+        return n ;
+    }
+
+    /**
+     * 房费收入分析
+     * 中介  协议单位
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double agreementUnit(Integer hotelId, String startTime, String endTime){
+        List<Order> orders = managerDailyDAO.qyeryagreementUnit(hotelId, startTime, endTime);
+        double n =0.0;
+        for (Order querymember : orders) {
+            n = n + querymember.getTotalPrice();
+        }
+        return n ;
+    }
+
+    /**
+     * 房费收入分析
+     * 散客
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double individualTraveler(Integer hotelId, String startTime, String endTime){
+        List<Order> orders = managerDailyDAO.queryindividualTraveler(hotelId, startTime, endTime);
+        double n = 0.0;
+        for (Order order : orders) {
+            n = n + order.getTotalPrice();
+        }
+        return n;
+    }
+
+
+    /**
+     * 步入 直接入住
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double enter(Integer hotelId, String startTime, String endTime){
+        List<Order> orders = managerDailyDAO.queryEnter(hotelId, startTime, endTime);
+        double n = 0.0;
+        for (Order order : orders) {
+            n = n + order.getTotalPrice();
+        }
+        return n;
+    }
+
+    /**
+     * 直接入住 | 直接预订
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double directBooking(Integer hotelId, String startTime, String endTime){
+        List<Order> orders = managerDailyDAO.queryDirectBooking(hotelId, startTime, endTime);
+        double n = 0.0;
+        for (Order order : orders) {
+            n = n + order.getTotalPrice();
+        }
+        return n;
+    }
+
+
+    /**
+     * 会员房晚数
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private int FwMembers(Integer hotelId, String startTime, String endTime){
+        Integer integer = managerDailyDAO.queryFwMembers(hotelId, startTime, endTime);
+        return integer;
+    }
+
+    /**
+     * 协议单位房晚数
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private int FwAgreementUnit(Integer hotelId, String startTime, String endTime){
+        Integer integer = managerDailyDAO.queryFwAgreementUnit(hotelId, startTime, endTime);
+        return integer;
+    }
+
+    /**
+     * 散客房晚数
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private int FwIndividualTraveler(Integer hotelId, String startTime, String endTime){
+        Integer integer = managerDailyDAO.queryFwIndividualTraveler(hotelId, startTime, endTime);
+        return integer;
+    }
+
+    /**
+     * 直接入住房晚数
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private int FwEnter(Integer hotelId, String startTime, String endTime ){
+        Integer integer = managerDailyDAO.queryFwEnter(hotelId, startTime, endTime);
+        return integer;
+    }
+
+    /**
+     * 房间预订房晚数
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private int FwDirectBooking(Integer hotelId, String startTime, String endTime ){
+        Integer integer = managerDailyDAO.queryFwDirectBooking(hotelId, startTime, endTime);
+        return integer;
+    }
 
 
 

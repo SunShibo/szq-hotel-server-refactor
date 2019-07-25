@@ -20,10 +20,9 @@
 
         $(function () {
             tallyInfo = JSON.parse(sessionStorage.getItem('orderTallyInfo'));
+            console.log(tallyInfo)
             setTimeout(function () {
-                var arr = []
-                arr.push(tallyInfo);
-                tab.reload({data: arr});
+                tab.reload({data: tallyInfo});
             }, 200)
         });
 
@@ -36,18 +35,16 @@
         $('#formData').on('click', function () {
 
             var oo = {};
-            var urlll = "/OrderManage/transfer";
 
-            oo.oldId=getUrl("oldId");
+            oo.rollOutId=getUrl("id");
             oo.ids=getUrl("ids");
-            oo.newId = tallyInfo.id;
-            if(oo.oldId==oo.newId){
+            oo.shiftToId = tallyInfo[0].id;
+            if(oo.rollOutId == oo.shiftToId){
                 layer.alert("不能挂自己房间")
                 return;
             }
-            console.info(oo)
             $.ajax({
-                url: urlll,
+                url: api.transfer,
                 type: 'POST',
                 dataType: 'json',
                 data: oo,
@@ -70,9 +67,10 @@
             , cols: [[ //表头
                 {field: 'roomName', title: '房号', align: 'center', width: 90}
                 , {field: 'name', title: '姓名', align: 'center', width: 100}
+                , {field: 'phone', title: '手机号', align: 'center', width: 100}
                 , {
-                    field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
-                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
+                    field: 'createTime', title: '入住时间', align: 'center', templet: function (data) {
+                        return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
                     }
                 }
             ]]

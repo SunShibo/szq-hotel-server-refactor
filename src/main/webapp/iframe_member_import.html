@@ -9,8 +9,8 @@
 
 <section style="overflow: hidden;padding: 10px 20px">
         <div style="height: 50px;">
-            <p id="member0" style="float: right;">模板文件：<a target="_blank" href="/manage/download" class="layui-btn layui-btn-warm" >下载</a></p>
-            <p  id="member1" style="float: right;">模板文件：<a target="_blank" href="/manage/download1"class="layui-btn layui-btn-warm" >下载</a></p>
+            <p id="member0" style="float: right;">模板文件：<a target="_blank" href="/file/mouldCart.xlsx" class="layui-btn layui-btn-warm" >下载</a></p>
+            <p  id="member1" style="float: right;">模板文件：<a target="_blank" href="/file/mould.xlsx"class="layui-btn layui-btn-warm" >下载</a></p>
         </div>
         <p style="padding: 10px 20px;color: red;">温馨提示：数据导入时不允许数据有错误，一旦有错误将全部导入不成功。</p>
         <div style="height: 50px;">
@@ -52,7 +52,7 @@
         element = layui.element,
             $ = jQuery = layui.$;
         var upload = layui.upload;
-        console.log(getUrl('v') )
+        //v 会员卡导入   !v  会员导入
         if(getUrl("v")==""){
             $("#member1").addClass("layui-hide");
         }else{

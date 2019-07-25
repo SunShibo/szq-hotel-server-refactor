@@ -120,11 +120,11 @@
             if (state == 2 || state == 0) {
                 $('.room-state').css('display', 'block');
                 $('.order-state').css('display', 'block');
-                state == 2 ? getSessionInfo() : queryOrderInfo();
+                queryOrderInfo();
             } else if (state == 1) {
                 $('#btnList').css('display', 'none');
                 $('#checkOutBox').css('display', 'none');
-                queryBeforeOrder()
+                queryOrderInfo();
             }
         });
 
@@ -257,7 +257,6 @@
                     orderId: id
                 },
                 success: function (left) {
-                    console.log(left);
                     oId = left.data[0].id;
                     orderList.reload({data: JSON.parse(JSON.stringify(left.data))});
                     //第一行高亮
@@ -434,6 +433,7 @@
                             return;
                         }
                         if (data.success) {
+                            getRightData(oId);
                             showMsg('退房回滚成功', 1, false);
                         }
                     }
@@ -457,7 +457,7 @@
                     ids: oIds.join(',')
                 },
                 success: function (data) {
-                    if (data.errCode === '00100010') {
+                    if (!data.success) {
                         layer.alert(data.errMsg, function () {
                             layer.closeAll('dialog');
                         });
@@ -471,12 +471,7 @@
                         title: '结账',
                         shade: 0.6,
                         shadeClose: true,
-                        content: 'iframe_orderSettleAccounts.html?s=1',
-                        end: function () {
-                            if (parseInt(sessionStorage.getItem('backState'))) {
-                                location.href = "order.html";
-                            }
-                        }
+                        content: 'iframe_orderSettleAccounts.html?s=1'
                     });
                 }
             });

@@ -73,7 +73,8 @@
 
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {
-
+            if(data.field.lock !== 'ope' && (!startTime||!endTime)){showMsg('请选择锁房时间', 2, false);return false;}
+            if(!data.field.remark){showMsg('请输入锁房备注', 2, false);return false;}
             var obj = {};
             var selectArr = sessionStorage.getItem('selectArr');
             if (data.field.lock !== 'ope') {

@@ -96,9 +96,8 @@
         $.getJSON(api.queryUserIntgeralInfo + '?memberId=' + getUrl("id") + "&random=" + Date.now(), function (rs) {
             // console.info(rs)
             try {
-                var r = rs.data;
-                for (var i in r) {
-                    document.getElementById(i).value = r[i];
+                for (var i in rs.data) {
+                    document.getElementById(i).value = rs.data[i];
                 }
             } catch (err) {
                 alert(err);
