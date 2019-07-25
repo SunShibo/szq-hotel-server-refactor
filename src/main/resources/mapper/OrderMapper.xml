@@ -379,10 +379,12 @@
     <!--根据主订单id查询房间信息（客帐管理）-->
     <select id="getRoomInfoById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select oc.id,r.room_name as roomName,cp.name as name,cp.create_time as createTime,main
-        from hm_order_child as oc,hm_check_in_person as cp,hm_room as r
+        from hm_order_child as oc,hm_check_in_person as cp,hm_room as r,hm_room_type as rt,hm_order as o
         where oc.order_id=#{orderId}
         and oc.room_id=r.id
         and cp.order_child_id=oc.id
+        and oc.room_type_id=rt.id
+        and o.id=oc.order_id
         group by order_child_id
     </select>
 
