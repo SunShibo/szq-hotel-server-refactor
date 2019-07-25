@@ -79,7 +79,7 @@ public class OrderController extends BaseCotroller {
                 return ;
             }
             //验证参数
-            if(orderBO== null||OrderChildJSON==null||type==null||type.length()==0){
+            if(orderBO== null||OrderChildJSON==null||type==null||type.length()==0||orderBO.getPhone()==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" )) ;
                 super.safeJsonPrint(response, result);
                 log.info("result{}", result);
@@ -164,6 +164,10 @@ public class OrderController extends BaseCotroller {
                 idList.add(personBO.getCertificateNumber());
                 if (checkInPersonService.checkId(personBO.getCertificateNumber()) > 0) {
                     String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094", personBO.getCertificateNumber() + "此证件信息为在住状态"));
+                    return result;
+                }
+                if(personBO.getCertificateNumber()==null||personBO.getCertificateNumber().equals("")||personBO.getPhone()==null||personBO.getPhone().equals("")){
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", personBO.getCertificateNumber() + "入住信息不全"));
                     return result;
                 }
             }

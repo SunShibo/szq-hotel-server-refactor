@@ -199,7 +199,7 @@ public class OrderService {
                 }
             }
         }
-
+        orderDAO.updOrder(orderBO);
         log.info("result:{}", orderBO.getOrderNumber());
         log.info("end addOrderInfo.............................................");
     }
@@ -428,8 +428,21 @@ public class OrderService {
 
     //根据主订单id查询房间信息（客帐管理）
     public List<OrderChildBO> getRoomInfoById(Integer orderId) {
-        //多加一个房型 订单号
-        return orderDAO.getRoomInfoById(orderId);
+        List<OrderChildBO> orderChildBOS=orderDAO.getRoomInfoById(orderId);
+        int index=-1;
+        OrderChildBO orderChildBO=null;
+        for (int i=0;i<orderChildBOS.size();i++) {
+            if(orderChildBOS.get(i).getMain()!=null&&orderChildBOS.get(i).getMain().equals("yes")){
+                index=i;
+                orderChildBO=orderChildBOS.get(i);
+                break;
+            }
+        }
+        if(index!=-1){
+            orderChildBOS.remove(index);
+            orderChildBOS.add(0,orderChildBO);
+        }
+        return orderChildBOS;
     }
 
     //根据子订单id查询房间信息消费信息(客帐管理)
@@ -795,6 +808,7 @@ public class OrderService {
         orderChildBO.setOrderState(Constants.notpaid.getValue());
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         orderChildBO.setPracticalDepartureTime(dateTimeFormat.parse(dateTimeFormat.format(new Date())));
+        orderChildBO.setFreeRateNum(new BigDecimal(0));
         orderDAO.updOrderChild(orderChildBO);
     }
 

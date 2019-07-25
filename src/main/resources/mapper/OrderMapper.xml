@@ -363,6 +363,9 @@
             <if test="channel!=null and channel!=''">
                 channel=#{channel},
             </if>
+            <if test="subscribeRemark!=null and subscribeRemark!=''">
+                subscribe_remark=#{subscribeRemark},
+            </if>
             update_time=now()
         </set>
         where id=#{id}
