@@ -16,17 +16,18 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form', 'table'], function () {
-        var form = layui.form, table = layui.table, $ = layui.$, orderNumber = 0, ids = [];
+        var form = layui.form, table = layui.table, $ = layui.$, orderId = 0, ids = [];
 
         $(function () {
-            orderNumber = getUrl('orderNumber');
+            orderId = getUrl('orderId');
         })
-
+        console.log( api.cancelSubQuery);
+        console.log(orderId);
         var tab = table.render({
             elem: '#orderCancel'
             , url: api.cancelSubQuery
             , method: 'POST'
-            , where: {orderNumber: orderNumber}
+            , where: {orderId: orderId}
             , response: {
                 statusName: 'code' //规定数据状态的字段名称，默认：code
                 , statusCode: 200 //规定成功的状态码，默认：0
@@ -46,7 +47,7 @@
             , even: true
             , cols: [[ //表头
                 {field: 'checkbox', title: 'ID', type: 'checkbox', fixed: 'id', align: 'center'}
-                , {field: 'name', title: '入住人', align: 'center'}
+                , {field: 'orderPlacer', title: '入住人', align: 'center'}
                 , {field: 'orderNumber', title: '订单号', align: 'center'}
                 , {field: 'roomName', title: '房间号', align: 'center'}
                 , {field: 'roomTypeName', title: '房型', align: 'center'}
@@ -69,7 +70,7 @@
                     url: api.cancelSubUpdate,
                     type: 'POST',
                     dataType: 'json',
-                    data: {childIds: ids.join(',')},
+                    data: {orderChildIdS: ids.join(',')},
                     success: function (rs) {
                         if (rs.success) {
                             parent.layer.closeAll();

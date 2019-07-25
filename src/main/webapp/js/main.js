@@ -178,8 +178,8 @@ var api = {
     , buying: 'OrderManage/buying'//挂账
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
     , FormManangeResponse: '/FormAccountDetailController/FormManangeResponse'//管理层报表
-    , cancelSubQuery: '/subcribe/cancelSubQuery'//取消查询
-    , cancelSubUpdate: '/subcribe/cancelSubUpdate'//取消订单
+    , cancelSubQuery: '/order/getSubscribeOrderChild'//取消查询
+    , cancelSubUpdate: '/order/closeOrder'//取消订单
     , beforehandDuty: '/dealShiftServiceController/beforehandDuty'//预交班
     , stamOrder: '/OrderManage/stamOrder'//在住打印
     , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人
