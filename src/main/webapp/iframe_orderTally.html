@@ -10,7 +10,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">房间号</label>
         <div class="layui-input-block">
-            <input type="text" name="roomNum" required lay-verify="required" placeholder="请输入房间号" autocomplete="off"
+            <input type="text" name="roomName" required lay-verify="required" placeholder="请输入房间号" autocomplete="off"
                    class="layui-input">
         </div>
     </div>
@@ -41,9 +41,7 @@
                 url: api.queryOrderByRoom,
                 type: 'POST',
                 dataType: 'json',
-                data: {
-                    name: data.field.roomNum
-                },
+                data: data.field,
                 success: function (rs) {
                     if (rs.success) {
                         sessionStorage.setItem('orderTallyInfo', JSON.stringify(rs.data));

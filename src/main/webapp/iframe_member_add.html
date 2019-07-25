@@ -161,7 +161,7 @@
             if (flag) {
                 // delete formData.birthday;
                 // sessionStorage.addMemberInfo = JSON.stringify(formData);
-                $.getJSON(api.getCardNoByLeaveId + $("#leaveId").val() + "&random=" + Date.now(), function (rs) {
+                $.getJSON(api.getCardNoByLeaveId + $("#leaveId").val() + "&phone=" + data.field.phone + "&certificateNumber=" + data.field.certificateNumber, function (rs) {
                     if (!rs.success) {
                         layer.alert(rs.errMsg);
                         return false;

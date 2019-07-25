@@ -54,7 +54,8 @@ var api = {
     , getHouseType: '/queryRoomTypeNum'//获取房屋类型000
     , getHouse: '/room/roomTypeMain'//获取房间信息
     // , yuImport: '/manage/upload'//预导入  废弃
-    , cardImport: '/memberCard/importMemberCard'//会员卡导入  有问题
+    , cardImport: '/memberCard/importMemberCard'//会员卡导入
+    , import: '/member/importMember'//会员导入
     , exportExcel: '/manage/outExce?v=1'//导出会员信息
     , offMember: '/member/logout?userId='//注销会员userId
     , roomDelete: '/room/deleteByPrimaryKey'  //客房删除   已修改
@@ -80,9 +81,12 @@ var api = {
     , cash: '/chilOrder/addCashPledge'//押金  已修改
     // , refundprice: '/OrderManage/refundprice?v=1'//退款  废弃
     , info: '/chilOrder/recorded'//客账入账  已修改
+    , cancelSubQuery: '/order/getSubscribeOrderChild'//取消查询
+    , cancelSubUpdate: '/order/closeOrder'//取消订单
     , outRoom: '/order/getCheckOutInfo'//查看退房信息  已修改
     , subitemOnclick: '/chilOrder/queryChildleAccounts'//查询子订单单项结账信息   已修改
     , subitem: '/chilOrder/childleAccounts'//子订单结账  已修改
+    , transfer: '/chilOrder/transferAccounts' //消费项目转账  已修改
     , outRoomBtn: '/order/checkOut'//退房按钮   已修改
     , outRoomRefound: '/order/checkOutRollback'//退房回滚  已修改
     , refund: '/chilOrder/queryAccounts'//查询总结账信息  已修改
@@ -112,7 +116,7 @@ var api = {
     , allChannel: '/Dictionary/getDic?kid=2'//预定页面查询合作机构000
     , addChannel: '/CooperativePrice/add?name='
     , updateChannel: 'CooperativePrice/update'
-    , homePage: '/roomMain/homePageInfo?v=1'//获取首页数据
+    // , homePage: '/roomMain/homePageInfo?v=1'//获取首页数据  废弃
     , cashPay: '/order/pay'//现金支付接口000   ??  任何支付方式都走这个接口
     , queryPayment: '/checkin/queryPayment'//查询订单应支付金额
     , homeItemInfo: '/roomDetailsController/queryRoomInfo'//首页弹出层信息
@@ -120,7 +124,7 @@ var api = {
     , handoverList: '/dealShiftServiceController/queryAllDS'//交班列表
     , operationLog: '/roomDetailsController/operationLog'//首页弹出层操作记录
     , checkIdentify: '/checkin/isCheckinByIdNumber?idNumber='//查看这个证件号码是否有在住信息
-    , homeRoomType: '/roomMain/homePageHouse'//首页获取房间类型信息
+    , homeRoomType: '/home/home'//首页获取房间类型信息  已修改
     , cashInfo: '/commodity/queryCommodiry'//现金订单000
     , cashAdd: '/commodity/addCommodity'//商品交易添加000
     , stayOver: '/roomDetailsController/stayOver'//续住
@@ -178,8 +182,6 @@ var api = {
     , buying: 'OrderManage/buying'//挂账
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
     , FormManangeResponse: '/FormAccountDetailController/FormManangeResponse'//管理层报表
-    , cancelSubQuery: '/order/getSubscribeOrderChild'//取消查询
-    , cancelSubUpdate: '/order/closeOrder'//取消订单
     , beforehandDuty: '/dealShiftServiceController/beforehandDuty'//预交班
     , stamOrder: '/OrderManage/stamOrder'//在住打印
     , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人
