@@ -217,10 +217,8 @@
     }
 
     function getState(v) {
-        // console.log(getUrl("vv"))
+
         if(v=='vacant'||v=='inthe'||v=='timeout')return ' pick-jf';//房间主状态 vacant 空房 inthe在住 timeout超时 dirty脏房
-        // if(v==4)return ' pick-ylf';
-        // if(getUrl("vv")&&v==3) return ' pick-jf';
         return ' pick-zf'
     }
 
@@ -309,7 +307,7 @@
     function dealUnSel(d) {//处理取消选择
         for(var i=0;i<seleted.length;i++){
             // for(var j=0;j<seleted[i].length;j++){
-            if(seleted[i].id == d.id) {
+            if(seleted[i].id == d.id||seleted[i].roomName == d.roomName) {
                 seleted.splice(i,1);
                 dealReShow();
                 break;
@@ -318,9 +316,11 @@
 
     }
     function checkSel(d) {
+        // debugger;
         var dd = [].concat.apply([],seleted);
         for(var i=0;i<dd.length;i++){
-            if(dd[i].id == d.id) {
+            // debugger;
+            if(dd[i].id == d.id||dd[i].roomName == d.roomName) {
                 return "pick-jf-selected";
                 break;
             }
@@ -329,7 +329,7 @@
     function dealReShow() {//处理已经选择房间回写
         var d  = [].concat.apply([],seleted);
 
-        // console.info(d)
+        // debugger;
         $("#selList").empty();
         tempSel = [];
         if(!d.length)return;

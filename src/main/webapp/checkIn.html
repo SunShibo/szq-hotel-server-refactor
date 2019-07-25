@@ -926,7 +926,7 @@
             if(d[i].roomId == rid){
                 for (var j = 0; j < c.length; j++) {
                     if (rid == c[j].roomId) {
-                        d[i].name = c[j].name;
+                        // d[i].name = c[j].name;
                         d[i].credentialNo = c[j].credentialNo;
                         d[i].phoneNumber = c[j].phoneNumber;
                         d[i].remark = c[j].remark;
@@ -941,7 +941,7 @@
     }
 
     function productRoomS(v) {//处理房间数据格式，改成和房型的格式一致/参数是已经选择的房间数据
-
+debugger;
         var rs = [];
         for(var i=0;i<v.length;i++){
             var td = JSON.parse(JSON.stringify(v[i]));
