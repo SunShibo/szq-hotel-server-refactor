@@ -68,6 +68,7 @@
             <if test="money!=null ">AND card.`money`=#{money}</if>
             <if test="cardNumber!=null and cardNumber!=''">AND card.`card_number` LIKE concat('%',#{cardNumber},'%')</if>
         </where>
+        ORDER BY card.card_number+0 ASC
         <include refid="limit" />
     </select>
     <!--查询条数-->
