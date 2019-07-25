@@ -617,7 +617,7 @@
     <!--获取用户预约过的房间id-->
     <select id="queryUserRoom" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT hm_order_child.room_id  FROM hm_order, hm_order_child WHERE hm_order_child.order_id = hm_order.id
-        AND hm_order.phone = #{phone} and hm_order.hotel_id = #{hotelId}
+        AND hm_order.phone = #{phone} and hm_order.hotel_id = #{hotelId} and order_state = 'reservation'
     </select>
 
     <!--根据房间id获取房间信息-->
