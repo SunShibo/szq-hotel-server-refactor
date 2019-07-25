@@ -44,6 +44,25 @@ public class OrderChildBO extends BaseModel {
     private String certificateNumber;//身份证号
     private String nameStatus;//入住人员是否是会员
     private String createTime;//第一个入住人员入住时间
+    private String orderNumber;//订单号
+    private String orderPlacer;//预约人
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getOrderPlacer() {
+        return orderPlacer;
+    }
+
+    public void setOrderPlacer(String orderPlacer) {
+        this.orderPlacer = orderPlacer;
+    }
+
     public String getMain() {
         return main;
     }

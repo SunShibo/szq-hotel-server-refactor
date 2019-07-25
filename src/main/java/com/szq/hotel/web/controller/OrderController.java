@@ -178,10 +178,10 @@ public class OrderController extends BaseCotroller {
 
     /**
      * 取消预约订单
-     * @param orderChildId 主订单id
+     * @param orderChildIdS 主订单id
      * */
     @RequestMapping("closeOrder")
-    public void closeOrder(Integer orderChildId,HttpServletResponse response,HttpServletRequest request){
+    public void closeOrder(String orderChildIdS,HttpServletResponse response,HttpServletRequest request){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -194,13 +194,13 @@ public class OrderController extends BaseCotroller {
                 return ;
             }
             //验证参数
-            if(orderChildId== null){
+            if(orderChildIdS== null||orderChildIdS.equals("")){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
                 super.safeJsonPrint(response, result);
                 log.info("result{}", result);
                 return ;
             }
-            orderService.closeOrderChild(orderChildId);
+            orderService.closeOrderChild(orderChildIdS);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
@@ -337,6 +337,40 @@ public class OrderController extends BaseCotroller {
                 return ;
             }
             OrderChildBO orderBO=orderService.getOrderInfoById(orderChildId);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("getOrderInfoById",e);
+        }
+
+    }
+
+    /**
+     * 获取预约中的子订单
+     * @param orderId 主订单id
+     * */
+    @RequestMapping("/getSubscribeOrderChild")
+    public void getSubscribeOrderChild(Integer orderId,HttpServletRequest request, HttpServletResponse response){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //验证参数
+            if(orderId== null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            List<OrderChildBO> orderBO=orderService.getSubscribeOrderChild(orderId);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
             super.safeJsonPrint(response, result);
             log.info("result{}",result);

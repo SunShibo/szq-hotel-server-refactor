@@ -415,11 +415,15 @@ public class OrderService {
     }
 
     //取消预约中的子订单
-    public void closeOrderChild(Integer orderChildId){
-        OrderChildBO orderChildBO=new OrderChildBO();
-        orderChildBO.setId(orderChildId);
-        orderChildBO.setOrderState(Constants.CANCEL.getValue());
-        orderDAO.updOrderChild(orderChildBO);
+    public void closeOrderChild(String orderChildIdS){
+        String[] orderChildS=orderChildIdS.split(",");
+        for (int i=0;i<orderChildS.length;i++){
+            OrderChildBO orderChildBO=new OrderChildBO();
+            orderChildBO.setId(new Integer(orderChildS[i]));
+            orderChildBO.setOrderState(Constants.CANCEL.getValue());
+            orderDAO.updOrderChild(orderChildBO);
+        }
+
     }
 
     //根据主订单id查询房间信息（客帐管理）
@@ -439,6 +443,11 @@ public class OrderService {
         List<OrderRecoredBO> recordBOS = orderRecordDAO.queryOrderRecord(id);
         orderChildBO.setOrderRecoredBOS(recordBOS);
         return orderChildBO;
+    }
+
+    //根据主订单id 查询预约中的子订单
+    public List<OrderChildBO> getSubscribeOrderChild(Integer orderId){
+       return orderDAO.getSubscribeOrderChild(orderId,Constants.RESERVATION.getValue());
     }
 
     //获取入住支付信息

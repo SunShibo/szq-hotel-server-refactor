@@ -378,7 +378,7 @@
 
     <!--根据主订单id查询房间信息（客帐管理）-->
     <select id="getRoomInfoById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
-        select oc.id,r.room_name as roomName,cp.name as name,cp.create_time as createTime,main
+        select o.order_number,oc.id,r.room_name as roomName,cp.name as name,cp.create_time as createTime,main,rt.room_type_name
         from hm_order_child as oc,hm_check_in_person as cp,hm_room as r,hm_room_type as rt,hm_order as o
         where oc.order_id=#{orderId}
         and oc.room_id=r.id
@@ -394,6 +394,16 @@
         from hm_order_child as oc,hm_check_in_person as ip
         where oc.id=ip.order_child_id
         and order_id=#{orderId}
+        group by oc.id
+    </select>
+
+    <!--查询预约订单-->
+    <select id="getSubscribeOrderChild" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select o.order_number,oc.id,r.room_name as roomName,o.order_placer as orderPlacer,rt.room_type_name
+        from hm_order as o inner join hm_order_child as oc on  oc.order_id=o.id
+        inner join hm_room_type as rt on oc.room_type_id=rt.id
+        left join hm_room as r on oc.room_id=r.id
+        where oc.order_id=#{orderId} and order_state=#{orderState}
         group by oc.id
     </select>
 
