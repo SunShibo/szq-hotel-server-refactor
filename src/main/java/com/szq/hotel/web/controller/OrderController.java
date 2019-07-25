@@ -101,7 +101,6 @@ public class OrderController extends BaseCotroller {
                 }
 
                 for (OrderChildBO order : list) {
-                    System.err.println(order.getRoomId());
                     RoomBO roomBO = roomService.getRoomBo(order.getRoomId());
                     if(roomBO==null||roomBO.getId()==null){
                         result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"),"房间异常") ;
@@ -159,6 +158,10 @@ public class OrderController extends BaseCotroller {
 
         for (OrderChildBO order : list) {
             List<CheckInPersonBO> personBOS = order.getCheckInPersonBOS();
+            if(personBOS==null||personBOS.size()==0){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001",  "入住信息不全"));
+                return result;
+            }
             for (CheckInPersonBO personBO : personBOS) {
                 idSet.add(personBO.getCertificateNumber());
                 idList.add(personBO.getCertificateNumber());
@@ -167,7 +170,7 @@ public class OrderController extends BaseCotroller {
                     return result;
                 }
                 if(personBO.getCertificateNumber()==null||personBO.getCertificateNumber().equals("")||personBO.getPhone()==null||personBO.getPhone().equals("")){
-                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", personBO.getCertificateNumber() + "入住信息不全"));
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "入住信息不全"));
                     return result;
                 }
             }
@@ -916,7 +919,6 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
-
 
             orderService.checkOut(orderChildId,money,userInfo.getId(),userInfo.getHotelId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null)) ;

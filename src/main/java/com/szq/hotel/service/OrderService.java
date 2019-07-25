@@ -808,7 +808,7 @@ public class OrderService {
         orderChildBO.setOrderState(Constants.notpaid.getValue());
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         orderChildBO.setPracticalDepartureTime(dateTimeFormat.parse(dateTimeFormat.format(new Date())));
-        orderChildBO.setFreeRateNum(new BigDecimal(0));
+        orderChildBO.setPayCashNum(new BigDecimal(0));
         orderDAO.updOrderChild(orderChildBO);
     }
 
