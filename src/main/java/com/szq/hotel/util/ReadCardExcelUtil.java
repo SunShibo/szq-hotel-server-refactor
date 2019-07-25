@@ -141,9 +141,9 @@ public class ReadCardExcelUtil {
                     } else if (c == 2) {
                         if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
                             String age = String.valueOf(cell.getNumericCellValue());
-                            map.put("memberLevelId", age.substring(0, age.length() - 2 > 0 ? age.length() - 2 : 1));// 年龄
+                            map.put("memberLevelName", age.substring(0, age.length() - 2 > 0 ? age.length() - 2 : 1));// 年龄
                         } else {
-                            map.put("memberLevelId", cell.getStringCellValue());// 年龄
+                            map.put("memberLevelName", cell.getStringCellValue());// 年龄
                         }
                     }
                 }

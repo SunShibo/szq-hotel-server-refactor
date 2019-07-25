@@ -38,4 +38,8 @@ public interface MemberLevelDAO {
         通过会员卡id查询会员级别
      */
     MemberLevelBO getLevelByCardId(Integer memebrCardId);
+    /*
+    查询会员级别是否存在
+     */
+    List<MemberLevelBO> queryLevelByList(List<String> list);
 }

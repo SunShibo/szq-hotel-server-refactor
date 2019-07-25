@@ -46,11 +46,11 @@
     </select>
 
     <!--查询会员级别是否存在-->
-    <select id="queryCartByCartList" resultType="com.szq.hotel.entity.bo.MemberCardBO" parameterType="list">
-        SELECT  * FROM  `hm_member_card` WHERE
+    <select id="queryLevelByList" resultType="com.szq.hotel.entity.bo.MemberLevelBO" parameterType="list">
+        SELECT  * FROM  `hm_member_level` WHERE
         1=1
         AND
-        <foreach item="list" collection="list" open="card_number in ("
+        <foreach item="list" collection="list" open="name in ("
                  separator="," close=")">
             #{list}
         </foreach>

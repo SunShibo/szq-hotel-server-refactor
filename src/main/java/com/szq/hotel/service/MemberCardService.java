@@ -2,8 +2,10 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.MemberCardDAO;
+import com.szq.hotel.dao.MemberLevelDAO;
 import com.szq.hotel.entity.bo.MemberCardBO;
 import com.szq.hotel.entity.bo.MemberCardResultBO;
+import com.szq.hotel.entity.bo.MemberLevelBO;
 import com.szq.hotel.util.ObjectUtil;
 import com.szq.hotel.util.ReadCardExcelUtil;
 import com.szq.hotel.web.controller.MemberCardController;
@@ -28,6 +30,10 @@ public class MemberCardService {
 
     @Resource
     private MemberCardDAO memberCardDAO;
+    @Resource
+    private MemberLevelDAO memberLevelDAO;
+    @Resource
+    private MemberLevelService memberLevelService;
 
     /*
         批量添加会员卡
@@ -107,15 +113,18 @@ public class MemberCardService {
         List<Map<String, Object>> memberCardList = readCardExcelUtil.getExcelInfo(file);
         //至此已经将excel中的数据转换到list里面了,接下来就可以操作list,可以进行保存到数据库,或者其他操作,
         MemberCardBO memberCardBO = new MemberCardBO();
+        //MemberLevelBO memberLevelBO = new MemberLevelBO();
         List<String> list = new ArrayList<String>();
         for(Map<String, Object> memberCard:memberCardList) {
             memberCardBO.setCardNumber(memberCard.get("cardNumber").toString());
-            memberCardBO.setMoney(ObjectUtil.getBigDecimal(memberCard.get("money")));
-            memberCardBO.setMemberLevelId(ObjectUtil.getIntegerByObject(memberCard.get("memberLevelId")));
             list.add(memberCardBO.getCardNumber());
+            //查询会员级别是否
+            MemberLevelBO memberLevelBO = memberLevelService.selectMemberLevelByName(memberCard.get("memberLevelName").toString());
+            if (memberLevelBO==null){
+                 return "会员级别不存在";
+            }
         }
         List<MemberCardBO> memberCardBOS = memberCardDAO.queryCartByCartList(list);
-
         if (memberCardBOS.size()!=0){
             result = "会员卡已经存在";
         }else {
@@ -123,9 +132,12 @@ public class MemberCardService {
 
                 memberCardBO.setCardNumber(memberCard.get("cardNumber").toString());
                 memberCardBO.setMoney(ObjectUtil.getBigDecimal(memberCard.get("money")));
-                memberCardBO.setMemberLevelId(ObjectUtil.getIntegerByObject(memberCard.get("memberLevelId")));
 
-                list.add(memberCardBO.getCardNumber());
+                //查询会员级别是否存在
+                MemberLevelBO memberLevelBO = memberLevelService.selectMemberLevelByName(memberCard.get("memberLevelName").toString());
+                if (memberLevelBO!=null) {
+                    memberCardBO.setMemberLevelId(memberLevelBO.getId());
+                }
                 int ret = memberCardDAO.addMemberCardTest(memberCardBO);
                 if (ret == 0) {
                     result = "插入数据库失败";
