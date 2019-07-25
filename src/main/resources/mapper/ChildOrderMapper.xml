@@ -94,7 +94,7 @@
         FROM hm_order oder  LEFT JOIN hm_order_child child ON child.order_id=oder.id
         LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type
         ON type.id=child.room_type_id
-		WHERE child.order_state='admissions'  AND check_type='day'
+		WHERE check_type='day'
     </select>
 
     <!--查询未过夜审的房费-->

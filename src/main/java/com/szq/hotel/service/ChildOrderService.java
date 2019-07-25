@@ -239,7 +239,7 @@ public class ChildOrderService {
             resultMap.put("status", "yes");
         }
         resultMap.put("payType", payType);
-        resultMap.put("money", consumption + pay);
+        resultMap.put("money", new BigDecimal(consumption + pay).multiply(new BigDecimal("-1")));
 
         log.info("end queryChildleAccounts.........................................................");
         return resultMap;
@@ -405,33 +405,33 @@ public class ChildOrderService {
         }
         if (param.getCart() != null) {  //银行卡
             log.info("start.....refund...cart........................................................");
-            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.CART.getValue(), param.getCash().
+            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.CART.getValue(), param.getCart().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
-            cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
+            cashierSummaryService.addAccounts(param.getCart().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.CART.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
         }
         if (param.getWechat() != null) {  //微信
             log.info("start.....refund...wechat........................................................");
-            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.WECHAT.getValue(), param.getCash().
+            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.WECHAT.getValue(), param.getWechat().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
-            cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
+            cashierSummaryService.addAccounts(param.getWechat().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.WECHAT.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
         }
         if (param.getAlipay() != null) {  //支付宝
             log.info("start.....refund...alipay........................................................");
-            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getCash().
+            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getAlipay().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
-            cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
+            cashierSummaryService.addAccounts(param.getAlipay().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.ALIPAY.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
         }
         if (param.getOther() != null) {  //其他
             log.info("start.....refund...other........................................................");
-            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getCash().
+            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getOther().
                     multiply(new BigDecimal("-1")), Constants.OTHER.getValue(), userId, null, Constants.YES.getValue());
-            cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
+            cashierSummaryService.addAccounts(param.getOther().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.OTHER.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
         }
@@ -440,9 +440,9 @@ public class ChildOrderService {
             if (childOrderBO.getMembersId() != null) {
                 memberService.accountStoreValue(childOrderBO.getMembersId(), param.getStored(), "结账", userId);
             }
-            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getCash().
+            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getStored().
                     multiply(new BigDecimal("-1")), Constants.STORED.getValue(), userId, null, Constants.YES.getValue());
-            cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
+            cashierSummaryService.addAccounts(param.getStored().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.STORED.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
         }
