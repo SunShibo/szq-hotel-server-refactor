@@ -264,7 +264,7 @@ public class ManagerDailyService {
      * @return
      */
     private int  throughoutDayrent(Integer hotelId, String startTime, String endTime){
-        Integer integer = managerDailyDAO.queryThroughoutDayrent(hotelId, startTime, endTime);
+        Integer integer = managerDailyDAO.queryThroughoutDayrent2(hotelId, startTime, endTime);
         return integer;
     }
 
