@@ -536,8 +536,23 @@ public class OrderService {
     }
 
     //把入住未支付超过15分钟的子订单关闭
-    public Integer closeOrder() {
-        return orderDAO.closeOrder();
+    public void closeOrder() {
+        List<OrderChildBO> idList = orderDAO.getCloseOrder();
+        if(idList!=null&&idList.size()!=0){
+            for (OrderChildBO orderChildBO:idList) {
+                //修改入住人状态
+                checkInPersonDAO.updPersonCheckOut(orderChildBO.getId(),Constants.CHECKOUT.getValue());
+                //修改房间状态
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("id", orderChildBO.getRoomId());
+                map.put("state", Constants.VACANT.getValue());
+                roomService.updateroomMajorState(map);
+                //修改订单状态
+                orderDAO.closeOrder();
+            }
+
+        }
+
     }
 
     //首页查询在住信息
@@ -559,6 +574,7 @@ public class OrderService {
         return checkInInfoResult;
     }
 
+    //查询预约信息
     public CheckInInfoResult getReservationInfo(Integer roomId){
         return orderDAO.getReservationInfo(roomId);
     }

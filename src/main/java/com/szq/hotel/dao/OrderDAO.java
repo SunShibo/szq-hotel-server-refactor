@@ -63,7 +63,7 @@ public interface OrderDAO {
     //把入住未支付超过15分钟的子订单关闭
     Integer closeOrder();
     //获取入住未支付的子订单
-    List<Integer> getCloseOrder();
+    List<OrderChildBO> getCloseOrder();
     //通过房间id查找在住订单信息
     CheckInInfoResult getOrderChildByRoomId(Integer roomId);
     //通过房间id查找预约订单信息
