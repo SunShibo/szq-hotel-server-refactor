@@ -747,7 +747,7 @@
             var _mp = JSON.parse(localStorage.modifyPrice);
             var arr = [];
             for(var i=0;i<_mp.length;i++){
-                if(_mp[i]['id']==id||_mp[i]['id']==roomTypeId){
+                if(_mp[i]['id']==id||_mp[i]['id']==roomTypeId||_mp[i]['roomTypeId']==roomTypeId){
                     for(var j in _mp[i]){
                         if(j==time.split(" ")[0]){
                             time = addDate(new Date(time),1)

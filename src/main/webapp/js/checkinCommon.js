@@ -135,7 +135,7 @@ setTimeout(function () {
         done: function(value, date, endDate){
 
             if(value.indexOf("00:00:00")>0){
-                var a = value.split(" ")[0] + " 18:00:00";
+                var a = value.split(" ")[0] + " 14:00:00";
                 setTimeout(function () {
                     $('#startTime').val(a);
                 },100)
