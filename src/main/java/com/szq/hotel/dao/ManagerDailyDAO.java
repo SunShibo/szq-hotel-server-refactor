@@ -73,7 +73,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    Integer queryThroughoutDayrent(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime,
+    Integer queryThroughoutDayrent2(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime,
                                 @Param("endTime")String endTime);
 
 

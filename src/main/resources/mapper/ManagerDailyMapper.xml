@@ -46,7 +46,7 @@
     </select>
 
 
-    <select id="queryThroughoutDayrent" resultType="java.lang.Integer">
+    <select id="queryThroughoutDayrent2" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM hm_order WHERE
         hotel_id = #{hotelId}
         AND  #{startTime} &lt;= check_time &lt; #{endTime}

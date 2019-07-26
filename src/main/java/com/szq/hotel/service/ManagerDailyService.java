@@ -52,6 +52,9 @@ public class ManagerDailyService {
         managerdailyBO.setHotelId(hotelId);
         managerdailyBO.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO);
+
+
+
         //添加营业收入明细
         ManagerdailyBO managerdailyBO2 = new ManagerdailyBO();
         managerdailyBO2.setThroughoutDayrent(throughoutDayrent(hotelId, startTime, endTime));//全天日租
@@ -66,6 +69,10 @@ public class ManagerDailyService {
         managerdailyBO2.setHotelId(hotelId);
         managerdailyBO2.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO2);
+
+
+
+
 
         //房费收入分析
         ManagerdailyBO managerdailyBO3 = new ManagerdailyBO();
@@ -83,17 +90,90 @@ public class ManagerDailyService {
         //预约入住
         double v2 = directBooking(hotelId, startTime, endTime);
         managerdailyBO3.setSubtotal(members+v+v1+enter+v2);
-        managerdailyBO3.setDailyType(2);
+        managerdailyBO3.setDailyType(3);
         managerdailyBO3.setHotelId(hotelId);
         managerdailyBO3.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO3);
 
+
+
+
+
         //房晚数分析
         ManagerdailyBO managerdailyBO4 = new ManagerdailyBO();
-        managerdailyBO4.setMembers((double)FwMembers(hotelId, startTime, endTime));
-        managerdailyBO4.setAgreementUnit((double)FwAgreementUnit(hotelId, startTime, endTime));
-       /* managerdailyBO4.setIndividualTraveler();*/
+        //会员房晚数
+        double a = (double)FwMembers(hotelId, startTime, endTime);
+        managerdailyBO4.setMembers(a);
+        //协议单位房晚数
+        double b = (double)FwAgreementUnit(hotelId, startTime, endTime);
+        managerdailyBO4.setAgreementUnit(b);
+        //散客房晚数
+        double c = (double)FwIndividualTraveler(hotelId, startTime, endTime);
+        managerdailyBO4.setIndividualTraveler(c);
+        //直接入住房晚数
+        double d = (double)FwEnter(hotelId, startTime, endTime);
+        managerdailyBO4.setEnter(d);
+        //房间预订房晚数
+        double e = (double)FwDirectBooking(hotelId, startTime, endTime);
+        managerdailyBO4.setDirectBooking(e);
+        //小计
+        double f = a+b+c+d+e;
+        managerdailyBO4.setSubtotal(f );
+        managerdailyBO4.setDailyType(4);
+        managerdailyBO4.setHotelId(hotelId);
+        managerdailyBO4.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        managerdailyBOMapper.insertSelective(managerdailyBO4);
+
+
+
+
+        //平均房价分析
+        ManagerdailyBO managerdailyBO5 = new ManagerdailyBO();
+        //会员平均房价分析
+        double v3 = PjMembers(hotelId, startTime, endTime);
+        managerdailyBO5.setMembers(v3);
+        //协议单位平均房价
+        double v4 = PjAgreementUnit(hotelId, startTime, endTime);
+        managerdailyBO5.setAgreementUnit(v4);
+        //散客平均房价
+        double v5 = PjIndividualTraveler(hotelId, startTime, endTime);
+        managerdailyBO5.setIndividualTraveler(v5);
+        //直接入住平均房价
+        double v6 = PjEnter(hotelId, startTime, endTime);
+        managerdailyBO5.setEnter(v6);
+        //预约入住平均房价
+        double v7 = PjDirectBooking(hotelId, startTime, endTime);
+        managerdailyBO5.setDirectBooking(v7);
+        //小计
+        managerdailyBO5.setSubtotal(v3+v4+v5+v6+v7);
+        managerdailyBO5.setDailyType(5);
+        managerdailyBO5.setHotelId(hotelId);
+        managerdailyBO5.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        managerdailyBOMapper.insertSelective(managerdailyBO5);
+
+
+
+
+        //出租率分析
+        ManagerdailyBO managerdailyBO6 = new ManagerdailyBO();
+        //会员出租率
+        managerdailyBO6.setMembers(a/f);
+        //协议单位出租率
+        managerdailyBO6.setAgreementUnit(b/f);
+        //散客出租率
+        managerdailyBO6.setIndividualTraveler(c/f);
+        //直接入住出租率
+        managerdailyBO6.setEnter(d/f);
+        //预约入住出租率
+        managerdailyBO6.setDirectBooking(e/f);
+        //小计
+        managerdailyBO6.setSubtotal(f/f);
+        managerdailyBO6.setDailyType(6);
+        managerdailyBO6.setHotelId(hotelId);
+        managerdailyBO6.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        managerdailyBOMapper.insertSelective(managerdailyBO6);
         return;
+
     }
 
 
@@ -370,7 +450,7 @@ public class ManagerDailyService {
     }
 
     /**
-     * 直接入住 | 直接预订
+     * 房间预订 | 直接预订
      * @param hotelId
      * @param startTime
      * @param endTime
@@ -446,6 +526,83 @@ public class ManagerDailyService {
         return integer;
     }
 
+    /**
+     * 会员平均房价分析
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double PjMembers(Integer hotelId, String startTime, String endTime){
+        //会员总房价
+        double members = members(hotelId, startTime, endTime);
+        //会员开放数量
+        double i = FwMembers(hotelId, startTime, endTime);
+        return members/i;
+    }
 
 
+    /**
+     * 协议单位平均房价分析
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double PjAgreementUnit(Integer hotelId, String startTime, String endTime){
+        //协议单位总房价
+        double v = agreementUnit(hotelId, startTime, endTime);
+        //协议单位开放数量
+        double i = FwAgreementUnit(hotelId, startTime, endTime);
+        return v/i;
+    }
+
+
+    /**
+     * 散客平均房价分析
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double PjIndividualTraveler(Integer hotelId, String startTime, String endTime){
+        //散客总房价
+        double v = individualTraveler(hotelId, startTime, endTime);
+        //散客总开房数
+        double i = FwIndividualTraveler(hotelId, startTime, endTime);
+
+        return v/i;
+    }
+
+    /**
+     * 直接入住平均房价分析
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double PjEnter(Integer hotelId, String startTime, String endTime){
+        //直接入住总房价
+        double enter = enter(hotelId, startTime, endTime);
+        //直接入住房间数
+        double i = FwEnter(hotelId, startTime, endTime);
+
+        return enter/i;
+    }
+
+
+    /**
+     * 房间预订分均房价分析
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private double PjDirectBooking(Integer hotelId, String startTime, String endTime){
+        //房间预订总房价
+        double v = directBooking(hotelId, startTime, endTime);
+        //房间预订总数量
+        double i = FwDirectBooking(hotelId, startTime, endTime);
+        return v/i;
+    }
 }
