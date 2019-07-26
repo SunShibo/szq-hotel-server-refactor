@@ -58,10 +58,6 @@ public class TestController extends BaseCotroller {
         }
     }
 
-    @RequestMapping("/test")
-    public void test(){
-        testService.test1();
-    }
 }
 
 

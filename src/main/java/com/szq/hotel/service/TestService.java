@@ -28,9 +28,4 @@ public class TestService {
        testDAO.updateU2(2,100);
     }
 
-
-    public void test1() {
-        List<CheckInPersonBO> checkInPersonById = testDAO.getCheckInPersonById(null, null);
-        System.out.println(checkInPersonById);
-    }
 }

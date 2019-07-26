@@ -907,16 +907,22 @@ public class OrderService {
         //备份的信息
         OrderChildBackupParam backup = orderDAO.getOrderChildBackup(orderChildId);
         //修改回子订单
-        OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChildId);
+        OrderChildBO orderChildBO =new OrderChildBO();
         orderChildBO.setRoomRate(orderChildBO.getRoomRate().subtract(backup.getRoomRate()));
+        System.err.println(orderChildBO.getRoomRate());
         orderChildBO.setOtherRate(orderChildBO.getOtherRate().subtract(backup.getOtherRate()));
+        System.err.println(orderChildBO.getOtherRate());
         orderChildBO.setOrderState(backup.getOrderState());
         orderChildBO.setEndTime(backup.getEndTime());
         orderChildBO.setPracticalDepartureTime(backup.getPracticalDepartureTime());
+        orderChildBO.setId(backup.getId());
         orderDAO.updOrderChild(orderChildBO);
+
+        OrderChildBO orderChildBOResult = orderDAO.getOrderChildById(orderChildId);
+
         //修改房态
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", orderChildBO.getRoomId());
+        map.put("id", orderChildBOResult.getRoomId());
         map.put("state", backup.getRoomMajorState());
         roomService.updateroomMajorState(map);
 
@@ -929,7 +935,7 @@ public class OrderService {
                 userId, "1天", "no");
 
         //添加反向收银汇总
-        OrderBO orderBO = orderDAO.getOrderById(orderChildBO.getOrderId());
+        OrderBO orderBO = orderDAO.getOrderById(orderChildBOResult.getOrderId());
         List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(orderChildId, Constants.CHECKIN.getValue());
         CheckInPersonBO checkInPersonBO = checkInPersonBOS.get(0);
         OrderChildBO orderChildResult = this.getOrderChildById(orderChildId);
