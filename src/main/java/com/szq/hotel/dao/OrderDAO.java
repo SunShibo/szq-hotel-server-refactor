@@ -49,6 +49,8 @@ public interface OrderDAO {
     Integer delOrderChild(Integer id);
     //获取预约状态的子订单的联房码
     String getOrderChildAlRoomCode(Integer id);
+    //修改子订单 无验证
+    Integer updOrderChildNoValidation(OrderChildBO orderChildBO);
 
     //根据主订单id查询房间信息（客帐管理）
     List<OrderChildBO> getRoomInfoById(Integer orderId);

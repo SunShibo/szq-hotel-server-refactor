@@ -133,9 +133,20 @@
             <if test="main!=null and main!=''">
                 main=#{main},
             </if>
-            practical_departure_time=#{practicalDepartureTime},
+            <if test="practicalDepartureTime!=null and practicalDepartureTime!=''">
+                practical_departure_time=#{practicalDepartureTime},
+            </if>
             update_time=now()
         </set>
+        where id=#{id}
+    </update>
+
+    <!-- 修改子订单信息无if验证 -->
+    <update id="updOrderChildNoValidation" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
+        update hm_order_child
+        set order_state=#{orderState},
+        end_time=#{endTime},
+        practical_departure_time=#{practicalDepartureTime}
         where id=#{id}
     </update>
 
