@@ -7,6 +7,10 @@ import java.util.List;
 
 //首页在住信息
 public class CheckInInfoResult {
+    private String orderPlacer;//下单人名称
+    private String phone;//预约手机号
+    private String subscribeRemark;//预约备注
+    private String orderType;//订单类型
     private Integer orderId;//主订单id
     private Integer orderChildId;//子订单id
     private Date startTime;//入住时间
@@ -18,6 +22,38 @@ public class CheckInInfoResult {
     private String remake;//备注
     private String OTA;//
     private String money;//当天房价
+
+    public String getOrderPlacer() {
+        return orderPlacer;
+    }
+
+    public void setOrderPlacer(String orderPlacer) {
+        this.orderPlacer = orderPlacer;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getSubscribeRemark() {
+        return subscribeRemark;
+    }
+
+    public void setSubscribeRemark(String subscribeRemark) {
+        this.subscribeRemark = subscribeRemark;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
 
     public Date getStartTime() {
         return startTime;

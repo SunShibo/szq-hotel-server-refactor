@@ -64,6 +64,9 @@ public interface OrderDAO {
     Integer closeOrder();
     //通过房间id查找在住订单信息
     CheckInInfoResult getOrderChildByRoomId(Integer roomId);
+    //通过房间id查找预约订单信息
+    CheckInInfoResult getReservationInfo(Integer roomId);
+
     //通过联房码查询联房信息
     List<CheckRoomPersonResult> getOrderRoomByCode(String code);
     //查询所有可用联房

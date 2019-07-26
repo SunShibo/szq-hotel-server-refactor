@@ -91,6 +91,12 @@ public class OrderController extends BaseCotroller {
             List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
             Map<String,Object> resultMap=new HashMap<String, Object>();
 
+            //判断房型是否够用
+            if(type.equals("roomReservation")){
+
+            }
+
+
             //检查入住信息是否正确 证件号是否有重复 验证房间是否可用
             if(!type.equals("roomReservation")&&!type.equals("updateInfo")){
                 String result=this.checkInPerson(list,orderBO.getId());
@@ -609,6 +615,38 @@ public class OrderController extends BaseCotroller {
 
     }
 
+    /**
+     * 预约信息查询
+     * */
+    @RequestMapping("/getReservationInfo")
+    public void getReservationInfo(Integer roomId, HttpServletRequest request, HttpServletResponse response){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request) ;
+            if(userInfo == null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //验证参数
+            if (roomId == null||roomId.equals("")) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            CheckInInfoResult checkInInfoResult=orderService.getReservationInfo(roomId);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInInfoResult));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("getCheckInInfo",e);
+        }
+
+    }
 
     /**
      * 修改在住信息

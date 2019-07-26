@@ -137,8 +137,8 @@ public class OrderService {
         log.info("start addOrderInfo..................................");
         log.info("orderBO:{}\torderChildBOList:{}", orderBO, orderChildBOList);
 
-        //生成新联房码
-        String alRoomCode = UUID.randomUUID().toString();
+        //查询预约中的联房码
+        String alRoomCode = orderDAO.getOrderChildAlRoomCode(orderBO.getId());
 
         for (OrderChildBO orderChildBO : orderChildBOList) {
             //根据房间查询子订单
@@ -551,6 +551,9 @@ public class OrderService {
         return checkInInfoResult;
     }
 
+    public CheckInInfoResult getReservationInfo(Integer roomId){
+        return orderDAO.getReservationInfo(roomId);
+    }
     //修改在住信息
     public void updCheckInInfo(Integer orderId, String channel, String OTA,
                                Integer orderChildId, Date entTime, String remark,

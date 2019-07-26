@@ -382,7 +382,7 @@
         delete from hm_order_child where order_id=#{id} and order_state='reservation'
     </delete>
     <!-- 获取预约状态的子订单的联房码 -->
-    <select id="getOrderChildAlRoomCode" parameterType="java.lang.Integer">
+    <select id="getOrderChildAlRoomCode" resultType="java.lang.String" parameterType="java.lang.Integer">
         select al_room_code from hm_order_child where order_id=#{id} and order_state='reservation' limit 1
     </select>
 
@@ -508,6 +508,14 @@
         and hm_everyday_room_price.order_child_id=hm_order_child.id
         and room_id=#{roomId}
         and time = date_format(now(),'%y-%m-%d')
+    </select>
+
+    <!--通过房间id查找预约信息-->
+    <select id="getReservationInfo" resultType="com.szq.hotel.entity.result.CheckInInfoResult" parameterType="java.lang.Integer">
+        select order_placer,phone,channel,subscribe_remark,OTA,order_type,money
+        from hm_everyday_room_price inner join hm_order_child on hm_everyday_room_price.order_child_id=hm_order_child.id
+        inner join hm_order on hm_order.id=hm_order_child.order_id
+        where hm_order_child.room_id=#{roomId} and order_state='reservation'
     </select>
 
     <!--通过联房码查询联房信息-->
