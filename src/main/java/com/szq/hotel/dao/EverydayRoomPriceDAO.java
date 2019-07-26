@@ -24,4 +24,6 @@ public interface EverydayRoomPriceDAO {
 
     //修改每日房价
     Integer updEverydayRoomPrice(EverydayRoomPriceBO everydayRoomPriceBO);
+
+
 }
