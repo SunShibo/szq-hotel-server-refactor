@@ -458,19 +458,26 @@ public class MemberController extends BaseCotroller {
             //会员卡id
             Integer memberCardId = memberBO.getMemberCardId();
             MemberLevelBO memberLevelBO = memberLevelService.getLevelByCardId(memberCardId);
-            //获取消费1元得多少积分
-            BigDecimal consumeGetIntegral= memberLevelBO.getConsumeGetIntegral();
-            //积分金额 = 积分 * 消费1元得多少积分
-            BigDecimal integralMoney = integral.multiply(consumeGetIntegral);
+            if (memberLevelBO!=null) {
+                //获取消费1元得多少积分
+                BigDecimal consumeGetIntegral = memberLevelBO.getConsumeGetIntegral();
+                //积分金额 = 积分 * 消费1元得多少积分
+                BigDecimal integralMoney = integral.multiply(consumeGetIntegral);
 
-            Map<String,Object> map = new HashMap<String, Object>();
-            map.put("storeValue",storeValue);
-            map.put("integralMoney",integralMoney);
-            map.put("memeberId",memberBO.getId());
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("storeValue", storeValue);
+                map.put("integralMoney", integralMoney);
+                map.put("memeberId", memberBO.getId());
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000206"));
             super.safeJsonPrint(response, result);
-            log.info("result{}",result);
+            log.info("result{}", result);
             return;
+
         }catch (Exception e){
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
