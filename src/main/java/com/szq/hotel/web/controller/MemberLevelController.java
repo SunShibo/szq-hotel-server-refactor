@@ -103,7 +103,7 @@ public class MemberLevelController extends BaseCotroller {
 
             memberLevelService.deleteMemberLevel(memberLevelId,loginAdmin.getId());
 
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("会员级别删除成功！"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;
