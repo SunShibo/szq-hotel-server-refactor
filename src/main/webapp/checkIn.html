@@ -143,7 +143,7 @@
                 <div class="layui-inline typea">
                     <label class="layui-form-label">天数</label>
                     <div class="layui-input-inline">
-                        <input type="number" name="dayNumber" oninput="changeDays(this)" id="days" autocomplete="off"
+                        <input type="number" name="dayNumber" onchange="clearRoomInfo" oninput="changeDays(this)" id="days" autocomplete="off"
                                class="layui-input flagType">
                     </div>
                 </div>
@@ -332,7 +332,7 @@
                                 }
                             }
 
-                            debugger;
+
                         }
                         // for(var i=0;i<checkinData.length;i++){
                         //     for(var j=0;j<rs.data.length;j++){
@@ -445,7 +445,7 @@
                         removeRooms2(obj.data.id)
                     }
 
-                    // debugger;
+
                 });
             } else if (layEvent === 'wait') { //备注
                 layer.confirm('确定稍后入住？', function (index) {
@@ -466,7 +466,7 @@
                         }
 
                     })
-                    // debugger;
+
                 });
             }
         });
@@ -583,11 +583,10 @@
     }
 
     function changeDays(t) {
-        // debugger;
-        // currSel.dayNumber = t.value;
+
         document.getElementById("leaveDate").value =
             DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value))).split(" ")[0] + LEAVETIME
-        // dealChange()
+
     }
 
     function selectRoom() {
@@ -680,17 +679,17 @@
 
 
     function setCustomInfo() {
-        // debugger;
+
         if (customs.length == 0 && sRooms.length != 0) {
-            // customs = [{
-            //     name: document.getElementById("name").value,
-            //     certificateId: document.getElementById("certificateId").value,
-            //     credentialNo: document.getElementById("credentialNo").value,
-            //     address: document.getElementById("address").value,
-            //     phoneNumber: document.getElementById("phoneNumber").value,
-            //     remark: "",
-            //     roomId: sRooms[0].roomId,
-            // }]
+            customs = [{
+                name: document.getElementById("orderPlacer").value,
+                certificateId: document.getElementById("certificateId").value,
+                credentialNo: document.getElementById("IDNumber").value,
+                address: '',
+                phoneNumber: document.getElementById("phone").value,
+                remark: "",
+                roomId: sRooms[0].roomId,
+            }]
         }
     }
 
@@ -699,6 +698,7 @@
         for (var i = 0; i < d.length; i++) {
             if(c.length!=0&&!c[0].roomId){
                 for (var j = 0; j < c.length; j++) {
+
                     if (d[i].roomType == c[j].typeid ||d[i].houseTypeId == c[j].typeid ) {
                         d[i].name = c[j].name;
                         d[i].credentialNo = c[j].credentialNo;
@@ -734,7 +734,7 @@
     }
 
     function calcPrice() {
-// debugger;
+
         var checkType_ = $("input[name='checkType']:checked").val();
         var d = sRooms;
         var c = saleInfo;
@@ -926,7 +926,7 @@
             if(d[i].roomId == rid){
                 for (var j = 0; j < c.length; j++) {
                     if (rid == c[j].roomId) {
-                        // d[i].name = c[j].name;
+                        d[i].name = c[j].name;
                         d[i].credentialNo = c[j].credentialNo;
                         d[i].phoneNumber = c[j].phoneNumber;
                         d[i].remark = c[j].remark;
@@ -941,13 +941,13 @@
     }
 
     function productRoomS(v) {//处理房间数据格式，改成和房型的格式一致/参数是已经选择的房间数据
-debugger;
+
         var rs = [];
         for(var i=0;i<v.length;i++){
             var td = JSON.parse(JSON.stringify(v[i]));
             v[i]['roomId'] = td.id;
-            v[i]['id'] = td.roomTypeId;
-            v[i]['name'] = td.roomType;
+            // v[i]['id'] = td.roomTypeId;
+            // v[i]['name'] = td.roomType;
             v[i]['roomNum'] = td.roomName;
             v[i]['random'] = td.id;;
             rs.push(v[i]);

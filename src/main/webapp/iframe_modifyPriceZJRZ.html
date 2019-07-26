@@ -170,9 +170,10 @@
             var str = '';
             sRooms.map(function(c,i){
                 var name = '';
-                if(c.name){
-                    name = c.name
-				}else if(c.roomTypeName){
+                // if(c.name){
+                    // name = c.name
+				// }else
+				    if(c.roomTypeName){
                     name = c.roomTypeName;
 				}else if(c.roomType){
                     name = c.roomType
