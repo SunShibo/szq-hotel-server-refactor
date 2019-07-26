@@ -216,21 +216,35 @@ public class ChildOrderService {
         log.info("ids:{}", ids);
         List<Integer> list = StringUtils.strToList(ids);
         log.info("query PayType.................................................................");
-        Set<String> payType = orderRecordService.queryPayType(list);
-        if(payType.isEmpty()){
-            payType.add(Constants.CASH.getValue());
-        }
-        payType.removeAll(Collections.singleton(null));
-        log.info("PayType:{}", payType);
-        //查询消费多少
-        log.info("query consumption.................................................................");
-        double consumption = orderRecordService.consumption(list);
-        log.info("consumption:{}", consumption);
-        //查询交了多少
-        log.info("query pay.................................................................");
-        double pay = orderRecordService.pay(list);
-        log.info("pay:{}", pay);
+        //初始化默认值
         Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("payType", new HashSet<String>());
+
+        //有可能该房间没有订单详情,(被转走或都结账了)
+        if(list!=null) {
+            Set<String> payType = orderRecordService.queryPayType(list);
+            if (payType.isEmpty()) {
+                payType.add(Constants.CASH.getValue());
+            }
+            payType.removeAll(Collections.singleton(null));
+            log.info("PayType:{}", payType);
+            resultMap.put("payType", payType);
+        }
+
+        //查询消费多少
+
+        double consumption = 0;
+        double pay = 0;
+        if(list!=null){
+            log.info("query consumption.................................................................");
+            consumption  = orderRecordService.consumption(list);
+            log.info("consumption:{}", consumption);
+            //查询交了多少
+            log.info("query pay.................................................................");
+            pay= orderRecordService.pay(list);
+            log.info("pay:{}", pay);
+        }
+
         if ((consumption + pay) > 0) {
             //退
             resultMap.put("status", "no");
@@ -238,7 +252,6 @@ public class ChildOrderService {
             //收
             resultMap.put("status", "yes");
         }
-        resultMap.put("payType", payType);
         resultMap.put("money", new BigDecimal(consumption + pay).multiply(new BigDecimal("-1")));
 
         log.info("end queryChildleAccounts.........................................................");

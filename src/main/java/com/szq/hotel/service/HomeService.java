@@ -46,7 +46,7 @@ public class HomeService {
   //  * @param network    网络锁
     public List<FloorRoomBO> home(HomeTypeBO typeBO,Integer hotelId, String vacant, String inthe, String timeout,
                                   String dirty, String subscribe, String departure, String maintain, String shop,
-                                /*  String network,*/ String types){
+                                /*  String network,*/ String types) {
         log.info("start home.............................................");
         log.info("vacant:{}\tinthe:{}\ttimeout:{}\tdirty:{}\tsubscribe:{}\tdeparture:{}\tmaintain:{}" +
                 "\tshop:{}\tnetwork:{}\t",vacant,inthe,timeout,dirty,subscribe,departure,maintain,shop/*,network*/);
@@ -73,7 +73,6 @@ public class HomeService {
         log.info("homeDAO.home..................................");
         log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(paramMap));
         List<FloorRoomBO> home = homeDAO.home(paramMap);
-
         for(int floori=0;floori<home.size();floori++){
             for(int roomi=0;roomi<home.get(floori).getRooms().size();roomi++){
                 try {

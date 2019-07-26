@@ -3561,6 +3561,9 @@ public class StringUtils {
 	}
 
 	public static  List<Integer> strToList(String strs){
+		if(StringUtils.isEmpty(strs)){
+			return null;
+		}
 		String[] split = strs.split(",");
 		List<Integer> list=new ArrayList<Integer>();
 		for(int i=0;i<split.length;i++){
@@ -3570,6 +3573,9 @@ public class StringUtils {
 	}
 
 	public static String listToStr(List<?> list, String decollator){
+		if(list==null || list.isEmpty()){
+			return null;
+		}
 		StringBuffer  buffer=new StringBuffer();
 		for(int i=0;i<list.size();i++){
 			buffer.append(list.get(i)).append(decollator);
