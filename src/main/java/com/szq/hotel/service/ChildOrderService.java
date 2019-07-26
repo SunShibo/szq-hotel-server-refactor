@@ -182,8 +182,8 @@ public class ChildOrderService {
                 childOrderDAO.reduceRoomRate(rollOutId, orderRecoredBO.getMoney());
 
             } else if (Constants.COMMODITY.getValue().equals(orderRecoredBO.getProject()) || Constants.COMPENSATE.getValue().equals(orderRecoredBO.getProject())
-                    || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())) {
-                //商品 赔偿 超时费
+                    || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())||Constants.APPLYCARD.getValue().equals(orderRecoredBO.getProject())) {
+                //商品 赔偿 超时费 办卡
                 log.info("start transferAccounts....OtherRate.....................................................");
                 childOrderDAO.increaseOtherRate(shiftToId, orderRecoredBO.getMoney());
                 childOrderDAO.reduceOtherRate(rollOutId, orderRecoredBO.getMoney());
@@ -291,8 +291,8 @@ public class ChildOrderService {
                 childOrderDAO.reduceRoomRate(chilId, orderRecoredBO.getMoney());
 
             } else if (Constants.COMMODITY.getValue().equals(orderRecoredBO.getProject()) || Constants.COMPENSATE.getValue().equals(orderRecoredBO.getProject())
-                    || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())) {
-                //商品 赔偿 超时费
+                    || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())|| Constants.APPLYCARD.getValue().equals(orderRecoredBO.getProject())) {
+                //商品 赔偿 超时费 办卡
                 log.info("start reduceOtherRate....OtherRate.....................................................");
                 childOrderDAO.reduceOtherRate(chilId, orderRecoredBO.getMoney());
             } else  if (Constants.ROOMRATEFREE.getValue().equals(orderRecoredBO.getProject()) ||

@@ -135,13 +135,13 @@ public class ChildOrderController extends BaseCotroller {
             if (loginAdmin == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
             if (StringUtils.isEmpty(remark)|| orderChildId==null || money==null || StringUtils.isEmpty(type)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
 
@@ -149,7 +149,7 @@ public class ChildOrderController extends BaseCotroller {
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);
-            log.info("result{}", result);
+            log.info("result:{}", result);
             return;
         } catch (Exception e) {
             e.getStackTrace();
@@ -174,17 +174,17 @@ public class ChildOrderController extends BaseCotroller {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
+            log.info("user:{}", loginAdmin);
             if (loginAdmin == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
             if (StringUtils.isEmpty(ids)|| shiftToId==null || rollOutId==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
 
@@ -192,14 +192,14 @@ public class ChildOrderController extends BaseCotroller {
             if(lean){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
             childOrderService.transferAccounts(loginAdmin.getId(),ids,shiftToId,rollOutId);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);
-            log.info("result{}", result);
+            log.info("result:{}", result);
             return;
         } catch (Exception e) {
             e.getStackTrace();
@@ -223,31 +223,31 @@ public class ChildOrderController extends BaseCotroller {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
+            log.info("user:{}", loginAdmin);
             if (loginAdmin == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
             if (StringUtils.isEmpty(ids)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
             boolean lean = orderRecordService.queryInvoicing(ids);
             if(lean){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
 
             Map<String, Object> map = childOrderService.queryChildleAccounts(ids);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
             super.safeJsonPrint(response, result);
-            log.info("result{}", result);
+            log.info("result:{}", result);
             return;
         } catch (Exception e) {
             e.getStackTrace();
@@ -272,31 +272,31 @@ public class ChildOrderController extends BaseCotroller {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
+            log.info("user:{}", loginAdmin);
             if (loginAdmin == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
             if (StringUtils.isEmpty(ids)||chilId==null||StringUtils.isEmpty(status)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
             boolean lean = orderRecordService.queryInvoicing(ids);
             if(lean){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
+                log.info("result:{}", result);
                 return;
             }
 
             childOrderService.childleAccounts(loginAdmin.getHotelId(),loginAdmin.getId(),chilId,ids,payType,param,status);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);
-            log.info("result{}", result);
+            log.info("result:{}", result);
             return;
         } catch (Exception e) {
             e.getStackTrace();
