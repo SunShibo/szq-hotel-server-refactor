@@ -473,10 +473,15 @@ public class OrderService {
         List<OrderChildBO> orderChildBOS=orderDAO.getPayInfo(orderId);
         for (OrderChildBO orderChildBO:orderChildBOS){
             MemberBO memberBO=memberService.selectMemberByCerNumber(orderChildBO.getCertificateNumber());
-            if(memberBO==null){
-                orderChildBO.setNameStatus("no");
+            if(memberBO!=null){
+                MemberResultBO memberResultBO=memberService.getMemberCardNumber(memberBO.getId());
+                if (memberResultBO.getType().equals("yes")){
+                    orderChildBO.setNameStatus("yes");
+                }else{
+                    orderChildBO.setNameStatus("no");
+                }
             }else{
-                orderChildBO.setNameStatus("yes");
+                orderChildBO.setNameStatus("no");
             }
         }
 
@@ -539,6 +544,9 @@ public class OrderService {
     public CheckInInfoResult getCheckInInfo(Integer roomId) {
         //在住信息
         CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId);
+        if(checkInInfoResult.getPracticalDepartureTime()!=null){
+            checkInInfoResult.setEndTime(checkInInfoResult.getPracticalDepartureTime());
+        }
         if (checkInInfoResult == null) {
             return null;
         }

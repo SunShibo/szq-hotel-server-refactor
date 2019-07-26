@@ -15,6 +15,7 @@ public class CheckInInfoResult {
     private Integer orderChildId;//子订单id
     private Date startTime;//入住时间
     private Date endTime;//离店时间
+    private Date practicalDepartureTime;//实际离店时间
     private String totalConsumption;//花费金额
     private String sumPayment;//支付金额
     private String alRoomCode;//联房码
@@ -22,6 +23,14 @@ public class CheckInInfoResult {
     private String remake;//备注
     private String OTA;//
     private String money;//当天房价
+
+    public Date getPracticalDepartureTime() {
+        return practicalDepartureTime;
+    }
+
+    public void setPracticalDepartureTime(Date practicalDepartureTime) {
+        this.practicalDepartureTime = practicalDepartureTime;
+    }
 
     public String getOrderPlacer() {
         return orderPlacer;

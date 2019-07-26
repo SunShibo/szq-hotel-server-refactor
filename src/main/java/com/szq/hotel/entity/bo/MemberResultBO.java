@@ -8,6 +8,15 @@ public class MemberResultBO extends BaseModel{
     private String memberLevelName;//会员级别名称
     private double integral;//积分
     private double storedValue;//储值
+    private String type;//能否储值支付
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getMemberName() {
         return memberName;
