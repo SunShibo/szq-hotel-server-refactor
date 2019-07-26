@@ -307,16 +307,21 @@
         }
         function checkSel(d) {
             var dd = [].concat.apply([],seleted);
+
             for(var i=0;i<dd.length;i++){
                     if(dd[i].id == d.id) {
-                        return "pick-jf-selected";
                         break;
+                        if(d.oomMajorState=="dirty"){
+                            return "pick-zf-selected";
+						}else{
+                            return "pick-jf-selected";
+						}
                     }
             }
         }
         function dealReShow() {//处理已经选择房间回写
 			var d  = [].concat.apply([],seleted);
-			// console.info(d)
+			console.info(d)
           	$("#selList").empty();
             tempSel = [];
             if(!d.length)return;
@@ -332,7 +337,7 @@
         }
         var tempSel = [];
         function checkTypeByReShow(d) {
-			console.info(tempSel)
+			// console.info(tempSel)
 			var flag = false;
             for(var i=0;i<tempSel.length;i++){
 				if(tempSel[i].roomTypeId == d.roomTypeId) {

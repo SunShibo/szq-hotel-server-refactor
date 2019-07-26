@@ -1,7 +1,7 @@
 //预约房间修改价格
 clearModifyPrice();
 function modifyPrice() {
-    debugger;
+    // debugger;
     var price = '';
     if(sRooms.length==0){
         return;
@@ -88,13 +88,13 @@ function parModifyPrice() {
             for(var i in curr){
                 if(i.split('/').length>2&&i.indexOf('y')==-1){
 
-                    _total+=(getRoomQuantity(curr['roomTypeId'])*Number(curr[i]));
+                    _total+=(getRoomQuantity(curr['roomTypeId'],curr['roomTypeName'])*Number(curr[i]));
                 }
             }
 
             //表示预约页面
             for(var i=0;i<sRooms.length;i++){
-                if(sRooms[i].id == curr['id']){
+                if(sRooms[i].id == curr['id']||sRooms[i].roomTypeId==curr['roomTypeId']||sRooms[i].roomTypeName==curr['roomTypeName']){
                     sRooms[i]['ybasicPrice'] = sRooms[i]['basicPrice'] + "";
                     sRooms[i]['yhourRoomPrice'] = sRooms[i]['hourRoomPrice'] + "";
                     sRooms[i]['hourRoomPrice'] = sRooms[i]['basicPrice'] = getOneDayPrice(_mp,curr['id']);
@@ -125,12 +125,12 @@ function parModifyPrice() {
         }else{
             $("#totalPrice").text(_total+"/"+_v.split('/')[1]);
         }
-
+// debugger;
         tableObj.reload({data:JSON.parse(JSON.stringify(sRooms))})
         state.selRow=[];
     }
 }
-function getRoomQuantity (v){
+function getRoomQuantity (v,roomTypeName){
     var _num=0;
     if(window.location.href.indexOf("appoint")>-1){
         //表示预约入住页面
@@ -142,7 +142,7 @@ function getRoomQuantity (v){
         //表示预约页面
 
         sRooms.map(function (curr) {
-            if(curr['id']==v)_num+=1
+            if(curr['id']==v||curr['roomTypeName']==roomTypeName)_num+=1
         })
     }
     return _num;
