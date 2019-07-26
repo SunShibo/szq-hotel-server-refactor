@@ -40,8 +40,6 @@ public class RoomController extends BaseCotroller {
 
     @Resource
     private RoomService roomService;
-    @Resource
-    private RoomRecordService roomRecordService;
 
     @RequestMapping("/queryRoom")
     public void queryRoom(HttpServletRequest request, HttpServletResponse response, Integer pageNo,
