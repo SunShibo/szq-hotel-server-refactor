@@ -78,79 +78,42 @@
             , loading: true // 是否显示加载条
             , page: true //开启分页
             , cols: [[ //表头
-                {field: 'checkbox', title: 'ID', type: 'checkbox', fixed: 'roomId', align: 'center'},
-                {
-                    field: 'operator', title: '交班操作员', width: 100, align: 'center', templet: function (data) {
-                        return data.operator === '' ? 'admin' : data.operator;
+                {field: 'checkbox', type: 'checkbox', fixed: 'id', align: 'center'},
+                {field: 'name', title: '交班操作员', width: 100, align: 'center'}
+                , {
+                    field: 'attendanceTime', title: '上班时间', width: 170, align: 'center', templet: function (data) {
+                        return DateToLStr(new Date(data.attendanceTime.time));
                     }
                 }
                 , {
-                    field: 'startTime', title: '上班时间', width: 170, align: 'center', templet: function (data) {
-                        return DateToLStr(new Date(data.startTime.time));
+                    field: 'closingTime', title: '下班时间', width: 170, align: 'center', templet: function (data) {
+                        return data.closingTime != null ? DateToLStr(new Date(data.closingTime.time)) : '未下班';
                     }
                 }
-                , {
-                    field: 'endTime', title: '下班时间', width: 170, align: 'center', templet: function (data) {
-                        return data.endTime != null ? DateToLStr(new Date(data.endTime.time)) : '未下班';
-                    }
-                }
-                , {field: 'consumptionIncome', width: 100, title: '总收入', align: 'center'}
+                , {field: 'generalIncome', width: 100, title: '总收入', align: 'center'}
                 , {field: 'cashIncome', width: 100, title: '现金收入', align: 'center'}
-                , {field: 'cashOut', width: 100, title: '现金找出', align: 'center'}
-                , {field: 'cashCount', width: 100, title: '现金合计', align: 'center'}
+                , {field: 'cashBack', width: 100, title: '现金找出', align: 'center'}
+                , {field: 'cashAmount', width: 100, title: '现金合计', align: 'center'}
                 , {field: 'bankCardIncome', width: 100, title: '银行卡收款', align: 'center'}
-                , {field: 'bankCardOut', width: 100, title: '银行卡找出', align: 'center'}
-                , {field: 'bankCardMat', width: 100, title: '银行卡预授权', align: 'center'}
-                , {field: 'bankCardCount', width: 100, title: '银行卡合计', align: 'center'}
+                , {field: 'bankCardBack', width: 100, title: '银行卡找出', align: 'center'}
+                , {field: 'bankCardAmount', width: 100, title: '银行卡合计', align: 'center'}
                 , {field: 'wechatIncome', width: 100, title: '微信收入', align: 'center'}
-                , {field: 'wechatOut', width: 100, title: '微信找出', align: 'center'}
-                , {field: 'wechatPay', width: 100, title: '网络支付', align: 'center'}
-                , {field: 'wechatCount', width: 100, title: '微信支付合计', align: 'center'}
+                , {field: 'wechatBack', width: 100, title: '微信找出', align: 'center'}
+                // , {field: 'wechatPay', width: 100, title: '网络支付', align: 'center'}
+                , {field: 'wechatAmount', width: 100, title: '微信支付合计', align: 'center'}
                 , {field: 'alipayIncome', width: 100, title: '支付宝收款', align: 'center'}
-                , {
-                    field: 'lipayOut', width: 100, title: '支付宝找出', align: 'center', templet: function (data) {
-                        return !!data.lipayOut ? data.lipayOut : '0';
-                    }
-                }
-                , {field: 'alipayCount', width: 100, title: '支付宝合计', align: 'center'}
-                , {
-                    field: 'yuPaylncome', width: 100, title: '其他支付', align: 'center', templet: function (data) {
-                        return !!data.yuPaylncome ? data.yuPaylncome : '0';
-                    }
-                }
-                , {
-                    field: 'storeIncome', width: 100, title: '储值收入', align: 'center', templet: function (data) {
-                        return !!data.storeIncome ? data.storeIncome : '0';
-                    }
-                }
-                , {
-                    field: 'storeOut', width: 100, title: '储值支出', align: 'center', templet: function (data) {
-                        return !!data.storeOut ? data.storeOut : '0';
-                    }
-                }
-                , {
-                    field: 'storeCount', width: 100, title: '储值合计', align: 'center', templet: function (data) {
-                        return !!data.storeCount ? data.storeCount : '0';
-                    }
-                }
-                , {
-                    field: 'interIncome', width: 100, title: '积分收入', align: 'center', templet: function (data) {
-                        return !!data.interIncome ? data.interIncome : '0';
-                    }
-                }
-                , {
-                    field: 'interOut', width: 100, title: '积分支出', align: 'center', templet: function (data) {
-                        return !!data.interOut ? data.interOut : '0';
-                    }
-                }
-                , {
-                    field: 'interCount', width: 100, title: '积分合计', align: 'center', templet: function (data) {
-                        return !!data.interCount ? data.interCount : '0';
-                    }
-                }
-                , {field: 'memberCart', width: 100, title: '会员卡售卖', align: 'center'}
-                , {field: 'thisPettyCash', width: 100, title: '当前备用金', align: 'center'}
-                , {field: 'thisMakeNumber', width: 100, title: '当前制卡数', align: 'center'}
+                , {field: 'alipayBack', width: 100, title: '支付宝找出', align: 'center'}
+                , {field: 'alipayAmount', width: 100, title: '支付宝合计', align: 'center'}
+                , {field: 'otherIncome', width: 100, title: '其他支付', align: 'center'}
+                , {field: 'storedValueIncome', width: 100, title: '储值收入', align: 'center'}
+                , {field: 'storedValueBack', width: 100, title: '储值支出', align: 'center'}
+                , {field: 'storedValueAmount', width: 100, title: '储值合计', align: 'center'}
+                , {field: 'integralIncome', width: 100, title: '积分收入', align: 'center'}
+                , {field: 'integralBack', width: 100, title: '积分支出', align: 'center'}
+                , {field: 'integralAmount', width: 100, title: '积分合计', align: 'center'}
+                , {field: 'memberCardSellCount', width: 100, title: '会员卡售卖', align: 'center'}
+                // , {field: 'thisPettyCash', width: 100, title: '当前备用金', align: 'center'}
+                // , {field: 'thisMakeNumber', width: 100, title: '当前制卡数', align: 'center'}
                 , {fixed: 'right', title: '操作', width: 80, align: 'center', toolbar: '#barDemo'}
             ]]
         });

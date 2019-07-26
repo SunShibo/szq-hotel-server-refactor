@@ -36,14 +36,14 @@
         <div>
             <div class="h-rows" id="time">
                 <div class="h-cols">班次时间</div>
-                <div class="h-cols"><span id="startTime"></span> - <span id="className"></span></div>
+                <div class="h-cols"><span id="startTime"></span> - <span id="endTime"></span> - <span id="classesName"></span></div>
             </div>
             <div class="h-rows" id="operator_user">
                 <div class="h-cols">交班操作员</div>
-                <div class="h-cols" id="operator"></div>
+                <div class="h-cols" id="name"></div>
             </div>
             <div class="h-rows">
-                总收入：<span id="consumptionIncome"></span>元
+                总收入：<span id="generalIncome"></span>元
             </div>
         </div>
         <fieldset class="layui-elem-field layui-field-title">
@@ -56,11 +56,11 @@
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">退现金</div>
-                        <div class="h-cols"><span id="cashOut"></span>元</div>
+                        <div class="h-cols"><span id="cashBack"></span>元</div>
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">合计</div>
-                        <div class="h-cols"><span id="cashCount"></span>元</div>
+                        <div class="h-cols"><span id="cashAmount"></span>元</div>
                     </div>
                 </div>
             </div>
@@ -75,15 +75,11 @@
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">退款</div>
-                        <div class="h-cols"><span id="bankCardOut"></span>元</div>
-                    </div>
-                    <div class="h-rows">
-                        <div class="h-cols">预授权</div>
-                        <div class="h-cols"><span id="bankCardMat"></span>元</div>
+                        <div class="h-cols"><span id="bankCardBack"></span>元</div>
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">合计</div>
-                        <div class="h-cols"><span id="bankCardCount"></span>元</div>
+                        <div class="h-cols"><span id="bankCardAmount"></span>元</div>
                     </div>
                 </div>
             </div>
@@ -98,15 +94,15 @@
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">退款</div>
-                        <div class="h-cols"><span id="wechatOut"></span>元</div>
+                        <div class="h-cols"><span id="wechatBack"></span>元</div>
                     </div>
-                    <div class="h-rows">
-                        <div class="h-cols">网络支付</div>
-                        <div class="h-cols"><span id="wechatPay"></span>元</div>
-                    </div>
+                    <!--<div class="h-rows">-->
+                        <!--<div class="h-cols">网络支付</div>-->
+                        <!--<div class="h-cols"><span id="wechatPay"></span>元</div>-->
+                    <!--</div>-->
                     <div class="h-rows">
                         <div class="h-cols">合计</div>
-                        <div class="h-cols"><span id="wechatCount"></span>元</div>
+                        <div class="h-cols"><span id="wechatAmount"></span>元</div>
                     </div>
                 </div>
             </div>
@@ -121,11 +117,11 @@
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">退款</div>
-                        <div class="h-cols"><span id="alipayOut"></span>元</div>
+                        <div class="h-cols"><span id="alipayBack"></span>元</div>
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">合计</div>
-                        <div class="h-cols"><span id="alipayCount"></span>元</div>
+                        <div class="h-cols"><span id="alipayAmount"></span>元</div>
                     </div>
                 </div>
             </div>
@@ -136,7 +132,7 @@
                 <div class="h-main">
                     <div class="h-rows">
                         <div class="h-cols">收款</div>
-                        <div class="h-cols"><span id="yuPayIncome"></span>元</div>
+                        <div class="h-cols"><span id="otherIncome"></span>元</div>
                     </div>
                 </div>
             </div>
@@ -147,15 +143,15 @@
                 <div class="h-main">
                     <div class="h-rows">
                         <div class="h-cols">当班积分收入</div>
-                        <div class="h-cols"><span id="interIncome"></span>元</div>
+                        <div class="h-cols"><span id="integralIncome"></span>元</div>
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">当班积分支出</div>
-                        <div class="h-cols"><span id="interOut"></span>元</div>
+                        <div class="h-cols"><span id="integralBack"></span>元</div>
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">当班积分合计</div>
-                        <div class="h-cols"><span id="interCount"></span>元</div>
+                        <div class="h-cols"><span id="integralAmount"></span>元</div>
                     </div>
                 </div>
             </div>
@@ -166,15 +162,15 @@
                 <div class="h-main">
                     <div class="h-rows">
                         <div class="h-cols">当班储值收入</div>
-                        <div class="h-cols"><span id="storeIncome"></span>元</div>
+                        <div class="h-cols"><span id="storedValueIncome"></span>元</div>
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">当班储值支出</div>
-                        <div class="h-cols"><span id="storeOut"></span>元</div>
+                        <div class="h-cols"><span id="storedValueBack"></span>元</div>
                     </div>
                     <div class="h-rows">
                         <div class="h-cols">当班储值合计</div>
-                        <div class="h-cols"><span id="storeCount"></span>元</div>
+                        <div class="h-cols"><span id="storedValueAmount"></span>元</div>
                     </div>
                 </div>
             </div>
@@ -185,26 +181,26 @@
                 <div class="h-main">
                     <div class="h-rows">
                         <div class="h-cols">数量</div>
-                        <div class="h-cols"><span id="memberCart"></span>张</div>
+                        <div class="h-cols"><span id="memberCardSellCount"></span>张</div>
                     </div>
                 </div>
             </div>
         </fieldset>
-        <fieldset class="layui-elem-field layui-field-title">
-            <legend style="text-align: center">实物交接</legend>
-            <div class="layui-field-box">
-                <div class="h-main">
-                    <div class="h-rows">
-                        <div class="h-cols">当前现金备用金</div>
-                        <div class="h-cols"><span id="thisPettyCash"></span>元</div>
-                    </div>
-                    <div class="h-rows">
-                        <div class="h-cols">当前制卡数</div>
-                        <div class="h-cols"><span id="thisMakeNumber"></span></div>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
+        <!--<fieldset class="layui-elem-field layui-field-title">-->
+            <!--<legend style="text-align: center">实物交接</legend>-->
+            <!--<div class="layui-field-box">-->
+                <!--<div class="h-main">-->
+                    <!--<div class="h-rows">-->
+                        <!--<div class="h-cols">当前现金备用金</div>-->
+                        <!--<div class="h-cols"><span id="thisPettyCash"></span>元</div>-->
+                    <!--</div>-->
+                    <!--<div class="h-rows">-->
+                        <!--<div class="h-cols">当前制卡数</div>-->
+                        <!--<div class="h-cols"><span id="thisMakeNumber"></span></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</fieldset>-->
         <div class="h-btn" id="h-btn" style="display:none;">
             <button class="layui-btn" id="handoverBtn">去登录</button>
         </div>
@@ -236,7 +232,7 @@
             }
             for(var item in handover){
                 if(typeof handover[item] === 'object'){
-                    $('#'+item).text(DateToLStr(new Date(handover[item].time)));
+                    // $('#'+item).text(DateToLStr(new Date(handover[item].time)));
                     continue;
                 }
                 $('#'+item).text(handover[item]);

@@ -125,8 +125,6 @@
 <script>
     // $(".side").css("height",
 
-    var ALLSTATE = 'vacant,inthe,timeout,dirty,departure,subscribe,maintain,shop';
-    var ALLTYPES = [];
     layui.use(['element', 'jquery', 'layer'], function () {
         var element = layui.element;
         var $ = jQuery = layui.$;
@@ -147,13 +145,14 @@
             var roomId = $(this).data("roomid");
             var roomNum = $(this).children('.type').children('span').get(0).innerText;
             var roomTypeName = $(this).children('.type').children('span').get(1).innerText;
-            var state = $(this).data('state');
-            var fixRoomResult = $(this).data('fixroomresult');
+            var state = $(this).data('state');//预约状态
+            var status = $(this).data('status');//在住状态
             if (!roomId || !roomNum || !roomTypeName) {
                 showMsg('网络错误，请刷新重试！');
             }
-            clickItem(roomId, roomNum, roomTypeName, state, fixRoomResult);
+            clickItem(roomId, roomNum, roomTypeName, state, status);
         });
+
         $(document).on("click", ".filterState", function () {
             if (this.dataset.id == 'countAllRoom') {
                 clickAll();
@@ -191,7 +190,6 @@
                 if ($(this).prop("checked") == false) {
                     allChecked = false;
                 }
-                ;
             });
             if (allChecked) {
                 $("#countAllRoom").prop("checked", true);
@@ -213,28 +211,7 @@
             } else {
                 layer.alert("获取房型失败：" + r.errMsg);
             }
-        })
-
-        //获取首页数据
-        // function getHomeData(par, callback) {
-        //     // console.info(par);
-        //     $.post(api.homePage, par, function (r) {
-        //         var r = JSON.parse(r);
-        //         console.info(r)
-        //         if (r.success) {
-        //             if(_timess==0){
-        //                 if(r.data.info){
-        //                     if(r.data.info!=''){
-        //                         layer.alert( r.data.info)
-        //                     }
-        //                 }
-        //             }
-        //             callback(r.data)
-        //         } else {
-        //             layer.alert("2" + r.errMsg);
-        //         }
-        //     })
-        // }
+        });
 
         //房态
         function renderCheckBox(r) {
@@ -273,6 +250,7 @@
             $cb.append(last);
         }
 
+        //房态排序
         function formatCheckBox(r) {
             return {
                 countAllRoom: z,
@@ -287,6 +265,7 @@
             }
         }
 
+        //房态状态
         function getRoomState(s) {
             switch (s) {
                 case 'countAllRoom':
@@ -349,14 +328,14 @@
             $checkBoxType.append(str);
         }
 
-//弹出层
-        function clickItem(id, roomNum, name, state, fixRoomResult) {
+        //弹出层
+        function clickItem(id, roomNum, name, state, status) {
             layui.use('layer', function () {
                 var layer = layui.layer;
                 layer.open({
                     type: 2,
                     title: roomNum + name,
-                    content: encodeURI('iframe_home.html?id=' + id + '&state=' + state + '&rt=' + name + '&fr=' + fixRoomResult), //这里content是一个普通的String
+                    content: 'iframe_home.html?id=' + id + '&state=' + state + '&status=' + status, //这里content是一个普通的String
                     skin: 'demo-class',
                     shadeClose: true,
                     shade: 0.6,
@@ -375,7 +354,7 @@
             //房态选项
             if ($("#countAllRoom").prop("checked")) {//房态全选
                 o = {};
-            }else{
+            } else {
                 //遍历每个房态
                 $(".filterState").each(function () {
                     if ($(this).prop("checked")) {
@@ -422,15 +401,14 @@
                     '<legend>',
                     ddd[i].name,
                     '</legend>',
-                    '<div class="flex-container">'].join("")
+                    '<div class="flex-container">'].join("");
                 for (var j = 0; j < f.length; j++) {
-                    str += ['<div data-fixroomresult="' + f[j].maintain + '" data-state="' + f[j].lockRoomState + '" class="item state-',
-                        f[j].status,
-                        '" data-roomid="' +
-                        f[j].roomId,
-                        '">',
-                        '<p class="type"><span>',
-                        f[j].roomName,
+                    str += ['<div data-status="', f[j].status == 'inthe',
+                        '" data-state="', judgmentState(f[j].makeStatus),
+                        '" class="item state-', f[j].status,
+                        '" data-roomid="' + f[j].roomId, '">',
+                        '<p class="type">',
+                        '<span>', f[j].roomName,
                         '</span><span>',
                         f[j].roomType,
                         '</span></p>',
@@ -452,6 +430,7 @@
             $r.append(str);
         }
 
+        //轮询首页数据  一分钟一次
         var _timess = 0;
         setInterval(function () {
             getRoomsInfo();
@@ -462,51 +441,11 @@
             console.log("定时任务" + DateToLStr(new Date()) + " " + _timess)
         }, 60000);
 
-        // function getStateByValue(s) {
-        //     var v = '';
-        //     // if (s.state) {
-        //     //     v = s.state;
-        //     // } else {
-        //     v = s.status;
-        //     // }
-        //     switch (v) {
-        //         case 0:
-        //             return '全部';
-        //         case 1:
-        //             return '空房';
-        //         case 3:
-        //             return '已入住';
-        //         case 2:
-        //             return '预约中';
-        //         case 4:
-        //             return '预离店';
-        //         case 5:
-        //             return '入住超时';
-        //         case 6:
-        //             return '待打扫';
-        //         case 8:
-        //             return '全部锁房';
-        //         case 9:
-        //             return '门店锁房';
-        //         case 10:
-        //             return '网络锁房';
-        //         case 7:
-        //             return '维修房'
-        //     }
-        // }
-
-        function getStatus(f) {
-
-            // if (f.state) {
-            //     return f.state
-            // }
-            return f.status
-        }
-
+        //修改房态  房型 数量数据
         function updateCheckBox(r) {
             var t = r.roomType;
             var s = r.state;
-            for(var i = 0, len = t.length; i< len; i++){
+            for (var i = 0, len = t.length; i < len; i++) {
                 $("#_" + t[i].id).text(t[i].count)
             }
             for (var i in s) {
@@ -517,29 +456,28 @@
         //房间内的各种状态的加载
         function checkIsClockRoom(r) {
             // var wlsf = " background-color: #FFBB77 !important; "
-            // var mdsf = " background-color: #548C00 !important; "
+            var mdsf = " background-color: #548C00 !important; ";
             var qbsf = " background-color: #808040 !important; ";
             var yyf = " background-color: #01B468 !important; ";
             var wxf = " background-color: #4F4F4F !important; ";
             var yld = " background-color: #750000 !important; ";
-            return ['<p class="', ishere(r.lockRoomState), '" style="position: absolute;width: 80px;height: 20px;left: 0;bottom: 0px; ', judgmentState(r.lockRoomState) ? wxf : '', 'text-align: right;color:#fff;padding-right:10px;">已锁房</p>',
-                '<p class="', ishere(r.maintain) ? ' layui-hide ' : '', '" style="position: absolute;width: 80px;height: 20px;left: 90px;bottom: 0px; ', judgmentState(r.maintain) ? yyf : '', 'text-align: right;color:#fff;padding-right:10px;">维修房</p>',
-                '<p class="', ishere(r.outStatus), '" style="position: absolute;width: 80px;height: 20px;left: 90px;bottom: 20px; ', judgmentState(r.outStatus) ? qbsf : '', 'text-align: right;color:#fff;padding-right:10px;">预离店</p>',
+            return ['<p class="', ishere(r.lockRoomState), '" style="position: absolute;width: 80px;height: 20px;left: 0;bottom: 0px; ', judgmentState(r.lockRoomState) ? mdsf : '', 'text-align: right;color:#fff;padding-right:10px;">已锁房</p>',
+                '<p class="', ishere(r.maintain) ? ' layui-hide ' : '', '" style="position: absolute;width: 80px;height: 20px;left: 90px;bottom: 0px; ', judgmentState(r.maintain) ? wxf : '', 'text-align: right;color:#fff;padding-right:10px;">维修房</p>',
+                '<p class="', ishere(r.outStatus), '" style="position: absolute;width: 80px;height: 20px;left: 90px;bottom: 20px; ', judgmentState(r.outStatus) ? yld : '', 'text-align: right;color:#fff;padding-right:10px;">预离店</p>',
                 r.checkType === 'hour' ? '<p  style="background-color: #000 !important;position: absolute;width: 170px;height: 20px;left: 0;top: 27px; text-align: right;color:#fff;padding-right:10px;">钟点房</p>' : '',
                 r.balance === 'yes' ? '<img title="余额不足" src="images/money.gif" width="20px" height="20px" style="display: block;position:absolute;left: 20px;top: 53px;" />' : '',
                 // r.memberName != '' ? ('<p style="position:absolute;right: 20px;top: 4px;border: 1px dashed #ffb800;color: #fff;font-weight: bold;padding: 3px;background: #888;" >' + r.memberName + '</p>') : '',
-                '<p class="', !r.makeStatus ? 'layui-hide' : '', '" style="position: absolute;width: 80px;height: 20px;left: 0;bottom: 20px; ', judgmentState(r.makeStatus) ? yld : '', 'text-align: right;color:#fff;padding-right:10px;">预约房</p>'].join("");
+                '<p class="', !r.makeStatus ? 'layui-hide' : '', '" style="position: absolute;width: 80px;height: 20px;left: 0;bottom: 20px; ', judgmentState(r.makeStatus) ? yyf : '', 'text-align: right;color:#fff;padding-right:10px;">预约房</p>'].join("");
+        }
 
-            //判断是否需要禁止显示
-            function ishere(v) {
-                return v === 'no' || v !== 'yes' ? ' layui-hide ' : ''
-            }
+        //判断是否需要禁止显示
+        function ishere(v) {
+            return v === 'no' || v !== 'yes' ? ' layui-hide ' : ''
+        }
 
-            //判断值是否为yes
-            function judgmentState(v) {
-                return v === 'yes';
-            }
-
+        //判断值是否为yes
+        function judgmentState(v) {
+            return v !== 0 && v !== null && v !== '0';
         }
 
 

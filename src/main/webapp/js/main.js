@@ -98,8 +98,10 @@ var api = {
     , reserveRoom: 'order/reservationRoom'//预定房间000
     , stamp: '/OrderManage/stamp' //打印数据
     , priceAll: '/room/queryRoomPrice'//查询当前roomId的所有未过期价格
-    , queryCondition: '/dealShiftServiceController/queryCondition'//交班信息
-    , offDuty: '/dealShiftServiceController/offDuty'//确定交班
+    // , queryCondition: '/dealShiftServiceController/queryCondition'//交班信息   废弃
+    , offDuty: '/shiftRecords/shifRecord'//确定交班  已修改
+    , handoverList: '/shiftRecords/queryShiftRecordList'//交班列表  已修改
+    // , beforehandDuty: '/dealShiftServiceController/beforehandDuty'//预交班  废弃
     , beforeOrder: 'OrderManage/closeAccounts'//已结账的订单查询详情
     , cancelOrder: '/subcribe/cancelTheReservation'//取消预约  取消入住待支付
     , memberPrice: '/memberRoomType/selectMemberRoomType?memberLevelId='//根据会员级别获取价格000
@@ -110,8 +112,8 @@ var api = {
     , updateHouseType: '/roomType/updateRoomType'//修改房型      已修改
     , deleteHouseType: '/roomType/deleteRoomType'//删除房型
     , addHouseType: '/roomType/insertRoomType'//添加房型      已修改
-    , queryPettyCash: '/dealShiftServiceController/queryPettyCash?v=1'//备用金查询
-    , addPettyCash: '/dealShiftServiceController/addPettyCash?v=1'//备用金增减
+    // , queryPettyCash: '/dealShiftServiceController/queryPettyCash?v=1'//备用金查询   废弃
+    // , addPettyCash: '/dealShiftServiceController/addPettyCash?v=1'//备用金增减    废弃
     , channelDiscount: '/CooperativePrice/detail?id='
     , allChannel: '/Dictionary/getDic?kid=2'//预定页面查询合作机构000
     , addChannel: '/CooperativePrice/add?name='
@@ -119,9 +121,17 @@ var api = {
     // , homePage: '/roomMain/homePageInfo?v=1'//获取首页数据  废弃
     , cashPay: '/order/pay'//现金支付接口000   ??  任何支付方式都走这个接口
     , queryPayment: '/checkin/queryPayment'//查询订单应支付金额
-    , homeItemInfo: '/roomDetailsController/queryRoomInfo'//首页弹出层信息
+
+
+    , homeItemInfo: '/order/getCheckInInfo'//首页在住信息
+    , homeRoomInfo: '/room/getRoomMessage'//首页房屋信息
+    , homeReservationInfo: '/order/getReservationInfo'//首页预约信息
+    , homeQueryIndexRoom: '/room/queryIndexRoomState'//首页十五天预约信息
+    , homeRoomRecord: '/roomRecord/selectRoomRecord'//首页房间操作日志信息
+
+
+
     , delRoomItemPrice: '/room/deleteRoomPrice'//删除特殊价格
-    , handoverList: '/dealShiftServiceController/queryAllDS'//交班列表
     , operationLog: '/roomDetailsController/operationLog'//首页弹出层操作记录
     , checkIdentify: '/checkin/isCheckinByIdNumber?idNumber='//查看这个证件号码是否有在住信息
     , homeRoomType: '/home/home'//首页获取房间类型信息  已修改
@@ -182,7 +192,6 @@ var api = {
     , buying: 'OrderManage/buying'//挂账
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
     , FormManangeResponse: '/FormAccountDetailController/FormManangeResponse'//管理层报表
-    , beforehandDuty: '/dealShiftServiceController/beforehandDuty'//预交班
     , stamOrder: '/OrderManage/stamOrder'//在住打印
     , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人
     , delRoomPerson: '/roomDetailsController/delRoomPerson'//删除同来人
@@ -568,9 +577,10 @@ function renderMenu($, e) {
 function showConfirm(index) {
     if (index == 1) {
         $.ajax({
-            url: api.beforehandDuty,
+            url: api.offDuty,
             type: 'POST',
             dataType: 'json',
+            data: {type: 'no'},
             success: function (data) {
                 if (data.success) {
                     sessionStorage.setItem('handover', JSON.stringify(data.data));
@@ -588,6 +598,7 @@ function showConfirm(index) {
                 url: api.offDuty,
                 type: 'POST',
                 dataType: 'json',
+                data: {type: 'yes'},
                 success: function (data) {
                     if (data.success) {
                         sessionStorage.setItem('handover', JSON.stringify(data.data));
@@ -596,7 +607,7 @@ function showConfirm(index) {
                         showMsg(data.errMsg, 2, false);
                     }
                 }
-            })
+            });
             layer.close(index);
         });
     }

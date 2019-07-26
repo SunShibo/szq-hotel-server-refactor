@@ -18,11 +18,11 @@
 <body>
 <div class="layui-tab layui-tab-card" lay-filter="homeInfo">
     <ul class="layui-tab-title">
-        <li lay-id="inMessage" id="inMessage" style="display: none">在住信息</li>
-        <li lay-id="roomInfo" id="roomInfo" style="display: none">房屋信息</li>
-        <li lay-id="subscribeMessage" id="subscribeMessage" style="display: none">预订信息</li>
-        <li lay-id="roomState" id="roomState" style="display: none">预约状态</li>
-        <li lay-id="roomTable" id="roomTable" style="display: none">操作日志</li>
+        <li lay-id="inMessage" id="inMessage">在住信息</li>
+        <li lay-id="roomInfo" id="roomInfo">房屋信息</li>
+        <li lay-id="subscribeMessage" id="subscribeMessage">预订信息</li>
+        <li lay-id="roomState" id="roomState">预约状态</li>
+        <li lay-id="roomTable" id="roomTable">操作日志</li>
     </ul>
     <div class="layui-tab-content">
         <div class="layui-tab-item">
@@ -30,64 +30,65 @@
             <table class="layui-table tab-center" lay-even="" lay-skin="row">
                 <tr>
                     <td>抵达时间</td>
-                    <td colspan="3" id="arrivalTime"></td>
+                    <td colspan="3"><span id="startTime"></span> - <span id="endTime"></span></td>
                 </tr>
                 <tr>
-                    <td>消费总额</td>
-                    <td colspan="3"><span id="housingPrice"></span>元</td>
+                    <td>当天房价</td>
+                    <td colspan="3"><span id="money"></span>元</td>
+                </tr>
+                <tr>
+                    <td>消费金额</td>
+                    <td colspan="3"><span id="totalConsumption"></span>元</td>
                 </tr>
                 <tr>
                     <td>支付金额</td>
-                    <td colspan="3"><span id="price"></span>元</td>
+                    <td colspan="3"><span id="sumPayment"></span>元</td>
                 </tr>
                 <tr>
-                    <td>会员/机构名称</td>
-                    <td id="isMember" colspan="3"></td>
+                    <td>客源</td>
+                    <td id="channel" colspan="3"></td>
+                </tr>
+                <tr>
+                    <td>OTA</td>
+                    <td id="OTA" colspan="3"></td>
                 </tr>
                 <tr>
                     <td>备注</td>
-                    <td colspan="3" id="remarks"></td>
+                    <td colspan="3" id="remake"></td>
                 </tr>
             </table>
-            <div>同住人信息</div>
-            <table class="layui-table tab-center" id="penson" lay-even="" lay-skin="row">
-                <thead>
-                <tr>
-                    <th>姓名</th>
-                    <th>性别</th>
-                    <th>手机号</th>
-                    <th>证件号</th>
-                </tr>
-                </thead>
-            </table>
-            <div>联房信息</div>
             <div>
-                <table class="layui-hide" id="jointHousing"></table>
+                <div>同住人信息</div>
+                <table id="person" lay-filter="person"></table>
+            </div>
+            <div>
+                <div>联房信息</div>
+                <table lay-filter="guestAccount" id="guestAccount"></table>
             </div>
             <div style="height: 60px;"></div>
             <div class="btn-list layui-btn-container">
-                <button class="layui-btn" id="cardmanagement">制卡消卡</button>
-                <button class="layui-btn" id="continue">续住</button>
-                <button class="layui-btn" id="addSameWith">添加同来</button>
+                <!--<button class="layui-btn" id="cardmanagement">制卡消卡</button>-->
+                <!--<button class="layui-btn" id="continue">续住</button>-->
+                <!--<button class="layui-btn" id="addSameWith">添加同来</button>-->
                 <button class="layui-btn" id="checkInRoom">换房</button>
                 <button class="layui-btn" id="accounts">联房</button>
                 <button class="layui-btn" id="outRoom">客账</button>
-                <button class="layui-btn" id="checkInRemarks">备注</button>
+                <!--<button class="layui-btn" id="checkInRemarks">备注</button>-->
             </div>
         </div>
         <div class="layui-tab-item">
             <table class="layui-table tab-center" lay-even="" lay-skin="row">
                 <tr>
                     <td>设施</td>
-                    <td colspan="3" id="facilities"></td>
+                    <td colspan="3" id="setting"></td>
                 </tr>
                 <tr>
                     <td>特性</td>
-                    <td colspan="3" id="characteristic"></td>
+                    <td colspan="3" id="character"></td>
                 </tr>
                 <tr>
                     <td>备注</td>
-                    <td colspan="3" id="remarks1"></td>
+                    <td colspan="3" id="remark"></td>
                 </tr>
             </table>
             <div class="btn-list layui-btn-container">
@@ -101,30 +102,34 @@
         <div class="layui-tab-item">
             <table class="layui-table tab-center" lay-even="" lay-skin="row">
                 <tr>
-                    <td>预订人</td>
-                    <td id="reservations"></td>
+                    <td>预约人</td>
+                    <td id="orderPlacer"></td>
                     <td>手机号</td>
-                    <td id="reservationsPhone"></td>
+                    <td id="phone"></td>
                 </tr>
                 <tr>
                     <td>抵离时间</td>
-                    <td colspan="3" id="departureTime"></td>
+                    <td colspan="3"><span id="reservationStartTime"></span> - <span id="reservationEndTime"></span></td>
                 </tr>
                 <tr>
-                    <td>入住人</td>
-                    <td id="occupant"></td>
-                    <td>会员/机构名称</td>
-                    <td id="isMember1"></td>
+                    <td>机构</td>
+                    <td id="reservationChannel" colspan="3"></td>
                 </tr>
                 <tr>
-                    <td>预订渠道</td>
-                    <td id="channel"></td>
-                    <td>预订价</td>
-                    <td id="prePricing"></td>
+                    <td>预约渠道</td>
+                    <td id="orderType" colspan="3"></td>
+                </tr>
+                <tr>
+                    <td>OTA</td>
+                    <td id="reservationOTA" colspan="3"></td>
+                </tr>
+                <tr>
+                    <td>当日房价</td>
+                    <td colspan="3"><span id="reservationMoney"></span>元</td>
                 </tr>
                 <tr>
                     <td>备注</td>
-                    <td colspan="3" id="remarks2"></td>
+                    <td id="subscribeRemark" colspan="3"></td>
                 </tr>
             </table>
             <div style="height: 60px;"></div>
@@ -146,23 +151,62 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['element', 'jquery', 'table'], function () {
-        var element = layui.element, $ = jQuery = layui.$, table = layui.table, id = 0, childId = 0, state = '',
-            phone = '', status = 0, inWay = 0, fixRoomResult = ""
-            , roomNum = '', roomTypeName = '', houseTypeId = 0, phone1 = '', subId = 0, inMessageRemark = '',
-            subMessageRemark = '', roomInfoRemark = '';
+        var element = layui.element, $ = jQuery = layui.$, table = layui.table,
+            id = 0,//房间ID
+            orderId = 0,//主订单ID
+            orderChildId = 0,//子订单ID
+            state = false,//预约状态
+            status = false,//入住状态
+            phone = '',
+            inWay = 0,
+            roomNum = '',
+            roomTypeName = '',
+            houseTypeId = 0,
+            phone1 = '',
+            inMessageRemark = '',
+            subMessageRemark = '',
+            roomInfoRemark = '';
 
         $(function () {
             id = parseInt(getUrl('id'));
-            roomTypeName = getUrl('rt');
-            state = parseInt(getUrl('state'));
-            fixRoomResult = parseInt(getUrl('fr'));
-            // console.log(id);
-            getResult();
+            debugger
+            state = getUrl('state');
+            status = getUrl('status');
+
+            //判断预约状态是否需要删除
+            if (state === 'false') {
+                element.tabDelete('homeInfo', 'subscribeMessage');
+            } else {
+                initMakeAppointmentData();
+            }
+            //判断入住状态是否需要删除
+            if (status === 'false') {
+                element.tabDelete('homeInfo', 'inMessage');
+            } else {
+                initStayInData()
+            }
+
+            //如果预约状态和入住状态都为true或者入住状态为true时；将tabs切换到入住信息
+            if ((state === 'true' && status === 'true') || status === 'true') {
+                element.tabChange('homeInfo', 'inMessage');
+            } else if (state === 'true' && status === 'false') {//如果预约状态为true 入住状态为false时 将tabs切换到预约信息
+                element.tabChange('homeInfo', 'subscribeMessage');
+            } else { //如果预约状态和入住状态都为false时 将tabs切换到房屋信息
+                element.tabChange('homeInfo', 'roomInfo');
+            }
+
+            //房屋信息
+            initRoomInfoData();
+            //十五天内房间预约的状态
+            initQueryIndexRoomState();
         });
 
-        function getResult() {
-            parent.layer.load(1, {time: 10 * 1000});
-            setFixRoomResult();
+        element.on('tab(homeInfo)', function (data) {
+            console.log(data);
+        });
+
+        //在住数据获取
+        function initStayInData() {
             $.ajax({
                 url: api.homeItemInfo,
                 type: 'POST',
@@ -171,58 +215,218 @@
                     roomId: id
                 },
                 success: function (data) {
-                    childId = data.data.childId;
-                    subId = data.data.subId;
-                    status = data.data.roomInfo.status;
-                    roomNum = data.data.listRoomHouse.name;
-                    houseTypeId = data.data.listRoomHouse.houseTypeId;
-                    phone = data.data.phoneNumberSub;
-                    phone1 = data.data.phoneNumber;
-                    inMessageRemark = data.data.inMessage.length ? data.data.inMessage[0].remark : '';
-                    subMessageRemark = Object.keys(data.data.subscribeMessage).length ? data.data.subscribeMessage.remark : '';
-                    roomInfoRemark = Object.keys(data.data.roomInfo).length ? data.data.roomInfo.comment : '';
-
-
-                    if (data.success) {
-
-                        if (status === 6) {//判断是否是待打扫房间
-                            $('#finish').removeAttr('disabled').removeClass("layui-btn-disabled");
+                    if (!data.success) {
+                        showMsg(data.errMsg, 2, false);
+                        return;
+                    }
+                    console.log(data);
+                    //获取订单ID
+                    orderId = data.data.orderId;
+                    orderChildId = data.data.orderChildId;
+                    //入住信息表格数据渲染
+                    for (var item in data.data) {
+                        var dom = $('#' + item);
+                        if (item == 'startTime' || item == 'endTime') {
+                            dom.text(DateToLStr(new Date(data.data[item].time)));
+                        } else {
+                            dom.text(data.data[item]);
                         }
+                    }
 
-                        //判断是否锁房   锁房禁用入住按钮
-                        if (state === 9 || state === 8 || status === 3 || status === 6 || status === 7) {
-                            $('#checkIn').addClass('layui-btn-disabled').attr('disabled', 'true');
+                    // 同来人表格数据渲染
+                    personTab.reload({data: data.data.checkInPersonBOS});
+                    //客账表格数据渲染
+                    guestAccountTab.reload({data: data.data.checkRoomPersonResults});
+                }
+            })
+        }
+
+        //同来人表格
+        var personTab = table.render({
+            elem: '#person'
+            , limit: 99999
+            , cols: [[ //表头
+                {field: 'name', title: '姓名', align: "center"}
+                , {field: 'gender', title: '性别', align: "center"}
+                , {field: 'phone', title: '手机号', align: "center"}
+                , {field: 'certificateNumber', title: '证件号', align: "center"}
+                , {
+                    field: 'status', title: '入住状态', align: "center", templet: function (data) {
+                        return data.status === 'checkin' ? '正在入住' : '已经离店';
+                    }
+                }
+            ]]
+        });
+
+        //客账表格
+        var guestAccountTab = table.render({
+            elem: '#guestAccount'
+            , limit: 99999
+            , cols: [[ //表头
+                {field: 'roomName', title: '房间号', align: "center"}
+                , {field: 'name', title: '姓名', align: "center"}
+                , {
+                    field: 'createTime', title: '入住时间', align: "center", templet: function (data) {
+                        return DateToLStr(new Date(data.startTime.time));
+                    }
+                }
+            ]]
+        });
+
+        //房屋信息
+        function initRoomInfoData() {
+            $.ajax({
+                url: api.homeRoomInfo,
+                type: 'POST',
+                dataType: 'json',
+                data: {id: id},
+                success: function (res) {
+                    if (res.success) {
+                        for (var item in res.data) {
+                            $('#' + item).text(res.data[item]);
                         }
+                    } else {
+                        showMsg(res.errMsg, 2, false);
+                    }
+                }
+            });
+        }
 
+        //预约数据获取
+        function initMakeAppointmentData() {
+            $.ajax({
+                url: api.homeReservationInfo,
+                type: 'POST',
+                dataType: 'json',
+                data: {roomId: id},
+                success: function (res) {
+                    if (!res.success) {
+                        showMsg(res.errMsg, 2, false);
+                        return;
+                    }
 
-                        $('#roomInfo').css('display', 'inline-block');
-                        $('#roomState').css('display', 'inline-block');
-                        $('#roomTable').css('display', 'inline-block');
+                    res.data.orderType = formatOrderType(res.data.orderType);
+                    //避免重复ID
+                    res.data.reservationMoney = res.data.money;
+                    res.data.reservationChannel = res.data.channel;
+                    res.data.reservationOTA = res.data.OTA;
+                    res.data.reservationStartTime = res.data.startTime;
+                    res.data.reservationEndTime = res.data.endTime;
+                    delete res.data.money;
+                    delete res.data.channel;
+                    delete res.data.OTA;
+                    delete res.data.startTime;
+                    delete res.data.endTime;
 
-                        if (data.data.inMessage.length !== 0) {//判断入住信息不为空隐藏预约信息
-                            inWay = data.data.inMessage[0].inWay;
-                            getResultOrderInfo();
-                            if (data.data.inMessage[0].payStatus === 1) {
-                                $('#checkInRoom').addClass('layui-btn-disabled').attr('disabled', 'true');
-                                $('#outRoom').addClass('layui-btn-disabled').attr('disabled', 'true');
-                            }
-                            $('#inMessage').css('display', 'inline-block');
-                            if (data.data.subscribeMessage.length !== 0) {
-                                $('#subscribeMessage').css('display', 'inline-block');
-                            }
-                            element.tabChange('homeInfo', 'inMessage');
-                        } else if (data.data.subscribeMessage.length !== 0) {//判断预约信息不为空隐藏入住信息
-                            $('#subscribeMessage').css('display', 'inline-block');
-                            element.tabChange('homeInfo', 'subscribeMessage');
-                        } else {//否则显示房屋信息
-                            element.tabChange('homeInfo', 'roomInfo');
+                    //绑定数据
+                    for (var item in res.data) {
+                        var dom = $('#' + item);
+                        if (item === 'reservationStartTime' || item === 'reservationEndTime') {
+                            dom.text(DateToLStr(new Date(res.data[item].time)));
+                        } else {
+                            dom.text(res.data[item]);
                         }
-                        dataInfo(data.data);
-                        parent.layer.closeAll('loading');
                     }
                 }
             })
         }
+
+        //十五天内房间预约的状态数据
+        function initQueryIndexRoomState() {
+            $.ajax({
+                url: api.homeQueryIndexRoom,
+                type: 'POST',
+                dataType: 'json',
+                data: {id: id},
+                success: function (res) {
+                    console.log(res)
+                    if (res.success) {
+                        formatDate(res.data);
+                    } else {
+                        showMsg(res.errMsg, 2, false);
+                    }
+                }
+            })
+        }
+
+        //预约渠道
+        function formatOrderType(orderType) {
+            switch (orderType) {
+                case 'subscribe':
+                    return '预约订单';
+                case 'directly':
+                    return '直接入住';
+            }
+        }
+
+        //十五天房态
+        function formatDate(data) {
+            /*
+             * 天数 每循环一次为一天
+             */
+            for (var i = 1; i < 15; i++) {
+                var timestamp = new Date(data[i].startDate);
+                var month = timestamp.getMonth() + 1 < 10 ? "0" + (timestamp.getMonth() + 1) : timestamp.getMonth() + 1;
+                var date = timestamp.getDate() < 10 ? '0' + timestamp.getDate() : timestamp.getDate();
+                var div = '<div class="room-state-item"><div id="time">' + month + '/' + date + '</div><div id="roomItemState">' + data[i].state + '</div></div>'
+                $('#roomStateItem').append(div);
+            }
+        }
+
+        //房屋操作日志数据
+        table.render({
+            elem: '#operationLog'
+            , method: 'POST'
+            , url: api.homeRoomRecord + '?id=' + id
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.roomRecordBOList //解析数据列表
+                };
+            }
+            , height: 'full'
+            , loading: true // 是否显示加载条
+            , page: true //开启分页
+            , cellMinWidth: 50 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {
+                    field: 'createTime', title: '时间', unresize: true, align: 'center', templet: function (data) {
+                        return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
+                    }
+                }
+                , {
+                    field: 'virginState', title: '原状态', unresize: true, align: 'center', templet: function (data) {
+                        return roomMajorState(data.virginState);
+                    }
+                }
+                , {
+                    field: 'newState', title: '新状态', unresize: true, align: 'center', templet: function (data) {
+                        return roomMajorState(data.newState);
+                    }
+                }
+                , {field: 'remark', title: '详情', unresize: true, align: 'center'}
+                , {field: 'name', title: '操作人', unresize: true, align: 'center'}
+            ]]
+        });
+
+        //入住换房
+        $('#checkInRoom').on('click', function () {
+            parent.location.href = 'changeRoom.html?orderChildId=' + orderChildId + '&roomId=' + id;
+        });
+
 
         //获取联房信息
         function getResultOrderInfo() {
@@ -243,20 +447,6 @@
             });
         }
 
-        var jointHousing = table.render({
-            elem: '#jointHousing'
-            , limit: 10000
-            , method: 'POST'
-            , cols: [[ //表头
-                {field: 'roomName', title: '房号', align: 'center', width: 90}
-                , {field: 'name', title: '姓名', align: 'center', width: 100}
-                , {
-                    field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
-                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
-                    }
-                }
-            ]]
-        });
 
         //判断维修状态
         function setFixRoomResult() {
@@ -331,10 +521,6 @@
             parent.location.href = 'appoint.html?phone=' + phone + '&random=' + new Date().getTime();
         });
 
-        //入住换房
-        $('#checkInRoom').on('click', function () {
-            parent.location.href = 'changeRoom.html?roomId=' + id + "&state=" + state;
-        });
 
         //客账
         $('#outRoom').on('click', function () {
@@ -542,69 +728,6 @@
             }
         }
 
-        //房态
-        function formatDate(data) {
-            var timeArr = new Array(15);
-            var timestamp = Date.parse(new Date());//当前时间
-            /*
-             * 天数 每循环一次为一天
-             */
-            for (var i = 1; i < 15; i++) {
-                var month = new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getMonth() + 1 < 10 ? "0" + (new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getMonth() + 1) : new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getMonth() + 1;
-                var date = new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getDate() < 10 ? '0' + new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getDate() : new Date(timestamp + (i * 24 * 60 * 60 * 1000)).getDate();
-                var isReservation = data[i] === 0 ? '未预定' : '已预订';
-                var div = '<div class="room-state-item"><div id="time">' + month + '/' + date + '</div><div id="roomItemState">' + isReservation + '</div></div>'
-                $('#roomStateItem').append(div);
-            }
-        }
-
-        var tab = table.render({
-            elem: '#operationLog'
-            , method: 'POST'
-            , url: api.operationLog + '?roomId=' + id
-            , request: {
-                pageName: 'pageNo'
-                , limitName: 'pageSize'
-            }
-            , response: {
-                statusName: 'code' //规定数据状态的字段名称，默认：code
-                , statusCode: 200 //规定成功的状态码，默认：0
-                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
-                , countName: 'count' //规定数据总数的字段名称，默认：count
-                , dataName: 'data' //规定数据列表的字段名称，默认：data
-            }
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "code": 200, //解析接口状态
-                    "msg": res.errMsg, //解析提示文本
-                    "count": res.data.count, //解析数据长度
-                    "data": res.data.roomTables //解析数据列表
-                };
-            }
-            , height: 'full'
-            , loading: true // 是否显示加载条
-            , page: true //开启分页
-            , cellMinWidth: 50 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            , cols: [[
-                {
-                    field: 'updateTime', title: '时间', unresize: true, align: 'center', templet: function (data) {
-                        return !!data.updateTime ? DateToLStr(new Date(data.updateTime.time)) : '';
-                    }
-                }
-                , {
-                    field: 'initialState', title: '原状态', unresize: true, align: 'center', templet: function (data) {
-                        return stateJudgment(data.initialState);
-                    }
-                }
-                , {
-                    field: 'updateState', title: '新状态', unresize: true, align: 'center', templet: function (data) {
-                        return stateJudgment(data.updateState);
-                    }
-                }
-                , {field: 'remark', title: '详情', unresize: true, align: 'center'}
-                , {field: 'updateUser', title: '操作人', unresize: true, align: 'center'}
-            ]]
-        });
 
     });
 </script>

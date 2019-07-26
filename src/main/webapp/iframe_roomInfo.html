@@ -174,6 +174,8 @@
                     success: function (data) {
                         if (data.success) {
                             showMsg(data.data, 1, false);
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
                         } else {
                             showMsg(data.data, 2, false);
                         }
@@ -188,7 +190,8 @@
                         success: function (data) {
                             if (data.success) {
                                 showMsg(data.data, 1, false);
-                                return false;
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭-
                             } else {
                                 showMsg(data.errMsg, 2, false);
                                 return false;
@@ -196,8 +199,6 @@
                         }
                     });
             }
-            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-            parent.layer.close(index); //再执行关闭-
             return false;
         });
 
