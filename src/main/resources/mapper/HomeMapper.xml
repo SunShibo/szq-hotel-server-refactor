@@ -68,7 +68,9 @@
                 </if>-->
     <!--查询是否有预约-->
     <select id="querySubStatus"  parameterType="java.util.Map" resultType="java.lang.Integer">
-      SELECT  id  FROM `hm_order_child` WHERE start_time BETWEEN #{startTime} AND #{endTime} AND  order_state='reservation'  AND room_id=#{roomId}
+      SELECT  id  FROM `hm_order_child` WHERE start_time &lt;= #{endTime}  AND    end_time  > #{startTime}
+
+       AND  order_state='reservation'  AND room_id=#{roomId}
       LIMIT 0,1
     </select>
 

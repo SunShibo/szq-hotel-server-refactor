@@ -129,7 +129,7 @@ public class HomeService {
                         typeBO.setMaintain();
                     }
                     //门店锁房
-                    if(Constants.SHOP.getValue().equals(homeRoomBO.getLockRoomState())){
+                    if(Constants.YES.getValue().equals(homeRoomBO.getLockRoomState())){
                         typeBO.setShop();
                     }
                   /*  //网络锁房
