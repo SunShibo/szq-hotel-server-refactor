@@ -796,8 +796,10 @@ public class RoomService {
 
     //锁房时间到了 把锁房状态修改为未锁房
     public Integer updRoom() {
+        roomDAO.updRoom2();
         return roomDAO.updRoom();
     }
+
 
     public Map<String, Object> todayPictureView(Integer hotelId) {
         //查询当天各房型 可用数量 入住中数量 预约中数量 以及计算出入住率

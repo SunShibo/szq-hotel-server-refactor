@@ -985,6 +985,8 @@ public class OrderService {
         }
     }
 
+
+
     //把已经有入住人 ，订单状态为未支付的房间改为已入住 房间修改为在住
     public void updateOrderChildRoom(Integer id) {
         List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildByOrderId5(id, Constants.NOTPAY.getValue());

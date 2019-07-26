@@ -140,6 +140,9 @@ public interface RoomDAO {
     //锁房时间到了 把锁房状态修改为未锁房
     Integer updRoom();
 
+    //锁房时间到了 把锁房状态修改为锁房
+    Integer updRoom2();
+
     List<RmBO> queryInthe(@Param("roomTypeId")Integer roomTypeId,
                           @Param("hotelId")Integer hotelId,
                           @Param("inthe")String inthe,

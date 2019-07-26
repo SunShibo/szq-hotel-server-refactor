@@ -259,15 +259,13 @@
         order_id=#{id}
     </select>
 
-    <!-- 根据订单id查询未入住子订单 带房型信息 -->
+    <!-- 根据订单id查询未入住子订单 带房型 房间信息信息 -->
     <select id="getOrderChildByOrderId2" resultType="com.szq.hotel.entity.bo.OrderChildBO">
-        select hm_order_child.*,hm_room_type.room_type_name
-        from hm_order_child,hm_room_type
-        where
-        hm_order_child.room_type_id=hm_room_type.id
-        and
-        order_id=#{id}
-        and order_state=#{orderState}
+        select  oc.*,rt.room_type_name,r.room_name
+        from hm_order_child as oc inner join hm_room_type as rt on oc.room_type_id=rt.id
+        left join hm_room as r on oc.room_id=r.id
+        where oc.order_id=#{id} and (order_state=#{orderState})
+        group by oc.id
     </select>
 
     <!-- 根据订单id查询未入住子订单 带房型房间信息 -->
