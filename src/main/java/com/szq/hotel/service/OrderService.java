@@ -716,7 +716,7 @@ public class OrderService {
         Calendar calendar = Calendar.getInstance();
 
         DateFormat time = new SimpleDateFormat("yyyy-MM-dd");
-        //超过四点则昨天的夜审过了
+        //换房时候没到凌晨四点 也就是说昨天的房费没夜审 则也能查出昨天的房价
         if (currentTime_2.getTime() < m4.getTime()) {
             calendar.add(Calendar.DATE, -1); //得到前一天
         }
@@ -797,8 +797,8 @@ public class OrderService {
             Date endDate = ymd.parse(ymd.format(endTime));
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
             //判断是否提前退房
-            //判断入住时间 是不是在
-            if (currentDate.compareTo(endDate) < 0 && everydayRoomPriceBOList.size() > 1 && currentTime.compareTo(m2) > 0) {
+            //判断入住时间 是不是在今天6点以前
+            if (currentDate.compareTo(endDate) < 0 && everydayRoomPriceBOList.size() > 1 && currentTime.compareTo(m2) > 0&&orderChildBO.getStartTime().compareTo(m6)<0) {
                 this.addOrderChildRecordAndRoomRate2(backup, currentTime, orderChildBO, userId);
             }
             backup.setRoomMajorState(Constants.INTHE.getValue());
