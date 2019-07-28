@@ -717,11 +717,13 @@ public class OrderService {
 
         DateFormat time = new SimpleDateFormat("yyyy-MM-dd");
         //超过四点则昨天的夜审过了
-        if (currentTime_2.getTime() > m4.getTime()) {
+        if (currentTime_2.getTime() < m4.getTime()) {
             calendar.add(Calendar.DATE, -1); //得到前一天
-        } else {
-            calendar.add(Calendar.DATE, -2); //得到前两天
         }
+//        } else {
+//            calendar.add(Calendar.DATE, -2); //得到前两天
+//        }
+        System.err.println(time.format(calendar.getTime()));
         return everydayRoomPriceDAO.getRemainingEverydayRoomById(time.format(calendar.getTime()), orderChildId);
     }
 
@@ -733,7 +735,7 @@ public class OrderService {
         }
         //加操作日志
         //修改房间状态
-        OrderChildBO orderChildOld = orderDAO.getOrderChildById(orderChildBO.getRoomId());
+        OrderChildBO orderChildOld = orderDAO.getOrderChildById(orderChildBO.getId());
         Map<String, Object> map = new HashMap<String, Object>();
         //之前的房间修改为脏房
         map.put("id", orderChildOld.getRoomId());
@@ -795,6 +797,7 @@ public class OrderService {
             Date endDate = ymd.parse(ymd.format(endTime));
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
             //判断是否提前退房
+            //判断入住时间 是不是在
             if (currentDate.compareTo(endDate) < 0 && everydayRoomPriceBOList.size() > 1 && currentTime.compareTo(m2) > 0) {
                 this.addOrderChildRecordAndRoomRate2(backup, currentTime, orderChildBO, userId);
             }

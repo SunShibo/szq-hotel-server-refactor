@@ -517,7 +517,7 @@
 
     <!--通过房间id查找预约信息-->
     <select id="getReservationInfo" resultType="com.szq.hotel.entity.result.CheckInInfoResult" parameterType="java.lang.Integer">
-        select order_placer,phone,channel,subscribe_remark,OTA,order_type,money,start_time,end_time
+        select order_placer,phone,channel,subscribe_remark,OTA,order_type,money,start_time,end_time,hm_order.id as orderId
         from hm_everyday_room_price inner join hm_order_child on hm_everyday_room_price.order_child_id=hm_order_child.id
         inner join hm_order on hm_order.id=hm_order_child.order_id
         where hm_order_child.room_id=#{roomId} and order_state='reservation'
