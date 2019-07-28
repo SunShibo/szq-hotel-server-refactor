@@ -146,8 +146,8 @@ var api = {
     , hotelInfo: '/hotel/queryLoginHotel'//权限页酒店list
     , hotel: '/OrderManage/hotel'//权限页酒店list
     , detail: '/admin/detail'//权限列表
-    , getReport: ''///room/todayPictureView?v=1
-    , getRoomInfoById: '/roomDetailsController/roomChange?roomId='
+    , getReport: 'room/todayPictureView'//room/todayPictureView?v=1
+    , getRoomInfoById: '/order/getRemainingLease?orderChildId='//在住换房获取价格信息
     , changeRoomPay: '/checkin/roomChangePay?v=1'
     , adminAdd: '/admin/add'//添加权限
     , adminQuery: '/admin/query'//按ID查找权限
@@ -761,7 +761,7 @@ function renderReport($, ele) {
 }
 
 function getReport($) {
-    $.getJSON(api.getReport + "&random=" + Date.now(), function (rs) {
+    $.getJSON(api.getReport + "?random=" + Date.now(), function (rs) {
         var $avg = $("#avg");
         var $allc = $("#allc");
         $avg.empty();
@@ -776,7 +776,7 @@ function getReport($) {
         var a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0;
         for (var i = 0; i < a.length; i++) {
             sumCount += a[i].sumCount;
-            times += a[i].times;
+            times += Number(a[i].rotio.split("%")[0]);
             a1 += a[i].typePrice;
             a2 += a[i].count;
             a3 += a[i].countChinkRoom;
@@ -800,10 +800,11 @@ function getReport($) {
                 a[i].countOrderRoom,
                 '</p>',
                 '<p class="side_td">',
-                a[i].ratio,
+                a[i].rotio,
                 '</p>',
                 '</div>'].join("")
         }
+
         $("#_count").html(['<p class="side_td side_td1">统计</p>',
             '<p class="side_td">',
             rs.data.three,
@@ -818,7 +819,7 @@ function getReport($) {
             a4,
             '</p>',
             '<p class="side_td">',
-            ((times / sumCount) * 100).toFixed(2), '%</p>'].join(""))
+            (times / a.length).toFixed(2), '%</p>'].join(""))
         $avg.append(astr);
         for (var i = 0; i < b.length; i++) {
             bstr += ['<div class="side_row">',

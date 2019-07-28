@@ -177,8 +177,6 @@
             <div>
                 <a class="layui-btn" onclick="selectRoom()">选房</a>
                 <a class="layui-btn" onclick="modifyPrice()">改价</a>
-
-
                 <a class="layui-btn" onclick="remarks()">批量备注</a>
             </div>
         </section>
@@ -334,26 +332,6 @@
 
 
                         }
-                        // for(var i=0;i<checkinData.length;i++){
-                        //     for(var j=0;j<rs.data.length;j++){
-                        //         if(checkinData[i]["roomTypeId"] == rs.data[j]['roomTypeId']){
-                        //
-                        //             var c = rs.data[j];
-                        //             var arr = [];
-                        //             for(var b in c){
-                        //                 if(b.indexOf("/")>-1&&b.indexOf("y") ==  -1){
-                        //                     arr.push({
-                        //                         time:b,
-                        //                         money:c[b]
-                        //                     })
-                        //                 }
-                        //             }
-                        //
-                        //             checkinData[i]['everydayRoomPriceBOS'] = arr;
-                        //             break;
-                        //         }
-                        //     }
-                        // }
 
                         d.OrderChildJSON = JSON.stringify(checkinData);
                         console.log("以下是直接入住参数")

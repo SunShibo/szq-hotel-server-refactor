@@ -1,7 +1,7 @@
 //直接入住房间修改价格
 clearModifyPrice();
 function modifyPrice() {
-
+// debugger;
     var price = '';
     if(sRooms.length==0){
         return;
@@ -20,8 +20,10 @@ function modifyPrice() {
     if($("input[name='checkType']:checked").val()=="hour"){
         dayss = 1;//几天
     }
+
     if(localStorage.modifyPrice==''){
         var temp = [];
+        var tempRoomType = [];
         var days = getModifyPriceData($("#days").val());
 
         for(var i=0;i<sRooms.length;i++){
@@ -38,12 +40,17 @@ function modifyPrice() {
                 yuanjia = sRooms[i]['yhourRoomPrice'] + '';
             }
 
-            if(temp.indexOf(sRooms[i].id) == -1 ){
+            if(temp.indexOf(sRooms[i].id) == -1 && tempRoomType.indexOf(sRooms[i].roomType) == -1 ){
                 temp.push(sRooms[i].id);
+                tempRoomType.push(sRooms[i].roomType);
                 var newdata = JSON.parse(JSON.stringify(sRooms[i]));
                 for(var j=0;j<days.length;j++){
                     newdata[days[j]['time']] = newdata[price];
-                    newdata['roomTypeId'] = newdata['id'];
+                    if(newdata['roomTypeId']){
+                    }else {
+                        newdata['roomTypeId'] = newdata['id'];
+                    }
+
                     if(!newdata['roomTypeName'])newdata['roomTypeName'] = newdata['name'];
 
 
@@ -81,6 +88,7 @@ function getTypeIds() {
 
 
 function parModifyPrice() {
+    // debugger;
     if(localStorage.modifyPrice){
 
         var _mp = JSON.parse(localStorage.modifyPrice);
@@ -95,7 +103,7 @@ function parModifyPrice() {
 
             //表示预约页面
             for(var i=0;i<sRooms.length;i++){
-                if(sRooms[i].id == curr['id']){
+                if(sRooms[i].id == curr['id']||sRooms[i].roomTypeId == curr['roomTypeId']){
                     sRooms[i]['ybasicPrice'] = sRooms[i]['basicPrice'] + "";
                     sRooms[i]['yhourRoomPrice'] = sRooms[i]['hourRoomPrice'] + "";
                     sRooms[i]['hourRoomPrice'] = sRooms[i]['basicPrice'] = getOneDayPrice(_mp,curr['id']);
@@ -143,7 +151,8 @@ function getRoomQuantity (v){
         //表示预约页面
 
         sRooms.map(function (curr) {
-            if(curr['id']==v)_num+=1
+
+            if(curr['roomType']==v||curr['roomTypeId']==v||curr['id']==v)_num+=1
         })
     }
     return _num;
