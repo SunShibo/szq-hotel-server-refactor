@@ -57,7 +57,7 @@
         });
         // $(function () {
         //     state = parseInt(getUrl('s'));
-        //     resultInfo()
+            resultInfo()
         // });
 
         //获取
@@ -66,7 +66,7 @@
                 date:$("#startTime").val().replace(/-/g, "/")+" 04:00:00"
             };
             $.ajax({
-                url: '/statement/getBusiness',
+                url: '/income/getIncome',
                 type: 'POST',
                 data: obj,
                 dataType: 'json',
