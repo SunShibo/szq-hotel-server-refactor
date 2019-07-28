@@ -33,6 +33,8 @@ public class TestController extends BaseCotroller {
     TestService testService;
     @Resource
     CheckInPersonService checkInPersonService;
+    @Resource
+    IncomeService incomeService;
 
     @RequestMapping("/start")
     public void queryVersion(){
@@ -56,6 +58,12 @@ public class TestController extends BaseCotroller {
                 }
             }
         }
+
+
+    }
+    @RequestMapping("test")
+    public void test(){
+        incomeService.addIncome(1);
     }
 
 }

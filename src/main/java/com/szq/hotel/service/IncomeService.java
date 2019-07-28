@@ -54,7 +54,7 @@ public class IncomeService {
         IncomeBO incomeBO2=new IncomeBO();
         IncomeBO incomeBO2Result=incomeDAO.getIncome(year,month-1,null,hotelId);
         if(incomeBO2Result!=null){
-            incomeBO2Result=incomeBO2Result;
+            incomeBO2=incomeBO2Result;
         }
 
         //获取当年营收
@@ -151,72 +151,72 @@ public class IncomeService {
         }
         //今年和去年的差异
         IncomeBO yearDifferences=new IncomeBO();
-        if(incomeBO3.getRoomRate().toString().equals("0")){
-            yearDifferences.setRoomRate(new BigDecimal(100));
+        if(incomeBO3.getRoomRate().intValue()<=0){
+            yearDifferences.setRoomRate(new BigDecimal(0));
         }else{
             yearDifferences.setRoomRate((incomeBO3.getRoomRate().subtract(incomeBO5.getRoomRate())).divide(incomeBO3.getRoomRate()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getTimeoutRoomRate().toString().equals("0")){
+        if(incomeBO3.getTimeoutRoomRate().intValue()<=0){
             yearDifferences.setTimeoutRoomRate(new BigDecimal(100));
         }else{
             yearDifferences.setTimeoutRoomRate((incomeBO3.getTimeoutRoomRate().subtract(incomeBO5.getTimeoutRoomRate())).divide(incomeBO3.getTimeoutRoomRate()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getRoomRateAdjustment().toString().equals("0")){
+        if(incomeBO3.getRoomRateAdjustment().intValue()<=0){
             yearDifferences.setRoomRateAdjustment(new BigDecimal(100));
         }else{
             yearDifferences.setRoomRateAdjustment((incomeBO3.getRoomRateAdjustment().subtract(incomeBO5.getRoomRateAdjustment())).divide(incomeBO3.getRoomRateAdjustment()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getOtherRate().toString().equals("0")){
+        if(incomeBO3.getOtherRate().intValue()<=0){
             yearDifferences.setOtherRate(new BigDecimal(100));
         }else{
             yearDifferences.setOtherRate((incomeBO1.getOtherRate().subtract(incomeBO5.getOtherRate())).divide(incomeBO3.getOtherRate()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getCommodity().toString().equals("0")){
+        if(incomeBO3.getCommodity().intValue()<=0){
             yearDifferences.setCommodity(new BigDecimal(100));
         }else{
             yearDifferences.setCommodity((incomeBO3.getCommodity().subtract(incomeBO5.getCommodity())).divide(incomeBO3.getCommodity()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getCompensation().toString().equals("0")){
+        if(incomeBO3.getCompensation().intValue()<=0){
             yearDifferences.setCompensation(new BigDecimal(100));
         }else{
             yearDifferences.setCompensation((incomeBO3.getCompensation().subtract(incomeBO5.getCompensation())).divide(incomeBO3.getCompensation()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getMemberCardRate().toString().equals("0")){
+        if(incomeBO3.getMemberCardRate().intValue()<=0){
             yearDifferences.setMemberCardRate(new BigDecimal(100));
         }else{
             yearDifferences.setMemberCardRate((incomeBO3.getMemberCardRate().subtract(incomeBO5.getMemberCardRate())).divide(incomeBO3.getMemberCardRate()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getDebtSum().toString().equals("0")){
+        if(incomeBO3.getDebtSum().intValue()<=0){
             yearDifferences.setDebtSum(new BigDecimal(100));
         }else{
             yearDifferences.setDebtSum((incomeBO3.getDebtSum().subtract(incomeBO5.getDebtSum())).divide(incomeBO3.getDebtSum()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getCash().toString().equals("0")){
+        if(incomeBO3.getCash().intValue()<=0){
             yearDifferences.setCash(new BigDecimal(100));
         }else{
             yearDifferences.setCash((incomeBO3.getCash().subtract(incomeBO5.getCash())).divide(incomeBO3.getCash()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getBankCard().toString().equals("0")){
+        if(incomeBO3.getBankCard().intValue()<=0){
             yearDifferences.setBankCard(new BigDecimal(100));
         }else{
             yearDifferences.setBankCard((incomeBO3.getBankCard().subtract(incomeBO5.getBankCard())).divide(incomeBO3.getBankCard()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getWechat().toString().equals("0")){
+        if(incomeBO3.getWechat().intValue()<=0){
             yearDifferences.setWechat(new BigDecimal(100));
         }else{
             yearDifferences.setWechat((incomeBO3.getWechat().subtract(incomeBO5.getWechat())).divide(incomeBO3.getWechat()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getAlipay().toString().equals("0")){
+        if(incomeBO3.getAlipay().intValue()<=0){
             yearDifferences.setAlipay(new BigDecimal(100));
         }else{
             yearDifferences.setAlipay((incomeBO3.getAlipay().subtract(incomeBO5.getAlipay())).divide(incomeBO3.getAlipay()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getStoredPay().toString().equals("0")){
+        if(incomeBO3.getStoredPay().intValue()<=0){
             yearDifferences.setStoredPay(new BigDecimal(100));
         }else{
             yearDifferences.setStoredPay((incomeBO3.getStoredPay().subtract(incomeBO5.getStoredPay())).divide(incomeBO3.getStoredPay()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO3.getCreditSum().toString().equals("0")){
+        if(incomeBO3.getCreditSum().intValue()<=0){
             yearDifferences.setCreditSum(new BigDecimal(100));
         }else{
             yearDifferences.setCreditSum((incomeBO3.getCreditSum().subtract(incomeBO5.getCreditSum())).divide(incomeBO3.getCreditSum()).multiply(new BigDecimal(100)));
