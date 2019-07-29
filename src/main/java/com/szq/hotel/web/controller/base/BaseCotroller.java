@@ -29,7 +29,7 @@ import java.util.List;
  * @author Shibo Sun
  */
 public class BaseCotroller {
-    protected transient final Logger log = Logger.getLogger(getClass());
+
 
 //    @Resource( name = "loginService" )
 //    LoginService loginService;

@@ -1,17 +1,19 @@
 package com.szq.hotel.web.controller;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.CheckInPersonDAO;
-import com.szq.hotel.entity.bo.CheckInPersonBO;
-import com.szq.hotel.entity.bo.CommonBO;
-import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
-import com.szq.hotel.entity.bo.RoomRateBO;
+import com.szq.hotel.dao.HotelDAO;
+import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.job.CheckOrderState;
 import com.szq.hotel.service.*;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -22,7 +24,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/test")
 public class TestController extends BaseCotroller {
-
+    private static final Logger log = LoggerFactory.getLogger(CheckOrderState.class);
     @Resource
     private ChildOrderService childOrderService;
     @Resource
@@ -39,6 +41,10 @@ public class TestController extends BaseCotroller {
     OrderService orderService;
     @Resource
     RoomService roomService;
+    @Resource
+    HotelDAO hotelDAO;
+    @Resource
+    ManagementReportService managementReportService;
 
     @RequestMapping("/start")
     public void queryVersion(){
@@ -66,16 +72,42 @@ public class TestController extends BaseCotroller {
 
     }
     @RequestMapping("test")
-    public void test(){
-        //关闭未支付的
-        orderService.closeOrder();
-        //解除锁房
-        roomService.updRoom();
-        //入住超时修改房态
-        orderService.updTimeOutOrder();
-        //incomeService.addIncome(1);
+    public void nightAuditor() {
+        log.info("start  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        List<RoomRateBO> roomRateBOS = childOrderService.queryOrderChild();
+        log.info("roomRateBOS:{}",roomRateBOS);
+        for(int i=0;i<roomRateBOS.size();i++){
+            RoomRateBO roomRateBO = roomRateBOS.get(i);
+            log.info("roomRateBO:{} , i:{}",roomRateBO,i);
+            List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(), DateUtils.getFourPointsStr());
+            log.info("everydayRoomPriceBOS:{}",everydayRoomPriceBOS);
+            if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
+                for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){
+                    log.info("start  room price  ...............................................");
+                    //生成房费
+                    childOrderService.increaseRoomRate(priceBO.getOrderChildId(),priceBO.getMoney());
+                    orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime())+"房费",
+                            null,priceBO.getMoney().multiply(new BigDecimal("-1")), Constants.ROOMRATE.getValue(),1,"1天", Constants.NO.getValue());
+                    //把夜审状态修改回去
+                    log.info("update  room price  status................................................");
+                    childOrderService.updateRoomPrice(priceBO.getId());
+                    //生成报表
+                    log.info("start  make a repor.....................................................");
+                    CommonBO commonBO = childOrderService.queryChildName(priceBO.getOrderChildId());
+                    cashierSummaryService.addRoomRate(priceBO.getMoney(),roomRateBO.getOrderNumber(),1,commonBO.getName(),
+                            roomRateBO.getOTA(),roomRateBO.getChannel(),roomRateBO.getPassengerSource(),roomRateBO.getRoomName(),
+                            roomRateBO.getRoomTypeName(),roomRateBO.getHotelId());
+                }
+            }
+        }
+        List<HotelBO> hotelBOS = hotelDAO.queryHotel();
+        for (HotelBO hotelBO:hotelBOS) {
+            incomeService.addIncome(hotelBO.getId());
+            //管理层报表
+            managementReportService.addData(hotelBO.getId());
+        }
+        log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
-
 }
 
 

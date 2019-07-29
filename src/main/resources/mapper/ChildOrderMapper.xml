@@ -94,7 +94,7 @@
         FROM hm_order oder  LEFT JOIN hm_order_child child ON child.order_id=oder.id
         LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type
         ON type.id=child.room_type_id
-		WHERE check_type='day'
+		WHERE  child.order_state='admissions'
     </select>
 
     <!--查询未过夜审的房费-->
@@ -104,7 +104,7 @@
 
     <!--查询入住人姓名-->
     <select id="queryChildName"   parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.CommonBO"  >
-        SELECT id,name FROM `hm_check_in_person`  WHERE order_child_id=#{id} AND `status`='yes'  LIMIT 0,1
+        SELECT id,name FROM `hm_check_in_person`  WHERE order_child_id=#{id} AND `status`='checkIn'  LIMIT 0,1
     </select>
 
     <!--修改夜审状态-->

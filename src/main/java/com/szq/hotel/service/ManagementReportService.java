@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service("managementReportService")
-@Transactional
 public class ManagementReportService {
     @Resource
     private ManagementReportDAO managementReportDAO;

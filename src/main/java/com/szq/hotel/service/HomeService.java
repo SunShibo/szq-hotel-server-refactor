@@ -67,9 +67,6 @@ public class HomeService {
         paramMap.put("startTime",DateUtils.getThisBrightSiceStringData(new Date()));
         paramMap.put("endTime",DateUtils.getBrightSiceStringData());
 
-        Date startTime=new Date();
-        Date endTime= DateUtils. getDataByStr(DateUtils.getBrightSiceStringData());
-
         log.info("homeDAO.home..................................");
         log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(paramMap));
         List<FloorRoomBO> home = homeDAO.home(paramMap);
