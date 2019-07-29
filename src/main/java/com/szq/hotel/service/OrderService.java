@@ -230,7 +230,6 @@ public class OrderService {
             }
             //添加新预约信息
             for (OrderChildBO orderChildBO : orderChildBOList) {
-
                 this.addOrderChildEveryRoomPrice(orderChildBO, orderBO, alRoomCode);
             }
 
@@ -244,18 +243,27 @@ public class OrderService {
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
                         orderChildNew.setOrderState("yes");
+
+                        //删除旧每日房价
+                        everydayRoomPriceDAO.delEverydayRoomById(orderChildOld.getId());
+                        //添加新的每日房价
+                        List<EverydayRoomPriceBO> everydayRoomPriceBOList=orderChildNew.getEverydayRoomPriceBOS();
+                        for (EverydayRoomPriceBO everydayRoomPriceBO:everydayRoomPriceBOList){
+                            everydayRoomPriceBO.setOrderChildId(orderChildOld.getId());
+                            everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
+                        }
                     }
                 }
             }
             //添加新子订单
             for (OrderChildBO orderChildNew : orderChildBOList) {
-                if (!orderChildNew.getOrderState().equals("yes")) {
+                if (!("yes").equals(orderChildNew.getOrderState())) {
                     this.addOrderChildEveryRoomPrice(orderChildNew, orderBO, alRoomCode);
                 }
             }
             //旧房型如果和新房型对应不上 取消这个旧子订单
             for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                if(!orderChildOld.equals("yes")){
+                if(!("yes").equals(orderChildOld.getOrderState())){
                     orderChildOld.setOrderState(Constants.CANCEL.getValue());
                     orderDAO.updOrderChild(orderChildOld);
                 }
@@ -265,7 +273,7 @@ public class OrderService {
             //如果新的子订单房间 和 旧房间对应上 则新修改子订单信息
             for (OrderChildBO orderChildNew : orderChildBOList) {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                    if (orderChildNew.getRoomId() == orderChildOld.getRoomId() && !orderChildOld.getOrderState().equals("yes")) {
+                    if (orderChildNew.getRoomId() == orderChildOld.getRoomId() && !orderChildOld.getOrderState().equals("yes")&& !orderChildNew.getOrderState().equals("yes")) {
                         orderChildNew.setId(orderChildOld.getId());
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
@@ -290,8 +298,10 @@ public class OrderService {
             }
             //旧房型如果和新房型对应不上 取消这个旧子订单
             for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                orderChildOld.setOrderState(Constants.CANCEL.getValue());
-                orderDAO.updOrderChild(orderChildOld);
+               if(!("yes").equals(orderChildOld.getOrderState())){
+                   orderChildOld.setOrderState(Constants.CANCEL.getValue());
+                   orderDAO.updOrderChild(orderChildOld);
+               }
             }
         }
         //修改主订单信息
@@ -570,7 +580,6 @@ public class OrderService {
         //当天日期
         SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
         Date currDate=simp.parse(this.getDate());
-        System.err.println(simp.format(currDate));
         OrderChildBO orderChildBO=orderDAO.getOrderChildByRoomIdNoTime(roomId);
         if(orderChildBO==null){
             return null;
@@ -579,7 +588,6 @@ public class OrderService {
         if(simp.format(entTime).equals(simp.format(currDate))){
             currDate=DateUtils.getBeforeDay(currDate,-1);
         }
-        System.err.println(simp.format(currDate));
         //在住信息
         CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId,simp.format(currDate));
         if(checkInInfoResult!=null){
