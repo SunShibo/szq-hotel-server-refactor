@@ -503,7 +503,7 @@
 
     <!--通过房间id查找在住订单信息-->
     <select id="getOrderChildByRoomId" resultType="com.szq.hotel.entity.result.CheckInInfoResult" parameterType="java.lang.Integer">
-        select hm_order.id as orderId,time,hm_order_child.id as orderChildId,start_time,end_time,practical_departure_time
+        select hm_order.id as orderId,time,hm_order_child.id as orderChildId,start_time,end_time,practical_departure_time,
         (room_rate+other_rate-free_rate_num) as totalConsumption,
         (pay_cash_num+other_pay_num) as sumPayment,channel,
         remark,al_room_code,OTA,money
