@@ -493,7 +493,7 @@
         where round((unix_timestamp(now())-unix_timestamp(update_time))/60)>15
         and order_state='notpay'
     </update>
-    <select id="getCloseOrder" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getCloseOrder" resultType="com.szq.hotel.entity.bo.OrderChildBO" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
         select * from hm_order_child
       where round((unix_timestamp(now())-unix_timestamp(update_time))/60)>15
         and order_state='notpay'
@@ -504,11 +504,13 @@
         select hm_order.id as orderId,time,hm_order_child.id as orderChildId,start_time,end_time,practical_departure_time,
         (room_rate+other_rate-free_rate_num) as totalConsumption,
         (pay_cash_num+other_pay_num) as sumPayment,channel,
-        remark,al_room_code,OTA,money,hm_order.check_type
-        from  hm_order_child,hm_order,hm_everyday_room_price
+        remark,al_room_code,OTA,money,hm_order.check_type,hm_order_child.id as orderChildId,
+        hm_room_type.room_type_name
+        from  hm_order_child,hm_order,hm_everyday_room_price,hm_room_type
         where hm_order_child.order_id=hm_order.id
         and (order_state='admissions' or order_state='notpay')
         and hm_everyday_room_price.order_child_id=hm_order_child.id
+        and hm_room_type.id=hm_order_child.room_type_id
         and room_id=#{roomId}
         and `time` = #{date}
     </select>

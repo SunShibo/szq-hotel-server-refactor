@@ -35,6 +35,10 @@ public class TestController extends BaseCotroller {
     CheckInPersonService checkInPersonService;
     @Resource
     IncomeService incomeService;
+    @Resource
+    OrderService orderService;
+    @Resource
+    RoomService roomService;
 
     @RequestMapping("/start")
     public void queryVersion(){
@@ -63,7 +67,13 @@ public class TestController extends BaseCotroller {
     }
     @RequestMapping("test")
     public void test(){
-        incomeService.addIncome(1);
+        //关闭未支付的
+        orderService.closeOrder();
+        //解除锁房
+        roomService.updRoom();
+        //入住超时修改房态
+        orderService.updTimeOutOrder();
+        //incomeService.addIncome(1);
     }
 
 }

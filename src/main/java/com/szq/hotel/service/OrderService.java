@@ -10,6 +10,7 @@ import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.CheckRoomPersonResult;
 import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.pop.Constant;
+import com.szq.hotel.system.idempotency.Null;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
@@ -215,11 +216,8 @@ public class OrderService {
         List<OrderChildBO> orderChildBOListOld = orderDAO.getOrderChildByOrderId2(orderBO.getId(), Constants.RESERVATION.getValue());
         //获取旧联房码
         String alRoomCode = orderChildBOListOld.get(0).getAlRoomCode();
+
         //旧预约信息和新预约信息 预约的类型不一样
-        System.err.println(orderChildBOListOld.get(0).getRoomId() == null);
-        System.err.println(orderChildBOList.get(0).getRoomId() != null);
-        System.err.println(orderChildBOListOld.get(0).getRoomId() != null);
-        System.err.println(orderChildBOList.get(0).getRoomId() == null);
         if ((orderChildBOListOld.get(0).getRoomId() == null && orderChildBOList.get(0).getRoomId() != null) ||
                 ((orderChildBOListOld.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() == null))) {
             System.err.println("11111111111111");
@@ -585,14 +583,13 @@ public class OrderService {
             return null;
         }
         Date entTime=orderChildBO.getPracticalDepartureTime()==null?orderChildBO.getEndTime():orderChildBO.getPracticalDepartureTime();
+
         if(simp.format(entTime).equals(simp.format(currDate))){
             currDate=DateUtils.getBeforeDay(currDate,-1);
         }
         //在住信息
         CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId,simp.format(currDate));
-        if(checkInInfoResult!=null){
-            checkInInfoResult.setEndTime(checkInInfoResult.getPracticalDepartureTime());
-        }
+        checkInInfoResult.setEndTime(entTime);
         //同住人信息
         List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getOrderChildId(), Constants.CHECKIN.getValue());
         checkInInfoResult.setCheckInPersonBOS(checkInPersonBOS);

@@ -4,7 +4,6 @@ import com.szq.hotel.common.base.BaseModel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 

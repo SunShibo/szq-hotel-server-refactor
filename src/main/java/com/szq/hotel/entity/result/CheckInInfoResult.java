@@ -24,6 +24,15 @@ public class CheckInInfoResult {
     private String OTA;//
     private String money;//当天房价
     private String checkType;//入住方式
+    private String roomTypeName;//房型名称
+
+    public String getRoomTypeName() {
+        return roomTypeName;
+    }
+
+    public void setRoomTypeName(String roomTypeName) {
+        this.roomTypeName = roomTypeName;
+    }
 
     public String getCheckType() {
         return checkType;
