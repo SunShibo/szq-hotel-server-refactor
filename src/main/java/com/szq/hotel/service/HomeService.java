@@ -44,12 +44,12 @@ public class HomeService {
 
      */
   //  * @param network    网络锁
-    public List<FloorRoomBO> home(HomeTypeBO typeBO,Integer hotelId, String vacant, String inthe, String timeout,
+    public List<FloorRoomBO> home(Integer hotelId, String vacant, String inthe, String timeout,
                                   String dirty, String subscribe, String departure, String maintain, String shop,
                                 /*  String network,*/ String types) {
         log.info("start home.............................................");
         log.info("vacant:{}\tinthe:{}\ttimeout:{}\tdirty:{}\tsubscribe:{}\tdeparture:{}\tmaintain:{}" +
-                "\tshop:{}\tnetwork:{}\t",vacant,inthe,timeout,dirty,subscribe,departure,maintain,shop/*,network*/);
+                "\tshop:{}\t",vacant,inthe,timeout,dirty,subscribe,departure,maintain,shop/*,network*/);
 
         Map<String,Object> paramMap=new HashMap<String, Object>();
         paramMap.put("hotelId",hotelId) ;
@@ -82,59 +82,19 @@ public class HomeService {
                     Integer count = homeDAO.querySubStatus(paramMap);
                     if (count !=null) {
                         homeRoomBO.setMakeStatus(count);
-                        typeBO.setSubscribe();
                     }
                     //是否是在住中
                     if (homeRoomBO.getStatus().equals(Constants.INTHE.getValue()) || homeRoomBO.getStatus().equals(Constants.TIMEOUT.getValue())) {
                         HomeOrderBO homeOrderBO = homeDAO.queryChildOrder(paramMap);
-                        homeRoomBO.setChildId(homeOrderBO.getId());
-                        homeRoomBO.setCheckType(homeOrderBO.getCheckType());
-                        //余额不足  押金小于消费
-                        if (homeOrderBO.getCash() < homeOrderBO.getTotal()) {
-                            homeRoomBO.setBalance(Constants.YES.getValue());
-                        }
-                        //预离状态
-                        if (homeOrderBO.getEndTime().compareTo(startTime) == 1 && endTime.compareTo(homeOrderBO.getEndTime()) == 1) {
-                            homeRoomBO.setOutStatus(Constants.YES.getValue());
+                        if (homeOrderBO != null) {
+                            homeRoomBO.setChildId(homeOrderBO.getId());
+                            homeRoomBO.setCheckType(homeOrderBO.getCheckType());
+                            //余额不足  押金小于消费
+                            if (homeOrderBO.getCash() < homeOrderBO.getTotal()) {
+                                homeRoomBO.setBalance(Constants.YES.getValue());
+                            }
                         }
                     }
-                    //设置状态数量
-                    //空房
-                    if(homeRoomBO.getStatus().equals(Constants.VACANT.getValue())){
-                        typeBO.setVacant();
-                    }
-                    //入驻中
-                    if(homeRoomBO.getStatus().equals(Constants.INTHE.getValue())){
-                        typeBO.setInthe();
-                    }
-                    //超时
-                    if(homeRoomBO.getStatus().equals(Constants.TIMEOUT.getValue())){
-                        typeBO.setTimeout();
-                    }
-                    //脏房
-                    if(homeRoomBO.getStatus().equals(Constants.DIRTY.getValue())){
-                        typeBO.setDirty();
-                    }
-                    //预约中
-                    if(Constants.YES.getValue().equals(homeRoomBO.getMakeStatus())){
-                        typeBO.setMaintain();
-                    }
-                    //预离
-                    if(Constants.YES.getValue().equals(homeRoomBO.getOutStatus())){
-                        typeBO.setDeparture();
-                    }
-                    //维修
-                    if(Constants.YES.getValue().equals(homeRoomBO.getMaintain())){
-                        typeBO.setMaintain();
-                    }
-                    //门店锁房
-                    if(Constants.YES.getValue().equals(homeRoomBO.getLockRoomState())){
-                        typeBO.setShop();
-                    }
-                  /*  //网络锁房
-                    if(Constants.NETWORK.getValue().equals(homeRoomBO.getLockRoomState())){
-                        typeBO.setNetwork();
-                    }*/
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -157,6 +117,28 @@ public class HomeService {
         return  homeDAO.queryRoomTypeNum(hotelId);
     }
 
+    /**
+     * 查询房态数量
+     */
+    public HomeTypeBO queryRommStatus(Integer hotelId){
+        Map<String,Object> paramMap=new HashMap<String, Object>();
+        paramMap.put("startTime",DateUtils.getThisBrightSiceStringData(new Date()));
+        paramMap.put("endTime",DateUtils.getBrightSiceStringData());
+        paramMap.put("hotelId",hotelId);
+
+        HomeTypeBO  homeTypeBO=new HomeTypeBO();
+        homeTypeBO.setVacant(homeDAO.queryMainStausCount(hotelId,Constants.VACANT.getValue()));  //空房
+        homeTypeBO.setInthe(homeDAO.queryMainStausCount(hotelId,Constants.INTHE.getValue()));   //在住
+        homeTypeBO.setTimeout(homeDAO.queryMainStausCount(hotelId,Constants.TIMEOUT.getValue())); //超时
+        homeTypeBO.setDirty(homeDAO.queryMainStausCount(hotelId,Constants.DIRTY.getValue()));   //脏房
+        homeTypeBO.setDeparture(homeDAO.queryCheOutCount(paramMap));   //预离店
+        homeTypeBO.setSubscribe(homeDAO.querySubCount(paramMap));    //预约中
+        homeTypeBO.setMaintain(homeDAO.queryMaintainCount(hotelId)); //维修
+        homeTypeBO.setShop(homeDAO.queryLockCount(hotelId)); //锁房数量
+
+
+        return homeTypeBO;
+    }
 
 
 

@@ -50,15 +50,11 @@ public class HomeController extends BaseCotroller {
                 return;
             }
 
-            HomeTypeBO homeTypeBO=new HomeTypeBO();
-            List<FloorRoomBO> home = homeService.home(homeTypeBO, loginAdmin.getHotelId(),param.getVacant(), param.getInthe(), param.getTimeout(),
-                    param.getDirty(), param.getSubscribe(), param.getDeparture(), param.getMaintain(), param.getShop(),
-                    /*param.getNetwork(),*/param.getTypes());
-            List<HomeRoomTypeBO> homeRoomTypeBOS = homeService.queryRoomTypeNum(loginAdmin.getHotelId());
+            List<FloorRoomBO> home = homeService.home(loginAdmin.getHotelId(),param.getVacant(), param.getInthe(), param.getTimeout(),
+                    param.getDirty(), param.getSubscribe(), param.getDeparture(), param.getMaintain(), param.getShop(),param.getTypes());
+
             Map<String,Object> resultMap=new HashMap<String, Object>();
             resultMap.put("room",home);
-            resultMap.put("state",homeTypeBO);
-            resultMap.put("roomType",homeRoomTypeBOS);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
@@ -73,6 +69,43 @@ public class HomeController extends BaseCotroller {
 
     }
 
+
+
+    /**
+     * 房态数量
+     */
+    @RequestMapping("/homeCount")
+    public void homeCount(HttpServletRequest request, HttpServletResponse response,HomeParam param){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}",loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
+            List<HomeRoomTypeBO> homeRoomTypeBOS = homeService.queryRoomTypeNum(loginAdmin.getHotelId());
+            HomeTypeBO homeTypeBO = homeService.queryRommStatus(loginAdmin.getHotelId());
+            Map<String,Object> resultMap=new HashMap<String, Object>();
+            resultMap.put("state",homeTypeBO);
+            resultMap.put("roomType",homeRoomTypeBOS);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("homeCountException",e);
+        }
+
+    }
 
 
 }

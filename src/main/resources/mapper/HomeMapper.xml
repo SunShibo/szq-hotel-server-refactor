@@ -32,20 +32,22 @@
                      #{typeId}
                  </foreach>
              </if>
-        AND ( 1=1
-        <if test="vacant!=null and vacant!=''">OR room. room_major_state=#{vacant}
-        </if>
+
+        <trim prefix=" AND ("   prefixOverrides="OR" suffix=")">
+            <if test="vacant!=null and vacant!=''">
+                OR room. room_major_state=#{vacant}
+            </if>
              <if test="inthe!=null and inthe!=''">
-               OR  room.room_major_state=#{inthe}
+                 OR  room.room_major_state=#{inthe}
              </if>
-             <if test="timeout!=null and timeout=''" >
+             <if test="timeout!=null and timeout!=''" >
                  OR  room.room_major_state=#{timeout}
              </if>
-             <if test="dirty!=null and dirty=''" >
+             <if test="dirty!=null and dirty!=''" >
                  OR  room.room_major_state=#{dirty}
              </if>
-             <if test="subscribe!=null and subscribe=''" >
-                 OR child.order_state= 'reservation' AND child.start_time BETWEEN #{startTime } AND #{endTime}
+             <if test="subscribe!=null and subscribe!=''" >
+                 OR child.order_state= 'reservation' AND  start_time &lt;= #{endTime}  AND    end_time  > #{startTime}
              </if>
              <if test="departure!=null and deparure!=''" >
                  OR child.order_state= 'admissions' AND child.end_time BETWEEN #{ startTime} AND #{endTime}
@@ -54,10 +56,10 @@
                  OR  room.room_state='yes'
              </if>
              <if test="shop!=null and shop!=''" >
-                 OR  room.lock_room_state='shop'
+                 OR  room.lock_room_state='yes'
              </if>
+        </trim>
 
-        )
         ORDER BY flo.sort DESC ,room.room_name
     </select>
     <!--  <if test="network!=null and network!=''" >
@@ -92,4 +94,30 @@
     </select>
 
 
+    <!--首页 空房  在住 超时 脏房数量 -->
+    <select id="queryMainStausCount"  resultType="int" >
+        SELECT COUNT(id) FROM  hm_room  WHERE  room_major_state=#{state}  AND hotel_id=#{hotelId}
+    </select>
+
+    <!--维修房数量-->
+    <select id="queryMaintainCount"  resultType="int">
+         SELECT COUNT(id) FROM  hm_room  WHERE  room_state='yes'  AND  hotel_id=#{hotelId}
+    </select>
+
+    <!--锁房房数量-->
+    <select id="queryLockCount"  resultType="int" >
+        SELECT COUNT(id) FROM  hm_room  WHERE lock_room_state='yes'  AND  hotel_id=#{hotelId}
+    </select>
+
+    <!--预约数量-->
+    <select id="querySubCount" parameterType="java.util.Map"  resultType="int" >
+      SELECT  COUNT(id)  FROM `hm_order_child` WHERE start_time &lt;= #{endTime}  AND    end_time  > #{startTime}
+       AND  order_state='reservation'
+    </select>
+
+    <!--预离店数量-->
+    <select id="queryCheOutCount"  parameterType="java.util.Map"  resultType="int"  >
+      SELECT  COUNT(id)  FROM `hm_order_child` WHERE
+       order_state='admissions'   AND end_time  BETWEEN #{ startTime}  AND #{endTime}
+    </select>
 </mapper>

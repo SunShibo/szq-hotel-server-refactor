@@ -12,87 +12,71 @@ public class HomeTypeBO extends BaseModel{
     private int subscribe;//  预约中
     private int maintain;//维修
     private int shop;//门店锁
-    private int network;//网络锁
-    private int all;//全部锁
 
 
     public int getVacant() {
         return vacant;
     }
 
-    public void setVacant() {
-        this.vacant++;
+    public void setVacant(int vacant) {
+        this.vacant = vacant;
     }
 
     public int getInthe() {
         return inthe;
     }
 
-    public void setInthe() {
-        this.inthe++;
+    public void setInthe(int inthe) {
+        this.inthe = inthe;
     }
 
     public int getTimeout() {
         return timeout;
     }
 
-    public void setTimeout() {
-        this.timeout++;
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     public int getDirty() {
         return dirty;
     }
 
-    public void setDirty() {
-        this.dirty++;
+    public void setDirty(int dirty) {
+        this.dirty = dirty;
     }
 
     public int getDeparture() {
         return departure;
     }
 
-    public void setDeparture() {
-        this.departure++;
+    public void setDeparture(int departure) {
+        this.departure = departure;
     }
 
     public int getSubscribe() {
         return subscribe;
     }
 
-    public void setSubscribe() {
-        this.subscribe++;
+    public void setSubscribe(int subscribe) {
+        this.subscribe = subscribe;
     }
 
     public int getMaintain() {
         return maintain;
     }
 
-    public void setMaintain() {
-        this.maintain++;
+    public void setMaintain(int maintain) {
+        this.maintain = maintain;
     }
 
     public int getShop() {
         return shop;
     }
 
-    public void setShop() {
-        this.shop++;
+    public void setShop(int shop) {
+        this.shop = shop;
     }
 
-    public int getNetwork() {
-        return network;
-    }
 
-    public void setNetwork() {
-        this.network++;
-    }
-
-    public int getAll() {
-        return all;
-    }
-
-    public void setAll() {
-        this.all++;
-    }
 }
