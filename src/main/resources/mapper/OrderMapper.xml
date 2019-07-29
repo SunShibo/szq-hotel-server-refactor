@@ -141,6 +141,9 @@
         where id=#{id}
     </update>
 
+    <update id="updOrderChildMoney" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
+        update hm_order_child set room_rate=#{roomRate},other_rate=#{otherRate} where id=#{id}
+    </update>
     <!-- 修改子订单信息无if验证 -->
     <update id="updOrderChildNoValidation" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
         update hm_order_child
@@ -503,7 +506,7 @@
     <select id="getOrderChildByRoomId" resultType="com.szq.hotel.entity.result.CheckInInfoResult" >
         select hm_order.id as orderId,time,hm_order_child.id as orderChildId,start_time,end_time,practical_departure_time,
         (room_rate+other_rate-free_rate_num) as totalConsumption,
-        (pay_cash_num+other_pay_num) as sumPayment,channel,
+        (pay_cash_num+other_pay_num) as sumPayment,channel,memberId_or_organizationId,
         remark,al_room_code,OTA,money,hm_order.check_type,hm_order_child.id as orderChildId,
         hm_room_type.room_type_name
         from  hm_order_child,hm_order,hm_everyday_room_price,hm_room_type

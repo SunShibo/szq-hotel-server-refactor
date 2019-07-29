@@ -20,11 +20,21 @@ public class CheckInInfoResult {
     private String sumPayment;//支付金额
     private String alRoomCode;//联房码
     private String channel;//客源
+    private String memberIdOrOrganizationId;//合作机构id
     private String remake;//备注
     private String OTA;//
     private String money;//当天房价
     private String checkType;//入住方式
     private String roomTypeName;//房型名称
+
+
+    public String getMemberIdOrOrganizationId() {
+        return memberIdOrOrganizationId;
+    }
+
+    public void setMemberIdOrOrganizationId(String memberIdOrOrganizationId) {
+        this.memberIdOrOrganizationId = memberIdOrOrganizationId;
+    }
 
     public String getRoomTypeName() {
         return roomTypeName;

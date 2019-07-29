@@ -32,7 +32,7 @@ public class IncomeService {
         }
         int year = calendar.get(Calendar.YEAR);//获取年份
 
-        int month=calendar.get(Calendar.MONTH);//获取月份
+        int month=calendar.get(Calendar.MONTH+1);//获取月份
 
         int day=calendar.get(Calendar.DATE);//获取日
 
