@@ -368,6 +368,7 @@
                                 shadeClose: true,
                                 content: 'iframe_pay.html?roomid=' + data.roomId + '&s=1&v=' + rs.data.price + "&or=" + rs.data.number + '&payNumber=' + rs.data.payNumber + "&random=" + Date.now() + "&certificateId=" + data.idNumber,
                                 end: function () {
+                                    sessionStorage.removeItem('payBO');
                                     tab.reload();
                                 }
                             });

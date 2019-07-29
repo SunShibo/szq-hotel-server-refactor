@@ -135,7 +135,7 @@
             <div style="height: 60px;"></div>
             <div class="btn-list layui-btn-container">
                 <button class="layui-btn" id="reservationsCheckIn">入住</button>
-                <button class="layui-btn" id="newHome">换房</button>
+                <button class="layui-btn" id="newHome">修改</button>
                 <button class="layui-btn" id="cancel">取消预订</button>
                 <button class="layui-btn" id="reservationsRemarks">备注</button>
             </div>
@@ -153,19 +153,17 @@
     layui.use(['element', 'jquery', 'table'], function () {
         var element = layui.element, $ = jQuery = layui.$, table = layui.table,
             id = 0,//房间ID
-            orderId = 0,//主订单ID
+            orderId = 0,//在住信息主订单ID
+            reservationOrderId = 0, //预约信息主订单ID
             orderChildId = 0,//子订单ID
             state = false,//预约状态
             status = false,//入住状态
             maintain = '', //维修状态
             dirty = '', //脏房状态
             roomInfoRemark = '', //房屋备注
+            phone = '', //预约人手机号
 
 
-
-            roomNum = '',
-            roomTypeName = '',
-            houseTypeId = 0,
             inMessageRemark = '',
             subMessageRemark = '';
 
@@ -205,10 +203,6 @@
             initQueryIndexRoomState();
         });
 
-        element.on('tab(homeInfo)', function (data) {
-            console.log(data);
-        });
-
         //在住数据获取
         function initStayInData() {
             $.ajax({
@@ -231,7 +225,7 @@
                     for (var item in data.data) {
                         var dom = $('#' + item);
                         if (item == 'startTime' || item == 'endTime') {
-                            dom.text(DateToLStr(new Date(data.data[item].time)));
+                            dom.text(data.data[item] ? DateToLStr(new Date(data.data[item].time)) : '');
                         } else {
                             dom.text(data.data[item]);
                         }
@@ -280,15 +274,15 @@
         //房屋信息
         function initRoomInfoData() {
             //切换维修房状态按钮
-            if(maintain === 'true'){
+            if (maintain === 'true') {
                 $('#repair').text('取消维修');
-            }else {
+            } else {
                 $('#repair').text('维修');
             }
             //切换脏房状态按钮
-            if(dirty === 'true'){
+            if (dirty === 'true') {
                 $('#finish').text('打扫完毕');
-            }else {
+            } else {
                 $('#finish').text('待打扫');
             }
 
@@ -310,7 +304,7 @@
             });
         }
 
-        //预约数据获取
+        //预约信息数据获取
         function initMakeAppointmentData() {
             $.ajax({
                 url: api.homeReservationInfo,
@@ -335,6 +329,10 @@
                     delete res.data.OTA;
                     delete res.data.startTime;
                     delete res.data.endTime;
+                    //保存预约人手机号
+                    phone = res.data.phone;
+                    //保存预约信息中的主订单ID
+                    reservationOrderId = res.data.orderId;
 
                     //绑定数据
                     for (var item in res.data) {
@@ -439,33 +437,27 @@
             ]]
         });
 
-        //入住换房
-        $('#checkInRoom').on('click', function () {
-            parent.location.href = 'changeRoom.html?orderChildId=' + orderChildId + '&roomId=' + id;
-        });
-
-
         //修改客房维修状态
         $('#repair').on('click', function () {
-           $.ajax({
-               url: api.homeUpdateRoomMaintain,
-               type: 'POST',
-               dataType: 'json',
-               data: {id: id},
-               success: function (res) {
-                   if(res.success){
-                       showMsg(res.data, 1, false);
-                       //修改页面维修状态
-                       maintain = maintain === 'true' ? 'false' : 'true';
-                       //刷新弹出层房屋信息数据
-                       initRoomInfoData();
-                       //修改首页数据
-                       parent.getRoomsInfo();
-                   }else {
-                       showMsg(res.errMsg, 2, false);
-                   }
-               }
-           })
+            $.ajax({
+                url: api.homeUpdateRoomMaintain,
+                type: 'POST',
+                dataType: 'json',
+                data: {id: id},
+                success: function (res) {
+                    if (res.success) {
+                        showMsg(res.data, 1, false);
+                        //修改页面维修状态
+                        maintain = maintain === 'true' ? 'false' : 'true';
+                        //刷新弹出层房屋信息数据
+                        initRoomInfoData();
+                        //修改首页数据
+                        parent.getRoomsInfo();
+                    } else {
+                        showMsg(res.errMsg, 2, false);
+                    }
+                }
+            })
         });
 
         //锁房
@@ -494,17 +486,17 @@
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    roomId: id
+                    id: id,
+                    state: dirty === 'true' ? 'vacant' : 'dirty'
                 },
                 success: function (data) {
-                    if (!data.success) {
-                        showMsg(data.errMsg, 2, false);
-                        return;
-                    }
                     if (data.success) {
-                        parent.layer.closeAll();
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
                         parent.layer.msg('房屋状态变更完成');
                         parent.getRoomsInfo();
+                    } else {
+                        showMsg(data.errMsg, 2, false);
                     }
                 }
             });
@@ -528,35 +520,31 @@
             });
         });
 
+        //入住换房
+        $('#checkInRoom').on('click', function () {
+            parent.location.href = 'changeRoom.html?id=' + orderId + '&roomId=' + id;
+        });
 
+        //预约入住
+        $('#reservationsCheckIn').on('click', function () {
+            parent.location.href = 'appoint.html?phone=' + phone + "&random=" + Date.now();
+        });
 
+        //预约修改
+        $('#newHome').on('click', function () {
+            parent.location.href = 'schedule_change.html?id=' + reservationOrderId;
+        });
 
+        //房屋入住
+        $('#checkIn').on('click', function () {
+            parent.location.href = 'home2center.html?id=' + id;
+        });
 
+        //客账
+        $('#outRoom').on('click', function () {
+            parent.location.href = 'orderInfo.html?state=0&back=1&id=' + orderId;
+        });
 
-
-
-
-
-
-
-        //获取联房信息
-        function getResultOrderInfo() {
-            $.ajax({
-                url: api.queryOrderInfo,
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    id: childId
-                },
-                success: function (data) {
-                    if (!data.success) {
-                        showMsg(data.errMsg, 2, false);
-                        return;
-                    }
-                    jointHousing.reload({data: JSON.parse(JSON.stringify(data.data.childOrderBOs))});
-                }
-            });
-        }
 
         //联房结账
         $('#accounts').on('click', function () {
@@ -589,27 +577,6 @@
                     getResult();
                 }
             });
-        });
-
-        //房屋入住
-        $('#checkIn').on('click', function () {
-            parent.location.href = encodeURI('home2center.html?roomId=' + id + "&roomNum=" + roomNum + "&houseTypeId=" + houseTypeId + "&roomTypeName=" + roomTypeName);
-        });
-
-        //预约入住
-        $('#reservationsCheckIn').on('click', function () {
-            parent.location.href = 'appoint.html?phone=' + phone + '&random=' + new Date().getTime();
-        });
-
-
-        //客账
-        $('#outRoom').on('click', function () {
-            parent.location.href = 'orderInfo.html?state=0&back=1&id=' + childId;
-        });
-
-        //预约换房
-        $('#newHome').on('click', function () {
-            parent.location.href = 'changeRoom.html?roomId=' + id + "&state=" + state + "&from=1";
         });
 
         //取消预订
@@ -698,7 +665,6 @@
                 }
             });
         });
-
 
 
     });

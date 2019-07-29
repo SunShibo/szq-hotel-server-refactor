@@ -202,18 +202,31 @@
             }
         }
 
-        //第一次进入页面获取数据
-        $.post(api.homeRoomType, {}, function (r) {
-            // var r = JSON.parse(r);
-            console.log(r)
-            if (r.success) {
-                renderRoomType(r.data.roomType);
-                renderCheckBox(r.data.state);
-                renderRooms(r.data.room);
-            } else {
-                layer.alert("获取房型失败：" + r.errMsg);
+        $.when(
+            $.post(api.homeRoom, {}),
+            $.post(api.homeRoomType, {})
+        ).then(function (r, rt) {
+            if (!r[0].success || !rt[0].success) {
+                layui.alert(r[0].errMsg + '\n' + rt[0].errMsg);
+                return;
             }
+            renderRoomType(rt[0].data.roomType);
+            renderCheckBox(rt[0].data.state);
+            renderRooms(r[0].data.room);
         });
+
+        // //第一次进入页面获取数据
+        // $.post(api.homeRoomType, {}, function (r) {
+        //     // var r = JSON.parse(r);
+        //     console.log(r)
+        //     if (r.success) {
+        //         renderRoomType(r.data.roomType);
+        //         renderCheckBox(r.data.state);
+        //         renderRooms(r.data.room);
+        //     } else {
+        //         layer.alert("获取房型失败：" + r.errMsg);
+        //     }
+        // });
 
         //房态
         function renderCheckBox(r) {
@@ -331,7 +344,7 @@
         }
 
         //弹出层
-        function clickItem(id, roomNum, name, state, status, maintain) {
+        function clickItem(id, roomNum, name, state, status, maintain, dirty) {
             layui.use('layer', function () {
                 var layer = layui.layer;
                 layer.open({
@@ -380,14 +393,25 @@
             }
             console.info(o);
             // var index = layer.load(1);
-            $.post(api.homeRoomType, o, function (r) {
-                if (r.success) {
-                    renderRooms(r.data.room);
-                    updateCheckBox(r.data);
-                } else {
-                    layer.alert("1" + r.errMsg);
+            $.when(
+                $.post(api.homeRoom, o),
+                $.post(api.homeRoomType, {})
+            ).then(function (r, rt) {
+                if (!r[0].success || !rt[0].success) {
+                    layui.alert(r[0].errMsg + '\n' + rt[0].errMsg);
+                    return;
                 }
-            })
+                renderRooms(r[0].data.room);
+                updateCheckBox(rt[0].data);
+            });
+            // $.post(api.homeRoom, o, function (r) {
+            //     if (r.success) {
+            //         renderRooms(r.data.room);
+            //         updateCheckBox(r.data);
+            //     } else {
+            //         layer.alert("1" + r.errMsg);
+            //     }
+            // })
         }
 
         //楼层 与 房间的动态加载
@@ -405,7 +429,7 @@
                     '</legend>',
                     '<div class="flex-container">'].join("");
                 for (var j = 0; j < f.length; j++) {
-                    str += ['<div data-dirty=', f[j].dirty === 'yes', ' data-maintain=', f[j].maintain === 'yes', ' data-status="', f[j].status === 'inthe',
+                    str += ['<div data-dirty=', f[j].status === 'dirty', ' data-maintain=', f[j].maintain === 'yes', ' data-status="', f[j].status === 'inthe',
                         '" data-state="', judgmentState(f[j].makeStatus),
                         '" class="item state-', f[j].status,
                         '" data-roomid="' + f[j].roomId, '">',

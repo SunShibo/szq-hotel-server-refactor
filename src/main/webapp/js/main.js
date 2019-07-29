@@ -81,8 +81,8 @@ var api = {
     , cash: '/chilOrder/addCashPledge'//押金  已修改
     // , refundprice: '/OrderManage/refundprice?v=1'//退款  废弃
     , info: '/chilOrder/recorded'//客账入账  已修改
-    , cancelSubQuery: '/order/getSubscribeOrderChild'//取消查询
-    , cancelSubUpdate: '/order/closeOrder'//取消订单
+    , cancelSubQuery: '/order/getSubscribeOrderChild'//取消查询   已修改
+    , cancelSubUpdate: '/order/closeOrder'//取消订单   已修改
     , outRoom: '/order/getCheckOutInfo'//查看退房信息  已修改
     , subitemOnclick: '/chilOrder/queryChildleAccounts'//查询子订单单项结账信息   已修改
     , subitem: '/chilOrder/childleAccounts'//子订单结账  已修改
@@ -123,13 +123,16 @@ var api = {
     , queryPayment: '/checkin/queryPayment'//查询订单应支付金额
 
 
+    , homeRoom: '/home/home'//首页获取房间类型信息  已修改
+    , homeRoomType: '/home/homeCount'//获取首页房型、房态数据  已修改
+
     , homeItemInfo: '/order/getCheckInInfo'//首页在住信息   已修改
     , homeRoomInfo: '/room/getRoomMessage'//首页房屋信息   已修改
     , homeReservationInfo: '/order/getReservationInfo'//首页预约信息   已修改
     , homeQueryIndexRoom: '/room/queryIndexRoomState'//首页十五天预约信息   已修改
     , homeRoomRecord: '/roomRecord/selectRoomRecord'//首页房间操作日志信息   已修改
     , homeUpdateRoomMaintain: '/room/updateRoomMaintain'//修改客房维修状态   已修改
-    , homeCleanThe: '/room/updateroomMajorState'//切换脏房状态
+    , homeCleanThe: '/room/updateroomMajorState'//切换脏房状态 已修改
     , updateMainCommment: '/room/updateRoomRemark'//首页房屋备注   已修改
 
 
@@ -142,7 +145,6 @@ var api = {
     , delRoomItemPrice: '/room/deleteRoomPrice'//删除特殊价格
     , operationLog: '/roomDetailsController/operationLog'//首页弹出层操作记录
     , checkIdentify: '/checkin/isCheckinByIdNumber?idNumber='//查看这个证件号码是否有在住信息
-    , homeRoomType: '/home/home'//首页获取房间类型信息  已修改
     , cashInfo: '/commodity/queryCommodiry'//现金订单000
     , cashAdd: '/commodity/addCommodity'//商品交易添加000
     , stayOver: '/roomDetailsController/stayOver'//续住
