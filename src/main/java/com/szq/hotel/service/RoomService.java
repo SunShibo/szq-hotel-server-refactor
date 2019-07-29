@@ -954,6 +954,10 @@ public class RoomService {
         }
         return list;
     }
+
+    public RmBO selectRoom(Integer id, Integer hotelId) {
+        return roomDAO.selectRoomId( id,  hotelId);
+    }
 }
 
 

@@ -43,7 +43,7 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/queryRoom")
     public void queryRoom(HttpServletRequest request, HttpServletResponse response, Integer pageNo,
-                          Integer pageSize, Integer floorId, String roomName, Integer roomTypeId, Integer hotelId) {
+                          Integer pageSize, Integer floorId, String roomName, Integer roomTypeId, Integer hotelId, Integer roomId) {
         log.info("进入queryRoom****************************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
         if (loginAdmin == null) {
@@ -66,12 +66,14 @@ public class RoomController extends BaseCotroller {
         log.info("参数roomName:{}", roomName);
         log.info("roomTypeId:{}", roomTypeId);
         log.info("hotelId:{}", loginAdmin.getHotelId());
+        log.info("roomId:{}", roomId);
 
 
         condition.put("floorId", floorId);
         condition.put("roomName", roomName);
         condition.put("roomTypeId", roomTypeId);
         condition.put("hotelId", loginAdmin.getHotelId());
+        condition.put("roomId", roomId);
 
         Map<String, Object> map = roomService.queryRoom(condition);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
@@ -769,5 +771,30 @@ public class RoomController extends BaseCotroller {
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-02 06:00:00"),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-03 05:59:59"));
         System.out.println(date);
 
+    }
+
+
+    @RequestMapping("/selectRoom")
+    public void selectRoom(HttpServletRequest request, HttpServletResponse response, Integer id){
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        log.info("loginAdmin:{}", loginAdmin);
+        log.info("id:{}", id);
+        if (loginAdmin == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        }
+        if (id == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        }
+        RmBO rmBO = roomService.selectRoom(id, loginAdmin.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(rmBO));
+        super.safeJsonPrint(response, result);
+        log.info("return:{}", result);
+        return;
     }
 }

@@ -645,4 +645,23 @@
             #{item}
         </foreach>
     </select>
+
+    <select id="selectRoomId" resultType="com.szq.hotel.entity.bo.RmBO">
+         SELECT hm_room.* , hm_hotel.name AS hotelName, hm_room_type.basic_price,
+        hm_room_type.hour_room_price,hm_room_type.room_type_name as roomType,
+        hm_floor.name AS floorName,
+        hm_room_type.room_type_name AS roomType,
+        hm_room_type.basic_price AS basicPrice,
+        hm_room_type.hour_room_price AS hourRoomPrice
+        FROM hm_floor,
+        hm_hotel,
+        hm_room_type,
+        hm_room
+        WHERE hm_room.room_type_id = hm_room_type.id
+        AND hm_room.floor_id = hm_floor.id
+        AND hm_room.hotel_id = hm_hotel.id AND
+        hm_room.hotel_id = #{hotelId}
+        AND hm_room.room_state = 'no'
+        and hm_room.id = #{id}
+    </select>
 </mapper>

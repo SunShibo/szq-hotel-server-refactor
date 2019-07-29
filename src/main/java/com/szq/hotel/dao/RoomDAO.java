@@ -193,4 +193,6 @@ public interface RoomDAO {
      * @return
      */
     List<RmBO> queryUserRoom2(Map<String, Object> map);
+
+    RmBO selectRoomId(@Param("id") Integer id, @Param("hotelId") Integer hotelId);
 }
