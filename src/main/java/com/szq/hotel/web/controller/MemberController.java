@@ -313,6 +313,51 @@ public class MemberController extends BaseCotroller {
     }
 
     /**
+     * 通过证件号手机号查询会员
+     * @param phone 手机号
+     * @param certificateNumber 证件号
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/selectMemberByNumber")
+    public void selectMember(String phone,String certificateNumber,HttpServletRequest request, HttpServletResponse response){
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}", loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            //参数验证
+            if (StringUtils.isEmpty(phone)&StringUtils.isEmpty(certificateNumber)){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            Map<String,Object> map=new HashMap<String, Object>();
+            map.put("phone",phone);
+            map.put("certificateNumber",certificateNumber);
+
+
+            MemberBO memberBO = memberService.selectMemberByNumber(map);
+
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(memberBO));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+            return;
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.error("selectMemberByNumberException",e);
+        }
+    }
+    /**
      * 积分增减
      * @param integralChange
      * @param request

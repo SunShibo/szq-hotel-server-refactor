@@ -25,7 +25,10 @@ public interface MemberDAO {
         条件分页查询会员信息数量
      */
     Integer selectMemberCount(Map<String,Object> map);
-
+    /*
+        通过证件号手机号查询会员
+     */
+    MemberBO selectMemberByNumber(Map<String,Object> map);
     /*
         通过id查询会员信息
      */

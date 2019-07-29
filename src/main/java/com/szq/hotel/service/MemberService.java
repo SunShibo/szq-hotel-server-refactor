@@ -87,6 +87,12 @@ public class MemberService {
         return memberDAO.selectMemberCount(map);
     }
 
+    /*
+        通过证件号手机号查询会员
+     */
+    public MemberBO selectMemberByNumber(Map<String,Object> map){
+        return memberDAO.selectMemberByNumber(map);
+    }
 
     /*
         通过id查询会员信息
