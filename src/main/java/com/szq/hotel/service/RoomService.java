@@ -79,14 +79,19 @@ public class RoomService {
 
     public void updateroomMajorState(Map<String, Object> map) {
 
-        roomDAO.updateroomMajorState(map);
+        log.info("map:{}", map);
         RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
-        RoomRecordBO roomRecordBO = new RoomRecordBO();
-        roomRecordBO.setCreateTime(new Date());
-        roomRecordBO.setNewState((String) map.get("state"));
-        roomRecordBO.setVirginState(roomBO.getRoomState());
-        roomRecordBO.setRoomId(roomBO.getId());
-        roomRecordDAO.insertSelective(roomRecordBO);
+        log.info("roomBO:{}",roomBO);
+        Map<String, Object> mp = new HashMap<String, Object>();
+        mp.put("createTime", new Date());
+        mp.put("createUserId", map.get("userId"));
+        mp.put("newState",  map.get("state"));
+        mp.put("roomId", roomBO.getId());
+        mp.put("virginState", roomBO.getRoomMajorState());
+        log.info("mp:{}",mp);
+        int i = roomRecordDAO.insertRoomState(mp);
+        log.info("i:{}",i);
+        roomDAO.updateroomMajorState(map);
     }
 
     /**

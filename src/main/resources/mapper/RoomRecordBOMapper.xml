@@ -136,6 +136,25 @@
   </sql>
 
 
+<insert id="insertRoomState" parameterType="java.util.Map">
+    INSERT INTO hotel.hm_room_record (
 
+    room_id,
+    virgin_state,
+    new_state,
+    remark,
+    create_user_id,
+    create_time
+  )
+  VALUES
+    (
+      #{roomId},
+      #{virginState},
+      #{newState},
+      #{remark},
+      #{createUserId},
+      #{createTime}
+    ) ;
+</insert>
 
 </mapper>

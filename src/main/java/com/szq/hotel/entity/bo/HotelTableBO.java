@@ -6,7 +6,7 @@ package com.szq.hotel.entity.bo;
  */
 public class HotelTableBO {
 
-    private String day;//今天
+    private  String day ;//今天
     private  String month;//本月
     private  String lastMonthDay;//上月同期
     private  String year;//本年累计

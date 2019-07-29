@@ -258,6 +258,7 @@ public class RoomController extends BaseCotroller {
         }
         map.put("id", id);
         map.put("state", state);
+        map.put("userId", loginAdmin.getId());
         roomService.updateroomMajorState(map);
         try {
             Thread.sleep(4000);

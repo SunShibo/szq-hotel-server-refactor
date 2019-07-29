@@ -21,4 +21,7 @@ public interface RoomRecordDAO {
     List<RoomRecordBO> selectRoomRecord(Map<String,Object> map);
 
     Integer selectRoomRecordCount(Integer id);
+
+
+    int insertRoomState(Map<String, Object> map);
 }

@@ -23,7 +23,7 @@ public class ManagerdailyBO {
 
     private Double cash;
 
-    private int throughoutDayrent;
+    private Double throughoutDayrent;
 
     private Double rateAdjustment;
 
@@ -141,11 +141,11 @@ public class ManagerdailyBO {
         this.cash = cash;
     }
 
-    public int getThroughoutDayrent() {
+    public Double getThroughoutDayrent() {
         return throughoutDayrent;
     }
 
-    public void setThroughoutDayrent(int throughoutDayrent) {
+    public void setThroughoutDayrent(Double throughoutDayrent) {
         this.throughoutDayrent = throughoutDayrent;
     }
 

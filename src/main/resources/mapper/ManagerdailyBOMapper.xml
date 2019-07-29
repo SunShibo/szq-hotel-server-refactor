@@ -376,4 +376,29 @@
       date_time = #{dateTime,jdbcType=DATE}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="queryManagerdaily" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+    select * from hm_managerdaily where hotel_id = #{hotelId} and date_time = #{dateTime} and daily_type = ${dailyType};
+  </select>
+
+  <select id="queryManagerdailyList" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+    SELECT * FROM hm_managerdaily
+    WHERE hotel_id = #{hotelId}
+    AND daily_type = '1'
+    AND #{startTime} &lt;= date_time &lt; #{endTime}
+  </select>
+
+
+  <select id="queryManagerdailyList2" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+  SELECT * FROM hm_managerdaily
+  WHERE daily_type = '1' AND hotel_id = #{hotelId}
+  AND date_time = #{date}
+  </select>
+
+  <select id="queryYear" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+  SELECT  * FROM hm_managerdaily
+  WHERE  daily_type = '1'
+  AND hotel_id = #{hotelId}
+  AND date_tine LIKE CONCAT(CONCAT('%', #{date}), '%');
+  </select>
 </mapper>
