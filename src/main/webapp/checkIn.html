@@ -486,7 +486,7 @@
                 document.getElementById("days").value =
                     GetDateDiff(DateToLStr(new Date()), value.split(" ")[0] + LEAVETIME)
                 document.getElementById("leaveDate").value = value.split(" ")[0] + LEAVETIME;
-
+                localStorage.modifyPrice = '';
                 setTimeout(function () {
                     dealChange()
                 },100)
@@ -507,53 +507,7 @@
     }
     //处理选房条件发生变化的逻辑
     function dealChange() {
-        if(sRooms.length==0)return;
-        currSel.inWay = state.roomType;
-        if(state.hzjg){
-            currSel.cnId=$("#channelSelect").val();
-            delete currSel.memberRankId;
-        } else if(userInfo.meLeval){
-            currSel.memberRankId = userInfo.meLeval
-            delete currSel.cnId;
-        }else{
-            delete currSel.cnId;
-            delete currSel.memberRankId;
-        }
-
-        if(currSel.inWay==2){
-            currSel.dayNumber = 1;
-        }else{
-            currSel.dayNumber = $("#days").val();
-        }
-
-        var ids = [];
-        for(var i=0;i<sRooms.length;i++){
-            ids.push(sRooms[i].roomId)
-        }
-        currSel.roomIds = ids.join(",")
-        var index = layer.load(1,{time:10*1000});
-        $.ajax({
-            data: currSel,
-            type: "POST",
-            dataType: "JSON",
-            url: "/room/ifCheckIn",
-            success: function (rs) {
-                layer.close(index);
-                if (!rs.success) {
-                    layer.alert(rs.errMsg)
-                    currSel.ok = rs.errMsg;$("input[name=inWay][value=" + historystate + "]").prop('checked', true);
-                    form.render();
-                    return false;
-                }else{
-                    clearModifyPrice();
-                    sRooms = rs.data.roomInfo;
-                    setCustomInfo();
-                    calcPrice();
-                    $("#totalPrice").text(rs.data.sumPrice);
-                    currSel.ok = true;
-                }
-            }
-        });
+        clearRoomInfo();
     }
     function par(v, vv) {
         $("#hzjg").val(vv)
@@ -564,7 +518,8 @@
 
         document.getElementById("leaveDate").value =
             DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value))).split(" ")[0] + LEAVETIME
-
+        localStorage.modifyPrice = '';
+        clearRoomInfo();
     }
 
     function selectRoom() {
