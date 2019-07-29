@@ -65,7 +65,9 @@ public interface OrderDAO {
     //获取入住未支付的子订单
     List<OrderChildBO> getCloseOrder();
     //通过房间id查找在住订单信息
-    CheckInInfoResult getOrderChildByRoomId(Integer roomId);
+    CheckInInfoResult getOrderChildByRoomId(@Param("roomId") Integer roomId,@Param("date") String date);
+    //通过房间id查找在住订单信息 未有时间条件
+    OrderChildBO getOrderChildByRoomIdNoTime(@Param("roomId") Integer roomId);
     //通过房间id查找预约订单信息
     CheckInInfoResult getReservationInfo(Integer roomId);
 

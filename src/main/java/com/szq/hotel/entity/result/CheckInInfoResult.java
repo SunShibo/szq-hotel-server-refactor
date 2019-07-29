@@ -23,6 +23,15 @@ public class CheckInInfoResult {
     private String remake;//备注
     private String OTA;//
     private String money;//当天房价
+    private String checkType;//入住方式
+
+    public String getCheckType() {
+        return checkType;
+    }
+
+    public void setCheckType(String checkType) {
+        this.checkType = checkType;
+    }
 
     public Date getPracticalDepartureTime() {
         return practicalDepartureTime;

@@ -502,17 +502,26 @@
     </select>
 
     <!--通过房间id查找在住订单信息-->
-    <select id="getOrderChildByRoomId" resultType="com.szq.hotel.entity.result.CheckInInfoResult" parameterType="java.lang.Integer">
+    <select id="getOrderChildByRoomId" resultType="com.szq.hotel.entity.result.CheckInInfoResult" >
         select hm_order.id as orderId,time,hm_order_child.id as orderChildId,start_time,end_time,practical_departure_time,
         (room_rate+other_rate-free_rate_num) as totalConsumption,
         (pay_cash_num+other_pay_num) as sumPayment,channel,
-        remark,al_room_code,OTA,money
+        remark,al_room_code,OTA,money,hm_order.check_type
         from  hm_order_child,hm_order,hm_everyday_room_price
         where hm_order_child.order_id=hm_order.id
         and (order_state='admissions' or order_state='notpay')
         and hm_everyday_room_price.order_child_id=hm_order_child.id
         and room_id=#{roomId}
-        and time = date_format(now(),'%y-%m-%d')
+        and `time` = #{date}
+    </select>
+    <select id="getOrderChildByRoomIdNoTime" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+        select hm_order_child.*
+        from  hm_order_child,hm_order,hm_everyday_room_price
+        where hm_order_child.order_id=hm_order.id
+        and (order_state='admissions' or order_state='notpay')
+        and hm_everyday_room_price.order_child_id=hm_order_child.id
+        and room_id=#{roomId}
+        limit 1
     </select>
 
     <!--通过房间id查找预约信息-->

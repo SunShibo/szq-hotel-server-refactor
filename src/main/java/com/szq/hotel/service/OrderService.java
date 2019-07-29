@@ -311,7 +311,11 @@ public class OrderService {
 
     //根据身份证号 手机号查询预约信息
     public OrderBO getOrderInfo(String idNumber, String mobile, Integer hotelId) {
-        String date = this.getDate();
+        //String date = this.getDate();
+        //当天最后时间
+        SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date=dateFormat.format(DateUtils.getCurrentDayEndTime(null));
+
         //主订单信息
         OrderBO orderBO = orderDAO.getOrderByIdOrMobile(idNumber, mobile, date, hotelId);
         if (orderBO == null || orderBO.getOrderNumber() == null) {
@@ -393,7 +397,7 @@ public class OrderService {
         return orderDAO.updOrderChild(orderBO);
     }
 
-    //返回当天最早时间 也就是当天6点后要多算一天
+    //返回当天时间 年月日
     public String getDate() {
         SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
@@ -403,13 +407,9 @@ public class OrderService {
         if (hour < 6) {
             //当前在六点之前
             c.set(Calendar.DATE, c.get(Calendar.DATE) - 1);
-            String str = simp.format(c.getTime());
-            return str;
-        } else {
-            c.set(Calendar.DATE, c.get(Calendar.DATE) + 1);
-            String str = simp.format(c.getTime());
-            return str + " 06:00:00";
         }
+        String str = simp.format(c.getTime());
+        return str;
     }
 
     //根据订单id查询订单信息
@@ -557,13 +557,21 @@ public class OrderService {
 
     //首页查询在住信息
     public CheckInInfoResult getCheckInInfo(Integer roomId) {
-        //在住信息
-        CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId);
-        if(checkInInfoResult.getPracticalDepartureTime()!=null){
-            checkInInfoResult.setEndTime(checkInInfoResult.getPracticalDepartureTime());
-        }
-        if (checkInInfoResult == null) {
+        //当天日期
+        String currDate=this.getDate();
+        SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
+        OrderChildBO orderChildBO=orderDAO.getOrderChildByRoomIdNoTime(roomId);
+        if(orderChildBO==null){
             return null;
+        }
+        Date entTime=orderChildBO.getPracticalDepartureTime()==null?orderChildBO.getEndTime():orderChildBO.getPracticalDepartureTime();
+        if(simp.format(entTime).equals(currDate)){
+            entTime=DateUtils.getBeforeDay(entTime,-1);
+        }
+        //在住信息
+        CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId,simp.format(entTime));
+        if(checkInInfoResult!=null){
+            checkInInfoResult.setEndTime(checkInInfoResult.getPracticalDepartureTime());
         }
         //同住人信息
         List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getOrderChildId(), Constants.CHECKIN.getValue());
