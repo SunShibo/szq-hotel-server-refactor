@@ -176,37 +176,38 @@
             $table.empty();
             dealDays();
             var str = '';
-            sRooms.map(function(c,i){
-                str+=  ['<div class="table-row">',
+            sRooms.map(function (c, i) {
+                str += ['<div class="table-row">',
                     '<div class="cell">',
-                    c.name?c.name:c.roomTypeName,
+                    c.name ? c.name : c.roomTypeName,
                     '</div>',
                     _deal(c),
                     '</div>'].join("");
             });
 
             $table.append(str);
+
             function _deal(r) {
                 var yprice = [];
                 var price = [];
                 var _str = '';
-                for(var i in r){
+                for (var i in r) {
                     // debugger;
-                    if(i.split('/').length>2&&i.indexOf('y')==-1){
+                    if (i.split('/').length > 2 && i.indexOf('y') == -1) {
                         price.push({
-                            time:new Date(i).getTime(),
-                            price:r[i],
-                            date:i,
-                            roomTypeName:r['roomTypeName'],
-                            roomTypeId:r['roomTypeId']
+                            time: new Date(i).getTime(),
+                            price: r[i],
+                            date: i,
+                            roomTypeName: r['roomTypeName'],
+                            roomTypeId: r['roomTypeId']
                         })
-                    }else if(i.split('/').length>2){
+                    } else if (i.split('/').length > 2) {
                         yprice.push({
-                            time:new Date(i.split("y")[1]).getTime(),
-                            price:r[i],
-                            date:i.split("y")[1],
-                            roomTypeName:r['roomTypeName'],
-                            roomTypeId:r['roomTypeId']
+                            time: new Date(i.split("y")[1]).getTime(),
+                            price: r[i],
+                            date: i.split("y")[1],
+                            roomTypeName: r['roomTypeName'],
+                            roomTypeId: r['roomTypeId']
                         })
                     }
                 }
@@ -214,10 +215,10 @@
                 yprice = yprice.sort(compare("time"))
                 price = price.sort(compare("time"))
 
-                for(var i=0;i<price.length;i++){
+                for (var i = 0; i < price.length; i++) {
 
 
-                    _str+=['<div class="cell">',
+                    _str += ['<div class="cell">',
                         '<input type="number" data-price="',
                         yprice[i]['price'],
                         '" data-name="',
@@ -228,7 +229,7 @@
                         r['roomTypeId'],
                         '" value="',
                         // price[i]['price'],
-                        ff==1 ? $("#unify").val() : (ff==2&&yprice[i]['price']) ? yprice[i]['price'] : price[i]['price'],
+                        ff == 1 ? $("#unify").val() : (ff == 2 && yprice[i]['price']) ? yprice[i]['price'] : price[i]['price'],
                         '"><span>/',
                         yprice[i]['price'],
                         '</span>',
@@ -237,34 +238,35 @@
                 }
 
                 return _str;
-        }
+            }
 
 
-        function submitInfo() {
-  	      var _arr = [];
+            function submitInfo() {
+                var _arr = [];
 
-            rsd.map(function (c,i) {
-                var _o={
-                    roomTypeId:c['roomTypeId'],
-					roomTypeName:c['roomTypeName'],
-                    id:c['roomTypeId'],
-                    name:c['roomTypeName']
-                };
+                rsd.map(function (c, i) {
+                    var _o = {
+                        roomTypeId: c['roomTypeId'],
+                        roomTypeName: c['roomTypeName'],
+                        id: c['roomTypeId'],
+                        name: c['roomTypeName']
+                    };
 
-                try{
-					$(".rti"+c['roomTypeId']).each(function () {
+                    try {
+                        $(".rti" + c['roomTypeId']).each(function () {
 
-						_o[this.dataset['date']]=this.value;
-						_o['y'+this.dataset['date']] = this.dataset['price'];
-					})
-                }catch (e){
-                    console.log(e)
-                }
-                _arr.push(_o);
-            })
-			localStorage.setItem("modifyPrice",JSON.stringify(_arr));
-            parent.parModifyPrice();
-            no();
+                            _o[this.dataset['date']] = this.value;
+                            _o['y' + this.dataset['date']] = this.dataset['price'];
+                        })
+                    } catch (e) {
+                        console.log(e)
+                    }
+                    _arr.push(_o);
+                })
+                localStorage.setItem("modifyPrice", JSON.stringify(_arr));
+                parent.parModifyPrice();
+                no();
+            }
         }
 </script>
 </body>

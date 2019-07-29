@@ -75,6 +75,7 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var element, laydate, form, $, layer, index,table,data=[],rrr;
+
 	var checkType = getUrl("checkType");
 	if(!checkType)checkType = 'day'
     var state = {
@@ -163,25 +164,6 @@
             d.roomId = sRooms[0].roomId;
             d.everydayRoomPrice = JSON.stringify(getRoomPrice());
 
-            // for(var i=0;i<checkinData.length;i++){
-            //     for(var j=0;j<rs.length;j++){
-            //         if(checkinData[i]["roomTypeId"] == rs[j]['roomTypeId']) {
-            //             var c = rs[j];
-            //             var arr = [];
-            //             for (var b in c) {
-            //                 if (b.indexOf("/") > -1 && b.indexOf("y") == -1) {
-            //                     arr.push({
-            //                         time: b,
-            //                         money: c[b]
-            //                     })
-            //                 }
-            //             }
-            //             checkinData[i]['everydayRoomPriceBOS'] = arr;
-            //             break;
-            //         }
-            //     }
-            // }
-
             console.info(d)
 			var index = layer.load(1,{time:10*1000});
             $.ajax({
@@ -253,9 +235,9 @@
     function selectRoom(){
         var selectRoomData =  {
             checkTime:	DateToLStr(new Date()),
-            endTime:'2019/07/30',
-            phone:'1638288',
-            roomAuxiliaryStatus:'day',
+            endTime:DateToLStr(new Date(Number(getUrl("endTime")))),
+            phone:getUrl("phone"),
+            roomAuxiliaryStatus:getUrl("roomAuxiliaryStatus"),
             state:'yes'//直接入住
         }
         localStorage.hfrzxf = JSON.stringify(selectRoomData);
