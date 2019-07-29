@@ -71,13 +71,13 @@
 						<div class="layui-inline">
 							<label class="layui-form-label ">证件号</label>
 							<div class="layui-input-inline">
-								<input type="text" name="IDNumber" onblur="idFlag(1)" id="IDNumber" onchange="clearRoomInfo();" autocomplete="off" class="layui-input">
+								<input type="text" name="IDNumber" onblur="idFlag(1)" id="IDNumber"  autocomplete="off" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-inline">
 							<label class="layui-form-label require">电话</label>
 							<div class="layui-input-inline">
-								<input type="tel" name="phone" onblur="idFlag(2)"  id="phone" autocomplete="off"  onchange="clearRoomInfo();"  lay-verify="required" class="layui-input">
+								<input type="tel" name="phone" onblur="idFlag(2)"  id="phone" autocomplete="off"  lay-verify="required" class="layui-input">
 							</div>
 						</div>
 
@@ -478,7 +478,10 @@
                     sRooms[i]['everydayRoomPriceBOS'] = getFormTime(sRooms[i].basicPrice,d.dayCount,sRooms[i].id,sRooms[i].roomTypeId)
                 }
                 if( sRooms[i]['id']){
-                    sRooms[i]['roomTypeId'] = sRooms[i]['id']
+                    if(!sRooms[i]['roomTypeId']){
+                        sRooms[i]['roomTypeId'] = sRooms[i]['id']
+					}
+
 				}else{
                     delete sRooms[i]['id']
                 }
@@ -706,22 +709,35 @@
         //查询是否是会员
         if ( s == 1 && $("#IDNumber").val().trim().length == '') return;
         if ( s == 2 && $("#phone").val().trim().length == '') return;
-        // if(s==1)v = $("#IDNumber").val().trim();
-        // if(s==2)v = $("#phone").val().trim();
         if(s == 1){
             v =  "&certificateNumber="+$("#IDNumber").val().trim()
         }
         if(s==2){
             v =  "&phone="+$("#phone").val().trim()
         }
+
         $.getJSON(api.queryIdFlag +  v + "&random="+Date.now(), function (rs) {
 
             if (rs.success&&rs.data!=null) {
+                if(!userInfo.id){
+                    setTimeout(function () {
+                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 1});
+                    },1000)
+                }else if(userInfo.id!=yuyueData.membersId){
+                    setTimeout(function () {
+                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 1});
+                    },1000)
+				}
                 renderUserInfo(rs.data)
                 form.render();
                 state.idFlag = true;
                 layer.msg('成功获取会员信息', {icon: 1});
             } else {
+                if(userInfo.id){
+                    setTimeout(function () {
+                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 1});
+                    },1000)
+                }
                 state.idFlag = false;
                 userInfo = {};
                 $("#userLevel").text("");
@@ -760,18 +776,35 @@
         }else{
             //改过价的情况下
             var _mp = JSON.parse(localStorage.modifyPrice);
+
             var arr = [];
             for(var i=0;i<_mp.length;i++){
+                var em = _mp[i];
+
                 if(_mp[i]['id']==id||_mp[i]['id']==roomTypeId||_mp[i]['roomTypeId']==roomTypeId){
-                    for(var j in _mp[i]){
-                        if(j==time.split(" ")[0]){
-                            time = addDate(new Date(time),1)
-                            arr.push({
-                                money:_mp[i][j],
-                                time:j
-                            })
-                        }
-                    }
+                    var ea = [];
+                    for(var k in em){
+
+                        if(k.indexOf("/")>-1&&k.indexOf('y')==-1){
+                            ea.push({
+								sort:new Date(k).getTime(),
+								money:em[k],
+								time:k
+							})
+						}
+					}
+					// debugger;
+					arr = ea = ea.sort(compare("sort"));
+                    // debugger;
+                    // for(var j in _mp[i]){
+                    //     if(j==time.split(" ")[0]){
+                    //         time = addDate(new Date(time),1)
+                    //         arr.push({
+                    //             money:_mp[i][j],
+                    //             time:j
+                    //         })
+                    //     }
+                    // }
                 }
             }
         }

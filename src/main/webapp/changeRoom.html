@@ -103,7 +103,7 @@
             $ = layui.jquery,
             layer = layui.layer,
             table = layui.table;
-        var orderChildId = getUrl("orderChildId");
+        var orderChildId = getUrl("id");
         if(!orderChildId)return;
 		$.getJSON(api.getRoomInfoById+orderChildId+"&random="+Date.now(),function (rs) {
 			rrr = rs.data;

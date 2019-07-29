@@ -39,6 +39,7 @@ function modifyPrice() {
             }
 
             if(temp.indexOf(sRooms[i].id) == -1 ){
+                debugger;
                 temp.push(sRooms[i].id);
                 var newdata = JSON.parse(JSON.stringify(sRooms[i]));
                 for(var j=0;j<days.length;j++){

@@ -705,6 +705,7 @@
         if(s==2){
             v =  "&phone="+$("#phone").val().trim()
         }
+
         $.getJSON(api.queryIdFlag + v + "&random="+Date.now(), function (rs) {
 
             if (rs.success&&rs!=null) {
