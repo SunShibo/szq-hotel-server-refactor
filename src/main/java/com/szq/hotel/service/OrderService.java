@@ -123,8 +123,7 @@ public class OrderService {
             }
         }
         //修改总房价
-        OrderBO order = new OrderBO();
-        order.setId(orderBO.getId());
+        OrderBO order = orderDAO.getOrderById(orderBO.getId());
         order.setTotalPrice(totalPrice);
         orderDAO.updOrder(order);
 
@@ -236,7 +235,7 @@ public class OrderService {
             //如果新的子订单房型 和 旧房型对应上 则新修改子订单信息
             for (OrderChildBO orderChildNew : orderChildBOList) {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                    if (orderChildNew.getRoomTypeId() == orderChildOld.getRoomTypeId() && !orderChildOld.getOrderState().equals("yes")&&!orderChildNew.getOrderState().equals("yes")) {
+                    if (orderChildNew.getRoomTypeId() == orderChildOld.getRoomTypeId() && !("yes").equals(orderChildOld.getOrderState())&&!"yes".equals(orderChildNew.getOrderState())) {
                         orderChildNew.setId(orderChildOld.getId());
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
@@ -271,7 +270,7 @@ public class OrderService {
             //如果新的子订单房间 和 旧房间对应上 则新修改子订单信息
             for (OrderChildBO orderChildNew : orderChildBOList) {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                    if (orderChildNew.getRoomId() == orderChildOld.getRoomId() && !orderChildOld.getOrderState().equals("yes")&& !orderChildNew.getOrderState().equals("yes")) {
+                    if (orderChildNew.getRoomId() == orderChildOld.getRoomId() && !"yes".equals(orderChildOld.getOrderState())&& !("yes").equals(orderChildNew.getOrderState())) {
                         orderChildNew.setId(orderChildOld.getId());
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
