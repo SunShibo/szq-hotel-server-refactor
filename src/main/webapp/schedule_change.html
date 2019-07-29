@@ -477,7 +477,13 @@
                 }else{
                     sRooms[i]['everydayRoomPriceBOS'] = getFormTime(sRooms[i].basicPrice,d.dayCount,sRooms[i].id,sRooms[i].roomTypeId)
                 }
-                sRooms[i]['roomTypeId'] = sRooms[i]['id']
+                if( sRooms[i]['id']){
+                    sRooms[i]['roomTypeId'] = sRooms[i]['id']
+				}else{
+                    delete sRooms[i]['id']
+                }
+
+
             }
             d.OrderChildJSON =  JSON.stringify(sRooms);
             console.info(d)

@@ -194,7 +194,7 @@ var api = {
     , queryOrderByRoom: '/commodity/querySuspend'//商品交易挂账000
     , buying: 'OrderManage/buying'//挂账
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
-    , FormManangeResponse: '/FormAccountDetailController/FormManangeResponse'//管理层报表
+    , FormManangeResponse: '/managementReport/getManagementReport'//管理层报表000
     , stamOrder: '/OrderManage/stamOrder'//在住打印
     , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人
     , delRoomPerson: '/roomDetailsController/delRoomPerson'//删除同来人
