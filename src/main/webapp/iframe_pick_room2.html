@@ -70,7 +70,6 @@
         $doc.on("click","#typeList p",function(){
             $("#typeList p").removeClass("room-type-selected");
             $(this).addClass("room-type-selected");
-
             //点击房型处理数据///根据房型id查询过滤房间数据
             dealHouse($(this).data("id"));//参数是房型id
         })
@@ -147,7 +146,9 @@
         var par = selectParameter;
         if(typeid){
             par.roomTypeId = typeid;
-        }
+        }else{
+            delete par.roomTypeId;
+		}
         var index = layer.load(1,{time:10*1000});
         $.ajax({
             url: api.pickRoomQuery,

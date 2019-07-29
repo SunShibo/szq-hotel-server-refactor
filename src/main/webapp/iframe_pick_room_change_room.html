@@ -153,6 +153,8 @@
         var par = selectParameter;
         if(typeid){
             par.roomTypeId = typeid;
+        }else{
+            delete par.roomTypeId;
         }
         var index = layer.load(1,{time:10*1000});
         $.ajax({
