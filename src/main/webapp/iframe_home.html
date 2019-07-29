@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>首页弹出层</title>
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
     <style>
         /* 禁止刷新后出现横向滚动条 */
@@ -70,10 +70,10 @@
                 <!--<button class="layui-btn" id="cardmanagement">制卡消卡</button>-->
                 <!--<button class="layui-btn" id="continue">续住</button>-->
                 <!--<button class="layui-btn" id="addSameWith">添加同来</button>-->
+                <button class="layui-btn" id="updateAll">编辑</button>
                 <button class="layui-btn" id="checkInRoom">换房</button>
                 <button class="layui-btn" id="accounts">联房</button>
                 <button class="layui-btn" id="outRoom">客账</button>
-                <!--<button class="layui-btn" id="checkInRemarks">备注</button>-->
             </div>
         </div>
         <div class="layui-tab-item">
@@ -137,7 +137,7 @@
                 <button class="layui-btn" id="reservationsCheckIn">入住</button>
                 <button class="layui-btn" id="newHome">修改</button>
                 <button class="layui-btn" id="cancel">取消预订</button>
-                <button class="layui-btn" id="reservationsRemarks">备注</button>
+                <!--<button class="layui-btn" id="reservationsRemarks">备注</button>-->
             </div>
         </div>
         <div class="layui-tab-item">
@@ -162,7 +162,10 @@
             dirty = '', //脏房状态
             roomInfoRemark = '', //房屋备注
             phone = '', //预约人手机号
-
+            checkInObj = {},//在住信息对象
+            endTime = '', //离店时间
+            checkInPhone = '', //离店时间
+            roomAuxiliaryStatus = '', //离店时间
 
             inMessageRemark = '',
             subMessageRemark = '';
@@ -218,9 +221,17 @@
                         return;
                     }
                     console.log(data);
+                    //保存在住信息对象
+                    checkInObj = data.data;
                     //获取订单ID
                     orderId = data.data.orderId;
                     orderChildId = data.data.orderChildId;
+                    //离店时间
+                    endTime = data.data.endTime;
+                    //下单人手机号
+                    checkInPhone = data.data.phone;
+                    //客房状态
+                    roomAuxiliaryStatus = data.data.checkType;
                     //入住信息表格数据渲染
                     for (var item in data.data) {
                         var dom = $('#' + item);
@@ -248,6 +259,7 @@
                 , {field: 'gender', title: '性别', align: "center"}
                 , {field: 'phone', title: '手机号', align: "center"}
                 , {field: 'certificateNumber', title: '证件号', align: "center"}
+                , {field: 'remark', title: '备注', align: "center"}
                 , {
                     field: 'status', title: '入住状态', align: "center", templet: function (data) {
                         return data.status === 'checkin' ? '正在入住' : '已经离店';
@@ -522,7 +534,7 @@
 
         //入住换房
         $('#checkInRoom').on('click', function () {
-            parent.location.href = 'changeRoom.html?id=' + orderId + '&roomId=' + id;
+            parent.location.href = 'changeRoom.html?id=' + orderId + '&roomId=' + id + '&endTime=' + endTime + '&phone' + checkInPhone + '&roomAuxiliaryStatus=' + roomAuxiliaryStatus;
         });
 
         //预约入住
@@ -543,6 +555,45 @@
         //客账
         $('#outRoom').on('click', function () {
             parent.location.href = 'orderInfo.html?state=0&back=1&id=' + orderId;
+        });
+
+        //取消预订
+        $('#cancel').on('click', function () {
+            layer.confirm('是否取消？', {icon: 3, title: '提示'}, function (index) {
+                $.ajax({
+                    url: api.cancelSubUpdate,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {orderChildIdS: reservationOrderId},
+                    success: function (data) {
+                        if (!data.success) {
+                            showMsg(data.errMsg, 2, false);
+                        } else {
+                            showMsg('取消预约成功', 1, false);
+                        }
+                    }
+                });
+                parent.layer.closeAll();
+                parent.getRoomsInfo();
+            });
+        });
+
+        //在住信息修改
+        $('#updateAll').on('click', function () {
+            sessionStorage.setItem('checkIn', JSON.stringify(checkInObj));
+            parent.layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['70%', '90%'],
+                title: '编辑',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_homeUpdate.html?id=' + orderId + '&orderChildId=' + orderChildId,
+                end: function () {
+                    sessionStorage.removeItem('checkIn');
+                    initRoomInfoData();
+                }
+            });
         });
 
 
@@ -576,31 +627,6 @@
                 end: function () {
                     getResult();
                 }
-            });
-        });
-
-        //取消预订
-        $('#cancel').on('click', function () {
-            var obj = {};
-            obj.childId = subId;
-            obj.roomId = id;
-            layer.confirm('是否取消？', {icon: 3, title: '提示'}, function (index) {
-                $.ajax({
-                    url: api.cancelOrder,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: obj,
-                    success: function (data) {
-                        if (!data.success) {
-                            showMsg(data.errMsg, 2, false);
-                            return;
-                        }
-                    }
-                });
-                parent.getRoomsInfo();
-                parent.layer.close(index);
-                var index1 = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                parent.layer.close(index1); //再执行关闭
             });
         });
 
