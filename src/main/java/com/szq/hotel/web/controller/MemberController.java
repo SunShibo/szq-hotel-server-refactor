@@ -496,6 +496,16 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
+
+            MemberResultBO memberResultBO = memberService.getMemberCardNumber(memberBO.getId());
+            if (memberResultBO!=null){
+                if ("no".equals(memberResultBO.getType())){
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000207"));
+                    super.safeJsonPrint(response, result);
+                    log.info("result{}",result);
+                    return;
+                }
+            }
             //储值
             BigDecimal storeValue = memberBO.getStoredValue();
             //积分
