@@ -76,8 +76,9 @@ public class CheckOrderState {
                 if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
                     for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){
                         log.info("start  room price  ...............................................");
-                        //生成房费
-                        childOrderService.increaseRoomRate(priceBO.getOrderChildId(),priceBO.getMoney());
+                        //生成房费     //生成在主账房里
+                        Integer integer = childOrderService.queryOrderChildMain(roomRateBO.getAlRoomCode());
+                        childOrderService.increaseRoomRate(integer,priceBO.getMoney());
                         orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime())+"房费",
                                 null,priceBO.getMoney().multiply(new BigDecimal("-1")), Constants.ROOMRATE.getValue(),1,"1天", Constants.NO.getValue());
                         //把夜审状态修改回去

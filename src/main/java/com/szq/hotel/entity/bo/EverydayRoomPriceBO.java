@@ -13,6 +13,7 @@ public class EverydayRoomPriceBO {
     private BigDecimal money;//价格
     private String status;//状态
 
+
     public String getStatus() {
         return status;
     }
