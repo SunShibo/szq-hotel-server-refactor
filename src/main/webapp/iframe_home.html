@@ -92,7 +92,7 @@
                 </tr>
             </table>
             <div class="btn-list layui-btn-container">
-                <button class="layui-btn layui-btn-disabled" id="finish" disabled>打扫完毕</button>
+                <button class="layui-btn" id="finish"></button>
                 <button class="layui-btn" id="repair"></button>
                 <button class="layui-btn" id="checkIn">入住</button>
                 <button class="layui-btn" id="lockRoom">锁房</button>
@@ -157,21 +157,25 @@
             orderChildId = 0,//子订单ID
             state = false,//预约状态
             status = false,//入住状态
-            phone = '',
-            inWay = 0,
+            maintain = '', //维修状态
+            dirty = '', //脏房状态
+            roomInfoRemark = '', //房屋备注
+
+
+
             roomNum = '',
             roomTypeName = '',
             houseTypeId = 0,
-            phone1 = '',
             inMessageRemark = '',
-            subMessageRemark = '',
-            roomInfoRemark = '';
+            subMessageRemark = '';
 
         $(function () {
             id = parseInt(getUrl('id'));
             debugger
             state = getUrl('state');
             status = getUrl('status');
+            maintain = getUrl('maintain');
+            dirty = getUrl('dirty');
 
             //判断预约状态是否需要删除
             if (state === 'false') {
@@ -275,6 +279,19 @@
 
         //房屋信息
         function initRoomInfoData() {
+            //切换维修房状态按钮
+            if(maintain === 'true'){
+                $('#repair').text('取消维修');
+            }else {
+                $('#repair').text('维修');
+            }
+            //切换脏房状态按钮
+            if(dirty === 'true'){
+                $('#finish').text('打扫完毕');
+            }else {
+                $('#finish').text('待打扫');
+            }
+
             $.ajax({
                 url: api.homeRoomInfo,
                 type: 'POST',
@@ -282,6 +299,7 @@
                 data: {id: id},
                 success: function (res) {
                     if (res.success) {
+                        roomInfoRemark = res.data.remark;
                         for (var item in res.data) {
                             $('#' + item).text(res.data[item]);
                         }
@@ -339,7 +357,6 @@
                 dataType: 'json',
                 data: {id: id},
                 success: function (res) {
-                    console.log(res)
                     if (res.success) {
                         formatDate(res.data);
                     } else {
@@ -428,6 +445,100 @@
         });
 
 
+        //修改客房维修状态
+        $('#repair').on('click', function () {
+           $.ajax({
+               url: api.homeUpdateRoomMaintain,
+               type: 'POST',
+               dataType: 'json',
+               data: {id: id},
+               success: function (res) {
+                   if(res.success){
+                       showMsg(res.data, 1, false);
+                       //修改页面维修状态
+                       maintain = maintain === 'true' ? 'false' : 'true';
+                       //刷新弹出层房屋信息数据
+                       initRoomInfoData();
+                       //修改首页数据
+                       parent.getRoomsInfo();
+                   }else {
+                       showMsg(res.errMsg, 2, false);
+                   }
+               }
+           })
+        });
+
+        //锁房
+        $('#lockRoom').on('click', function () {
+            sessionStorage.setItem('selectArr', id);
+            parent.layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['500px', '400px'],
+                title: '锁房',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_lockRoom.html',
+                end: function () {
+                    sessionStorage.removeItem('selectArr');
+                    initRoomInfoData();
+                    parent.getRoomsInfo();
+                }
+            });
+        });
+
+        //切换脏房状态按钮
+        $('#finish').on('click', function () {
+            $.ajax({
+                url: api.homeCleanThe,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    roomId: id
+                },
+                success: function (data) {
+                    if (!data.success) {
+                        showMsg(data.errMsg, 2, false);
+                        return;
+                    }
+                    if (data.success) {
+                        parent.layer.closeAll();
+                        parent.layer.msg('房屋状态变更完成');
+                        parent.getRoomsInfo();
+                    }
+                }
+            });
+        });
+
+        //房屋备注
+        $('#roomRemarks').on('click', function () {
+            sessionStorage.setItem('remark', roomInfoRemark);
+            parent.layer.open({
+                type: 2,
+                skin: 'demo-class',
+                area: ['500px', '300px'],
+                title: '房屋备注',
+                shade: 0.6,
+                shadeClose: true,
+                content: 'iframe_exemption.html?s=3&id=' + id,
+                end: function () {
+                    sessionStorage.removeItem('remark');
+                    initRoomInfoData();
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+
+
+
+
         //获取联房信息
         function getResultOrderInfo() {
             $.ajax({
@@ -446,37 +557,6 @@
                 }
             });
         }
-
-
-        //判断维修状态
-        function setFixRoomResult() {
-            if (fixRoomResult === 7) {
-                $('#repair').text('取消维修');
-            } else if (fixRoomResult === 0) {
-                $('#repair').text('维修');
-            }
-        }
-
-
-        $(document).on('click', '#repair', function () {
-            $.ajax({
-                url: api.updateFixRoomState,
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    fixRoomResult: fixRoomResult === 7 ? 0 : 7,
-                    roomId: id
-                },
-                success: function (data) {
-                    if (!data.success) {
-                        showMsg(data.errMsg, 2, false);
-                        return;
-                    }
-                    fixRoomResult === 7 ? fixRoomResult = 0 : fixRoomResult = 7;
-                    getResult();
-                }
-            })
-        });
 
         //联房结账
         $('#accounts').on('click', function () {
@@ -532,24 +612,6 @@
             parent.location.href = 'changeRoom.html?roomId=' + id + "&state=" + state + "&from=1";
         });
 
-        //锁房
-        $('#lockRoom').on('click', function () {
-            sessionStorage.setItem('selectArr', id);
-            parent.layer.open({
-                type: 2,
-                skin: 'demo-class',
-                area: ['500px', '400px'],
-                title: '锁房',
-                shade: 0.6,
-                shadeClose: true,
-                content: 'iframe_lockRoom.html?state=1',
-                end: function () {
-                    getResult();
-                    parent.getRoomsInfo();
-                }
-            });
-        });
-
         //取消预订
         $('#cancel').on('click', function () {
             var obj = {};
@@ -603,23 +665,6 @@
             });
         });
 
-        //房屋备注
-        $('#roomRemarks').on('click', function () {
-            parent.layer.open({
-                type: 2,
-                skin: 'demo-class',
-                area: ['500px', '300px'],
-                title: '房屋备注',
-                shade: 0.6,
-                shadeClose: true,
-                content: 'iframe_exemption.html?s=3&id=' + id + "&remark=" + encodeURI(roomInfoRemark),
-                end: function () {
-                    tab.reload();
-                    getResult();
-                }
-            });
-        });
-
         //预约备注
         $('#reservationsRemarks').on('click', function () {
             parent.layer.open({
@@ -638,32 +683,6 @@
         });
 
 
-        //打扫完毕按钮
-        $('#finish').on('click', function () {
-            parent.layer.confirm('是否确定已打扫完毕？', {icon: 3, title: '提示'}, function (index) {
-                $.ajax({
-                    url: api.cleanThe,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        roomId: id
-                    },
-                    success: function (data) {
-                        if (!data.success) {
-                            showMsg(data.errMsg, 2, false);
-                            return;
-                        }
-                        if (data.success) {
-                            parent.layer.closeAll();
-                            parent.layer.msg('房屋状态变更完成');
-                            parent.getRoomsInfo();
-                        }
-                    }
-                });
-            });
-
-        });
-
         //续住
         $('#continue').on('click', function () {
             parent.layer.open({
@@ -680,53 +699,6 @@
             });
         });
 
-        function checkSex(g) {
-            if (!!g || g == 0) {
-                if (g == 0) return '女';
-                if (g == 1) return '男';
-                if (g == 2) return '';
-            }
-        }
-
-        //动态显示信息
-        function dataInfo(data) {
-            if (!!data.inMessage) {
-                if (data.inMessage.length !== 0) {
-                    $('.penson').remove();
-                    for (var i = data.inMessage.length - 1, len = 0; i >= len; i--) {
-                        var div = '<tr class="penson"><td>' + data.inMessage[i].name + '</td><td>' + checkSex(data.inMessage[i].gender) + '</td><td>' + data.inMessage[i].phone + '</td><td>' + data.inMessage[i].idNumber + '</td></tr>';
-                        $('#penson').append(div);
-                    }
-                    //在住信息
-                    $('#arrivalTime').text(data.inMessage[0].againstTime);
-                    $('#isMember').text(data.isName);
-                    $('#ponsonNumber').text(data.inMessage[0].perr);
-                    $('#housingPrice').text(data.inMessage[0].roomPrice);
-                    $('#price').text(data.inMessage[0].paymentAmount);
-                    $('#remarks').text(data.inMessage[0].remark);
-                }
-            }
-            if (Object.keys(data.roomInfo).length !== 0) {
-                //房屋信息
-                $('#facilities').text(data.roomInfo.roomFacility);
-                $('#characteristic').text(data.roomInfo.roomFeatures);
-                $('#remarks1').text(data.roomInfo.comment);
-            }
-            if (Object.keys(data.subscribeMessage).length !== 0) {
-                //预订信息
-                $('#reservations').text(data.subscribeMessage.name);
-                $('#reservationsPhone').text(data.subscribeMessage.phoneNumber);
-                $('#departureTime').text(data.subscribeMessage.arriveTime);
-                $('#occupant').text(data.subscribeMessage.checkPersson);
-                $('#isMember1').text(data.isName);
-                $('#channel').text(data.subscribeMessage.channel === 1 ? '电话预定' : '其他');
-                $('#prePricing').text(data.subscribeMessage.price);
-                $('#remarks2').text(data.subscribeMessage.remark);
-            }
-            if (data.roomState.length !== 0) {
-                formatDate(data.roomState);
-            }
-        }
 
 
     });

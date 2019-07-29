@@ -31,11 +31,11 @@
         });
 
         $(function () {
-            s = getUrl('s');
-            id = getUrl('id');
-            oId = getUrl('o');
+            s = getUrl('s');//备注状态   入住备注  房屋备注   预约备注
+            id = getUrl('id');//房间ID
+            oId = getUrl('o');//订单ID
             form.val('exemption',{
-                "exemption": decodeURIComponent(getUrl('remark'))
+                "exemption": sessionStorage.getItem('remark')
             })
         });
 
@@ -67,21 +67,19 @@
                 });
             } else if (s === '3') {//首页房屋备注
                 $.ajax({
-                    url: api.updateRoomComment,
+                    url: api.updateMainCommment,
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        roomId: id,
-                        comment: data.field.exemption
+                        id: id,
+                        remark: data.field.exemption
                     },
                     success: function (data) {
-                        if (data.errCode === '0000010') {
-                            layer.msg(data.errMsg);
-                            return;
-                        }
                         if(!data.success){
                             showMsg(data.errMsg, 2, false);
                             return;
+                        }else {
+                            showMsg('修改成功', 1, false);
                         }
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭

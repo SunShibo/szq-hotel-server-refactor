@@ -147,10 +147,12 @@
             var roomTypeName = $(this).children('.type').children('span').get(1).innerText;
             var state = $(this).data('state');//预约状态
             var status = $(this).data('status');//在住状态
+            var maintain = $(this).data('maintain');//维修状态
+            var dirty = $(this).data('dirty');//脏房状态状态
             if (!roomId || !roomNum || !roomTypeName) {
                 showMsg('网络错误，请刷新重试！');
             }
-            clickItem(roomId, roomNum, roomTypeName, state, status);
+            clickItem(roomId, roomNum, roomTypeName, state, status, maintain, dirty);
         });
 
         $(document).on("click", ".filterState", function () {
@@ -329,13 +331,13 @@
         }
 
         //弹出层
-        function clickItem(id, roomNum, name, state, status) {
+        function clickItem(id, roomNum, name, state, status, maintain) {
             layui.use('layer', function () {
                 var layer = layui.layer;
                 layer.open({
                     type: 2,
                     title: roomNum + name,
-                    content: 'iframe_home.html?id=' + id + '&state=' + state + '&status=' + status, //这里content是一个普通的String
+                    content: 'iframe_home.html?id=' + id + '&state=' + state + '&status=' + status + '&maintain=' + maintain + '&dirty=' + dirty,
                     skin: 'demo-class',
                     shadeClose: true,
                     shade: 0.6,
@@ -365,8 +367,8 @@
                 o = $.extend(o, a);
             }
             //房型选项
-            if (!($("#countAllType").prop("checked"))) {//房型全选
-                o = {types: ''};
+            if (($("#countAllType").prop("checked"))) {//房型全选
+                o.types = '';
             } else {
                 //遍历每个房型
                 $(".filterType").each(function () {
@@ -403,7 +405,7 @@
                     '</legend>',
                     '<div class="flex-container">'].join("");
                 for (var j = 0; j < f.length; j++) {
-                    str += ['<div data-status="', f[j].status == 'inthe',
+                    str += ['<div data-dirty=', f[j].dirty === 'yes', ' data-maintain=', f[j].maintain === 'yes', ' data-status="', f[j].status === 'inthe',
                         '" data-state="', judgmentState(f[j].makeStatus),
                         '" class="item state-', f[j].status,
                         '" data-roomid="' + f[j].roomId, '">',

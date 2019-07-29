@@ -19,10 +19,6 @@
             background: #eeeeee;
         }
 
-        tr:nth-child(even) {
-
-        }
-
         tr:hover {
             background: #CAFFFF;
         }
@@ -107,30 +103,36 @@
             element.tabChange('filter', 'showInfo');
             index = 1;
             getTabData();
-        })
+        });
+
         document.onkeydown = function(e) { // 回车提交表单
             var theEvent = window.event || e;
             var code = theEvent.keyCode || theEvent.which;
             if(code == 13) {
                 $("#search").click(); // #chk_match 是你 提交按钮的ID
             }
-        }
+        };
+
         function getTabData() {
+            debugger
             var obj;
+            //获取输入框内的时间
             var tt = $("#test6").val();
+            //判断获取时间是否为空
             if (tt == '') {
-                var startTime = DateToLStr4(new Date()).concat('04:00:00');
-                var endTime = DateToLStr2(new Date(new Date(DateToLStr4(new Date()).concat('04:00:00')).getTime() +(86400000 * 7)));
+                var date = new Date();
+                var startTime = DateToLStr5(date);
+                var endTime = DateToLStr5(new Date(date.getTime() + (86400000 * 7)));
                 obj = {
-                    startTime: startTime,
+                    checkTime: startTime,
                     endTime: endTime
                 }
                 $("#test6").val(DateToLStr(new Date()).split(" ")[0] + " - " + DateToLStr(new Date(Date.now() + (86400000 * 7))).split(" ")[0])
 
             } else {
                 obj = {
-                    startTime: DateToLStr4(new Date(tt.split(" - ")[0])).concat('04:00:00'),
-                    endTime: DateToLStr2(new Date(DateToLStr4(new Date(tt.split(" - ")[1])).concat('04:00:00')))
+                    checkTime: DateToLStr4(new Date(tt.split(" - ")[0])),
+                    endTime: DateToLStr2(new Date(DateToLStr4(new Date(tt.split(" - ")[1]))))
                 }
             }
             var index = layer.load(1,{time:10*1000});
@@ -173,7 +175,7 @@
                     obj.align = 'center';
                     arr[0].push(obj);
                 } else {
-                    obj.field = 'Date' + (i - 2);
+                    obj.field = 'date' + (i - 2);
                     obj.title = data.date[i - 3];
                     obj.align = 'center';
                     arr[0].push(obj);
@@ -194,7 +196,8 @@
 
         laydate.render({
             elem: '#test6'
-            , range: true,
+            , range: true
+            , format: 'yyyy-MM-dd'
         });
 
         $("#search").on("click", function () {
@@ -207,18 +210,17 @@
         search();
 
         function search() {
-            var urll = api.reportList + '?v=1';
+            var urll = api.reportList;
             var tt = $("#test6").val();
             if (tt == '') {
                 var startTime = DateToLStr2(new Date());
                 var endTime = DateToLStr2(new Date(Date.now() + (86400000 * 7)))
-                urll += "&startTime=" + startTime + "&endTime=" + endTime;
+                urll += "?startTime=" + startTime + "&endTime=" + endTime;
                 $("#test6").val(DateToLStr(new Date()).split(" ")[0] + " - " + DateToLStr(new Date(Date.now() + (86400000 * 7))).split(" ")[0])
 
             } else {
-                urll += "&startTime=" + DateToLStr2(new Date(tt.split(" - ")[0])) + "&endTime=" + DateToLStr2(new Date(tt.split(" - ")[1]));
+                urll += "?startTime=" + DateToLStr2(new Date(tt.split(" - ")[0])) + "&endTime=" + DateToLStr2(new Date(tt.split(" - ")[1]));
             }
-            // $("#test6").val()
             var index = layer.load(1,{time:10*1000});
             $.getJSON(urll + "&random=" + Date.now(), function (rs) {
                 layer.close(index)

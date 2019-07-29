@@ -123,11 +123,19 @@ var api = {
     , queryPayment: '/checkin/queryPayment'//查询订单应支付金额
 
 
-    , homeItemInfo: '/order/getCheckInInfo'//首页在住信息
-    , homeRoomInfo: '/room/getRoomMessage'//首页房屋信息
-    , homeReservationInfo: '/order/getReservationInfo'//首页预约信息
-    , homeQueryIndexRoom: '/room/queryIndexRoomState'//首页十五天预约信息
-    , homeRoomRecord: '/roomRecord/selectRoomRecord'//首页房间操作日志信息
+    , homeItemInfo: '/order/getCheckInInfo'//首页在住信息   已修改
+    , homeRoomInfo: '/room/getRoomMessage'//首页房屋信息   已修改
+    , homeReservationInfo: '/order/getReservationInfo'//首页预约信息   已修改
+    , homeQueryIndexRoom: '/room/queryIndexRoomState'//首页十五天预约信息   已修改
+    , homeRoomRecord: '/roomRecord/selectRoomRecord'//首页房间操作日志信息   已修改
+    , homeUpdateRoomMaintain: '/room/updateRoomMaintain'//修改客房维修状态   已修改
+    , homeCleanThe: '/room/updateroomMajorState'//切换脏房状态
+    , updateMainCommment: '/room/updateRoomRemark'//首页房屋备注   已修改
+
+
+
+    , reportList: '/room/querySc'//按时间段查询图表
+    , otherView: '/room/querySc'//数据表格
 
 
 
@@ -139,10 +147,7 @@ var api = {
     , cashAdd: '/commodity/addCommodity'//商品交易添加000
     , stayOver: '/roomDetailsController/stayOver'//续住
     , stayOverPay: '/roomDetailsController/stayOverPay'//续住后支付
-    , updateRoomComment: '/room/updateRoomComment'//首页房屋备注
-    , updateMainCommment: '/order/updateMainCommment'//首页房屋备注
     , updateCheckInComment: '/order/updateCheckInRemark'//首页入住房屋备注
-    , cleanThe: '/roomDetailsController/cleanThe'//待打扫变空房
     , hotelInfo: '/hotel/queryLoginHotel'//权限页酒店list
     , hotel: '/OrderManage/hotel'//权限页酒店list
     , detail: '/admin/detail'//权限列表
@@ -153,7 +158,6 @@ var api = {
     , adminQuery: '/admin/query'//按ID查找权限
     , adminUpdate: '/admin/update'//权限修改
     , updateStatus: '/admin/updateStatus'//权限注销
-    , reportList: '/room/pictureView?v=1'//按时间段查询图表
     , getCardNoByLeaveId: '/member/getMemberCardNumber?memberCardLevelId='//根据级别id查询卡费用信息
     , getCardUpdate: '/member/queryCartUpdate?v=1'//根据用户id卡级别判断是否缴费member/queryCartUpdate?userId=1&leaveId=1
     , cartInfo: '/memberCard/selectMemberCard'//会员卡查询   已修改
@@ -186,7 +190,6 @@ var api = {
     , calcPrice2: '/room/updateOrderInfo?v=1'//预定修改，选房确定后需要调用算价格
     , calcPrice1: '/room/sumRoomPriceAndHouseTypePrice?v=1'//选房确定后需要调用算价格
     , scheduleUpdate: '/subcribe/updateSub?v=1'//选房确定后需要调用算价格
-    , otherView: '/room/otherView'//数据表格
     , orderInfoHistory: 'OrderManage/orderInfoHistory'//消费明细
     , queryOrderByRoom: '/commodity/querySuspend'//商品交易挂账000
     , buying: 'OrderManage/buying'//挂账
@@ -447,6 +450,22 @@ function DateToLStr4(dt) {
         m1 = (m < 10 ? "0" + m : m);
         d1 = (d < 10 ? "0" + d : d);
         return "" + y + "/" + m1 + "/" + d1 + " ";
+    } catch (e) {
+        console.log("error");
+        return "";
+    }
+}
+
+function DateToLStr5(dt) {
+    try {
+        var y, m, m1, d, d1, h, h1, mm, mm1, s, s1;
+        y = dt.getFullYear();
+        m = dt.getMonth() + 1; //1-12
+        d = dt.getDate();
+
+        m1 = (m < 10 ? "0" + m : m);
+        d1 = (d < 10 ? "0" + d : d);
+        return "" + y + "-" + m1 + "-" + d1 + " ";
     } catch (e) {
         console.log("error");
         return "";
