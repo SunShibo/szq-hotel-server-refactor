@@ -216,8 +216,13 @@ public class OrderService {
         //获取旧联房码
         String alRoomCode = orderChildBOListOld.get(0).getAlRoomCode();
         //旧预约信息和新预约信息 预约的类型不一样
+        System.err.println(orderChildBOListOld.get(0).getRoomId() == null);
+        System.err.println(orderChildBOList.get(0).getRoomId() != null);
+        System.err.println(orderChildBOListOld.get(0).getRoomId() != null);
+        System.err.println(orderChildBOList.get(0).getRoomId() == null);
         if ((orderChildBOListOld.get(0).getRoomId() == null && orderChildBOList.get(0).getRoomId() != null) ||
                 ((orderChildBOListOld.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() == null))) {
+            System.err.println("11111111111111");
             //所有旧预约信息 变为取消
             for (OrderChildBO orderChildOld : orderChildBOListOld) {
                 orderChildOld.setOrderState(Constants.CANCEL.getValue());
@@ -225,14 +230,16 @@ public class OrderService {
             }
             //添加新预约信息
             for (OrderChildBO orderChildBO : orderChildBOList) {
+
                 this.addOrderChildEveryRoomPrice(orderChildBO, orderBO, alRoomCode);
             }
 
         } else if (orderChildBOListOld.get(0).getRoomId() == null && orderChildBOList.get(0).getRoomId() == null) {
+            System.err.println("22222222222");
             //如果新的子订单房型 和 旧房型对应上 则新修改子订单信息
             for (OrderChildBO orderChildNew : orderChildBOList) {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                    if (orderChildNew.getRoomTypeId() == orderChildOld.getRoomTypeId() && !orderChildOld.getOrderState().equals("yes")) {
+                    if (orderChildNew.getRoomTypeId() == orderChildOld.getRoomTypeId() && !orderChildOld.getOrderState().equals("yes")&&!orderChildNew.getOrderState().equals("yes")) {
                         orderChildNew.setId(orderChildOld.getId());
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
@@ -248,10 +255,13 @@ public class OrderService {
             }
             //旧房型如果和新房型对应不上 取消这个旧子订单
             for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                orderChildOld.setOrderState(Constants.CANCEL.getValue());
-                orderDAO.updOrderChild(orderChildOld);
+                if(!orderChildOld.equals("yes")){
+                    orderChildOld.setOrderState(Constants.CANCEL.getValue());
+                    orderDAO.updOrderChild(orderChildOld);
+                }
             }
         } else if (orderChildBOListOld.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() != null) {
+            System.err.println("333333333333333333331");
             //如果新的子订单房间 和 旧房间对应上 则新修改子订单信息
             for (OrderChildBO orderChildNew : orderChildBOList) {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
@@ -556,20 +566,22 @@ public class OrderService {
     }
 
     //首页查询在住信息
-    public CheckInInfoResult getCheckInInfo(Integer roomId) {
+    public CheckInInfoResult getCheckInInfo(Integer roomId) throws ParseException {
         //当天日期
-        String currDate=this.getDate();
         SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
+        Date currDate=simp.parse(this.getDate());
+        System.err.println(simp.format(currDate));
         OrderChildBO orderChildBO=orderDAO.getOrderChildByRoomIdNoTime(roomId);
         if(orderChildBO==null){
             return null;
         }
         Date entTime=orderChildBO.getPracticalDepartureTime()==null?orderChildBO.getEndTime():orderChildBO.getPracticalDepartureTime();
-        if(simp.format(entTime).equals(currDate)){
-            entTime=DateUtils.getBeforeDay(entTime,-1);
+        if(simp.format(entTime).equals(simp.format(currDate))){
+            currDate=DateUtils.getBeforeDay(currDate,-1);
         }
+        System.err.println(simp.format(currDate));
         //在住信息
-        CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId,simp.format(entTime));
+        CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId,simp.format(currDate));
         if(checkInInfoResult!=null){
             checkInInfoResult.setEndTime(checkInInfoResult.getPracticalDepartureTime());
         }

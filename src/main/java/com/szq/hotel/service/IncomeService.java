@@ -152,7 +152,7 @@ public class IncomeService {
         //今年和去年的差异
         IncomeBO yearDifferences=new IncomeBO();
         if(incomeBO3.getRoomRate().intValue()<=0){
-            yearDifferences.setRoomRate(new BigDecimal(0));
+            yearDifferences.setRoomRate(new BigDecimal(100));
         }else{
             yearDifferences.setRoomRate((incomeBO3.getRoomRate().subtract(incomeBO5.getRoomRate())).divide(incomeBO3.getRoomRate()).multiply(new BigDecimal(100)));
         }
@@ -166,10 +166,13 @@ public class IncomeService {
         }else{
             yearDifferences.setRoomRateAdjustment((incomeBO3.getRoomRateAdjustment().subtract(incomeBO5.getRoomRateAdjustment())).divide(incomeBO3.getRoomRateAdjustment()).multiply(new BigDecimal(100)));
         }
+        System.err.println(incomeBO3.getOtherRate().intValue());
         if(incomeBO3.getOtherRate().intValue()<=0){
+            System.err.println("true");
             yearDifferences.setOtherRate(new BigDecimal(100));
         }else{
-            yearDifferences.setOtherRate((incomeBO1.getOtherRate().subtract(incomeBO5.getOtherRate())).divide(incomeBO3.getOtherRate()).multiply(new BigDecimal(100)));
+            System.err.println("false");
+            yearDifferences.setOtherRate((incomeBO3.getOtherRate().subtract(incomeBO5.getOtherRate())).divide(incomeBO3.getOtherRate()).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getCommodity().intValue()<=0){
             yearDifferences.setCommodity(new BigDecimal(100));
@@ -231,7 +234,8 @@ public class IncomeService {
         incomeBOS.add(monthDifferences);
         incomeBOS.add(incomeBO5);
         incomeBOS.add(yearDifferences);
-
+        System.err.println(yearDifferences.getOtherRate());
+        System.err.println(yearDifferences.getRoomRate());
         return incomeBOS;
     }
 

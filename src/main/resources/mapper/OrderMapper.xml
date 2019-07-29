@@ -364,15 +364,13 @@
             <if test="totalPrice!=null and totalPrice!=''">
                 total_price=#{totalPrice},
             </if>
-            <if test="OTA!=null and OTA!=''">
-                OTA=#{OTA},
-            </if>
-            <if test="channel!=null and channel!=''">
-                channel=#{channel},
-            </if>
             <if test="subscribeRemark!=null and subscribeRemark!=''">
                 subscribe_remark=#{subscribeRemark},
             </if>
+            OTA=#{OTA},
+            channel=#{channel},
+            memberId_or_organizationId=#{memberIdOrOrganizationId},
+            members_id=#{membersId},
             update_time=now()
         </set>
         where id=#{id}
