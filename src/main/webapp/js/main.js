@@ -73,7 +73,7 @@ var api = {
     , queryRoomInfo: '/room/queryRoomTypeAndHotelAndFloor'
     , querySale: '/user/queryDiscountId?cerfiticateNumber='//根据证件号查询折扣信息
     , queryOrder: '/order/queryOrderList'  //订单查询    已修改
-    , queryIdFlag: 'member/selectMember?v=1'//通过手机号或者证件号查询会员信息000
+    , queryIdFlag: 'member/selectMemberByNumber?v=1'//通过手机号或者证件号查询会员信息000
     , queryOrderById: '/order/getRoomInfoById'//查询子订单信息   已修改
     , queryOrderInfo: '/order/getOrderInfoById'//查询子订单详情信息   已修改
     , checkInYuYue: '/order/reservationRoom?v=1'//预约入住

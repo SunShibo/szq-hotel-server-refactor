@@ -307,10 +307,10 @@
                 //会员预约
                 var v = '';
                 //查询是否是会员
-                $.getJSON(api.queryIdFlag + "&query=" + d.phone + "&random="+Date.now(), function (rs) {
+                $.getJSON(api.queryIdFlag + "&phone=" + d.phone + "&random="+Date.now(), function (rs) {
 
-                    if (rs.success&&rs.data.memberBOS.length==1) {
-                        userInfo = rs.data.memberBOS[0];
+                    if (rs.success&&rs.data!=null) {
+                        userInfo = rs.data;
                         $("#userLevel").text(userInfo.memberLevelName);
                         form.render();
                         state.idFlag = true;
@@ -697,12 +697,18 @@
         //查询是否是会员
         if ( s == 1 && $("#IDNumber").val().trim().length == '') return;
         if ( s == 2 && $("#phone").val().trim().length == '') return;
-        if(s==1)v = $("#IDNumber").val().trim();
-        if(s==2)v = $("#phone").val().trim();
-        $.getJSON(api.queryIdFlag + "&query=" + v + "&random="+Date.now(), function (rs) {
+        // if(s==1)v = $("#IDNumber").val().trim();
+        // if(s==2)v = $("#phone").val().trim();
+        if(s == 1){
+            v =  "&certificateNumber="+$("#IDNumber").val().trim()
+        }
+        if(s==2){
+            v =  "&phone="+$("#phone").val().trim()
+        }
+        $.getJSON(api.queryIdFlag + v + "&random="+Date.now(), function (rs) {
 
-            if (rs.success&&rs.data.memberBOS.length==1) {
-                renderUserInfo(rs.data.memberBOS[0])
+            if (rs.success&&rs!=null) {
+                renderUserInfo(rs.data)
                 form.render();
                 state.idFlag = true;
                 layer.msg('成功获取会员信息', {icon: 1});
