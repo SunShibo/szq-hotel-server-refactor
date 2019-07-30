@@ -67,6 +67,8 @@ public class HomeService {
         paramMap.put("startTime",DateUtils.getThisBrightSiceStringData(new Date()));
         paramMap.put("endTime",DateUtils.getBrightSiceStringData());
 
+        Date startTime=new Date();
+        Date endTime= DateUtils. getDataByStr(DateUtils.getBrightSiceStringData());
         log.info("homeDAO.home..................................");
         log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(paramMap));
         List<FloorRoomBO> home = homeDAO.home(paramMap);
@@ -89,6 +91,10 @@ public class HomeService {
                             //余额不足  押金小于消费
                             if (homeOrderBO.getCash() < homeOrderBO.getTotal()) {
                                 homeRoomBO.setBalance(Constants.YES.getValue());
+                            }
+                            //预离店状态
+                            if (homeOrderBO.getEndTime().compareTo(startTime) == 1 && endTime.compareTo(homeOrderBO.getEndTime()) == 1) {
+                                homeRoomBO.setOutStatus(Constants.YES.getValue());
                             }
                         }
                     }

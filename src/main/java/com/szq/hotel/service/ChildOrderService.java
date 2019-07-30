@@ -78,18 +78,20 @@ public class ChildOrderService {
         log.info("orderChildId:{}\tmoney:{}\tdesignation:{}\ttype:{}\tuserId:{}\thotelId:{}", orderChildId, money, designation, type, userId, hotelId);
         //生成记录
         orderRecordService.addOrderRecord(orderChildId, designation, null, new BigDecimal("-1").multiply(money), type, userId, null, Constants.NO.getValue());
+        ChildOrderBO childOrderBO = queryOrderChildById(orderChildId);
+        Integer integer = queryOrderChildMain(childOrderBO.getAlRoomCode());
+        ChildOrderBO main = queryOrderChildById(integer);
         if (type.equals(Constants.ROOMRATE.getValue())) {
             log.info("increaseRoomRate...............................");
-            childOrderDAO.increaseRoomRate(orderChildId, money);
+            childOrderDAO.increaseRoomRate(main.getId(), money);
         } else {
             log.info("increaseOtherRate...............................");
-            childOrderDAO.increaseOtherRate(orderChildId, money);
+            childOrderDAO.increaseOtherRate(main.getId(), money);
         }
 
-        ChildOrderBO order = childOrderDAO.queryOrderChildById(orderChildId);
         //报表
-        cashierSummaryService.addAccount(type, money, order.getOrderNumber(), userId, order.getName(), order.getOTA(), order.getChannel(),
-                order.getPassengerSource(), order.getRoomName(), order.getRoomTypeName(), designation, hotelId);
+        cashierSummaryService.addAccount(type, money, main.getOrderNumber(), userId, main.getName(), main.getOTA(), main.getChannel(),
+                main.getPassengerSource(), main.getRoomName(), main.getRoomTypeName(), designation, hotelId);
         log.info("end  recorded........................................");
 
     }
@@ -175,15 +177,16 @@ public class ChildOrderService {
                     childOrderDAO.reduceOtherCashPledge(rollOutId, orderRecoredBO.getMoney());
                 }
 
-            } else if (Constants.ROOMRATE.getValue().equals(orderRecoredBO.getProject())) {
-                //房费
+            } else if (Constants.ROOMRATE.getValue().equals(orderRecoredBO.getProject()) || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())
+                    || Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())) {
+                //房费 超时费  超时费减免
                 log.info("start transferAccounts....ROOMRATE.....................................................");
                 childOrderDAO.increaseRoomRate(shiftToId, orderRecoredBO.getMoney());
                 childOrderDAO.reduceRoomRate(rollOutId, orderRecoredBO.getMoney());
 
             } else if (Constants.COMMODITY.getValue().equals(orderRecoredBO.getProject()) || Constants.COMPENSATE.getValue().equals(orderRecoredBO.getProject())
-                    || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())||Constants.APPLYCARD.getValue().equals(orderRecoredBO.getProject())) {
-                //商品 赔偿 超时费 办卡
+                    ||Constants.APPLYCARD.getValue().equals(orderRecoredBO.getProject())) {
+                //商品 赔偿  办卡
                 log.info("start transferAccounts....OtherRate.....................................................");
                 childOrderDAO.increaseOtherRate(shiftToId, orderRecoredBO.getMoney());
                 childOrderDAO.reduceOtherRate(rollOutId, orderRecoredBO.getMoney());
