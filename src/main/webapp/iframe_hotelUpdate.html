@@ -11,24 +11,24 @@
         <legend>酒店信息</legend>
         <div class="layui-field-box">
             <div class="layui-form-item">
-                <label class="layui-form-label">酒店名称</label>
+                <label class="layui-form-label require">酒店名称</label>
                 <div class="layui-input-block">
                     <input type="hidden" name="id" id="id">
-                    <input type="text" name="name" autocomplete="off" class="layui-input" id="name"
+                    <input type="text" name="name" autocomplete="off" lay-verify="required" class="layui-input" id="name"
                            placeholder="请输入酒店名称">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">酒店地址</label>
+                <label class="layui-form-label require">酒店地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="site" autocomplete="off" class="layui-input" id="site"
+                    <input type="text" name="site" autocomplete="off"  lay-verify="required" class="layui-input" id="site"
                            placeholder="请输入酒店地址">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">酒店电话</label>
+                <label class="layui-form-label require">酒店电话</label>
                 <div class="layui-input-block">
-                    <input type="number" name="phone" autocomplete="off" class="layui-input" id="phone"
+                    <input type="text" name="phone" autocomplete="off"  lay-verify="required" class="layui-input" id="phone"
                            placeholder="请输入酒店电话">
                 </div>
             </div>

@@ -287,7 +287,7 @@
 
 
                         var checkinData = getCheckinData();
-
+// debugger;
                         if(localStorage.modifyPrice=='') {
                             //没有修改过价格
                             var days = Number($("#days").val());
@@ -298,15 +298,29 @@
                                 money = 'basicPrice'
                             }
                             for(var i=0;i<checkinData.length;i++){
-                                var arr = [{
-                                    money:checkinData[i][money],
-                                    time:DateToLStr(new Date()).split(" ")[0]
-                                }];
-                                for(var j=1;j<days;j++){
-                                    arr.push({
-                                        money:checkinData[i][money],
-                                        time:addDate(new Date(),j)
-                                    })
+                                //入住时间在6点以前的情况特殊处理
+                                if(d.checkType!="hour"&&new Date().getHours()<6) {
+                                    var arr = [{
+                                        money: checkinData[i][money],
+                                        time: DateToLStr(new Date(Date.now()-86400000)).split(" ")[0]
+                                    }];
+                                    for (var j = 1; j < days; j++) {
+                                        arr.push({
+                                            money: checkinData[i][money],
+                                            time: addDate(new Date(Date.now()-86400000), j)
+                                        })
+                                    }
+                                }else{
+                                    var arr = [{
+                                        money: checkinData[i][money],
+                                        time: DateToLStr(new Date()).split(" ")[0]
+                                    }];
+                                    for (var j = 1; j < days; j++) {
+                                        arr.push({
+                                            money: checkinData[i][money],
+                                            time: addDate(new Date(), j)
+                                        })
+                                    }
                                 }
                                 checkinData[i]['everydayRoomPriceBOS'] = arr;
                             }
@@ -518,9 +532,15 @@
     }
 
     function changeDays(t) {
+        if(new Date().getHours()<6){
+            //代表早上6点以前。入住时间需要往前推一天,所以离店时间还是当天
+            document.getElementById("leaveDate").value =
+                DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value)-3600*1000*24)).split(" ")[0] + LEAVETIME
+        }else{
+            document.getElementById("leaveDate").value =
+                DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value))).split(" ")[0] + LEAVETIME
+        }
 
-        document.getElementById("leaveDate").value =
-            DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value))).split(" ")[0] + LEAVETIME
         localStorage.modifyPrice = '';
         clearRoomInfo();
     }

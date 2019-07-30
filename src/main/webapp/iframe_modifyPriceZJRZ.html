@@ -91,7 +91,7 @@
 <script>
 		var $,element,$b,$remove,selectDom,
             dayNumber=getUrl("dayNumber"),
-
+			checkType = getUrl("checkType"),
             rsd;
 
   	  layui.use(['element', 'jquery', 'table','form'], function () {
@@ -111,7 +111,7 @@
 			  });
       })
         function dealDays() {
-
+// debugger;
         	var str = '<div id="rtitle" class="table-row"><div class="cell "><div class="desc wp"><b>日期</b><b>房型</b></div></div>';
 			for(var i=0;i<dayNumber;i++){
                 str+= ['<div class="cell"><div class="wp">',
@@ -126,11 +126,17 @@
   	      	var dt = null;
             // new Date(decodeURIComponent(getUrl("startTime"))).getTime();
             // DateToLStr(new Date(Date.now()+i*86400000)).split(" ")[0];
-            if(!!getUrl("startTime")){
-				dt = new Date(new Date(decodeURIComponent(getUrl("startTime"))).getTime()+t);
-            }else{
-                dt = new Date(Date.now()+t);
-			}
+            if(checkType=="day"&&new Date().getHours()<6){
+				//入住时间在6点以前的情况特殊处理
+                dt = new Date(Date.now()+t-86400000);
+
+			}else{
+				if(!!getUrl("startTime")){
+					dt = new Date(new Date(decodeURIComponent(getUrl("startTime"))).getTime()+t);
+				}else{
+					dt = new Date(Date.now()+t);
+				}
+            }
             try {
                 var y, m, m1, d, d1, h, h1, mm, mm1, s, s1;
                 y = dt.getFullYear();

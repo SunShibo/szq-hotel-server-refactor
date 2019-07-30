@@ -69,7 +69,7 @@ function modifyPrice() {
     layer.open({
         area: ['1000px', '420px'],
         type: 2,
-        content: "iframe_modifyPriceZJRZ.html?v=" + Date.now()+"&dayNumber="+dayss,
+        content: "iframe_modifyPriceZJRZ.html?v=" + Date.now()+"&dayNumber="+dayss + "&checkType=" + $("input[name='checkType']:checked").val(),
         title: "修改价格"
     })
 }

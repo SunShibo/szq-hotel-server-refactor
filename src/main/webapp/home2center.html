@@ -257,8 +257,43 @@
 
     }
 
+    //检查房间是否可用（切换小时，全天，免费，房需要检查）
+    function checkRoomAvailable() {
+        var typeids = [];
+        var checktype = $("input[name='checkType']:checked").val();
+        for(var i=0;i<sRooms.length;i++){
+            if(typeids.indexOf(sRooms[i]['roomTypeId'])==-1){
+                typeids.push(sRooms[i]['roomTypeId'])
+            }
+        }
+        var roomIds = [];
+        for(var i=0;i<sRooms.length;i++){
+            roomIds.push(sRooms[i]['roomId'])
+        }
+        $.ajax({
+            data: {
+                roomIds:roomIds.join(","),
+                checkType: $("input[name='checkType']:checked").val(),
+                phone:document.getElementById("phone").value.trim(),
+                startTime:DateToLStr(new Date()),//入住时间,
+                dayNum:checktype=='hour'?1:document.getElementById("days").value,
+                typeIds:typeids.join(","),
+                orderId:tempRandom,
+            },
+            type: "POST",
+            dataType: "JSON",
+            url: 'updatePrice/queryCheckType',
+            success: function (rs) {
+                if (!rs.success) {
+                    layer.alert(rs.errMsg)
+                }
+            }
+        })
+    }
+
     //处理条件发生变化
     function dealCondition() {
+        checkRoomAvailable();
         var typeids = [];
         var checktype = $("input[name='checkType']:checked").val();
         for(var i=0;i<sRooms.length;i++){
@@ -321,6 +356,7 @@
 				currSel.checkType=data.value;
 				state.roomType=data.value;
 				dealCondition();
+				//checkRoomAvailable();//检查房间是否可用（切换小时，全天，免费，房需要检查）
 			}
 		});
 
@@ -606,12 +642,17 @@
     }
 
     function changeDays(t) {
+        if(new Date().getHours()<6){
+            //代表早上6点以前。入住时间需要往前推一天,所以离店时间还是当天
+            document.getElementById("leaveDate").value =
+                DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value)-3600*1000*24)).split(" ")[0] + LEAVETIME
+        }else{
+            document.getElementById("leaveDate").value =
+                DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value))).split(" ")[0] + LEAVETIME
+        }
 
-        document.getElementById("leaveDate").value =
-            DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value))).split(" ")[0] + LEAVETIME
         localStorage.modifyPrice = '';
-        // clearRoomInfo();
-		dealCondition();
+        dealCondition();
     }
 
     function selectRoom() {

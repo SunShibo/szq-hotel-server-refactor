@@ -3,6 +3,7 @@
 //清除房间信息------用户修改身份证或者电话号码之后执行方法
 function clearRoomInfo() {
     sRooms = [];
+    sRooms1 = []
     customs = [];
     calcPrice();
     localStorage.modifyPrice = '';
@@ -82,7 +83,7 @@ function getModifyPriceData(days) {
     if(!time){
         time = DateToLStr(new Date())
     }
-    // debugger;
+
     if(new Date(time).getHours()<6){
         //如果6点之前，时间取前一天
         time = addDate(new Date(time),-1)
