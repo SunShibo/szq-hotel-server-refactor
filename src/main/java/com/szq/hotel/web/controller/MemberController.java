@@ -117,7 +117,7 @@ public class MemberController extends BaseCotroller {
     }
 
     /**
-     * 获取卡号
+     * 新增获取卡号
      * @param memberCardLevelId
      * @param request
      * @param response
@@ -226,13 +226,97 @@ public class MemberController extends BaseCotroller {
     }
 
     /**
+     * 修改会员获取卡号
+     * @param memberCardLevelId
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/updateGetMemberCardNumber")
+    public void updateGetMemberCardNumber(Integer memberCardLevelId,String phone,String certificateNumber,HttpServletRequest request,HttpServletResponse response){
+
+        try {
+
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //获取管理员对象
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}",loginAdmin);
+            if (loginAdmin==null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            //参数验证
+            if (memberCardLevelId == null||StringUtils.isEmpty(certificateNumber)){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+
+
+            MemberBO memberBO1 = memberService.selectMemberByPhone(phone);
+            MemberBO memberBO2 = memberService.selectMemberByCerNumber(certificateNumber);
+            if (memberBO1==null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000203"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            if (memberBO2==null){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000204"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
+            MemberCardBO memberCardBO = memberCardService.getCardByMemberId(memberBO2.getId());
+            if (memberCardBO!=null){
+                if (memberCardLevelId==memberCardBO.getMemberLevelId()){
+                    Map<String,Object> map = new HashMap<String, Object>();
+                    map.put("cardNumber",memberCardBO.getCardNumber());
+                    map.put("money",0);
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+                    super.safeJsonPrint(response, result);
+                    log.info("result{}",result);
+                    return;
+                }else {
+                    //通过会员级别id找到一个会员卡的信息
+                    MemberCardBO memberCardBO1 = memberCardService.getMemberNumberMoney(memberCardLevelId);
+                    if (memberCardBO1 == null){
+                        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000205"));
+                        super.safeJsonPrint(response, result);
+                        log.info("result{}",result);
+                        return;
+                    }
+                    Map<String,Object> map = new HashMap<String, Object>();
+                    map.put("cardNumber",memberCardBO1.getCardNumber());
+                    map.put("monye",memberCardBO1.getMoney());
+
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+                    super.safeJsonPrint(response, result);
+                    log.info("result{}",result);
+                    return;
+                }
+            }
+
+
+        }catch (Exception e){
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000004"));
+            super.safeJsonPrint(response, result);
+            log.error("addMemberException",e);
+        }
+    }
+
+    /**
      * 修改会员信息
      * @param memberBO
      * @param request
      * @param response
      */
     @RequestMapping("/updateMember")
-    public void updateMember(MemberBO memberBO,HttpServletRequest request, HttpServletResponse response){
+    public void updateMember(String cardNumber,MemberBO memberBO,BigDecimal money,String payType,HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -250,6 +334,35 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
+            MemberCardBO memberCardBO1 = memberCardService.getCardByMemberId(memberBO.getId());
+            if (memberCardBO1!=null) {
+                //传的卡号和之前的不一样
+                if (cardNumber.equals(memberCardBO1.getCardNumber())) {
+                    MemberCardBO memberCardBO = memberCardService.getCardNumber(cardNumber);
+                    if (memberCardBO != null) {
+                        //设置会员的会员卡id
+                        memberBO.setMemberCardId(memberCardBO.getId());
+
+                        String memberCardNumber = memberCardBO.getCardNumber();
+                        //BigDecimal money = memberCardBO.getMoney();
+                        //修改会员卡的售出时间
+                        memberCardService.updateSellingTime(memberCardNumber);
+                    }
+                    //修改会员卡id
+                    memberService.updateMember(memberBO, loginAdmin.getId());
+
+                    //添加收银汇总
+                    cashierSummaryService.addCard(memberBO.getName(), money, payType, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId());
+                    //添加商品交易
+                    commodiryService.addCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), null);
+
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改会员信息成功！"));
+                    super.safeJsonPrint(response, result);
+                    log.info("result{}",result);
+                    return;
+                }
+            }
+
 
             memberService.updateMember(memberBO,loginAdmin.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改会员信息成功！"));
