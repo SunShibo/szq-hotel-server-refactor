@@ -587,11 +587,15 @@ public class OrderService {
         Date entTime=orderChildBO.getPracticalDepartureTime()==null?orderChildBO.getEndTime():orderChildBO.getPracticalDepartureTime();
 
         OrderBO orderBO=orderDAO.getOrderById(orderChildBO.getOrderId());
-        //bug: 正常小时房 就不能-1了 跨天小时房需要-1 全天房 如果第一天入住 是不是也-1了
+        //bug: 正常小时房 就不能-1了 跨天小时房需要-1 全天房
         if(simp.format(entTime).equals(simp.format(currDate))){
             if(orderBO.getCheckType().equals(Constants.DAY.getValue())){
                 currDate=DateUtils.getBeforeDay(currDate,-1);
             }
+            //如果是小时房 入住时间是在六点前, 也就是前一天 也需要-1
+//            if(orderBO.getCheckType().equals(Constants.HOUR.getValue())&&orderChildBO.getStartTime()){
+//                currDate=DateUtils.getBeforeDay(currDate,-1);
+//            }
         }
         //在住信息
         System.err.println(roomId+"=="+simp.format(currDate)+"");
