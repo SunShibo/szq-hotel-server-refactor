@@ -285,7 +285,7 @@
             url: 'updatePrice/queryCheckType',
             success: function (rs) {
                 if (!rs.success) {
-                    layer.alert(rs.errMsg)
+                    layer.alert(" 出错了！！！ <br><br>"+rs.errMsg +"<br><br>请重新选择！！！", {icon: 2})
                 }
             }
         })
@@ -934,7 +934,7 @@
             }
             setTimeout(function () {
                 dealCondition();
-                layer.msg('会员信息发生变化，请注意房价变化', {icon: 1});
+					layer.msg('会员信息发生变化，请注意房价变化', {icon: 7});
             },1000)
         })
 

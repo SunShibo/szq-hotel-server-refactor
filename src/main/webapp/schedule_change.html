@@ -713,11 +713,11 @@
             if (rs.success&&rs.data!=null) {
                 if(!userInfo.id){
                     setTimeout(function () {
-                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 1});
+                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 7});
                     },1000)
                 }else if(userInfo.id!=yuyueData.membersId){
                     setTimeout(function () {
-                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 1});
+                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 7});
                     },1000)
 				}
                 renderUserInfo(rs.data)
@@ -727,7 +727,7 @@
             } else {
                 if(userInfo.id){
                     setTimeout(function () {
-                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 1});
+                        layer.msg('会员信息发生变化，请注意房价变化', {icon: 7});
                     },1000)
                 }
                 state.idFlag = false;
