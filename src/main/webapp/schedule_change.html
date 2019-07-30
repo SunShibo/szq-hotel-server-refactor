@@ -704,18 +704,10 @@
 
     //s=1证件号码，s=2手机号码
     function idFlag(s) {
-
         var v = '';
+        if($("#IDNumber").val()==''&&$("#phone").val()=='')return;
         //查询是否是会员
-        if ( s == 1 && $("#IDNumber").val().trim().length == '') return;
-        if ( s == 2 && $("#phone").val().trim().length == '') return;
-        if(s == 1){
-            v =  "&certificateNumber="+$("#IDNumber").val().trim()
-        }
-        if(s==2){
-            v =  "&phone="+$("#phone").val().trim()
-        }
-
+        v =  "&certificateNumber="+$("#IDNumber").val().trim() + "&phone="+$("#phone").val().trim()
         $.getJSON(api.queryIdFlag +  v + "&random="+Date.now(), function (rs) {
 
             if (rs.success&&rs.data!=null) {
