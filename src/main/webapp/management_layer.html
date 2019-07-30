@@ -37,7 +37,7 @@
 <div style="height: 70px;"></div>
 <form class="layui-form" style="padding-top: 10px">
     <div class="layui-form-item">
-        <label class="layui-form-label">起止时间</label>
+        <label class="layui-form-label">日期选择</label>
         <div class="layui-input-inline" style="width: 165px;">
             <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
                    class="layui-input inline-input"
@@ -65,15 +65,14 @@
         var form = layui.form, $ = layui.$, table = layui.table, laydate = layui.laydate
             , startTime = 0, endTime = 0;
         $(function () {
-            console.log(new Date());
-            $('#startTime').val(DateToLStr3(new Date()));
+            $('#startTime').val(DateToLStr3(new Date(Date.now()-(24 * 60 * 60 * 1000))));
             $.ajax({
                 url: api.FormManangeResponse,
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    startTime: new Date(DateToLStr4(new Date()).concat('04:00:00')),
-                    endTime: new Date(new Date(DateToLStr4(new Date()).concat('04:00:00')).getTime() + (24 * 60 * 60 * 1000))
+                    startTime: $('#startTime').val()+' 04:05:00',
+                    endTime: DateToLStr3(new Date(Date.now()))+' 04:05:00'
                 },
                 success: function (rs) {
                     if (rs.success) {
@@ -178,6 +177,7 @@
         }
 
         function formatData(rs) {
+            debugger;
             var data = formatDataInfo(rs), arr = [];
             for (var item in data) {
                 if(typeof data[item] != 'object' || !data[item])continue;
@@ -241,10 +241,7 @@
             elem: '#startTime',
             type: 'date',
             btns: ['confirm'],
-            done: function (value, date) {
-                startTime = new Date(value.concat(' 04:00:00').replace(/-/g, "/"));
-                endTime = new Date(value.concat(' 04:00:00').replace(/-/g, "/")).getTime() + (24 * 60 * 60 * 1000);
-            }
+            format: 'yyyy/MM/dd'
         });
     });
 </script>
