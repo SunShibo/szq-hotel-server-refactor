@@ -31,11 +31,6 @@ var PASSPORT = /^([a-zA-z]|[0-9]){5,17}$/;
 var OFFICERS = /^[\u4E00-\u9FA5](字第)([0-9a-zA-Z]{4,8})(号?)$/;
 
 
-
-
-
-
-
 var api = {
     admin: '/admin/getAdminById' //管理员列表查询   已修改
     , delAdmin: '/admin/delAdmins' //管理员删除   已修改
@@ -103,7 +98,7 @@ var api = {
     , handoverList: '/shiftRecords/queryShiftRecordList'//交班列表  已修改
     // , beforehandDuty: '/dealShiftServiceController/beforehandDuty'//预交班  废弃
     , beforeOrder: 'OrderManage/closeAccounts'//已结账的订单查询详情
-    , cancelOrder: '/subcribe/cancelTheReservation'//取消预约  取消入住待支付
+    // , cancelOrder: '/subcribe/cancelTheReservation'//取消预约  取消入住待支付  废弃
     , memberPrice: '/memberRoomType/selectMemberRoomType?memberLevelId='//根据会员级别获取价格000
     , memberUpdatePrice: '/memberRoomType/updateMemberRoomType'//根据会员级修改价格
     , queryHouseType: '/roomType/queryRoomType'//查询房型      已修改
@@ -134,12 +129,11 @@ var api = {
     , homeUpdateRoomMaintain: '/room/updateRoomMaintain'//修改客房维修状态   已修改
     , homeCleanThe: '/room/updateroomMajorState'//切换脏房状态 已修改
     , updateMainCommment: '/room/updateRoomRemark'//首页房屋备注   已修改
-
+    , updateCheckInData: '/order/updCheckInInfo'//首页入住信息修改   已修改
 
 
     , reportList: '/room/querySc'//按时间段查询图表
     , otherView: '/room/querySc'//数据表格
-
 
 
     , delRoomItemPrice: '/room/deleteRoomPrice'//删除特殊价格
@@ -207,10 +201,10 @@ var api = {
     , queryHotelInfo: 'hotel/queryHotel'//查询酒店000
     , updateHotelInfo: 'hotel/updateHotel'//编辑酒店000
     , queryStoreValue: '/member/getStoreValueIntegral'//查询会员积分和储值   已修改
-    , queryFloor:'floor/queryFloor'//查询楼层000
-    , addFloor:'floor/addFloor'//添加楼层000
-    , updateFloor:'floor/updateFloor'//修改楼层000
-    , deleteFloor:'floor/deleteFloor'//删除楼层000
+    , queryFloor: 'floor/queryFloor'//查询楼层000
+    , addFloor: 'floor/addFloor'//添加楼层000
+    , updateFloor: 'floor/updateFloor'//修改楼层000
+    , deleteFloor: 'floor/deleteFloor'//删除楼层000
     , roleAllData: '/admin/getAllRoleMenu'//查询角色     已修改
     , roleAll: '/admin/getRoleList'//查询所有角色（下拉框）     已修改
     , roleDelete: '/admin/delRoleByIds' //角色删除      已修改
@@ -295,12 +289,15 @@ function renderSelect(id, key, value, url, f, callback) {
         var dom = $("#" + id);
         var str = '';
         if (rs.success) {
-            for (var i = 0; i < rs.data.length; i++) {str += '<option value="' + rs.data[i][key] + '">' + rs.data[i][value] + '</option>';}
+            for (var i = 0; i < rs.data.length; i++) {
+                str += '<option value="' + rs.data[i][key] + '">' + rs.data[i][value] + '</option>';
+            }
             dom.append(str)
         }
         f.render("select");
-        if (callback) callback(str, rs.data);
-
+        if (callback) {
+            callback(str, rs.data)
+        }
     })
 }
 
@@ -690,7 +687,7 @@ function backHome() {
 
 //主房态
 function roomMajorState(room) {
-    switch (room){
+    switch (room) {
         case 'vacant':
             return '空房';
         case 'inthe':
@@ -724,7 +721,7 @@ function queryOrderState(orderState) {
 
 //支付方式
 function orderPayType(payType) {
-    switch (payType){
+    switch (payType) {
         case '':
             return '';
         case 'cash':
@@ -985,15 +982,15 @@ function getFormatDate(arg) {
 
 //选择完成开始和结束时间，计算时间差
 function updateTimeInfo(v) {
-    if(state.roomType!=2){
+    if (state.roomType != 2) {
         //全天房或者免费房
         $("#leaveDate1").val(v.split(" ")[0] + LEAVETIME);
         v.split(" ")[0] + LEAVETIME;
         document.getElementById("days1").value =
-            GetDateDiff($("#startTime").val(),$("#leaveDate1").val());
+            GetDateDiff($("#startTime").val(), $("#leaveDate1").val());
         $(".typea").removeClass("layui-hide")
         $(".typeb").addClass("layui-hide")
-    }else{
+    } else {
         // console.info($("#startTime").val(),v)
         //钟点房
 
@@ -1002,8 +999,9 @@ function updateTimeInfo(v) {
     }
     clearRoomInfo();
 }
+
 //清除选择的时间
-function  clearTimeInfo() {
+function clearTimeInfo() {
 
     document.getElementById("leaveDate1").value = "";
     document.getElementById("days1").value = "";

@@ -240,7 +240,7 @@
                     $.ajax({
                         url: api.roomDelete,
                         data: {
-                            roomIds: JSON.stringify([data.roomId])
+                            byId: JSON.stringify([data.roomId])
                         },
                         type: 'POST',
                         dataType: 'json',
@@ -293,7 +293,7 @@
             $.ajax({
                 url: api.roomDelete,
                 data: {
-                    roomIds: JSON.stringify(selectArr)
+                    byId: JSON.stringify(selectArr)
                 },
                 type: 'POST',
                 dataType: 'json',
