@@ -96,7 +96,7 @@ public class OrderService {
             orderChild.setStartTime(orderBO.getCheckTime());//入住时间
             orderChild.setEndTime(orderBO.getCheckOutTime());//离店时间
             orderDAO.addOrderChild(orderChild);//返回子订单id
-
+            orderDAO.updOrderChildUpdateTime(orderChild.getId());//修改支付时间
             //这个房型下的每日价格
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChild.getEverydayRoomPriceBOS();
             if (everydayRoomPriceBOList != null && everydayRoomPriceBOList.size() != 0) {
@@ -176,6 +176,7 @@ public class OrderService {
                 orderChildBO.setOrderState(Constants.NOTPAY.getValue());//状态
                 orderChildBO.setAlRoomCode(alRoomCode);
                 orderDAO.updOrderChild(orderChildBO);
+                orderDAO.updOrderChildUpdateTime(orderChildBO.getId());//修改支付时间
 
             }
             //房间状态修改为在住状态
@@ -520,7 +521,7 @@ public class OrderService {
                 Long minute = DateUtils.getQuotMinute(currentTime_2, orderChildBO.getEndTime());
                 RoomTypeBO roomTypeBO = roomTypeDAO.getRoomType(orderChildBO.getRoomTypeId());
                 //超过4小时
-                if (minute <= 4) {
+                if (minute <= 4*60) {
                     orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
                 } else {
                     orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()));
@@ -588,6 +589,7 @@ public class OrderService {
         }
         //在住信息
         CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId,simp.format(currDate));
+        System.err.println(checkInInfoResult.getRemark());
         checkInInfoResult.setEndTime(entTime);
         //同住人信息
         List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getOrderChildId(), Constants.CHECKIN.getValue());
@@ -646,8 +648,10 @@ public class OrderService {
             OrderChildBO orderChildBO = new OrderChildBO();
             orderChildBO.setId(orderChildId);
             orderChildBO.setRemark(remark);
+            System.err.println(remark);
             //修改实际离店时间
             orderChildBO.setPracticalDepartureTime(entTime);
+            System.err.println(entTime);
             orderDAO.updOrderChild(orderChildBO);
 
             //添加同住人
@@ -896,22 +900,22 @@ public class OrderService {
         Long minute = DateUtils.getQuotMinute(currentTimeDate,endTime);
         //超过4小时
         if (minute <= 4 * 60) {
+
+            orderChild.setOtherRate((new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2))).subtract(money));
+            //备份超时费
+            backup.setOtherRate(orderChild.getOtherRate());
             //加记录
             orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "半天超时费，减免" + money + "元",
-                    null, new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)).negate(), Constants.TIMEOUTCOST.getValue(),
+                    null, orderChild.getOtherRate().negate(), Constants.TIMEOUTCOST.getValue(),
                     userId, null, "no");
-            orderChild.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)).subtract(money));
-            //备份超时费
-            backup.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
         } else {
-            //加记录
-            orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "全天超时费，减免" + money + "元",
-                    null, new BigDecimal(roomTypeBO.getBasicPrice()).negate(), Constants.TIMEOUTCOST.getValue(),
-                    userId, null, "no");
-
             orderChild.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).subtract(money));
             //备份超时费
-            backup.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()));
+            backup.setOtherRate(orderChild.getOtherRate());
+            //加记录
+            orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "全天超时费，减免" + money + "元",
+                    null, orderChild.getOtherRate().negate(), Constants.TIMEOUTCOST.getValue(),
+                    userId, null, "no");
         }
     }
 

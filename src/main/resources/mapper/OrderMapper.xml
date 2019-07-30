@@ -35,7 +35,8 @@
             room_id=#{roomId},
         </if>
         room_type_id=#{roomTypeId},
-        al_room_code=#{alRoomCode}
+        al_room_code=#{alRoomCode},
+        update_time=now()
 
     </insert>
 
@@ -138,6 +139,13 @@
             </if>
             update_time=now()
         </set>
+        where id=#{id}
+    </update>
+
+    <!-- 修改子订单信息 -->
+    <update id="updOrderChildUpdateTime" parameterType="java.lang.Integer">
+        update hm_order_child set
+        update_time=now()
         where id=#{id}
     </update>
 

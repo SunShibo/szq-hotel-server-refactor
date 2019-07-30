@@ -19,6 +19,8 @@ public interface OrderDAO {
     Integer addOrderChild(OrderChildBO orderChildBO);
     //修改子订单
     Integer updOrderChild(OrderChildBO orderChildBO);
+    //修改子订单支付时间
+    Integer updOrderChildUpdateTime(Integer id);
     //修改子订单
     Integer updOrderChildMoney(OrderChildBO orderChildBO);
     //根据手机号 身份证号 查询主订单预约信息

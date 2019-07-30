@@ -98,7 +98,7 @@ public class OrderController extends BaseCotroller {
 
 
             //检查入住信息是否正确 证件号是否有重复 验证房间是否可用
-            if(type.equals("reservation")&&type.equals("directly")){
+            if(type.equals("reservation")||type.equals("directly")){
                 String result=this.checkInPerson(list,orderBO.getId());
                 if(result!=null){
                     super.safeJsonPrint(response, result);
@@ -162,7 +162,6 @@ public class OrderController extends BaseCotroller {
         //验证所有入住人中是否有重复入住的
         Set<String> idSet = new HashSet<String>();
         List<String> idList = new ArrayList<String>();
-
         for (OrderChildBO order : list) {
             List<CheckInPersonBO> personBOS = order.getCheckInPersonBOS();
             if(personBOS==null||personBOS.size()==0){
@@ -655,13 +654,13 @@ public class OrderController extends BaseCotroller {
      * @param channel 客源
      * @param OTA OTA
      * @param orderChildId 子订单id
-     * @param entTime 离店时间
+     * @param endTime 离店时间
      * @param remark 房间备注
      * @param checkInPersonJson 入住人信息
      * */
     @RequestMapping("/updCheckInInfo")
     public void updCheckInInfo(Integer orderId,String channel,String OTA,
-                               Integer orderChildId, @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")Date entTime,String remark,
+                               Integer orderChildId, @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")Date endTime,String remark,
                                String checkInPersonJson,HttpServletResponse response,
                                String everyDayRoomPrice,HttpServletRequest request) throws ParseException {
         try {
@@ -676,7 +675,7 @@ public class OrderController extends BaseCotroller {
                 return ;
             }
 
-            orderService.updCheckInInfo(orderId,channel,OTA,orderChildId,entTime,remark,checkInPersonJson,everyDayRoomPrice);
+            orderService.updCheckInInfo(orderId,channel,OTA,orderChildId,endTime,remark,checkInPersonJson,everyDayRoomPrice);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success( "修改成功"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
