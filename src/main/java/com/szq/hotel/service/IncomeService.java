@@ -32,12 +32,13 @@ public class IncomeService {
         }
         int year = calendar.get(Calendar.YEAR);//获取年份
 
-        int month=calendar.get(Calendar.MONTH+1);//获取月份
+        int month = calendar.get(Calendar.MONTH) + 1;//获取月份
 
         int day=calendar.get(Calendar.DATE);//获取日
 
         //获取当日营收
         IncomeBO incomeBO=new IncomeBO();
+        System.err.println(month+"=================");
         IncomeBO incomeResult=incomeDAO.getIncome(year,month,day,hotelId);
         if(incomeResult!=null){
             incomeBO=incomeResult;
@@ -192,9 +193,9 @@ public class IncomeService {
         }else{
             yearDifferences.setTimeoutRoomRate((incomeBO3.getTimeoutRoomRate().subtract(incomeBO5.getTimeoutRoomRate())).divide(incomeBO3.getTimeoutRoomRate()).multiply(new BigDecimal(100)));
         }
-        if(incomeBO5.getRoomRateAdjustment().intValue()<=0||incomeBO5.getRoomRateAdjustment().intValue()<=0){
+        if(incomeBO3.getRoomRateAdjustment().intValue()<=0||incomeBO5.getRoomRateAdjustment().intValue()<=0){
             yearDifferences.setRoomRateAdjustment(new BigDecimal(100));
-        }else if(incomeBO3.getRoomRateAdjustment().intValue()>incomeBO3.getRoomRateAdjustment().intValue()){
+        }else if(incomeBO5.getRoomRateAdjustment().intValue()>incomeBO3.getRoomRateAdjustment().intValue()){
             yearDifferences.setRoomRateAdjustment((incomeBO5.getRoomRateAdjustment().subtract(incomeBO3.getRoomRateAdjustment())).divide(incomeBO5.getRoomRateAdjustment()).multiply(new BigDecimal(100)));
         }else{
             yearDifferences.setRoomRateAdjustment((incomeBO3.getRoomRateAdjustment().subtract(incomeBO5.getRoomRateAdjustment())).divide(incomeBO3.getRoomRateAdjustment()).multiply(new BigDecimal(100)));

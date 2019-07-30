@@ -744,9 +744,7 @@ public class OrderService {
         if (currentTime_2.getTime() < m4.getTime()) {
             calendar.add(Calendar.DATE, -1); //得到前一天
         }
-//        } else {
-//            calendar.add(Calendar.DATE, -2); //得到前两天
-//        }
+
         System.err.println(time.format(calendar.getTime()));
         return everydayRoomPriceDAO.getRemainingEverydayRoomById(time.format(calendar.getTime()), orderChildId);
     }

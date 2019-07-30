@@ -98,7 +98,7 @@ public class OrderController extends BaseCotroller {
 
 
             //检查入住信息是否正确 证件号是否有重复 验证房间是否可用
-            if(!type.equals("roomReservation")&&!type.equals("updateInfo")){
+            if(type.equals("reservation")&&type.equals("directly")){
                 String result=this.checkInPerson(list,orderBO.getId());
                 if(result!=null){
                     super.safeJsonPrint(response, result);
@@ -122,6 +122,7 @@ public class OrderController extends BaseCotroller {
                         result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"),"房间状态异常") ;
                         super.safeJsonPrint(response, result);
                         log.info("result{}", result);
+                        return;
                     }
 
                 }
