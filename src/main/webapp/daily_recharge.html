@@ -79,7 +79,7 @@
             };
             var index = layer.load(1, {time: 10 * 1000});
             $.ajax({
-                url: '/integral/queryRecharge',
+                url: '/rechargeDaily/getRechargeDaily',
                 type: 'POST',
                 dataType: 'json',
                 data: obj,
@@ -107,22 +107,22 @@
             , cols: [[ //标题栏
                 {field: 'hotelId', title: '酒店名称', align: 'center'}
                 , {field: 'hotelName', title: '酒店名称', align: 'center'}
-                , {field: 'cartNumber', title: '卡号', align: 'center'}
+                , {field: 'memberCardNumber', title: '卡号', align: 'center'}
                 , {field: 'name', title: '姓名', align: 'center'}
-                , {field: 'leave', title: '会员级别', align: 'center'}
+                , {field: 'levelName', title: '会员级别', align: 'center'}
                 , {field: 'certificateNumber', title: '证件号', align: 'center'}
                 , {field: 'certificateType', title: '证件类型', align: 'center'}
-                , {field: 'pattern', title: '充值方式', align: 'center'}
-                , {field: 'price', title: '充值金额', align: 'center'}
-                , {field: 'present', title: '赠送金额', align: 'center'}
+                , {field: 'payType', title: '充值方式', align: 'center'}
+                , {field: 'rechargeMoney', title: '充值金额', align: 'center'}
+                , {field: 'presenterMoney', title: '赠送金额', align: 'center'}
                 , {
-                    field: 'createTime', title: '操作时间', align: 'center', templet: function (data) {
-                        if (data.dateTime)
-                            return DateToLStr(new Date(data.dateTime.time))
+                    field: 'createTime', width:200, title: '操作时间', align: 'center', templet: function (data) {
+                        if (data.createTime)
+                            return DateToLStr(new Date(data.createTime.time))
                         else return ''
                     }
                 }
-                , {field: 'operator', title: '操作员', align: 'center'}
+                , {field: 'adminName', title: '操作员', align: 'center'}
                 , {field: 'remark', title: '备注', align: 'center'}
             ]]
         });
@@ -130,6 +130,7 @@
         laydate.render({
             elem: '#startTime',
             type: 'date',
+            format: 'yyyy/MM/dd',
             btns: ['confirm']
         });
         laydate.render({
