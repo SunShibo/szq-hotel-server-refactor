@@ -2,6 +2,7 @@ package com.szq.hotel.web.controller;
 
 import com.szq.hotel.dao.RoomDAO;
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.entity.dto.DateRoomDTO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.entity.dto.RoomStateDTO;
 import com.szq.hotel.query.QueryInfo;
@@ -100,6 +101,8 @@ public class RoomController extends BaseCotroller {
         }
         log.info("record:{}", record);
         record.setHotelId(loginAdmin.getHotelId());
+        record.setRoomMajorState("vacant");
+        record.setRoomState("no");
         roomService.insertSelective(record);
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加成功"));
@@ -590,6 +593,47 @@ public class RoomController extends BaseCotroller {
         log.info("return:{}", result);
         return;
     }
+
+    @RequestMapping("/querySs")
+    public void querySs(HttpServletRequest request, HttpServletResponse response, String checkTime, String endTime) {
+        log.info("querySs************************************************");
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        log.info("loginUser:{}", loginAdmin);
+        if (loginAdmin == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        }
+        if (StringUtils.isEmpty(checkTime)) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        }
+        if (StringUtils.isEmpty(endTime)) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        }
+        List<List<DateRoomDTO>> lists = roomService.querySs(checkTime, endTime, loginAdmin.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(lists));
+        super.safeJsonPrint(response, result);
+        log.info("return:{}", result);
+        return;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
     @RequestMapping("/updatelockRoomState")

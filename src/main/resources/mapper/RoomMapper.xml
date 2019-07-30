@@ -533,7 +533,10 @@
   </select>
 
     <update id="closeRoom">
-        update hm_room set lock_room_state = 'yes',
+        update hm_room set
+        <if test="state != null and state != ''">
+            lock_room_state = #{state},
+        </if>
         lock_room_start_time = #{startTime},
         lock_room_end_time = #{endTime},
         remark = #{remark}

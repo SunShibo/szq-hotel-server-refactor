@@ -173,8 +173,8 @@
 
   <update id="updateShow">
     update hm_room_type
-    set show = 'no'
-    where id = #[id]
+    set `show` = 'no'
+    where id = #{id}
   </update>
   <!--查询所有房型-->
   <select id="getRoomTypeList" resultType="java.lang.Integer">

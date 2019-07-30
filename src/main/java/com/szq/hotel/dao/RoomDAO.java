@@ -122,7 +122,7 @@ public interface RoomDAO {
     RoomBO queryRooms(@Param("name")String name, @Param("hotelId")Integer hotelId);
 
     void closeRoom(@Param("startTime")String startTime, @Param("endTime")String endTime,
-                   @Param("list")List<Integer> list,@Param("remark")String remark);
+                   @Param("list")List<Integer> list,@Param("remark")String remark,@Param("state")String state);
 
     void opeRoom( @Param("list")List<Integer> list,@Param("remark")String remark);
 

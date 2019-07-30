@@ -384,21 +384,39 @@
   <select id="queryManagerdailyList" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
     SELECT * FROM hm_managerdaily
     WHERE hotel_id = #{hotelId}
-    AND daily_type = '1'
+    AND daily_type = #{dailyType}
     AND #{startTime} &lt;= date_time &lt; #{endTime}
   </select>
 
 
   <select id="queryManagerdailyList2" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
   SELECT * FROM hm_managerdaily
-  WHERE daily_type = '1' AND hotel_id = #{hotelId}
+  WHERE daily_type = #{dailyType} AND hotel_id = #{hotelId}
   AND date_time = #{date}
   </select>
 
   <select id="queryYear" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
   SELECT  * FROM hm_managerdaily
-  WHERE  daily_type = '1'
+  WHERE  daily_type = #{dailyType}
   AND hotel_id = #{hotelId}
   AND date_tine LIKE CONCAT(CONCAT('%', #{date}), '%');
+  </select>
+
+  <select id="queryHy" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+    SELECT * FROM hm_managerdaily
+  WHERE hotel_id = #{hotelId} and date_time = #{date}
+  AND daily_type = #{dailyType}
+  </select>
+
+  <select id="queryOrderTotalPrice" parameterType="com.szq.hotel.entity.bo.OrderBO">
+    SELECT * FROM hm_order
+    WHERE #{startTime} &lt;= create_time &lt; #{endTime}
+    AND hotel_id = #{hotelId}
+  </select>
+
+  <select id="queryConsumption" resultType="com.szq.hotel.entity.bo.CashierSummary">
+    SELECT * FROM hm_cashier_summary
+    WHERE hotel_id = #{hotelId}
+    AND #{startTime} &lt; = create_time &lt; #{endTime}
   </select>
 </mapper>
