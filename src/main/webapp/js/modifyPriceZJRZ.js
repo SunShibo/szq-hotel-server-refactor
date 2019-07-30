@@ -1,7 +1,7 @@
 //直接入住房间修改价格
 clearModifyPrice();
 function modifyPrice() {
-// debugger;
+
     var price = '';
     if(sRooms.length==0){
         return;

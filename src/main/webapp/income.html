@@ -205,9 +205,17 @@
                 , {field: 'c', align: 'center', title: '上月累计'}
                 , {field: 'd', align: 'center', title: '年累计'}
                 ,{field: 'e', align: 'center', title: '月累计'}
-                , {field: 'f', align: 'center', title: '月差异'}
+                , {field: 'f', align: 'center', title: '月差异'
+                    ,templet: function (data) {
+                        return data.f+"%";
+                    }
+                }
                 , {field: 'g', align: 'center', title: '年累计'}
-                , {field: 'h', align: 'center', title: '年差异'}
+                , {field: 'h', align: 'center', title: '年差异'
+                    ,templet: function (data) {
+                        return data.h+"%";
+                    }
+                }
             ]]
         });
 
