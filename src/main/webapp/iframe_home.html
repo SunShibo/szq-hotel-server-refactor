@@ -67,9 +67,6 @@
             </div>
             <div style="height: 60px;"></div>
             <div class="btn-list layui-btn-container">
-                <!--<button class="layui-btn" id="cardmanagement">制卡消卡</button>-->
-                <!--<button class="layui-btn" id="continue">续住</button>-->
-                <!--<button class="layui-btn" id="addSameWith">添加同来</button>-->
                 <button class="layui-btn" id="updateAll">编辑</button>
                 <button class="layui-btn" id="checkInRoom">换房</button>
                 <button class="layui-btn" id="accounts">联房</button>
@@ -172,7 +169,7 @@
 
         $(function () {
             id = parseInt(getUrl('id'));
-            debugger
+            // debugger
             state = getUrl('state');
             status = getUrl('status');
             maintain = getUrl('maintain');
@@ -591,11 +588,10 @@
                 content: 'iframe_homeUpdate.html?id=' + orderId + '&orderChildId=' + orderChildId,
                 end: function () {
                     sessionStorage.removeItem('checkIn');
-                    initRoomInfoData();
+                    initStayInData();
                 }
             });
         });
-
 
         //联房结账
         $('#accounts').on('click', function () {
@@ -610,50 +606,6 @@
                 end: function () {
                     getResult();
                     parent.getRoomsInfo();
-                }
-            });
-        });
-
-        //添加同来
-        $('#addSameWith').on('click', function () {
-            parent.layer.open({
-                type: 2,
-                skin: 'demo-class',
-                area: ['960px', '420px'],
-                title: '添加同来',
-                shade: 0.6,
-                shadeClose: true,
-                content: 'iframe_addSameWith.html?c=' + childId + '&r=' + id,
-                end: function () {
-                    getResult();
-                }
-            });
-        });
-
-        //制卡销卡管理
-        $('#cardmanagement').on('click', function () {
-            layer.open({
-                area: ['520px', '320px'],
-                type: 2,
-                content: "iframe_makeCard1.html?roomid=" + getUrl("id"),
-                title: "制卡消卡"
-            })
-
-        });
-        //入住备注
-        $('#checkInRemarks').on('click', function () {
-            parent.layer.open({
-                type: 2,
-                skin: 'demo-class',
-                area: ['500px', '300px'],
-                title: '房屋备注',
-                shade: 0.6,
-                shadeClose: true,
-                content: 'iframe_exemption.html?s=2&o=' + childId + '&id=' + id + "&remark=" + encodeURI(inMessageRemark),
-                //
-                end: function (index) {
-                    tab.reload();
-                    getResult();
                 }
             });
         });
@@ -674,25 +626,6 @@
                 }
             });
         });
-
-
-        //续住
-        $('#continue').on('click', function () {
-            parent.layer.open({
-                type: 2,
-                ttitle: '续住',
-                skin: 'demo-class',
-                shade: 0.6,
-                area: ['500px', '550px'],
-                shadeClose: true,
-                content: 'iframe_continue.html?r=' + id + "&c=" + childId + '&state=' + inWay,
-                end: function () {
-                    location.reload();
-                }
-            });
-        });
-
-
     });
 </script>
 </body>
