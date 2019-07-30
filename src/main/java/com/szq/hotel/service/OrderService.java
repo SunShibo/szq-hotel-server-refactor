@@ -602,6 +602,7 @@ public class OrderService {
     public CheckInInfoResult getReservationInfo(Integer roomId){
         return orderDAO.getReservationInfo(roomId);
     }
+
     //修改在住信息
     public void updCheckInInfo(Integer orderId, String channel, String OTA,
                                Integer orderChildId, Date entTime, String remark,
@@ -651,6 +652,7 @@ public class OrderService {
 
             //添加同住人
             if (checkInPersonJson != null && !checkInPersonJson.equals("")) {
+                checkInPersonDAO.delCheckInPersonById(orderChildId);
                 List<CheckInPersonBO> list = JsonUtils.getJSONtoList(checkInPersonJson, CheckInPersonBO.class);
                 for (CheckInPersonBO checkInPersonBO : list) {
                     checkInPersonBO.setStatus(Constants.CHECKIN.getValue());
@@ -755,7 +757,6 @@ public class OrderService {
         for (EverydayRoomPriceBO e : everydayRoomPrice) {
             everydayRoomPriceDAO.updEverydayRoomPrice(e);
         }
-        //加操作日志
         //修改房间状态
         OrderChildBO orderChildOld = orderDAO.getOrderChildById(orderChildBO.getId());
         Map<String, Object> map = new HashMap<String, Object>();
@@ -776,13 +777,15 @@ public class OrderService {
         //备份
         OrderChildBackupParam backup = new OrderChildBackupParam();
 
-        //当前时间
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat hh = new SimpleDateFormat("HH");
         Calendar calendar = Calendar.getInstance();
+        //当前时间
         Date currentTimeDate = calendar.getTime();
-        if(new Integer(hh.format(currentTimeDate))<6){
-            currentTimeDate=DateUtils.getBeforeDay(currentTimeDate,-1);
+        //当前酒店的时间
+        Date hotelDate=new Date();
+        if(new Integer(hh.format(currentTimeDate))<4){
+            hotelDate=DateUtils.getBeforeDay(hotelDate,-1);
         }
 
         //获取今天凌晨四点
@@ -801,20 +804,20 @@ public class OrderService {
         orderChildBO.setOtherRate(new BigDecimal(0));
         orderChildBO.setRoomRate(new BigDecimal(0));
         //当天入住当天退房 滚一天当天房费
-        if (ymd.format(currentTimeDate).equals(ymd.format(orderChildBO.getStartTime()))) {
-            this.addOrderChildRecordAndRoomRate(backup, currentTimeDate, orderChildBO, userId);
+        if (ymd.format(hotelDate).equals(ymd.format(orderChildBO.getStartTime()))) {
+            this.addOrderChildRecordAndRoomRate(backup, hotelDate, orderChildBO, userId);
         }
         //获取离店时间
         Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
-        //判断是否超时
+        //未超时
         if (currentTimeDate.compareTo(endTime) <= 0) {
-            Date currentDate = ymd.parse(ymd.format(currentTimeDate));
+            Date currentDate = ymd.parse(ymd.format(hotelDate));
             Date endDate = ymd.parse(ymd.format(endTime));
-            List<EverydayRoomPriceBO> everydayRoomPriceBOList = everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
-            //判断是否提前退房
-            //判断入住时间 是不是在今天6点以前
-            if (currentDate.compareTo(endDate) < 0 && everydayRoomPriceBOList.size() > 1 && currentTimeDate.compareTo(m2) > 0&&orderChildBO.getStartTime().compareTo(m6)<0) {
-                this.addOrderChildRecordAndRoomRate2(backup, currentTimeDate, orderChildBO, userId);
+            //剩余每日房价
+            List<EverydayRoomPriceBO> everydayRoomPriceBOList=this.getRemainingLease(orderChildId);
+            //提前退房
+            if (currentDate.compareTo(endDate)<0&&hotelDate.compareTo(m2) > 0&& everydayRoomPriceBOList.size() > 1) {
+                this.addOrderChildRecordAndRoomRate2(backup, hotelDate, orderChildBO, userId);
             }
             backup.setRoomMajorState(Constants.INTHE.getValue());
         } else {
@@ -890,7 +893,7 @@ public class OrderService {
         RoomTypeBO roomTypeBO = roomTypeDAO.getRoomType(orderChild.getRoomTypeId());
         //计算超时费
         Date currentTimeDate = new Date();
-        Long minute = DateUtils.getQuotMinute(currentTimeDate, orderChild.getEndTime());
+        Long minute = DateUtils.getQuotMinute(currentTimeDate,endTime);
         //超过4小时
         if (minute <= 4 * 60) {
             //加记录
@@ -917,9 +920,10 @@ public class OrderService {
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
         //这天的房价信息
         EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(date), orderChild.getId());
-        //退房时间超过下午两点
-        Calendar c = Calendar.getInstance();
-        if (new Integer(c.get(Calendar.HOUR_OF_DAY)) > 14) {
+        //超时时间超过4个小时 按这天房价的全天房价
+        Calendar calendar = Calendar.getInstance();
+        Integer currHour=calendar.get(Calendar.HOUR_OF_DAY);
+        if (currHour<=4||currHour >= 18) {
             //超时费
             orderChild.setOtherRate(everydayRoomPriceBO.getMoney());
             //备份超时费
