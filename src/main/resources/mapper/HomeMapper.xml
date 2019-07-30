@@ -112,7 +112,7 @@
 
     <!--预约数量-->
     <select id="querySubCount" parameterType="java.util.Map"  resultType="int" >
-     SELECT  COUNT(room.id)  FROM `hm_order_child` child  LEFT JOIN  hm_room  room  ON child.room_id=room.id  LEFT JOIN
+     SELECT COUNT( DISTINCT room.id )  FROM `hm_order_child` child  LEFT JOIN  hm_room  room  ON child.room_id=room.id  LEFT JOIN
       hm_room_type  type ON  type.id=room.room_type_id
         WHERE child.start_time &lt;= #{endTime}  AND    child.end_time  > #{startTime}
        AND  child.order_state='reservation' AND  type.hotel_id=#{hotelId}   AND  room.`show`='yes'

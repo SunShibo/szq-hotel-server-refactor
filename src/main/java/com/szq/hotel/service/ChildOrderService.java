@@ -255,7 +255,7 @@ public class ChildOrderService {
             //收
             resultMap.put("status", "yes");
         }
-        resultMap.put("money", new BigDecimal(consumption + pay).multiply(new BigDecimal("-1")));
+        resultMap.put("money", consumption + pay);
 
         log.info("end queryChildleAccounts.........................................................");
         return resultMap;
