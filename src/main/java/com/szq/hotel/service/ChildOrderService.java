@@ -446,7 +446,7 @@ public class ChildOrderService {
         if (param.getOther() != null) {  //其他
             log.info("start.....refund...other........................................................");
             orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getOther().
-                    multiply(new BigDecimal("-1")), Constants.OTHER.getValue(), userId, null, Constants.YES.getValue());
+                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getOther().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.OTHER.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
@@ -456,8 +456,8 @@ public class ChildOrderService {
             if (childOrderBO.getMembersId() != null) {
                 memberService.accountStoreValue(childOrderBO.getMembersId(), param.getStored(), "结账", userId);
             }
-            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getStored().
-                    multiply(new BigDecimal("-1")), Constants.STORED.getValue(), userId, null, Constants.YES.getValue());
+            orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.STORED.getValue(), param.getStored().
+                    multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getStored().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
                     Constants.STORED.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
