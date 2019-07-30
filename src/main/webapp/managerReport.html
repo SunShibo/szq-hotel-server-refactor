@@ -652,15 +652,16 @@
         //获取
         function resultInfo() {
             var obj = {
-                endTime: $("#startTime").val().replace(/-/g, "/") + " 04:00:00"
+                endTime: $("#startTime").val() + " 04:00:00"
             };
             var index = layer.load(1, {time: 10 * 1000});
             $.ajax({
-                url: '/roomForms/queryTableMember',
+                url: '/managerDaliy/selectManagerDaliy',
                 type: 'POST',
                 data: obj,
                 dataType: 'json',
                 success: function (data) {
+
                     formatData(data.data)
                     layer.closeAll()
                 }
@@ -722,6 +723,7 @@
             type: 'date',
             btns: ['confirm'],
             max: 0,
+            format: 'yyyy/MM/dd',
             done: function (value, date) {
 
             }

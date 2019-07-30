@@ -132,7 +132,7 @@ var api = {
     , updateCheckInData: '/order/updCheckInInfo'//首页入住信息修改   已修改
 
 
-    , reportList: '/room/querySc'//按时间段查询图表
+    , reportList: '/room/querySs'//按时间段查询图表000
     , otherView: '/room/querySc'//数据表格
 
 
