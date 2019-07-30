@@ -187,37 +187,64 @@
 
             $table.append(str);
             function _deal(r) {
-
+                var yprice = [];
+                var price = [];
                 var _str = '';
-                for(var j in r){
+                for(var i in r){
 
-                    if(j.split('/').length>2&&j.indexOf('y')==-1){
-                        _str+=['<div class="cell">',
-                            '<input type="number" data-price="',
-                            r['y'+j] ? r['y'+j] : r[j],
-							'" data-name="',
-                            r['roomTypeName'],
-							'" data-date="',
-                            j,
-							'" class="rti',
-							r['roomTypeId'],
-							'" value="',
-                       		 ff==1 ? $("#unify").val() : (ff==2&&r['y'+j]) ? r['y'+j] : r[j],
-                            '"><span>/',
-                            r['y'+j] ? r['y'+j] : r[j],
-                            '</span>',
-                            '</div>'].join("");
+                    if(i.split('/').length>2&&i.indexOf('y')==-1){
+                        price.push({
+                            time:new Date(i).getTime(),
+                            price:r[i],
+                            date:i,
+                            roomTypeName:r['roomTypeName'],
+                            roomTypeId:r['roomTypeId']
+                        })
+                    }else if(i.split('/').length>2){
+                        yprice.push({
+                            time:new Date(i.split("y")[1]).getTime(),
+                            price:r[i],
+                            date:i.split("y")[1],
+                            roomTypeName:r['roomTypeName'],
+                            roomTypeId:r['roomTypeId']
+                        })
                     }
                 }
+
+                yprice = yprice.sort(compare("time"))
+                price = price.sort(compare("time"))
+
+                for(var i=0;i<price.length;i++){
+
+
+                    _str+=['<div class="cell">',
+                        '<input type="number" data-price="',
+                        yprice[i]['price'],
+                        '" data-name="',
+                        r['roomTypeName'],
+                        '" data-date="',
+                        price[i]['date'],
+                        '" class="rti',
+                        r['roomTypeId'],
+                        '" value="',
+                        // price[i]['price'],
+                        ff==1 ? $("#unify").val() : (ff==2&&yprice[i]['price']) ? yprice[i]['price'] : price[i]['price'],
+                        '"><span>/',
+                        yprice[i]['price'],
+                        '</span>',
+                        '</div>'].join("");
+
+                }
+
                 return _str;
             }
         }
 
         function dealPriceArr(c) {
-  	      // debugger;
+
   	      var arr = [];
   	      for(var i in c){
-  	          // debugger;
+
   	          if(i.indexOf("/")>-1&&i.indexOf("y") ==  -1){
   	              arr.push({
                       time:i,

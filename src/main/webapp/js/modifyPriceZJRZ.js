@@ -88,7 +88,7 @@ function getTypeIds() {
 
 
 function parModifyPrice() {
-    // debugger;
+
     if(localStorage.modifyPrice){
 
         var _mp = JSON.parse(localStorage.modifyPrice);

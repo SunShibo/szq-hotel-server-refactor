@@ -195,19 +195,19 @@ setTimeout(function () {
         }
     });
 
-    //小时房全天房免费房互相切换
-    form.on('radio', function(data){
-        if(data.value=="hour"){
-            $(".typea").addClass("layui-hide")
-            $(".typeb").removeClass("layui-hide")
-        }else {
-            $(".typeb").addClass("layui-hide")
-            $(".typea").removeClass("layui-hide")
-        }
-        if(currSel.checkType!=data.value){
-            currSel.checkType=data.value;
-            state.roomType=data.value;
-            clearRoomInfo();
-        }
-    });
+        //小时房全天房免费房互相切换
+        form.on('radio', function(data){
+            if(data.value=="hour"){
+                $(".typea").addClass("layui-hide")
+                $(".typeb").removeClass("layui-hide")
+            }else {
+                $(".typeb").addClass("layui-hide")
+                $(".typea").removeClass("layui-hide")
+            }
+            if(currSel.checkType!=data.value){
+                currSel.checkType=data.value;
+                state.roomType=data.value;
+                clearRoomInfo();
+            }
+        });
 },500)

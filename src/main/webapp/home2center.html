@@ -300,13 +300,31 @@
                     }
                 }
                 localStorage.modifyPrice = JSON.stringify(rs.data);
-
                 tableObj.reload({data: JSON.parse(JSON.stringify(sRooms))})
-
+				calcPrice();
             }
         });
     }
-    
+	setTimeout(function () {
+
+
+		//小时房全天房免费房互相切换
+		form.on('radio', function(data){
+			if(data.value=="hour"){
+				$(".typea").addClass("layui-hide")
+				$(".typeb").removeClass("layui-hide")
+			}else {
+				$(".typeb").addClass("layui-hide")
+				$(".typea").removeClass("layui-hide")
+			}
+			if(currSel.checkType!=data.value){
+				currSel.checkType=data.value;
+				state.roomType=data.value;
+				dealCondition();
+			}
+		});
+
+	},1000)
     // clearModifyPrice();
     layui.use(['element', 'form', 'laydate', 'jquery', 'layer', 'table'], function () {
         element = layui.element,
@@ -558,7 +576,7 @@
                 document.getElementById("leaveDate").value = value.split(" ")[0] + LEAVETIME;
                 localStorage.modifyPrice = '';
                 setTimeout(function () {
-                    dealChange()
+                    dealCondition()
                 },100)
             }
         });
@@ -589,7 +607,8 @@
         document.getElementById("leaveDate").value =
             DateToLStr(new Date(Date.now()+3600*1000*24*Number(t.value))).split(" ")[0] + LEAVETIME
         localStorage.modifyPrice = '';
-        clearRoomInfo();
+        // clearRoomInfo();
+		dealCondition();
     }
 
     function selectRoom() {
@@ -650,7 +669,8 @@
         sRooms =  v;
         sRooms = productRoomS(v);//处理房间数据，改成和房型数据统一
         console.info("直接入住选房后获取了如下数据↓")
-        console.info(sRooms)
+        console.info(sRooms);
+        localStorage.modifyPrice = '';
         setCustomInfo();
         calcPrice();
         // dealChange();
@@ -861,12 +881,17 @@
                 form.render();
                 state.idFlag = true;
                 layer.msg('成功获取会员信息', {icon: 1});
+
             } else {
                 state.idFlag = false;
                 userInfo = {};
                 $("#userLevel").text("");
                 document.getElementById("channel").value = customer_source_before;
             }
+            setTimeout(function () {
+                dealCondition();
+                layer.msg('会员信息发生变化，请注意房价变化', {icon: 1});
+            },1000)
         })
 
     }
