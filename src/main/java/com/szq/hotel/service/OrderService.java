@@ -83,6 +83,7 @@ public class OrderService {
         String alRoomCode = UUID.randomUUID().toString();
         //总房价
         BigDecimal totalPrice = new BigDecimal(0);
+        System.err.println("orderChildBOList======"+orderChildBOList.size());
         for (OrderChildBO orderChild : orderChildBOList) {
             //添加子订单
             orderChild.setOrderId(orderBO.getId());//主订单id
@@ -422,6 +423,7 @@ public class OrderService {
         c.setTime(new Date());
         //获取当前小时
         int hour = c.get(Calendar.HOUR_OF_DAY);
+        System.err.println("hour"+hour);
         if (hour < 6) {
             //当前在六点之前
             c.set(Calendar.DATE, c.get(Calendar.DATE) - 1);
@@ -584,12 +586,16 @@ public class OrderService {
         }
         Date entTime=orderChildBO.getPracticalDepartureTime()==null?orderChildBO.getEndTime():orderChildBO.getPracticalDepartureTime();
 
+        OrderBO orderBO=orderDAO.getOrderById(orderChildBO.getOrderId());
+        //bug: 正常小时房 就不能-1了 跨天小时房需要-1 全天房 如果第一天入住 是不是也-1了
         if(simp.format(entTime).equals(simp.format(currDate))){
-            currDate=DateUtils.getBeforeDay(currDate,-1);
+            if(orderBO.getCheckType().equals(Constants.DAY.getValue())){
+                currDate=DateUtils.getBeforeDay(currDate,-1);
+            }
         }
         //在住信息
+        System.err.println(roomId+"=="+simp.format(currDate)+"");
         CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId,simp.format(currDate));
-        System.err.println(checkInInfoResult.getRemark());
         checkInInfoResult.setEndTime(entTime);
         //同住人信息
         List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getOrderChildId(), Constants.CHECKIN.getValue());
