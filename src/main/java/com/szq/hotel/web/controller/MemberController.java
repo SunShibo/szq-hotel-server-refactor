@@ -232,7 +232,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/updateGetMemberCardNumber")
-    public void updateGetMemberCardNumber(Integer memberCardLevelId,String phone,String certificateNumber,HttpServletRequest request,HttpServletResponse response){
+    public void updateGetMemberCardNumber(Integer memberCardLevelId,String certificateNumber,HttpServletRequest request,HttpServletResponse response){
 
         try {
 
@@ -256,14 +256,9 @@ public class MemberController extends BaseCotroller {
             }
 
 
-            MemberBO memberBO1 = memberService.selectMemberByPhone(phone);
+
             MemberBO memberBO2 = memberService.selectMemberByCerNumber(certificateNumber);
-            if (memberBO1==null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000203"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
+
             if (memberBO2==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000204"));
                 super.safeJsonPrint(response, result);
@@ -337,7 +332,7 @@ public class MemberController extends BaseCotroller {
             MemberCardBO memberCardBO1 = memberCardService.getCardByMemberId(memberBO.getId());
             if (memberCardBO1!=null) {
                 //传的卡号和之前的不一样
-                if (cardNumber.equals(memberCardBO1.getCardNumber())) {
+                if (!cardNumber.equals(memberCardBO1.getCardNumber())) {
                     MemberCardBO memberCardBO = memberCardService.getCardNumber(cardNumber);
                     if (memberCardBO != null) {
                         //设置会员的会员卡id
