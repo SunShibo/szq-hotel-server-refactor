@@ -339,13 +339,22 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            Map<String,Object> map=new HashMap<String, Object>();
-            map.put("phone",phone);
-            map.put("certificateNumber",certificateNumber);
-
-
-            MemberBO memberBO = memberService.selectMemberByNumber(map);
-
+            //MemberBO memberBO = new MemberBO();
+            if (certificateNumber==null){
+                MemberBO memberBO1 = memberService.selectMemberByPhoneNum(phone);
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(memberBO1));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            MemberBO memberBO = memberService.selectMemberByCertificateNumber(certificateNumber);
+            if (memberBO==null){
+                MemberBO memberBO1 = memberService.selectMemberByPhoneNum(phone);
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(memberBO1));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(memberBO));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);

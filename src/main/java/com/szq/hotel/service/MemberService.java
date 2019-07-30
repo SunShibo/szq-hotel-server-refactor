@@ -88,10 +88,16 @@ public class MemberService {
     }
 
     /*
-        通过证件号手机号查询会员
+        通过证件号查询会员
      */
-    public MemberBO selectMemberByNumber(Map<String,Object> map){
-        return memberDAO.selectMemberByNumber(map);
+    public MemberBO selectMemberByCertificateNumber(String certificateNumber){
+        return memberDAO.selectMemberByCertificateNumber(certificateNumber);
+    }
+    /*
+        通过手机号查询会员
+     */
+    public MemberBO selectMemberByPhoneNum(String phone){
+        return memberDAO.selectMemberByPhoneNum(phone);
     }
 
     /*

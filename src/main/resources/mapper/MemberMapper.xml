@@ -74,15 +74,24 @@ WHERE id = #{id}
         limit #{pageOffset},#{pageSize}
     </sql>
 
-    <!--通过手机号证件号查询会员级别所有信息-->
-    <select id="selectMemberByNumber" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.util.Map">
+    <!--通过证件号查询会员级别所有信息-->
+    <select id="selectMemberByCertificateNumber" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="String">
         SELECT me.*,le.`name` memberLevelName,le.type,card.selling_time
         FROM `hm_member` me LEFT JOIN hm_member_card card ON me.member_card_id = card.id
         LEFT JOIN hm_member_level le ON card.member_level_id = le.id
         <where>
             me.state = 'yes'
-            <if test="phone!=null and phone!='' ">AND me.`phone` =#{phone}</if>
-            <if test="certificateNumber!=null and certificateNumber!='' ">AND me.`certificate_number` = #{certificateNumber}</if>
+            <if test="_parameter !=null ">AND me.`certificate_number` = #{certificateNumber}</if>
+        </where>
+    </select>
+    <!--通过手机号查询会员级别所有信息-->
+    <select id="selectMemberByPhoneNum" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="String">
+        SELECT me.*,le.`name` memberLevelName,le.type,card.selling_time
+        FROM `hm_member` me LEFT JOIN hm_member_card card ON me.member_card_id = card.id
+        LEFT JOIN hm_member_level le ON card.member_level_id = le.id
+        <where>
+            me.state = 'yes'
+            <if test="_parameter !=null ">AND me.`phone` =#{phone}</if>
         </where>
     </select>
 

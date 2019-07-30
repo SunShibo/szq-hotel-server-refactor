@@ -26,9 +26,13 @@ public interface MemberDAO {
      */
     Integer selectMemberCount(Map<String,Object> map);
     /*
-        通过证件号手机号查询会员
+        通过证件号查询会员
      */
-    MemberBO selectMemberByNumber(Map<String,Object> map);
+    MemberBO selectMemberByCertificateNumber(String certificateNumber);
+    /*
+        通过手机号查询会员
+     */
+    MemberBO selectMemberByPhoneNum(String phone);
     /*
         通过id查询会员信息
      */
