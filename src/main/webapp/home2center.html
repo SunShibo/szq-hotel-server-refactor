@@ -169,8 +169,7 @@
 			<p class="border-e6 order-title">房间信息
 				<a class="fr" style="overflow: hidden;margin-right: 30px;font-size: 20px;">总房价:<span
 						id="totalPrice">0</span>元</a>
-				<a class="fr layui-hide" id="ydzj"
-				   style="overflow: hidden;margin-right: 30px;font-size: 20px;">预定总价:<span id="yuyuePrice">0</span>元</a>
+
 			</p>
 
 			<table id="test" lay-filter="fjxx"></table>
@@ -301,10 +300,9 @@
                     }
                 }
                 localStorage.modifyPrice = JSON.stringify(rs.data);
-                state.totalPrice = _yuyuePrice;
-                $("#totalPrice").text(_yuyuePrice);
+
                 tableObj.reload({data: JSON.parse(JSON.stringify(sRooms))})
-                // updateTable();
+
             }
         });
     }
@@ -333,7 +331,7 @@
                 }
                 sRooms[0]['roomId'] = sRooms[0]['id']+"";
                 tableObj.reload({data: JSON.parse(JSON.stringify(sRooms))})
-
+                calcPrice();
             })
 
         }
