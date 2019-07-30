@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 充值日报
+ */
 
 @Controller
 @RequestMapping("/rechargeDaily")

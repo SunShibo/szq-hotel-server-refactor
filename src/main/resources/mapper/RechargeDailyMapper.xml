@@ -18,7 +18,7 @@
 
     <select id="getRechargeDaily" resultType="com.szq.hotel.entity.bo.RechargeDailyBO" parameterType="map">
         SELECT ho.id hotelId,ho.`name` hotelName,rd.member_card_number memberCardNumber,
-        rd.`name`,le.`name` levelName,me.certificate_type certificateType,
+        rd.`name`,le.`name` levelName,va.`value` certificateType,
             me.certificate_number certificateNumber,rd.pay_type payType,rd.recharge_money rechargeMoney,
             rd.presenter_money presenterMoney,rd.create_time createTime,ad.`name` adminName,re.remark
         FROM hm_recharge_daily rd
@@ -28,6 +28,7 @@
         LEFT JOIN hm_member_level le ON card.member_level_id = le.id
         LEFT JOIN hm_stored_value_record re ON me.id = re.check_in_member_id
         LEFT JOIN hm_admin ad ON ad.id = re.create_user_id
+        LEFT JOIN hm_dictionaries_value va ON va.id = me.certificate_type
         WHERE rd.create_time &gt;= #{startTime} AND rd.create_time &lt; #{endTime}
             <!--<if test="begin != null and begin != ''">AND rd.create_time <![CDATA[>=]]> #{begin}</if>-->
             <!--<if test="end != null and end != ''">AND rd.create_time <![CDATA[<=]]>#{end}</if>-->
