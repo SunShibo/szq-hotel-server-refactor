@@ -195,4 +195,18 @@ public interface RoomDAO {
     List<RmBO> queryUserRoom2(Map<String, Object> map);
 
     RmBO selectRoomId(@Param("id") Integer id, @Param("hotelId") Integer hotelId);
+
+
+    /**
+     * 查询符合按条件的被预约的房型数量
+     * @param startTime
+     * @param endTime
+     * @param hotelId
+     * @param
+     * @return
+     */
+    List<RmTypeIdBO> queryOrderTypeRoom(@Param("startTime")String startTime,
+                                     @Param("endTime")String endTime,
+                                     @Param("hotelId")Integer hotelId
+                                     );
 }

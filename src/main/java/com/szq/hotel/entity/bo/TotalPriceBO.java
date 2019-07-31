@@ -1,5 +1,6 @@
 package com.szq.hotel.entity.bo;
 
+import com.szq.hotel.common.base.BaseModel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -9,7 +10,7 @@ import java.util.Date;
  * @Author: Bin Wang
  * @date: Created in 11:08 2019/7/30
  */
-public class TotalPriceBO {
+public class TotalPriceBO extends BaseModel {
 
     private Integer id;//订单表
     private String orderPlacer;//下单人名称

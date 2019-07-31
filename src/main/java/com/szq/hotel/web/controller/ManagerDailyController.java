@@ -3,6 +3,7 @@ package com.szq.hotel.web.controller;
 import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.HotelTableBO;
 import com.szq.hotel.entity.bo.ManagerdailyChangeBO;
+import com.szq.hotel.entity.dto.DateRoomDTO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.service.ManagerDailyService;
 import com.szq.hotel.util.JsonUtils;
@@ -168,26 +169,29 @@ public class ManagerDailyController extends BaseCotroller {
      * @param response
      * @param
      */
-    @RequestMapping("/queryManagerDaliy")
-    public void queryManagerDaliy(HttpServletRequest request, HttpServletResponse response, Date startTime, Date endTime){
-        startTime = endTime;
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(endTime);
-        calendar.add(Calendar.DATE, 1);//传过来的时间减去一天   
-        endTime = calendar.getTime();
-
-        //endTime=calendar.getTime();//获取一年前的时间，或者一个月前的时间  
-
+    @RequestMapping("/queryTest")
+    public void queryManagerDaliy(HttpServletRequest request, HttpServletResponse response, String date){
         AdminBO userBO = super.getLoginUser(request);
         if (userBO == null) {
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "请登录"));
             safeTextPrint(response, json);
             return;
         }
-        if (endTime == null) {
-            String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+        ManagerdailyChangeBO managerdailyChangeBO = managerDailyService.queryInfo(date, userBO.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(managerdailyChangeBO));
+        super.safeJsonPrint(response, result);
+        return;
+    }
+
+
+    @RequestMapping("/insertTest")
+    public void insertTest(HttpServletRequest request, HttpServletResponse response, String date){
+        AdminBO userBO = super.getLoginUser(request);
+        if (userBO == null) {
+            String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "请登录"));
             safeTextPrint(response, json);
             return;
         }
+        managerDailyService.insertManagerDaliy(userBO.getHotelId(), date);
     }
 }

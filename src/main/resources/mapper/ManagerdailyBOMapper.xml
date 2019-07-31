@@ -408,8 +408,32 @@
   AND daily_type = #{dailyType}
   </select>
 
-  <select id="queryOrderTotalPrice" parameterType="com.szq.hotel.entity.bo.OrderBO">
-    SELECT * FROM hm_order
+  <select id="queryOrderTotalPrice" resultType="com.szq.hotel.entity.bo.TotalPriceBO">
+      SELECT
+    id,
+    order_placer,
+    order_number,
+    check_type,
+    check_time,
+    check_out_time,
+    day_count,
+    phone,
+    ID_number,
+    ID_number_type,
+    order_type,
+    clerk_ordering_name,
+    clerk_ordering_id,
+    members_id,
+    memberId_or_organizationId,
+    total_price,
+    hotel_id,
+    create_time,
+    update_time,
+    OTA,
+    channel,
+    subscribe_remark
+  FROM
+  hotel.hm_order
     WHERE #{startTime} &lt;= create_time &lt; #{endTime}
     AND hotel_id = #{hotelId}
   </select>
@@ -417,6 +441,6 @@
   <select id="queryConsumption" resultType="com.szq.hotel.entity.bo.CashierSummary">
     SELECT * FROM hm_cashier_summary
     WHERE hotel_id = #{hotelId}
-    AND #{startTime} &lt; = create_time &lt; #{endTime}
+    AND #{startTime} &lt;= create_time &lt; #{endTime}
   </select>
 </mapper>

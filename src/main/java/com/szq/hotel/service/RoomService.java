@@ -228,6 +228,7 @@ public class RoomService {
         ll.add("reservation");
         ll.add("notpay");
         ll.add("admissions");
+        //根据条件筛选出第一波可入住的房间
         List<RmBO> list = this.publicQuery(map, ll);
         Integer hotelId = (Integer) map.get("hotelId");
         String phone = (String) map.get("phone");
@@ -236,10 +237,21 @@ public class RoomService {
 
         List<RoomTypeNumBO> ls = new ArrayList<RoomTypeNumBO>();
 
-
+        //获取所有房型信息
         List<RtBO> rtBOS = roomDAO.queryRt(hotelId);
 
         log.info("rtBOS:{}", rtBOS);
+
+
+
+
+
+
+
+
+
+
+
 
         //判断用户是否是会员
         MemberDiscountBO memberDiscountBO = queryMember(phone);
@@ -299,6 +311,45 @@ public class RoomService {
                 }
             }
         }
+
+        log.info("checkTime:{}",(String) map.get("checkTime"));
+        log.info("endTime:{}",(String) map.get("endTime"));
+        log.info("hotelId:{}", (Integer) map.get("hotelId"));
+
+        //获取被预约掉的房型以及数量
+        List<RmTypeIdBO> rmTypeIdBOS = roomDAO.queryOrderTypeRoom((String) map.get("checkTime"), (String) map.get("endTime"),
+                (Integer) map.get("hotelId"));
+        //筛选掉被预约掉的房型数量
+
+        List<RoomTypeNumberBO> roomTypeList = new ArrayList<RoomTypeNumberBO>();
+
+        if(!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(rmTypeIdBOS)){
+            for (RtBO rtBO : rtBOS) {
+                RoomTypeNumberBO roomTypeNumber = new RoomTypeNumberBO();
+                roomTypeNumber.setRoomTypeId(rtBO.getId());
+                int i = 0;
+                for (RmTypeIdBO integer : rmTypeIdBOS) {
+                    if(rtBO.getId().equals(integer.getRoomTypeId())){
+                        i++;
+                    }
+                }
+                roomTypeNumber.setCount(i);
+                roomTypeList.add(roomTypeNumber);
+                log.info("roomTypeNumber:{}",roomTypeNumber);
+            }
+
+        }
+
+        if(!CollectionUtils.isEmpty(ls) && !CollectionUtils.isEmpty(roomTypeList)){
+            for (RoomTypeNumBO l : ls) {
+                for (RoomTypeNumberBO roomTypeNumberBO : roomTypeList) {
+                    if(l.getId().equals(roomTypeNumberBO.getRoomTypeId())){
+                        l.setCount(l.getCount()-roomTypeNumberBO.getCount());
+                    }
+                }
+            }
+        }
+
         return ls;
     }
 
@@ -511,13 +562,13 @@ public class RoomService {
             RoomRecordBO recordBO = new RoomRecordBO();
             recordBO.setRoomId(id);
             recordBO.setVirginState(majorState);
-            recordBO.setNewState(majorState);
+            recordBO.setNewState(roomBO.getRoomState());
             recordBO.setRemark("改为维修房");
             recordBO.setCreateUserId(userId);
             recordBO.setCreateTime(new Date());
             roomRecordDAO.insert(recordBO);
-            //之前是维修房而且是空房则改为脏房
-        } else if ("yes".equals(state)&Constants.VACANT.getValue().equals(majorState)) {
+            //之前是维修房
+        } else if ("yes".equals(state)) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", id);
             map.put("state", Constants.DIRTY.getValue());
@@ -530,24 +581,6 @@ public class RoomService {
             recordBO.setRoomId(id);
             recordBO.setVirginState(majorState);
             recordBO.setNewState(Constants.DIRTY.getValue());
-            recordBO.setRemark("取消维修房");
-            recordBO.setCreateUserId(userId);
-            recordBO.setCreateTime(new Date());
-            roomRecordDAO.insert(recordBO);
-            //之前是维修房而且不是空房则改为原状态
-        }else if ("yes".equals(state)&(!Constants.VACANT.getValue().equals(majorState))){
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", id);
-            map.put("state",majorState);
-            roomDAO.updateroomMajorState(map);
-            //执行修改
-            roomBO.setRoomState("no");
-            roomDAO.updateRoomState(roomBO);
-            //添加操作日志
-            RoomRecordBO recordBO = new RoomRecordBO();
-            recordBO.setRoomId(id);
-            recordBO.setVirginState(majorState);
-            recordBO.setNewState(majorState);
             recordBO.setRemark("取消维修房");
             recordBO.setCreateUserId(userId);
             recordBO.setCreateTime(new Date());

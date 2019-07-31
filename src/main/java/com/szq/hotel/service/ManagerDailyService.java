@@ -5,6 +5,8 @@ import com.szq.hotel.dao.ManagerDailyDAO;
 import com.szq.hotel.dao.ManagerdailyBOMapper;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.util.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -13,6 +15,8 @@ import java.util.*;
 
 @Service
 public class ManagerDailyService {
+
+    final static Logger log = LoggerFactory.getLogger(ManagerDailyService.class);
 
     @Resource
     private ManagerDailyDAO managerDailyDAO;
@@ -629,7 +633,8 @@ public class ManagerDailyService {
         members6.setLastYearDay((hy2Year(hotelId, date)/xj3Year(hotelId, date))+"");
         //获取上年同期出租率
         members6.setLastYearDay(hyrzLastYearDay(hotelId, date).getMembers()+"");
-        //年增长率 todo
+        //年增长率
+        members6.setInsertRial(isRentalRate(hotelId, date));
 
 
         //获取散客当天出租率
@@ -642,6 +647,8 @@ public class ManagerDailyService {
         individualTraveler6.setYear(sk2Year(hotelId, date)/xj3Year(hotelId, date)+"");
         //获取上年同期
         individualTraveler6.setLastYearDay(hyrzLastYearDay(hotelId, date).getIndividualTraveler()+"");
+        //获取年增长路
+        individualTraveler6.setInsertRial(isRenta(hotelId, date));
 
 
         //获取协议单位当天出租率
@@ -654,6 +661,9 @@ public class ManagerDailyService {
         agreementUnit6.setYear(xydw2Year(hotelId, date)/xj3Year(hotelId, date)+"");
         //获取上年同期
         agreementUnit6.setLastYearDay(hyrzLastYearDay(hotelId, date).getAgreementUnit()+"");
+        //年增长率
+        agreementUnit6.setInsertRial(isRentaXy(hotelId, date));
+
 
         //获取直接入住当天出租率
         enter6.setDay(managerdailyBO5.getEnter()+"");
@@ -665,6 +675,8 @@ public class ManagerDailyService {
         enter6.setYear(xydw3Year(hotelId, date)/xj4Year(hotelId, date)+"");
         //获取上年同期
         enter6.setLastYearDay(hyrzLastYearDay(hotelId, date).getEnter()+"");
+        //获取年增长率
+        enter6.setInsertRial(isRentaZj(hotelId, date));
 
 
         //获取预约入住当天出租率
@@ -677,7 +689,8 @@ public class ManagerDailyService {
         directBooking6.setYear(fjyd3Year(hotelId, date)/xj4Year(hotelId, date)+"");
         //获取上年同期
         directBooking6.setLastYearDay(hyrzLastYearDay(hotelId, date).getDirectBooking()+"");
-
+        //获取年增长率
+        directBooking6.setInsertRial(isRentayy(hotelId, date));
 
         //小计
         //获取今日
@@ -691,7 +704,126 @@ public class ManagerDailyService {
 
 
 
-        return null;
+
+
+        managerdailyChangeBO.setGrossrealIncome(grossrealIncome);
+
+        managerdailyChangeBO.setTotalTurnover(totalTurnover);
+
+        managerdailyChangeBO.setNumberOrder(numberOrder);
+
+        managerdailyChangeBO.setMaintenanceroomNumber(maintenanceroomNumber);
+
+        managerdailyChangeBO.setNumberlockedStores(numberlockedStores);
+
+        managerdailyChangeBO.setNumberroomsAvailablerent(numberroomsAvailablerent);
+
+        managerdailyChangeBO.setTotalnumberGuestrooms(totalnumberGuestrooms);
+
+        managerdailyChangeBO.setCashDisbursements(cashDisbursements);
+
+        managerdailyChangeBO.setCash(cash);
+
+        //,2:营业收入明细
+
+        managerdailyChangeBO.setThroughoutDayrent(throughoutDayrent);
+
+        managerdailyChangeBO.setRateAdjustment(rateAdjustment);
+
+        managerdailyChangeBO.setHourRate(hourRate);
+
+        managerdailyChangeBO.setTimeoutRate(timeoutRate);
+
+        managerdailyChangeBO.setNuclearnightRoomcharge(nuclearnightRoomcharge);
+
+        managerdailyChangeBO.setCompensation(compensation);
+
+        managerdailyChangeBO.setMembershipFee(membershipFee);
+
+        managerdailyChangeBO.setGoods(goods);
+
+        managerdailyChangeBO.setSubtotal2(subtotal2);
+
+        //3:房费收入分析,4:房晚数分析,5:平均房价分析,6:出租率分析
+
+        managerdailyChangeBO.setMembers3(members3);
+
+        managerdailyChangeBO.setAgreementUnit3(agreementUnit3);
+
+        managerdailyChangeBO.setIntermediary3(intermediary3);
+
+        managerdailyChangeBO.setApp3(app3);
+
+        managerdailyChangeBO.setMicroLetter3(microLetter3);
+
+        managerdailyChangeBO.setIndividualTraveler3(individualTraveler3);
+
+        managerdailyChangeBO.setDirectBooking3(directBooking3);
+
+        managerdailyChangeBO.setEnter3(enter3);
+
+        managerdailyChangeBO.setSubtotal3(subtotal3);
+
+        //4:房晚数分析
+
+        managerdailyChangeBO.setMembers4(members4);
+
+        managerdailyChangeBO.setAgreementUnit4(agreementUnit4);
+
+        managerdailyChangeBO.setIntermediary4(intermediary4);
+
+        managerdailyChangeBO.setApp4(app4);
+
+        managerdailyChangeBO.setMicroLetter4(microLetter4);
+
+        managerdailyChangeBO.setIndividualTraveler4(individualTraveler4);
+
+        managerdailyChangeBO.setDirectBooking4(directBooking4);
+
+        managerdailyChangeBO.setEnter4(enter4);
+
+        managerdailyChangeBO.setSubtotal4(subtotal4);
+
+        //,5:平均房价分析
+
+        managerdailyChangeBO.setMembers5(members5);
+
+        managerdailyChangeBO.setAgreementUnit5(agreementUnit5);
+
+        managerdailyChangeBO.setIntermediary5(intermediary5);
+
+        managerdailyChangeBO.setApp5(app5);
+
+        managerdailyChangeBO.setMicroLetter5(microLetter5);
+
+        managerdailyChangeBO.setIndividualTraveler5(individualTraveler5);
+
+        managerdailyChangeBO.setDirectBooking5(directBooking5);
+
+        managerdailyChangeBO.setEnter5(enter5);
+
+        managerdailyChangeBO.setSubtotal5(subtotal5);
+        //,6:出租率分析
+
+        managerdailyChangeBO.setMembers6(members6);
+
+        managerdailyChangeBO.setAgreementUnit6(agreementUnit6);
+
+        managerdailyChangeBO.setIntermediary6(intermediary6);
+
+        managerdailyChangeBO.setApp6(app6);
+
+        managerdailyChangeBO.setMicroLetter6(microLetter6);
+
+        managerdailyChangeBO.setIndividualTraveler6(individualTraveler6);
+
+        managerdailyChangeBO.setDirectBooking6(directBooking6);
+
+        managerdailyChangeBO.setEnter6(enter6);
+
+        managerdailyChangeBO.setSubtotal6(subtotal6);
+
+        return managerdailyChangeBO;
     }
 
 
@@ -753,6 +885,21 @@ public class ManagerDailyService {
         double j =  zjrz2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
         //去年出租率
         double s =  zjrz2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+
+        return j-s+"%";
+    }
+
+    //计算预约入住年增长率
+    private String isRentayy(Integer hotelId, String date){
+        //获取今年日期
+        String yyyy = new SimpleDateFormat("yyyy").format(date);
+        //获取上一年日期
+        String year = isYear(DateUtils.parseDate(date, "yyyy"));
+
+        //今年出租率
+        double j =  fjyd2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+        //去年出租率
+        double s =  fjyd2Year(hotelId, year)/xj3Year(hotelId, year)*100;
 
         return j-s+"%";
     }
@@ -2801,6 +2948,8 @@ public class ManagerDailyService {
         String specifiedDayBefore = DateUtils.getSpecifiedDayBefore(date);
         String startTime = specifiedDayBefore + " 04:00:00";
         String endTime = date + " 04:00:00";
+        log.info("startTime:{}",startTime);
+        log.info("endTime:{}",endTime);
         ManagerdailyBO managerdailyBO = new ManagerdailyBO();
 
 
@@ -2966,7 +3115,7 @@ public class ManagerDailyService {
         return roomRecordBOS.size();
     }
 
-    /** TODO 标记
+    /**
      * 计算锁房数
      * @return
      */
@@ -3382,6 +3531,7 @@ public class ManagerDailyService {
      */
     private double orderTotalPrice(Integer hotelId, String startTime, String endTime){
         List<TotalPriceBO> totalPriceBOS = managerdailyBOMapper.queryOrderTotalPrice(hotelId, startTime, endTime);
+        log.info("3534*******totalPriceBOS:{}",totalPriceBOS);
         double n = 0;
         for (TotalPriceBO totalPriceBO : totalPriceBOS) {
             n = n +totalPriceBO.getTotalPrice();

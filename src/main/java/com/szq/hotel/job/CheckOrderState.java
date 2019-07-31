@@ -39,6 +39,7 @@ public class CheckOrderState {
     HotelDAO hotelDAO;
     @Resource
     ManagementReportService managementReportService;
+    @Resource
 
 
     int count = 0;

@@ -667,4 +667,16 @@
         AND hm_room.room_state = 'no'
         and hm_room.id = #{id}
     </select>
+
+    <select id="queryOrderTypeRoom" resultType="com.szq.hotel.entity.bo.RmTypeIdBO">
+        SELECT  hm_order_child.room_type_id , hm_order_child.start_time as startTime,hm_order_child.end_time as endTime FROM hm_order,hm_order_child
+        WHERE hm_order.id = hm_order_child.order_id
+          AND hm_order.hotel_id = #{hotelId}
+        AND hm_order_child.order_state IN ('reservation') AND room_id IS NULL
+        HAVING
+        (hm_order_child.start_time BETWEEN DATE_ADD( #{startTime},
+        INTERVAL 1 SECOND)  AND   DATE_SUB( #{endTime}, INTERVAL 1 SECOND))
+        OR (DATE_ADD(#{startTime},
+        INTERVAL 1 SECOND) BETWEEN hm_order_child.start_time AND hm_order_child.end_time)
+    </select>
 </mapper>
