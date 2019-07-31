@@ -134,12 +134,14 @@
                 </div>
                 <label class="layui-form-label">房号</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="roomNum" placeholder="请输入房号" autocomplete="off" class="layui-input">
+                    <input type="text" name="roomName" placeholder="请输入房号" autocomplete="off" class="layui-input">
                 </div>
                 <label class="layui-form-label">机构</label>
                 <div class="layui-input-inline">
                     <select id="channel" name="channel" lay-search>
                         <option value=""></option>
+                        <option value="散客">散客</option>
+                        <option value="会员">会员</option>
                     </select>
                 </div>
                 <div class="layui-input-inline" style="width: 200px;">
@@ -294,15 +296,8 @@
         });
         //监听提交
         form.on('submit(formData)', function (data) {
-            obj = {};
-            //获取查询条件，去除空字符串项
-            for (var item in data.field) {
-                if (!!data.field[item] || item === 'orderState') {
-                    obj[item] = data.field[item];
-                }
-            }
             tab.reload({
-                where: obj
+                where: data.field
                 , page: {
                     curr: 1 //重新从第 1 页开始
                 }

@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="o-reight">
-        <div class="layui-btn-container btn-box" id="btnList">
+        <div class="layui-btn-container btn-box">
             <button class="r-btn layui-btn" id="deposit">押金</button>
             <button class="r-btn layui-btn" id="other">入账</button>
             <button class="r-btn layui-btn" id="blanking">冲减</button>
@@ -112,7 +112,6 @@
             //id为初始化使用
             id = parseInt(getUrl('id'));
             var state = parseInt(getUrl('state'));
-            sessionStorage.setItem('backState', 0);//修改结账跳转
             setInterval(function () {
                 getReport($)
             }, 60000)
@@ -122,7 +121,7 @@
                 $('.order-state').css('display', 'block');
                 queryOrderInfo();
             } else if (state == 1) {
-                $('#btnList').css('display', 'none');
+                $('.r-btn').css('display', 'none');
                 $('#checkOutBox').css('display', 'none');
                 queryOrderInfo();
             }
@@ -207,44 +206,6 @@
                 }
             ]]
         });
-
-
-        function getSessionInfo() {
-            var accounts = JSON.parse(sessionStorage.getItem('accounts'));
-            roomId = accounts.room.roomId;
-            priceInfo(accounts.childOrder, stateJudgment(accounts.room.status), setPayStatus(accounts.childOrderBOs[tmpIndex].payStatus));
-            oId = accounts.childOrder.id;
-            resLeft = accounts.childOrderBOs;
-            resReight = accounts.orderManageBOs;
-            orderList.reload({data: JSON.parse(JSON.stringify(resLeft))});
-            if (resReight[0] != null) {
-                orderInfo.reload({data: JSON.parse(JSON.stringify(resReight))});
-            }
-        }
-
-        //查看详情
-        function queryBeforeOrder() {
-            $.ajax({
-                url: api.beforeOrder,
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    id: id
-                },
-                success: function (data) {
-                    priceInfo(data.data.childOrder, '', '');
-                    resLeft = data.data.childOrderBOs;
-                    resReight = data.data.orderManageBOs;
-                    orderList.reload({data: JSON.parse(JSON.stringify(resLeft))});
-                    orderInfo.reload({data: JSON.parse(JSON.stringify(resReight))});
-
-                    tmpobj = 1
-
-                    $('.o-left .layui-table-main tr').eq(0).css('backgroundColor', '#33ABA0');
-                    $('.o-left .layui-table-fixed tr').eq(1).css('backgroundColor', '#33ABA0');
-                }
-            })
-        }
 
         //客账管理
         function queryOrderInfo() {
@@ -360,7 +321,7 @@
             });
         });
 
-        //退房消卡
+        //退房
         $('#outHouse').on('click', function () {
             if (!oId) {
                 layer.msg('请选择需要支付的订单！');
@@ -403,16 +364,6 @@
                     });
                 }
             });
-        }
-
-        function checkCardstatusAttribute(rs) {
-            var flag = true;
-            for (var i = 0, len = rs.length; i < len; i++) {
-                if (rs[i].cardstatusAttribute == 1) {
-                    flag = false;
-                }
-            }
-            return flag;
         }
 
         //退房回滚
@@ -471,7 +422,7 @@
                         title: '结账',
                         shade: 0.6,
                         shadeClose: true,
-                        content: 'iframe_orderSettleAccounts.html?s=1'
+                        content: 'iframe_orderSettleAccounts.html?s=1&back='+getUrl('back')
                     });
                 }
             });

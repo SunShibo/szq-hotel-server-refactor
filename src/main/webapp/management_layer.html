@@ -147,31 +147,41 @@
             data['occupancyRate'].year = data['occupancyRate'].year ? toPercent(data['occupancyRate'].year) : '0%';
             data['occupancyRate'].lastYear = data['occupancyRate'].lastYear ? toPercent(data['occupancyRate'].lastYear) : '0%';
             data['occupancyRate'].lastYearMonth = data['occupancyRate'].lastYearMonth ? toPercent(data['occupancyRate'].lastYearMonth) : '0%';
-            data['occupancyRate'].lastYearDay = data['occupancyRate'].lastYearDay ? toPercent(data['occupancyRate'].lastYearDay == '' ? 0 : data['rents'].lastYearDay) : '0%';
-            data['stopRoom'].name = '停用房数';
-            data['maintenanceRoom'].name = '维修房数';
-            data['memberRoom'].name = '会员房晚';
-            data['accountsReceivable'] = formatObj(data, 'accountsReceivable');
-            data['accountsReceivable'].name = '应收合计';
-            data['theRent'] = formatObj(data, 'theRent');
-            data['theRent'].name = '房租收入';
-            data['product'] = formatObj(data, 'product');
-            data['product'].name = '商品收入';
-            data['compensation'] = formatObj(data, 'compensation');
-            data['compensation'].name = '赔偿收入';
-            data['membership'] = formatObj(data, 'membership');
-            data['membership'].name = '会员销售收入';
-            data['rateAdjustment'] = formatObj(data, 'rateAdjustment');
-            data['rateAdjustment'].name = '房费调整';
-            data['averageHouse'] = formatObj(data, 'averageHouse');
-            data['averageHouse'].name = '平均房价';
-            data['averageHousePay'] = formatObj(data, 'averageHousePay');
-            data['averageHousePay'].name = '房均消费';
-            data['capitaPay'] = formatObj(data, 'capitaPay');
-            data['capitaPay'].name = '人均消费';
-            data['nightRoom'].name = '夜核房晚数';
-            data['zdRoom'].name = '钟点房晚数';
-            data['revpar'].name = 'REVPAR';
+            data['occupancyRate'].lastYearDay = data['occupancyRate'].lastYearDay ? toPercent(data['occupancyRate'].lastYearDay == '' ? 0 : data['occupancyRate'].lastYearDay) : '0%';
+            data['disableRoomSum'].name = '停用房数';
+            data['maintainRoomSum'].name = '维修房数';
+            data['memberRoomSum'].name = '会员房数';
+
+            // data['nightRoom'].name = '夜核房晚数';
+            data['hourRoomLateSum'].name = '钟点房晚数';
+            data['REVPAR'].name = 'REVPAR';
+
+            data['receivableSum'] = formatObj(data, 'receivableSum');
+            data['receivableSum'].name = '应收合计';
+
+            data['rentalIncome'] = formatObj(data, 'rentalIncome');
+            data['rentalIncome'].name = '房租收入';
+
+            data['commodityRevenues'] = formatObj(data, 'commodityRevenues');
+            data['commodityRevenues'].name = '商品收入';
+
+            data['indemnityIncome'] = formatObj(data, 'indemnityIncome');
+            data['indemnityIncome'].name = '赔偿收入';
+
+            data['memberCardSoldMoney'] = formatObj(data, 'memberCardSoldMoney');
+            data['memberCardSoldMoney'].name = '会员销售收入';
+
+            data['roomRateAdjustment'] = formatObj(data, 'roomRateAdjustment');
+            data['roomRateAdjustment'].name = '房费调整';
+
+            data['avgRoomRate'] = formatObj(data, 'avgRoomRate');
+            data['avgRoomRate'].name = '平均房价';
+
+            data['avgConsumptionOfRoom'] = formatObj(data, 'avgConsumptionOfRoom');
+            data['avgConsumptionOfRoom'].name = '房均消费';
+
+            data['avgConsumptionOfPerson'] = formatObj(data, 'avgConsumptionOfPerson');
+            data['avgConsumptionOfPerson'].name = '人均消费';
             return data
         }
 

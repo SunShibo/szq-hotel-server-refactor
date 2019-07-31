@@ -245,7 +245,11 @@
                     success: function (res) {
                         if (res.success) {
                             showMsg('结账成功', 1, false);
-                            parent.location.href = location.href = "order.html";
+                            if(getUrl('back')){
+                                parent.location.href = "home.html";
+                            }else {
+                                parent.location.href = "order.html";
+                            }
                         } else {
                             showMsg('结账失败', 2, false);
                         }

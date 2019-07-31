@@ -48,14 +48,14 @@
                 <label class="layui-form-label">设 施:</label>
                 <div class="layui-input-block">
                     <input type="text" name="setting" autocomplete="off" placeholder="请输入设施名称"
-                           class="layui-input" lay-verify="required">
+                           class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">特 性:</label>
                 <div class="layui-input-block">
                     <input type="text" name="character" autocomplete="off" placeholder="请输入特性"
-                           class="layui-input" lay-verify="required">
+                           class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
@@ -163,9 +163,8 @@
         form.on('submit(formData)', function (data) {
             data.field.roomAuxiliaryStatus = data.field.roomAuxiliaryStatus ? 'yes' : 'no';
             data.field.roomAuxiliaryStatusStand = data.field.roomAuxiliaryStatusStand ? 'yes' : 'no';
-
             if (state) {
-                data.field.roomId = roomId;
+                data.field.id = roomInfo.id;
                 $.ajax({
                     url: api.updateRoomInfo,
                     type: 'POST',

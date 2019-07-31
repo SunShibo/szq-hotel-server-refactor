@@ -101,17 +101,16 @@
         });
 
         //监听工具条
-        table.on('tool(cashOrder)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(cashOrder)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
 
-            if(layEvent === 'print'){ //打印
+            if (layEvent === 'print') { //打印
                 //do somehing
                 window.open('shopPrinting.html?id=' + data.id, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
             }
         });
-
 
 
         //监听提交
@@ -121,16 +120,18 @@
                 showMsg('起止时间不有为空', 2, false);
                 return false
             }
-            var obj = {};
+            var obj = {
+                startTime: '',
+                endTime: '',
+                condition: ''
+            };
             if (data.field.startTime) {
-                obj.startTime = new Date(data.field.startTime.replace(/-/, "/").replace(/-/, "/"))
+                obj.startTime = new Date(data.field.startTime.replace(/-/g, "/"))
             }
             if (data.field.endTime) {
-                obj.endTime = new Date(data.field.endTime.replace(/-/, "/").replace(/-/, "/"))
+                obj.endTime = new Date(data.field.endTime.replace(/-/g, "/"))
             }
-            if(data.field.mate){
-                obj.condition = data.field.mate;
-            }
+            obj.condition = data.field.mate;
             tab.reload({
                 where: obj,
                 page: {

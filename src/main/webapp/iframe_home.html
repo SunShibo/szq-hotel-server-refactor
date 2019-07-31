@@ -162,7 +162,7 @@
             checkInObj = {},//在住信息对象
             endTime = '', //离店时间
             checkInPhone = '', //离店时间
-            roomAuxiliaryStatus = '', //离店时间
+            roomAuxiliaryStatus = '', //入住方式
 
             inMessageRemark = '',
             subMessageRemark = '';
@@ -217,7 +217,6 @@
                         showMsg(data.errMsg, 2, false);
                         return;
                     }
-                    console.log(data);
                     //保存在住信息对象
                     checkInObj = data.data;
                     //获取订单ID
@@ -227,7 +226,7 @@
                     endTime = data.data.endTime;
                     //下单人手机号
                     checkInPhone = data.data.phone;
-                    //客房状态
+                    //入住方式
                     roomAuxiliaryStatus = data.data.checkType;
                     //入住信息表格数据渲染
                     for (var item in data.data) {
@@ -293,6 +292,10 @@
                 $('#finish').text('打扫完毕');
             } else {
                 $('#finish').text('待打扫');
+            }
+            //如果是入住或者超时状态  不允许点击
+            if(status === 'true'){
+                $('#finish').addClass('layui-btn-disabled').prop('disabled', 'disabled');
             }
 
             $.ajax({
@@ -388,7 +391,7 @@
             /*
              * 天数 每循环一次为一天
              */
-            for (var i = 1; i < 15; i++) {
+            for (var i = 0; i < 15; i++) {
                 var timestamp = new Date(data[i].startDate);
                 var month = timestamp.getMonth() + 1 < 10 ? "0" + (timestamp.getMonth() + 1) : timestamp.getMonth() + 1;
                 var date = timestamp.getDate() < 10 ? '0' + timestamp.getDate() : timestamp.getDate();
