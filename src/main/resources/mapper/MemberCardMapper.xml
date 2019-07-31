@@ -78,7 +78,7 @@
         <where>
             card.state!='no'
             <if test="state!=null and state!=''">AND card.`state`=#{state}</if>
-            <if test="memberLevelId!=null ">AND card.`member_level_id`=#{memberLevelId}</if>
+            <if test="name!=null and name!=''">AND le.`name`LIKE concat('%',#{name},'%')</if>
             <if test="money!=null ">AND card.`money`=#{money}</if>
             <if test="cardNumber!=null and cardNumber!=''">AND card.`card_number` LIKE concat('%',#{cardNumber},'%')</if>
         </where>
