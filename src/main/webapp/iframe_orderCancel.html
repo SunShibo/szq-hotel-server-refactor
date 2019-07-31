@@ -68,6 +68,10 @@
         });
 
         $('#orderCancelBtn').on('click', function () {
+            if (!ids.length) {
+                showMsg('请选择需要取消的订单', 2, false);
+                return;
+            }
             parent.layer.confirm('确定取消吗？', {icon: 3, title: '提示'}, function (index) {
                 $.ajax({
                     url: api.cancelSubUpdate,
