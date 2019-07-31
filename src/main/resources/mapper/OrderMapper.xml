@@ -166,20 +166,18 @@
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
         c.room_rate,other_rate,c.free_rate_num
-        from hm_order as o,hm_room as r,hm_room_type as t,
-        hm_order_child as c,hm_dictionaries_value as v,
-        hm_check_in_person as p,hm_everyday_room_price as e,hm_order_record as `or`
-        where o.id=c.order_id
-        and c.room_id=r.id
-        and c.room_type_id=t.id
-        and c.id=p.order_child_id
-        and c.id=e.order_child_id
-        and p.certificate_type=v.id
-        and c.id=`or`.order_child_id
-        and p.status='checkin'
+        from
+        hm_order as o inner join hm_order_child as c on o.id=c.order_id
+        inner join hm_room as r on c.room_id=r.id
+        inner join hm_room_type as t on c.room_type_id=t.id
+        inner join hm_check_in_person as p on c.id=p.order_child_id
+        inner join hm_dictionaries_value as v on p.certificate_type=v.id
+        inner join hm_everyday_room_price as e on c.id=e.order_child_id
+        left join hm_order_record as `or` on  c.id=`or`.order_child_id
+        where  p.status='checkin'
         and (order_state='admissions')
         and o.hotel_id=#{hotelId}
-        group by or.order_child_id
+        group by c.id
     </select>
 
     <!--预离报表-->
@@ -187,17 +185,15 @@
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
         c.room_rate,other_rate,c.free_rate_num
-        from hm_order as o,hm_room as r,hm_room_type as t,
-        hm_order_child as c,hm_dictionaries_value as v,
-        hm_check_in_person as p,hm_everyday_room_price as e,hm_order_record as `or`
-        where o.id=c.order_id
-        and c.room_id=r.id
-        and c.room_type_id=t.id
-        and c.id=p.order_child_id
-        and c.id=e.order_child_id
-        and p.certificate_type=v.id
-        and c.id=`or`.order_child_id
-        and p.status='checkin'
+        from
+        hm_order as o inner join hm_order_child as c on o.id=c.order_id
+        inner join hm_room as r on c.room_id=r.id
+        inner join hm_room_type as t on c.room_type_id=t.id
+        inner join hm_check_in_person as p on c.id=p.order_child_id
+        inner join hm_dictionaries_value as v on p.certificate_type=v.id
+        inner join hm_everyday_room_price as e on c.id=e.order_child_id
+        left join hm_order_record as `or` on  c.id=`or`.order_child_id
+        where  p.status='checkin'
         and (order_state='admissions')
         <if test="afterTime!=null and afterTime!=''">
             and c.end_time&gt;=#{afterTime}
@@ -206,7 +202,7 @@
             and c.end_time&lt;#{beforeTime}
         </if>
         and o.hotel_id=#{hotelId}
-        group by or.order_child_id
+        group by c.id
         order by c.end_time
         <include refid="limit" />
     </select>
