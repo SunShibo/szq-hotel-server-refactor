@@ -50,17 +50,22 @@ public class MemberController extends BaseCotroller {
     private MemberLevelService memberLevelService;
     @Resource
     private CommodiryService  commodiryService;
+    @Resource
+    private ChildOrderService childOrderService;
 
     /**
      * 新增会员
+     * @param cardNumber 卡号
      * @param memberBO
+     * @param money 金额
+     * @param payType 支付方式
+     * @param childId 子订单id
      * @param request
      * @param response
      */
     @RequestMapping("/addMember")
-    public void  addmember(String cardNumber,MemberBO memberBO,BigDecimal money,String payType, HttpServletRequest request, HttpServletResponse response){
+    public void  addmember(String cardNumber,MemberBO memberBO,BigDecimal money,String payType,Integer childId, HttpServletRequest request, HttpServletResponse response){
         try {
-
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //获取管理员对象
@@ -80,34 +85,40 @@ public class MemberController extends BaseCotroller {
                 return ;
             }
 
-            MemberCardBO memberCardBO = memberCardService.getCardNumber(cardNumber);
-            if (memberCardBO!=null) {
-                //设置会员的会员卡id
-                memberBO.setMemberCardId(memberCardBO.getId());
-                //设置默认积分为0
-                memberBO.setIntegral(BigDecimal.valueOf(0));
-                //设置默认储值为0
-                memberBO.setStoredValue(BigDecimal.valueOf(0));
+                MemberCardBO memberCardBO = memberCardService.getCardNumber(cardNumber);
+                if (memberCardBO != null) {
+                    //设置会员的会员卡id
+                    memberBO.setMemberCardId(memberCardBO.getId());
+                    //设置默认积分为0
+                    memberBO.setIntegral(BigDecimal.valueOf(0));
+                    //设置默认储值为0
+                    memberBO.setStoredValue(BigDecimal.valueOf(0));
 
-                String memberCardNumber = memberCardBO.getCardNumber();
-                //BigDecimal money = memberCardBO.getMoney();
-                //修改会员卡的售出时间
-                memberCardService.updateSellingTime(memberCardNumber);
+                    String memberCardNumber = memberCardBO.getCardNumber();
+                    //BigDecimal money = memberCardBO.getMoney();
+                    //修改会员卡的售出时间
+                    memberCardService.updateSellingTime(memberCardNumber);
+                }
+            //不是挂账
+            if (childId==null) {
+                //向数据库中添加数据
+                memberService.addMember(memberBO, loginAdmin.getId());
+
+                //添加收银汇总
+                cashierSummaryService.addCard(memberBO.getName(), money, payType, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId());
+                //添加商品交易
+                commodiryService.addCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), null);
+
+            }else {
+                //挂账
+                childOrderService.recorded(childId,money,"办卡",Constants.APPLYCARD.getValue(),loginAdmin.getId(),loginAdmin.getHotelId());
             }
-            //向数据库中添加数据
-            memberService.addMember(memberBO,loginAdmin.getId());
 
-            //添加收银汇总
-            cashierSummaryService.addCard(memberBO.getName(),money,payType,IDBuilder.getOrderNumber(),loginAdmin.getId(),loginAdmin.getHotelId());
-            //添加商品交易
-            commodiryService.addCommodiry(payType,Constants.APPLYCARD.getValue(),money,null,IDBuilder.getOrderNumber(),loginAdmin.getId(),loginAdmin.getHotelId(),null);
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
 
-
-
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功"));
-            super.safeJsonPrint(response, result);
-            log.info("result{}",result);
-            return;
         }catch (Exception e){
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000004"));
@@ -314,7 +325,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/updateMember")
-    public void updateMember(String cardNumber,MemberBO memberBO,BigDecimal money,String payType,HttpServletRequest request, HttpServletResponse response){
+    public void updateMember(String cardNumber,MemberBO memberBO,BigDecimal money,String payType,Integer childId,HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -346,17 +357,17 @@ public class MemberController extends BaseCotroller {
                         //修改会员卡的售出时间
                         memberCardService.updateSellingTime(memberCardNumber);
                     }
+
+                    //不是挂账
+                    if (childId==null) {
+                        //添加商品交易
+                        commodiryService.updateMemberAddCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), memberBO.getId());
+                    }else {
+                        //挂账
+                        childOrderService.recorded(childId,money,"办卡",Constants.APPLYCARD.getValue(),loginAdmin.getId(),loginAdmin.getHotelId());
+                    }
                     //修改会员卡id
                     memberService.updateMember(memberBO, loginAdmin.getId());
-
-                    //添加收银汇总
-                    cashierSummaryService.addCard(memberBO.getName(), money, payType, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId());
-
-
-
-
-                    //添加商品交易
-                    commodiryService.updateMemberAddCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), memberBO.getId());
 
                     String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改会员信息成功！"));
                     super.safeJsonPrint(response, result);
