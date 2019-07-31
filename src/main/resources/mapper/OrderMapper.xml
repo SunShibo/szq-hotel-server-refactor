@@ -395,7 +395,7 @@
     <select id="getRoomInfoById" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select o.order_number,oc.id,r.room_name as roomName,cp.name as name,cp.create_time as createTime,main,rt.room_type_name
         from hm_order_child as oc,hm_check_in_person as cp,hm_room as r,hm_room_type as rt,hm_order as o
-        where oc.al_room_code and #{alCode}
+        where oc.al_room_code = #{alCode}
         and oc.room_id=r.id
         and cp.order_child_id=oc.id
         and oc.room_type_id=rt.id
