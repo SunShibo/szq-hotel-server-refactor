@@ -359,6 +359,9 @@
             d.IDNumberType = d.certificateId + "";
             d.checkTime = DateToLStr(new Date());
             d.checkOutTime = d.leaveDate;
+            if($("input[name='checkType']:checked").val()=="hour"){
+                d.checkOutTime = DateToLStr(new Date(Date.now()+14400000));
+            }
             d.dayCount = d.dayNumber + "";
             d.orderType = "directly";
             if(userInfo&&userInfo.id) d.membersId = userInfo.id;

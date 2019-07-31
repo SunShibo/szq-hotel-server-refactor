@@ -387,8 +387,11 @@
             d.id = yuyueData.id;
             d.type = "reservation";
             d.IDNumberType = d.certificateId + "";
-            d.checkTime = d.startTime;
+            d.checkTime = DateToLStr(new Date());
             d.checkOutTime = d.leaveDate1;
+            if($("input[name='checkType']:checked").val()=="hour"){
+                d.checkOutTime = DateToLStr(new Date(Date.now()+14400000));
+            }
             d.dayCount = d.dayNumber1 + "";
             d.orderType = "subscribe";
             if(userInfo&&userInfo.id) d.membersId = userInfo.id;
