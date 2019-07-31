@@ -787,8 +787,11 @@ public class OrderService {
             for (int y = 0; y < orderRecoredBO.size(); y++) {
                 ids = ids + orderRecoredBO.get(y).getId() + ",";
             }
+            System.err.println("ids"+ids);
             //房间消费转账到新的主账房 添加消费记录
-            childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]));
+            if(!ids.equals("")){
+                childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]));
+            }
 
             //修改子帐房联房码
             OrderChildBO orderChildBO = orderDAO.getOrderChildById(new Integer(orderChildIdArr[i]));

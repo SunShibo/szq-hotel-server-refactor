@@ -559,7 +559,7 @@
 
     <!--查询所有可用联房-->
     <select id="getAlRoom" resultType="com.szq.hotel.entity.bo.CheckInPersonBO">
-        select hm_order_child.id as orderChildId,hm_room.id as roomId,hm_check_in_person.name,hm_order_child.start_time
+        select hm_order_child.id as orderChildId,hm_room.id as roomId,hm_check_in_person.name,hm_order_child.start_time,hm_room.room_name as roomName
         from hm_order_child,hm_room,hm_check_in_person,hm_order
         where hm_order_child.room_id=hm_room.id
         and hm_order_child.main='yes'
