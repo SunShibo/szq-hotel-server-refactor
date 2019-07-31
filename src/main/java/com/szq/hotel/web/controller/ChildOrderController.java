@@ -406,8 +406,8 @@ public class ChildOrderController extends BaseCotroller {
     /**
      * 单项结账打印
      */
-    @RequestMapping("/print")
-    public void print(HttpServletRequest request, HttpServletResponse response,String  ids) {
+    @RequestMapping("/alonePrint")
+    public void alonePrint(HttpServletRequest request, HttpServletResponse response,String  ids) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
