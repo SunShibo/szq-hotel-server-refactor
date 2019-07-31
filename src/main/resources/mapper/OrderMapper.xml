@@ -571,6 +571,10 @@
         group by hm_order_child.id
     </select>
 
+    <select id="getOrderChildCountByRoomIdByTime" resultType="java.lang.Integer">
+        select count(*) from hm_order_child where roomId=#{roomId} and #{endTime} &gt;check_time and order_state=#{orderState}
+    </select>
+
     <!--找查首日房价-->
     <select id="queryUnitPrice" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
         SELECT  money  FROM `hm_everyday_room_price` where order_child_id =#{id}  limit 0,1

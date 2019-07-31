@@ -91,7 +91,7 @@ public class OrderController extends BaseCotroller {
             List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
             Map<String,Object> resultMap=new HashMap<String, Object>();
 
-            //判断房型是否够用
+            //bug判断房型是否够用
             if(type.equals("roomReservation")){
 
             }
@@ -112,13 +112,9 @@ public class OrderController extends BaseCotroller {
                         log.info("result{}", result);
                         return;
                     }
-                    String status=roomBO.getRoomState();
-                    System.err.println("当前入住房间状态:"+status);
-                    if(status.equals(Constants.INTHE.getValue())||status.equals(Constants.TIMEOUT.getValue())
-                            ||status.equals(Constants.SHOP.getValue())
-                            ||status.equals(Constants.NETWORK.getValue())
-                            ||status.equals(Constants.ALL.getValue())){
-                        result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"),"房间状态异常，不能入住") ;
+                    String status=roomBO.getRoomMajorState();
+                    if(!status.equals(Constants.VACANT.getValue())){
+                        result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097"),"房间状态异常，不能入住") ;
                         super.safeJsonPrint(response, result);
                         log.info("result{}", result);
                         return;
@@ -672,21 +668,25 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
-            //验证续租是否冲突
+
             //验证入住人
-//            if (checkInPersonJson != null && !checkInPersonJson.equals("")) {
-//                List<CheckInPersonBO> list = JsonUtils.getJSONtoList(checkInPersonJson, CheckInPersonBO.class);
-//                OrderChildBO orderChildBO=new OrderChildBO();
-//                orderChildBO.setCheckInPersonBOS(list);
-//                List<OrderChildBO> orderChildBOS=new ArrayList<OrderChildBO>();
-//                orderChildBOS.add(orderChildBO);
-//                String result=this.checkInPerson(orderChildBOS);
-//                if(result!=null){
-//                    super.safeJsonPrint(response, result);
-//                    log.info("result{}", result);
-//                    return;
-//                }
-//            }
+            if (checkInPersonJson != null && !checkInPersonJson.equals("")) {
+                List<CheckInPersonBO> list = JsonUtils.getJSONtoList(checkInPersonJson, CheckInPersonBO.class);
+                OrderChildBO orderChildBO=new OrderChildBO();
+                orderChildBO.setId(orderChildId);
+                orderChildBO.setCheckInPersonBOS(list);
+                List<OrderChildBO> orderChildBOS=new ArrayList<OrderChildBO>();
+                orderChildBOS.add(orderChildBO);
+                String result=this.checkInPerson(orderChildBOS);
+                if(result!=null){
+                    super.safeJsonPrint(response, result);
+                    log.info("result{}", result);
+                    return;
+                }
+            }
+            //bug验证续租是否冲突
+
+
             orderService.updCheckInInfo(orderId,channel,OTA,orderChildId,endTime,remark,checkInPersonJson,everyDayRoomPrice);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success( "修改成功"));
             super.safeJsonPrint(response, result);

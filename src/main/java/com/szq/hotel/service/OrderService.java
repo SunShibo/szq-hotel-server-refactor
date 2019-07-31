@@ -14,6 +14,7 @@ import com.szq.hotel.system.idempotency.Null;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -249,6 +250,8 @@ public class OrderService {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
                     if (orderChildNew.getRoomTypeId() == orderChildOld.getRoomTypeId() && !("yes").equals(orderChildOld.getOrderState()) && !"yes".equals(orderChildNew.getOrderState())) {
                         orderChildNew.setId(orderChildOld.getId());
+                        orderChildNew.setStartTime(orderBO.getCheckTime());
+                        orderChildNew.setEndTime(orderBO.getCheckOutTime());
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
                         orderChildNew.setOrderState("yes");
@@ -287,6 +290,9 @@ public class OrderService {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
                     if (orderChildNew.getRoomId() == orderChildOld.getRoomId() && !"yes".equals(orderChildOld.getOrderState()) && !("yes").equals(orderChildNew.getOrderState())) {
                         orderChildNew.setId(orderChildOld.getId());
+                        orderChildNew.setId(orderChildOld.getId());
+                        orderChildNew.setStartTime(orderBO.getCheckTime());
+                        orderChildNew.setEndTime(orderBO.getCheckOutTime());
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
                         orderChildNew.setOrderState("yes");
@@ -1162,6 +1168,20 @@ public class OrderService {
     //查询备份信息
     public OrderChildBackupParam getOrderChildBackup(Integer id) {
         return orderDAO.getOrderChildBackup(id);
+    }
+
+    //验证这个房间或者房型  是否可以续租或者入住 是否会与预约中的房间房型发生冲突
+    public boolean getOrderChildCountByRoomIdByTime(Integer roomId,String endTime){
+        //验证房间
+        if(roomId!=null){
+            Integer roomCount=orderDAO.getOrderChildCountByRoomIdByTime(roomId,endTime,Constants.RESERVATION.getValue());
+            if(roomCount>0){
+                return false;
+            }
+        }
+        //bug 验证房型未写完
+
+        return true;
     }
 
 

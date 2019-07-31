@@ -93,7 +93,8 @@ public interface OrderDAO {
     List<OrderChildBO> getTimeOutOrder2(String orderState);
     //获取入住支付信息
     List<OrderChildBO> getPayInfo(Integer orderId);
-
+    //根据入住时间 房间号 预约中的子订单
+    Integer getOrderChildCountByRoomIdByTime(@Param("roomId") Integer roomId,@Param("endTime")String endTime,@Param("orderState")String orderState);
 
     /**
      * 订单列表
