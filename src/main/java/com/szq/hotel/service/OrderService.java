@@ -102,6 +102,9 @@ public class OrderService {
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChild.getEverydayRoomPriceBOS();
             if (everydayRoomPriceBOList != null && everydayRoomPriceBOList.size() != 0) {
                 for (EverydayRoomPriceBO everydayRoomPriceBO : everydayRoomPriceBOList) {
+                    if(everydayRoomPriceBO.getMoney()==null){
+                        everydayRoomPriceBO.setMoney(new BigDecimal(0));
+                    }
                     everydayRoomPriceBO.setOrderChildId(orderChild.getId());
                     everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
                     //叠加总房价
@@ -201,6 +204,9 @@ public class OrderService {
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = orderChildBO.getEverydayRoomPriceBOS();
             if (everydayRoomPriceBOList != null) {
                 for (EverydayRoomPriceBO roomPrice : everydayRoomPriceBOList) {
+                    if(roomPrice.getMoney()==null){
+                        roomPrice.setMoney(new BigDecimal(0));
+                    }
                     roomPrice.setOrderChildId(orderChildBO.getId());
                     everydayRoomPriceDAO.addEverydayRoomPrice(roomPrice);
                 }
@@ -248,6 +254,9 @@ public class OrderService {
                         //添加新的每日房价
                         List<EverydayRoomPriceBO> everydayRoomPriceBOList=orderChildNew.getEverydayRoomPriceBOS();
                         for (EverydayRoomPriceBO everydayRoomPriceBO:everydayRoomPriceBOList){
+                            if(everydayRoomPriceBO.getMoney()==null){
+                                everydayRoomPriceBO.setMoney(new BigDecimal(0));
+                            }
                             everydayRoomPriceBO.setOrderChildId(orderChildOld.getId());
                             everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
                         }
@@ -284,6 +293,9 @@ public class OrderService {
                         List<EverydayRoomPriceBO> everydayRoomPriceBOList=orderChildNew.getEverydayRoomPriceBOS();
                         for (EverydayRoomPriceBO everydayRoomPriceBO:everydayRoomPriceBOList){
                             everydayRoomPriceBO.setOrderChildId(orderChildOld.getId());
+                            if(everydayRoomPriceBO.getMoney()==null){
+                                everydayRoomPriceBO.setMoney(new BigDecimal(0));
+                            }
                             everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
                         }
                     }
@@ -322,6 +334,9 @@ public class OrderService {
         if (everydayRoomPriceBOList != null && everydayRoomPriceBOList.size() != 0) {
             for (EverydayRoomPriceBO everydayRoomPriceBO : everydayRoomPriceBOList) {
                 everydayRoomPriceBO.setOrderChildId(orderChildBO.getId());
+                if(everydayRoomPriceBO.getMoney()==null){
+                    everydayRoomPriceBO.setMoney(new BigDecimal(0));
+                }
                 everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
             }
         }
@@ -517,10 +532,10 @@ public class OrderService {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dateString = df.format(currentTime);
             Date currentTime_2 = df.parse(dateString);
-
+            Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
             //计算超时费
-            if (currentTime_2.getTime() > orderChildBO.getEndTime().getTime()) {
-                Long minute = DateUtils.getQuotMinute(currentTime_2, orderChildBO.getEndTime());
+            if (currentTime_2.getTime() > endTime.getTime()) {
+                Long minute = DateUtils.getQuotMinute(currentTime_2, endTime);
                 RoomTypeBO roomTypeBO = roomTypeDAO.getRoomType(orderChildBO.getRoomTypeId());
                 //超过4小时
                 if (minute <= 4*60) {
@@ -592,13 +607,16 @@ public class OrderService {
             if(orderBO.getCheckType().equals(Constants.DAY.getValue())){
                 currDate=DateUtils.getBeforeDay(currDate,-1);
             }
-            //如果是小时房 入住时间是在六点前, 也就是前一天 也需要-1
-//            if(orderBO.getCheckType().equals(Constants.HOUR.getValue())&&orderChildBO.getStartTime()){
-//                currDate=DateUtils.getBeforeDay(currDate,-1);
-//            }
+        }
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(orderChildBO.getStartTime());
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        //超过4小时
+        System.err.println("入住小时:"+hour);
+        if(orderBO.getCheckType().equals(Constants.HOUR.getValue())&&hour<6&&hour>2){
+            currDate=DateUtils.getBeforeDay(currDate,-1);
         }
         //在住信息
-        System.err.println(roomId+"=="+simp.format(currDate)+"");
         CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId,simp.format(currDate));
         checkInInfoResult.setEndTime(entTime);
         //同住人信息
@@ -627,7 +645,7 @@ public class OrderService {
             orderBO.setOTA(OTA);
             orderDAO.updOrder(orderBO);
         }
-        //如果子订单传过来修改离店时间 修改房间备注
+        //如果子订单传过来 修改离店时间 修改房间备注
         if (orderChildId != null && !orderChildId.equals("")) {
             //修改时间 计算多添加的时间 添加每日房价
             if (entTime != null && !entTime.equals("")) {
@@ -642,14 +660,15 @@ public class OrderService {
                 if (oldOrderChild == null) {
                     return;
                 }
-                Long day = DateUtils.getQuot(entTime, oldOrderChild.getEndTime());
+                Date endTime = oldOrderChild.getPracticalDepartureTime() == null ? oldOrderChild.getEndTime() : oldOrderChild.getPracticalDepartureTime();
+                Long day = DateUtils.getQuot(entTime,endTime );
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 for (int i = 1; i <= day; i++) {
                     EverydayRoomPriceBO everydayRoomPriceBO = new EverydayRoomPriceBO();
                     everydayRoomPriceBO.setOrderChildId(orderChildId);
                     everydayRoomPriceBO.setMoney(oldMoney);
 
-                    Date newTime = DateUtils.getAppointDate(oldOrderChild.getEndTime(), i - 1);
+                    Date newTime = DateUtils.getAppointDate(endTime, i - 1);
                     everydayRoomPriceBO.setTime(simpleDateFormat.parse(simpleDateFormat.format(newTime)));
                     everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
                 }
@@ -817,8 +836,19 @@ public class OrderService {
         OrderChildBO orderChildBO = orderDAO.getOrderChildById(orderChildId);
         orderChildBO.setOtherRate(new BigDecimal(0));
         orderChildBO.setRoomRate(new BigDecimal(0));
+
+        Date startTime=orderChildBO.getStartTime();
+        Calendar calendar1=Calendar.getInstance();
+        calendar1.setTime(startTime);
+        int hour = calendar1.get(Calendar.HOUR_OF_DAY);
+        System.err.println("入住小时:"+hour);
+        if(hour<4){
+            calendar.add(Calendar.DATE, -1); //得到前一天
+            startTime=calendar1.getTime();
+        }
+
         //当天入住当天退房 滚一天当天房费
-        if (ymd.format(hotelDate).equals(ymd.format(orderChildBO.getStartTime()))) {
+        if (ymd.format(hotelDate).equals(ymd.format(startTime))) {
             this.addOrderChildRecordAndRoomRate(backup, hotelDate, orderChildBO, userId);
         }
         //获取离店时间
