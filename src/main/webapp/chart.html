@@ -114,7 +114,6 @@
         };
 
         function getTabData() {
-            debugger
             var obj;
             //获取输入框内的时间
             var tt = $("#test6").val();
@@ -127,12 +126,12 @@
                     checkTime: startTime,
                     endTime: endTime
                 }
-                $("#test6").val(DateToLStr(new Date()).split(" ")[0] + " - " + DateToLStr(new Date(Date.now() + (86400000 * 7))).split(" ")[0])
+                $("#test6").val(DateToLStr5(new Date()).split(" ")[0] + " - " + DateToLStr5(new Date(Date.now() + (86400000 * 7))).split(" ")[0])
 
             } else {
                 obj = {
-                    checkTime: DateToLStr4(new Date(tt.split(" - ")[0])),
-                    endTime: DateToLStr2(new Date(DateToLStr4(new Date(tt.split(" - ")[1]))))
+                    checkTime: DateToLStr5(new Date(tt.split(" - ")[0])),
+                    endTime: DateToLStr5(new Date(tt.split(" - ")[1]))
                 }
             }
             var index = layer.load(1,{time:10*1000});

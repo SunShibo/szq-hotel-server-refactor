@@ -690,10 +690,10 @@ public class RoomService {
         ll.add("reservation");
         ll.add("notpay");
         ll.add("admissions");
-
+        int i = 0;
         for (Time time : times){
             List<DateRoomDTO> l = new ArrayList<DateRoomDTO>();
-            int i = 0;
+
             for (RtBO rtBO : rtBOS) {
                 map.put("checkTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
                 map.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
@@ -705,6 +705,7 @@ public class RoomService {
                 List<RmBO> rmBOS1 = this.publicQuery(map, ll);
                 dateRoomDTO.setUsableRoomNunber(rmBOS1.size());
                 dateRoomDTO.setDate(dates.get(i));
+                log.info("dates.get(i):{}",dates.get(i));
                 l.add(dateRoomDTO);
 
             }

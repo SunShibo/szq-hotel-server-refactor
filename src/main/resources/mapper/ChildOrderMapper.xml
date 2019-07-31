@@ -38,7 +38,7 @@
 
     <!-- 增加子订单房费 -->
     <update id="increaseRoomRate" >
-        UPDATE  hm_order_child SET  room_rate=room_rate+#{money}  WHERE  id= #{id}
+        UPDATE  hm_order_child  SET  room_rate=room_rate+#{money}  WHERE  id= #{id}
     </update>
     <!-- 减少子订单房费 -->
     <update id="reduceRoomRate" >
@@ -89,7 +89,7 @@
 
     <!--查询所有在住信息-->
     <select id="queryOrderChild"  resultType="com.szq.hotel.entity.bo.RoomRateBO">
-           SELECT child.id,child.start_time,child.end_time ,room.room_name,`type`.room_type_name,
+           SELECT child.id,child.start_time,child.end_time ,room.room_name,`type`.room_type_name,child.al_room_code ,
             oder.channel,oder.order_type as passengerSource,oder.OTA,oder.order_number ,oder.hotel_id
         FROM hm_order oder  LEFT JOIN hm_order_child child ON child.order_id=oder.id
         LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type

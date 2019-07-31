@@ -361,7 +361,7 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/queryRoomTypeNum")
     public void queryRoomTypeNum(HttpServletRequest request, HttpServletResponse response, String checkTime,
-                                 String endTime, String roomTypeId, String roomAuxiliaryStatus, String phone) {
+                                 String endTime, String roomTypeId, String roomAuxiliaryStatus, String phone, String state) {
         log.info("queryRoomTypeNum*********************************************");
         AdminBO loginUser = super.getLoginAdmin(request);
         log.info("loginUser:{}", loginUser);
@@ -370,6 +370,7 @@ public class RoomController extends BaseCotroller {
         log.info("roomTypeId:{}", roomTypeId);
         log.info("roomAuxiliarySttatus:{}", roomAuxiliaryStatus);
         log.info("phone:{}", phone);
+        log.info("state:{}",state);
         if (StringUtils.isEmpty(phone)) {
             System.out.println("进入此方法");
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000200"));
@@ -416,6 +417,10 @@ public class RoomController extends BaseCotroller {
         map.put("roomTypeId", roomTypeId);
         map.put("hotelId", loginUser.getHotelId());
         map.put("phone", phone);
+
+        if ("yes".equals(state)) {
+            map.put("roomMajorState", "vacant");
+        }
 
         List<RoomTypeNumBO> roomTypeNumBOS = roomService.queryRoomTypeNum(map);
 
