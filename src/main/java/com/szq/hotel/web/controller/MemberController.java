@@ -101,9 +101,6 @@ public class MemberController extends BaseCotroller {
                 }
             //不是挂账
             if (childId==null) {
-                //向数据库中添加数据
-                memberService.addMember(memberBO, loginAdmin.getId());
-
                 //添加收银汇总
                 cashierSummaryService.addCard(memberBO.getName(), money, payType, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId());
                 //添加商品交易
@@ -113,6 +110,8 @@ public class MemberController extends BaseCotroller {
                 //挂账
                 childOrderService.recorded(childId,money,"办卡",Constants.APPLYCARD.getValue(),loginAdmin.getId(),loginAdmin.getHotelId());
             }
+            //向数据库中添加数据
+            memberService.addMember(memberBO, loginAdmin.getId());
 
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功"));
                 super.safeJsonPrint(response, result);
