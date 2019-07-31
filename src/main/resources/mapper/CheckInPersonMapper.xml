@@ -27,7 +27,9 @@
         select count(certificate_number)
         from hm_check_in_person,hm_order_child
         where order_child_id=hm_order_child.id
-
+        <if test="orderChildId!=null and orderChildId!=''">
+            and order_child_id!=#{orderChildId}
+        </if>
         and status='checkin'
         and certificate_number=#{certificateNumber}
     </select>

@@ -15,7 +15,7 @@ public interface CheckInPersonDAO {
     Integer delCheckInPersonById(Integer id);
 
     //检查身份证号是否在住
-    Integer checkId(@Param("certificateNumber") String certificateNumber);
+    Integer checkId(@Param("certificateNumber") String certificateNumber,@Param("orderChildId")Integer orderChildId);
 
     //修改入住人信息
     Integer updCheckInPerson(CheckInPersonBO checkInPersonBO);

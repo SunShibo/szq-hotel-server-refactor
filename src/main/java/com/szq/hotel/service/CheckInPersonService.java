@@ -23,8 +23,8 @@ public class CheckInPersonService {
 
 
     //检查身份证号是否在住
-    public Integer checkId(String certificateNumber){
-        return checkInPersonDAO.checkId(certificateNumber);
+    public Integer checkId(String certificateNumber,Integer orderChildId){
+        return checkInPersonDAO.checkId(certificateNumber,orderChildId);
     }
 
     //添加入住人信息

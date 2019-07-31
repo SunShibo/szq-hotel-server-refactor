@@ -617,7 +617,7 @@ public class OrderService {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         //超过4小时
         System.err.println("入住小时:" + hour);
-        if (minute<4*60 && hour < 6 && hour > 2) {
+        if (minute<=4*60 && hour < 6 && hour > 2) {
             currDate = DateUtils.getAppointDate(currDate, -1);
         }
         System.err.println("房价时间"+simp.format(currDate));
@@ -642,6 +642,9 @@ public class OrderService {
     public void updCheckInInfo(Integer orderId, String channel, String OTA,
                                Integer orderChildId, Date entTime, String remark,
                                String checkInPersonJson, String everyDayRoomPrice) throws ParseException {
+
+
+
         //如果客源传过来修改客源 ota
         if (orderId != null && !orderId.equals("")) {
             OrderBO orderBO = new OrderBO();
@@ -695,9 +698,13 @@ public class OrderService {
                     //获取预约人 获取预约人会员折扣 计算房价
                     OrderBO orderBO=orderDAO.getOrderById(oldOrderChild.getOrderId());
                     MemberBO memberBO=memberService.selectMemberByPhone(orderBO.getPhone());
-                    MemberLevelBO memberLevelBO=memberLevelService.getLevelByCardId(memberBO.getMemberCardId());
-                    //折扣
-                    BigDecimal discount=memberLevelBO.getDiscount();
+                    BigDecimal discount=new BigDecimal(1);
+                    if(memberBO!=null){
+                        MemberLevelBO memberLevelBO=memberLevelService.getLevelByCardId(memberBO.getMemberCardId());
+                        //折扣
+                        discount=memberLevelBO.getDiscount();
+                    }
+
                     //房价
                     RoomTypeBO roomTypeBO=roomTypeDAO.getRoomType(oldOrderChild.getRoomTypeId());
                     BigDecimal roomMoney=new BigDecimal(roomTypeBO.getBasicPrice());
@@ -724,8 +731,11 @@ public class OrderService {
 
             //添加同住人
             if (checkInPersonJson != null && !checkInPersonJson.equals("")) {
-                checkInPersonDAO.delCheckInPersonById(orderChildId);
                 List<CheckInPersonBO> list = JsonUtils.getJSONtoList(checkInPersonJson, CheckInPersonBO.class);
+
+                //删除
+                checkInPersonDAO.delCheckInPersonById(orderChildId);
+                //全部修改
                 for (CheckInPersonBO checkInPersonBO : list) {
                     checkInPersonBO.setStatus(Constants.CHECKIN.getValue());
                     checkInPersonBO.setOrderChildId(orderChildId);

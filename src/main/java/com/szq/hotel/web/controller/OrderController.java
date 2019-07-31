@@ -96,10 +96,8 @@ public class OrderController extends BaseCotroller {
 
             }
 
-
-            //检查入住信息是否正确 证件号是否有重复 验证房间是否可用
             if(type.equals("reservation")||type.equals("directly")){
-                String result=this.checkInPerson(list,orderBO.getId());
+                String result=this.checkInPerson(list);
                 if(result!=null){
                     super.safeJsonPrint(response, result);
                     log.info("result{}", result);
@@ -115,11 +113,12 @@ public class OrderController extends BaseCotroller {
                         return;
                     }
                     String status=roomBO.getRoomState();
+                    System.err.println("当前入住房间状态:"+status);
                     if(status.equals(Constants.INTHE.getValue())||status.equals(Constants.TIMEOUT.getValue())
                             ||status.equals(Constants.SHOP.getValue())
                             ||status.equals(Constants.NETWORK.getValue())
                             ||status.equals(Constants.ALL.getValue())){
-                        result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"),"房间状态异常") ;
+                        result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"),"房间状态异常，不能入住") ;
                         super.safeJsonPrint(response, result);
                         log.info("result{}", result);
                         return;
@@ -156,9 +155,8 @@ public class OrderController extends BaseCotroller {
     /**
      * 检查证件号是否重复
      * @param list 入住人
-     * @param orderId 主订单id
      * */
-    public String checkInPerson(List<OrderChildBO> list,Integer orderId) {
+    public String checkInPerson(List<OrderChildBO> list) {
         //验证所有入住人中是否有重复入住的
         Set<String> idSet = new HashSet<String>();
         List<String> idList = new ArrayList<String>();
@@ -171,7 +169,7 @@ public class OrderController extends BaseCotroller {
             for (CheckInPersonBO personBO : personBOS) {
                 idSet.add(personBO.getCertificateNumber());
                 idList.add(personBO.getCertificateNumber());
-                if (checkInPersonService.checkId(personBO.getCertificateNumber()) > 0) {
+                if (checkInPersonService.checkId(personBO.getCertificateNumber(),order.getId()) > 0) {
                     String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094", personBO.getCertificateNumber() + "此证件信息为在住状态"));
                     return result;
                 }
@@ -674,7 +672,21 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
-
+            //验证续租是否冲突
+            //验证入住人
+//            if (checkInPersonJson != null && !checkInPersonJson.equals("")) {
+//                List<CheckInPersonBO> list = JsonUtils.getJSONtoList(checkInPersonJson, CheckInPersonBO.class);
+//                OrderChildBO orderChildBO=new OrderChildBO();
+//                orderChildBO.setCheckInPersonBOS(list);
+//                List<OrderChildBO> orderChildBOS=new ArrayList<OrderChildBO>();
+//                orderChildBOS.add(orderChildBO);
+//                String result=this.checkInPerson(orderChildBOS);
+//                if(result!=null){
+//                    super.safeJsonPrint(response, result);
+//                    log.info("result{}", result);
+//                    return;
+//                }
+//            }
             orderService.updCheckInInfo(orderId,channel,OTA,orderChildId,endTime,remark,checkInPersonJson,everyDayRoomPrice);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success( "修改成功"));
             super.safeJsonPrint(response, result);
@@ -804,7 +816,7 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
-            Integer count=checkInPersonService.checkId(id);
+            Integer count=checkInPersonService.checkId(id,null);
             if(count>0){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000094","身份证信息为在住状态")) ;
                 super.safeJsonPrint(response, result);
