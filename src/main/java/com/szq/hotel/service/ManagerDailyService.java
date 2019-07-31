@@ -532,7 +532,6 @@ public class ManagerDailyService {
 
 
 
-
         //平均房价分析
         //会员房价今日分析
         members5.setDay(managerdailyBO4.getMembers()+"");
@@ -693,6 +692,69 @@ public class ManagerDailyService {
 
 
         return null;
+    }
+
+
+    //获取会员出租率年增长率
+    //获取今年出租率和去年出租率 用去年减去今年
+    //今年出租率 今年累计房晚数/今年累计小计*100
+    private String isRentalRate(Integer hotelId, String date){
+        //获取今年日期
+        String yyyy = new SimpleDateFormat("yyyy").format(date);
+        //获取上一年日期
+        String year = isYear(DateUtils.parseDate(date, "yyyy"));
+
+        //今年出租率
+       double j =  hy2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+       //去年出租率
+       double s =  hy2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+
+      return j-s+"%";
+    }
+
+    //计算散客年增长出租率
+    private String isRenta(Integer hotelId, String date){
+        //获取今年日期
+        String yyyy = new SimpleDateFormat("yyyy").format(date);
+        //获取上一年日期
+        String year = isYear(DateUtils.parseDate(date, "yyyy"));
+
+        //今年出租率
+        double j =  sk2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+        //去年出租率
+        double s =  sk2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+
+        return j-s+"%";
+    }
+
+    //计算协议单位年增长出租率
+    private String isRentaXy(Integer hotelId, String date){
+        //获取今年日期
+        String yyyy = new SimpleDateFormat("yyyy").format(date);
+        //获取上一年日期
+        String year = isYear(DateUtils.parseDate(date, "yyyy"));
+
+        //今年出租率
+        double j =  xydw2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+        //去年出租率
+        double s =  xydw2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+
+        return j-s+"%";
+    }
+
+    //计算直接入住年增长出租率
+    private String isRentaZj(Integer hotelId, String date){
+        //获取今年日期
+        String yyyy = new SimpleDateFormat("yyyy").format(date);
+        //获取上一年日期
+        String year = isYear(DateUtils.parseDate(date, "yyyy"));
+
+        //今年出租率
+        double j =  zjrz2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+        //去年出租率
+        double s =  zjrz2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+
+        return j-s+"%";
     }
 
 
@@ -2710,23 +2772,7 @@ public class ManagerDailyService {
 
 
 
-    /**
-     *  计算年增长率
-     * @return
-     */
-    public String isIncreas(Integer hotelId,String date){
-        //获取今年日期
-        String yyyy = new SimpleDateFormat("yyyy").format(date);
-        //获取上一年日期
-        String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
-        //计算公式 增长率=增量/原总量*100%。
-        //获取今年总量
-        double year1 = year(hotelId, yyyy);
-        //获取去年总量
-        double year2 = year(hotelId, year);
-        double n = (year1-year2)/year2*100;
-        return n+"%";
-    }
+
 
     /**
      *  计算年增长率
