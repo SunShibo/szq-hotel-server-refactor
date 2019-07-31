@@ -47,7 +47,7 @@ public class UpdatePriceController extends BaseCotroller {
                 return;
             }
             //验证参数
-            if (StringUtils.isEmpty(phone)|| dayNum==null || StringUtils.isEmpty(typeIds)|| orderId==null || StringUtils.isEmpty(checkType)) {
+            if (dayNum==null || StringUtils.isEmpty(typeIds)|| orderId==null || StringUtils.isEmpty(checkType)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
