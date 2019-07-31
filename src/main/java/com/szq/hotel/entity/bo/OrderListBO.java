@@ -8,6 +8,7 @@ import java.util.Date;
 public class OrderListBO extends BaseModel {
 
     private Integer id;//订单表
+    private String alRoomCode;
     private Integer orderId;
     private Date checkTime;//入住时间
     private Date checkOutTime;//离店时间
@@ -23,6 +24,14 @@ public class OrderListBO extends BaseModel {
     private String orderState;//订单状态
     private String certificateNumber;//证件号
 
+
+    public String getAlRoomCode() {
+        return alRoomCode;
+    }
+
+    public void setAlRoomCode(String alRoomCode) {
+        this.alRoomCode = alRoomCode;
+    }
 
     public String getCertificateNumber() {
         return certificateNumber;
@@ -149,6 +158,7 @@ public class OrderListBO extends BaseModel {
     public String toString() {
         return "OrderListBO{" +
                 "id=" + id +
+                ", alRoomCode='" + alRoomCode + '\'' +
                 ", orderId=" + orderId +
                 ", checkTime=" + checkTime +
                 ", checkOutTime=" + checkOutTime +
@@ -162,6 +172,7 @@ public class OrderListBO extends BaseModel {
                 ", checkType='" + checkType + '\'' +
                 ", unitPrice=" + unitPrice +
                 ", orderState='" + orderState + '\'' +
+                ", certificateNumber='" + certificateNumber + '\'' +
                 '}';
     }
 }

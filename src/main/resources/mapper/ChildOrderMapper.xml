@@ -112,4 +112,11 @@
          UPDATE  hm_everyday_room_price   SET  `status`='yes'   WHERE  id=#{id}
     </update>
 
+    <select id="queryOrderChildByCode"  parameterType="java.lang.String"  resultType="com.szq.hotel.entity.bo.PrintBO"  >
+         SELECT child.id,oder.order_number ,room.room_name ,child.start_time  , child.remark
+        FROM hm_order oder  LEFT JOIN hm_order_child child ON child.order_id=oder.id
+        LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type
+        ON type.id=child.room_type_id
+        WHERE   child.al_room_code=#{code}
+    </select>
 </mapper>

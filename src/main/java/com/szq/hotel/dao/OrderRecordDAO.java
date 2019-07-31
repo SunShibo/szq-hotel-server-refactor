@@ -6,6 +6,7 @@ package com.szq.hotel.dao;
 import com.szq.hotel.entity.bo.OrderRecoredBO;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -82,4 +83,32 @@ public interface OrderRecordDAO {
      * @param list
      */
     void completeAccount(@Param("list")List<Integer> list);
+
+    /**
+     * 单项结账打印
+     * @param list
+     * @return
+     */
+    List<OrderRecoredBO> queryOrderRecordByList(@Param("list")List<Integer> list);
+    /**
+     * 单项结账打印总消费
+     */
+    BigDecimal queryAloneMoney(@Param("list")List<Integer> list);
+
+
+    /**
+     * 实时打印
+     * @param childId
+     * @return
+     */
+    List<OrderRecoredBO> queryOrderRecordsByChildId(Integer childId);
+
+    /**
+     * 实时打印总消费
+     */
+    BigDecimal queryMoneyByChildId(Integer childId);
+
+
+
+
 }

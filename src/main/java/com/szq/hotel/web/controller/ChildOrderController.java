@@ -293,8 +293,8 @@ public class ChildOrderController extends BaseCotroller {
                 return;
             }
 
-            childOrderService.childleAccounts(loginAdmin.getHotelId(),loginAdmin.getId(),chilId,ids,payType,param,status);
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
+            String str = childOrderService.childleAccounts(loginAdmin.getHotelId(),loginAdmin.getId(),chilId,ids,payType,param,status);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(str));
             super.safeJsonPrint(response, result);
             log.info("result:{}", result);
             return;
@@ -401,4 +401,81 @@ public class ChildOrderController extends BaseCotroller {
             log.error("accountsException", e);
         }
     }
+
+
+    /**
+     * 单项结账打印
+     */
+    @RequestMapping("/print")
+    public void print(HttpServletRequest request, HttpServletResponse response,String  ids) {
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}", loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            if (StringUtils.isEmpty(ids)) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            Map<String, Object> resultMap = childOrderService.alonePrint(ids, loginAdmin.getHotelId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+
+        } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("accountsException", e);
+        }
+    }
+
+
+
+    /**
+     * 总结账打印
+     */
+    @RequestMapping("/print")
+    public void print(HttpServletRequest request, HttpServletResponse response,Integer childId) {
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            AdminBO loginAdmin = super.getLoginAdmin(request);
+            log.info("user{}", loginAdmin);
+            if (loginAdmin == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            if (childId==null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
+            Map<String, Object> print = childOrderService.print(childId, loginAdmin.getHotelId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(print));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
+            log.error("accountsException", e);
+        }
+    }
+
 }

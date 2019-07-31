@@ -6,7 +6,7 @@
 <mapper namespace="com.szq.hotel.dao.OrderRecordDAO">
 
     <!--添加子订单详情-->
-    <insert id="addOrderRecord" parameterType="com.szq.hotel.entity.bo.OrderRecoredBO"  >
+    <insert id="addOrderRecord" parameterType="com.szq.hotel.entity.bo.OrderRecoredBO"   useGeneratedKeys="true"  keyProperty="id"   >
       INSERT INTO `hm_order_record` ( `order_child_id`, `info`, `create_user_id`, `pay_type`, `money`,
                                         `state`, `project`, `number`, `create_time`)
                               VALUES (#{orderChildId}, #{info}, #{createUserId}, #{payType}, #{money},
@@ -86,13 +86,36 @@
     </select>
 
     <!--完成订单-->
-    <select id="completeAccount" >
+    <update  id="completeAccount" >
         UPDATE  hm_order_child child LEFT JOIN hm_order_record rd ON rd.order_child_id=child.id  SET
         rd.state='yes'  , child.order_state='accomplish'  WHERE child.id IN
+        <foreach collection="list" item="id" open="(" separator=","  close=")" >
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="queryOrderRecordByList"  resultType="com.szq.hotel.entity.bo.OrderRecoredBO"  >
+           SELECT *  FROM `hm_order_record` WHERE  id IN
+        <foreach collection="list" item="id" open="(" separator=","  close=")" >
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryAloneMoney"  resultType="java.math.BigDecimal" >
+        SELECT SUM(money)*-1  FROM `hm_order_record` WHERE
+        money &lt; 0  AND  id IN
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
     </select>
 
 
+    <select id="queryOrderRecordsByChildId"  parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.OrderRecoredBO"  >
+        SELECT *  FROM `hm_order_record` WHERE  state='yes'  AND  order_child_id=#{childId}
+    </select>
+
+    <select id="queryMoneyByChildId"   parameterType="java.lang.Integer" resultType="java.math.BigDecimal"   >
+        SELECT SUM(money)*-1  FROM `hm_order_record`  WHERE
+        money &lt; 0  AND  order_child_id=#{childId}  AND   state='yes'
+    </select>
 </mapper>

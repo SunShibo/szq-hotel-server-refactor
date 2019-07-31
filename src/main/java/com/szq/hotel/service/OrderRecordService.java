@@ -46,7 +46,7 @@ public class OrderRecordService {
      * @param number  数量
      * @param statue   已结/未结  yes/no
      */
-    public void addOrderRecord(Integer orderChildId , String info, String payType, BigDecimal money,String project,Integer userId,String number,String statue){
+    public Integer addOrderRecord(Integer orderChildId , String info, String payType, BigDecimal money,String project,Integer userId,String number,String statue){
         log.info("star addOrderRecord..................................");
         log.info("orderChildId:{}\tinfo:{}\tpayType:{}\tmoney:{}\tproject:{}\tuserId:{}\tnumber:{}",
                 orderChildId,info,payType,money,project,userId,number);
@@ -72,6 +72,8 @@ public class OrderRecordService {
         orderRecoredBO.setState(statue);
         orderRecordDAO.addOrderRecord(orderRecoredBO);
         log.info("end addOrderRecord..................................");
+        return orderRecoredBO.getId();
+
     }
 
 
@@ -160,5 +162,39 @@ public class OrderRecordService {
      */
     public void completeAccount(List<Integer> list){
         orderRecordDAO.completeAccount(list);
+    }
+
+    /**
+     * 单项结账打印
+     * @param list
+     * @return
+     */
+    public List<OrderRecoredBO> queryOrderRecordByList(List<Integer> list) {
+        return orderRecordDAO.queryOrderRecordByList(list);
+    }
+
+    /**
+     * 单项结账总消费
+     */
+    public BigDecimal queryAloneMoney(List<Integer> list){
+        return orderRecordDAO.queryAloneMoney(list);
+    }
+
+    /**
+     * 实时打印
+     * @param childId
+     * @return
+     */
+    public List<OrderRecoredBO> queryOrderRecordsByChildId(Integer childId) {
+        return orderRecordDAO.queryOrderRecordsByChildId(childId);
+    }
+
+    /**
+     * 实时打印总消费
+     * @param childId
+     * @return
+     */
+    public BigDecimal queryMoneyByChildId(Integer childId) {
+        return orderRecordDAO.queryMoneyByChildId(childId);
     }
 }

@@ -9,10 +9,10 @@ public class OrderParam {
 
     private Integer hotelId;//酒店id
     private String orderState;//订单状态
-    private Date admissionsStartTime;//入住开始时间
-    private Date admissionsEndTime;//入住结束时间
-    private Date departureStartTime;//离店开始时间
-    private Date departureEndTime;//离店结束时间
+    private String admissionsStartTime;//入住开始时间
+    private String admissionsEndTime;//入住结束时间
+    private String departureStartTime;//离店开始时间
+    private String departureEndTime;//离店结束时间
     private String orderType;//入住方式
     private String checkType;//入住类型
     private String orderPlacer;//下单人名字
@@ -40,35 +40,36 @@ public class OrderParam {
         this.orderState = orderState;
     }
 
-    public Date getAdmissionsStartTime() {
+
+    public String getAdmissionsStartTime() {
         return admissionsStartTime;
     }
 
-    public void setAdmissionsStartTime(Date admissionsStartTime) {
+    public void setAdmissionsStartTime(String admissionsStartTime) {
         this.admissionsStartTime = admissionsStartTime;
     }
 
-    public Date getAdmissionsEndTime() {
+    public String getAdmissionsEndTime() {
         return admissionsEndTime;
     }
 
-    public void setAdmissionsEndTime(Date admissionsEndTime) {
+    public void setAdmissionsEndTime(String admissionsEndTime) {
         this.admissionsEndTime = admissionsEndTime;
     }
 
-    public Date getDepartureStartTime() {
+    public String getDepartureStartTime() {
         return departureStartTime;
     }
 
-    public void setDepartureStartTime(Date departureStartTime) {
+    public void setDepartureStartTime(String departureStartTime) {
         this.departureStartTime = departureStartTime;
     }
 
-    public Date getDepartureEndTime() {
+    public String getDepartureEndTime() {
         return departureEndTime;
     }
 
-    public void setDepartureEndTime(Date departureEndTime) {
+    public void setDepartureEndTime(String departureEndTime) {
         this.departureEndTime = departureEndTime;
     }
 

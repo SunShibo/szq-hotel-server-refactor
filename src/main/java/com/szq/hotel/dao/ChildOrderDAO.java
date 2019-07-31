@@ -105,4 +105,7 @@ public interface ChildOrderDAO {
      * @param id
      */
     void updateRoomPrice(Integer id);
+
+    List<PrintBO> queryOrderChildByCode(String alRoomCode);
+
 }
