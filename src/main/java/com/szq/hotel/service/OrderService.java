@@ -603,26 +603,27 @@ public class OrderService {
         if (orderChildBO == null) {
             return null;
         }
-        Date entTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
-
-        OrderBO orderBO = orderDAO.getOrderById(orderChildBO.getOrderId());
+        Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
+        Long minute = DateUtils.getQuotMinute(endTime, orderChildBO.getStartTime());
         //bug: 正常小时房 就不能-1了 跨天小时房需要-1 全天房
-        if (simp.format(entTime).equals(simp.format(currDate))) {
-            if (orderBO.getCheckType().equals(Constants.DAY.getValue())) {
-                currDate = DateUtils.getBeforeDay(currDate, -1);
+        if (simp.format(endTime).equals(simp.format(currDate))) {
+            if(minute>4*60){
+                currDate = DateUtils.getAppointDate(currDate, -1);
             }
+
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(orderChildBO.getStartTime());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         //超过4小时
         System.err.println("入住小时:" + hour);
-        if (orderBO.getCheckType().equals(Constants.HOUR.getValue()) && hour < 6 && hour > 2) {
-            currDate = DateUtils.getBeforeDay(currDate, -1);
+        if (minute<4*60 && hour < 6 && hour > 2) {
+            currDate = DateUtils.getAppointDate(currDate, -1);
         }
+        System.err.println("房价时间"+simp.format(currDate));
         //在住信息
         CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId, simp.format(currDate));
-        checkInInfoResult.setEndTime(entTime);
+        checkInInfoResult.setEndTime(endTime);
         //同住人信息
         List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getOrderChildId(), Constants.CHECKIN.getValue());
         checkInInfoResult.setCheckInPersonBOS(checkInPersonBOS);
@@ -879,18 +880,24 @@ public class OrderService {
         Calendar calendar1 = Calendar.getInstance();
         calendar1.setTime(startTime);
         int hour = calendar1.get(Calendar.HOUR_OF_DAY);
-        System.err.println("入住小时:" + hour);
         if (hour < 4) {
             calendar1.add(Calendar.DAY_OF_WEEK, -1); //得到前一天
             startTime = calendar1.getTime();
         }
-        System.err.println("startTime" + ymd.format(startTime));
+        //获取离店时间
+        Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
+        Long minute = DateUtils.getQuotMinute(endTime, orderChildBO.getStartTime());
+        if(minute>4*60){
+            Calendar calendar2=Calendar.getInstance();
+            calendar2.setTime(endTime);
+            calendar.set(Calendar.HOUR_OF_DAY, 14);
+            endTime = calendar.getTime();
+        }
         //当天入住当天退房 滚一天当天房费
         if (ymd.format(hotelDate).equals(ymd.format(startTime))) {
             this.addOrderChildRecordAndRoomRate(backup, hotelDate, orderChildBO, userId);
         }
-        //获取离店时间
-        Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
+
         //未超时
         if (currentTimeDate.compareTo(endTime) <= 0) {
             Date currentDate = ymd.parse(ymd.format(hotelDate));
