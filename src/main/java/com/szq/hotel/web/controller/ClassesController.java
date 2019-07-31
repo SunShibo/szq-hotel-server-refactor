@@ -193,6 +193,14 @@ public class ClassesController extends BaseCotroller {
                 return;
             }
 
+            //只有一个班次不能删除
+            if (classesService.queryCount(loginAdmin.getHotelId())==1 ) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000010"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+
             classesService.deleteClasses(id);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("")) ;
             super.safeJsonPrint(response, result);

@@ -51,4 +51,8 @@ public class ClassesService {
     public void deleteClasses(Integer id){
         classesDAO.deleteClasses(id);
     }
+
+    public int queryCount(Integer hotelId) {
+        return classesDAO.queryCount(hotelId);
+    }
 }

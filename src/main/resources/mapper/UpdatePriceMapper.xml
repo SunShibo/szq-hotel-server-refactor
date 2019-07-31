@@ -39,4 +39,23 @@
            )
        </foreach>
     </insert>
+
+
+    <!--查询不是钟点房的房间名字-->
+    <select id="queryHour"  resultType="java.lang.String" >
+        SELECT room_name  FROM hm_room  WHERE id
+            <foreach collection="list"   item="item"  open="IN(" separator=","   close=")">
+              #{item}
+            </foreach>
+          AND room_auxiliary_status!='yes'
+    </select>
+    <!--查询不是免费房-->
+    <select id="queryFree"  resultType="java.lang.String">
+        SELECT room_name  FROM hm_room  WHERE id
+        <foreach collection="list"   item="item"   open="IN(" separator=","   close=")" >
+            #{item}
+        </foreach>
+        AND room_auxiliary_status_stand!='yes'
+    </select>
+
 </mapper>

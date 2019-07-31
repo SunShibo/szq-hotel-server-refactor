@@ -23,4 +23,9 @@ public interface UpdatePriceDAO {
 
     void addPrice(Map<String,Object> map);
 
+
+    List<String>  queryHour(@Param("list")List<Integer>  list);
+    List<String>  queryFree(@Param("list")List<Integer>  list);
+
+
 }

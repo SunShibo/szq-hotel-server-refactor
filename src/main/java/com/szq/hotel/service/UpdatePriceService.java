@@ -1,5 +1,6 @@
 package com.szq.hotel.service;
 
+import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.UpdatePriceDAO;
 import com.szq.hotel.entity.bo.AddPriceBO;
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
@@ -7,6 +8,8 @@ import com.szq.hotel.entity.bo.MemberDiscountBO;
 import com.szq.hotel.entity.bo.RoomTypeBO;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.JsonUtils;
+import com.szq.hotel.util.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -143,5 +146,28 @@ public class UpdatePriceService {
         log.info("end  addPrice......................................................................................");
     }
 
+
+    /**
+     * 判断一间房不是小时房或不是免费房
+     */
+    public  String queryCheckType(String checkType,String roomIds){
+        log.info("start  queryCheckType......................................................................................");
+        log.info("checkType:{}\troomIds:{}",checkType,roomIds);
+        //小时房
+        if(checkType.equals(Constants.HOUR.getValue())){
+            List<String> strings = updatePriceDAO.queryHour(StringUtils.strToList(roomIds));
+            if(strings!=null && strings.size()>0){
+                return strings.toString()+": 不是钟点房";
+            }
+        }else if(checkType.equals(Constants.FREE.getValue())){
+            List<String> strings = updatePriceDAO.queryFree(StringUtils.strToList(roomIds));
+            if(strings!=null && strings.size()>0){
+                return strings.toString()+": 不是免费房";
+            }
+        }
+        log.info("end  queryCheckType....................................................................................");
+        return  null;
+
+    }
 
 }

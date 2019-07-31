@@ -2,6 +2,7 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.HotelDAO;
+import com.szq.hotel.entity.bo.ClassesBO;
 import com.szq.hotel.entity.bo.CommonBO;
 import com.szq.hotel.entity.bo.HotelBO;
 import com.szq.hotel.web.controller.HotelController;
@@ -23,7 +24,8 @@ public class HotelService {
 
     @Resource
     private HotelDAO hotelDAO;
-
+    @Resource
+    private ClassesService  classesService;
     /**
      * 添加酒店
      */
@@ -32,6 +34,13 @@ public class HotelService {
         hotelBO.setCreateUserId(userId);
         hotelDAO.addHotel(hotelBO);
         hotelDAO.addRoleHotel(hotelBO.getId());
+        //添加一个默认班次
+        ClassesBO classesBO=new ClassesBO();
+        classesBO.setHotelId(hotelBO.getId());
+        classesBO.setClassesName("默认班次");
+        classesBO.setStartTime("12:00:00");
+        classesBO.setEndTime("00:00:00");
+        classesService.addClasses(classesBO,userId);
         log.info("end===================addHotel");
     }
 

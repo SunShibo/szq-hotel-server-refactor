@@ -29,4 +29,5 @@ public interface ClassesDAO {
     void deleteClasses(Integer id);
 
 
+    int queryCount(Integer hotelId);
 }

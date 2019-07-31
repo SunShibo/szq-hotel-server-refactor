@@ -33,4 +33,8 @@
         ORDER BY start_time  ASC
     </select>
 
+    <!--查询班次数量-->
+    <select id="queryCount"  parameterType="java.lang.Integer"  resultType="int">
+         SELECT COUNT(id)  FROM  hm_classes WHERE  hotel_id=#{hotelId}
+    </select>
 </mapper>
