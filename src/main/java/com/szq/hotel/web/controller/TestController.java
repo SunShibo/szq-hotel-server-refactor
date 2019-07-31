@@ -76,40 +76,33 @@ public class TestController extends BaseCotroller {
     public void nightAuditor() {
         log.info("start  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         List<RoomRateBO> roomRateBOS = childOrderService.queryOrderChild();
-        log.info("roomRateBOS:{}",roomRateBOS);
-        for(int i=0;i<roomRateBOS.size();i++){
+        log.info("roomRateBOS:{}", roomRateBOS);
+        for (int i = 0; i < roomRateBOS.size(); i++) {
             RoomRateBO roomRateBO = roomRateBOS.get(i);
-            log.info("roomRateBO:{} , i:{}",roomRateBO,i);
+            log.info("roomRateBO:{} , i:{}", roomRateBO, i);
             List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(), DateUtils.getFourPointsStr());
-            log.info("everydayRoomPriceBOS:{}",everydayRoomPriceBOS);
-            if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
-                for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){
+            log.info("everydayRoomPriceBOS:{}", everydayRoomPriceBOS);
+            if (everydayRoomPriceBOS != null && everydayRoomPriceBOS.size() > 0) {
+                for (EverydayRoomPriceBO priceBO : everydayRoomPriceBOS) {
                     log.info("start  room price  ...............................................");
                     //生成房费     //生成在主账房里
                     Integer integer = childOrderService.queryOrderChildMain(roomRateBO.getAlRoomCode());
-                    childOrderService.increaseRoomRate(integer,priceBO.getMoney());
+                    childOrderService.increaseRoomRate(integer, priceBO.getMoney());
 
-                    orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime())+"房费",
-                            null,priceBO.getMoney().multiply(new BigDecimal("-1")), Constants.ROOMRATE.getValue(),1,"1天", Constants.NO.getValue());
+                    orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime()) + "房费",
+                            null, priceBO.getMoney().multiply(new BigDecimal("-1")), Constants.ROOMRATE.getValue(), 1, "1天", Constants.NO.getValue());
                     //把夜审状态修改回去
                     log.info("update  room price  status................................................");
                     childOrderService.updateRoomPrice(priceBO.getId());
                     //生成报表
                     log.info("start  make a repor.....................................................");
                     CommonBO commonBO = childOrderService.queryChildName(priceBO.getOrderChildId());
-                    cashierSummaryService.addRoomRate(priceBO.getMoney(),roomRateBO.getOrderNumber(),1,commonBO.getName(),
-                            roomRateBO.getOTA(),roomRateBO.getChannel(),roomRateBO.getPassengerSource(),roomRateBO.getRoomName(),
-                            roomRateBO.getRoomTypeName(),roomRateBO.getHotelId());
+                    cashierSummaryService.addRoomRate(priceBO.getMoney(), roomRateBO.getOrderNumber(), 1, commonBO.getName(),
+                            roomRateBO.getOTA(), roomRateBO.getChannel(), roomRateBO.getPassengerSource(), roomRateBO.getRoomName(),
+                            roomRateBO.getRoomTypeName(), roomRateBO.getHotelId());
                 }
             }
         }
-        List<HotelBO> hotelBOS = hotelDAO.queryHotel();
-        for (HotelBO hotelBO:hotelBOS) {
-            incomeService.addIncome(hotelBO.getId());
-            //管理层报表
-            managementReportService.addData(hotelBO.getId());
-        }
-        log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 
 
