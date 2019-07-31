@@ -361,6 +361,8 @@ public class MemberController extends BaseCotroller {
                     if (childId==null) {
                         //添加商品交易
                         commodiryService.updateMemberAddCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), memberBO.getId());
+                        //添加收银汇总
+                        cashierSummaryService.addCard(memberBO.getName(), money, payType, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId());
                     }else {
                         //挂账
                         childOrderService.recorded(childId,money,"办卡",Constants.APPLYCARD.getValue(),loginAdmin.getId(),loginAdmin.getHotelId());
