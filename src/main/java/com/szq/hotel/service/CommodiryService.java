@@ -4,6 +4,7 @@ import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.CommodiryDAO;
 import com.szq.hotel.entity.bo.CommodityBO;
 import com.szq.hotel.entity.bo.MemberBO;
+import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,5 +85,36 @@ public class CommodiryService {
 
     public CommodityBO queryCommodiryById(Integer id) {
         return commodiryDAO.queryCommodiryById(id);
+    }
+    /**
+     * 修改会员级别添加商品交易
+     * @param payType 支付方式
+     * @param consumptionType 消费类型
+     * @param money 金额
+     * @param info 备注
+     * @param orderNumber 订单号
+     * @param userId 操作人id
+     * @param hotelId 酒店id
+     * @param memberId 会员id
+     * @return
+     */
+    public Integer updateMemberAddCommodiry(String payType, String consumptionType, BigDecimal money, String info,String orderNumber,Integer userId,Integer hotelId,Integer memberId){
+        log.info("start updateMemberAddCommodiry..........................");
+        log.info("payType:{}\tconsumptionType:{}\tmoney:{}\tinfo:{}\torderNumber:{}\tuserId:{}\thotelId:{}",payType,consumptionType,money,info,orderNumber,userId,hotelId);
+        CommodityBO commodityBO = new CommodityBO();
+        commodityBO.setMemberId(memberId);
+        commodityBO.setPayType(payType);
+        commodityBO.setOrderNumber(IDBuilder.getOrderNumber());
+        commodityBO.setConsumeType(Constants.APPLYCARD.getValue());
+        commodityBO.setMoney(money);
+        commodityBO.setConsumptionDetails(info);
+        commodityBO.setCreateUserId(userId);
+        commodityBO.setHotelId(hotelId);
+
+
+        commodiryDAO.addCommodiry(commodityBO);
+        log.info("end  updateMemberAddCommodiry..........................");
+        return commodityBO.getId();
+
     }
 }

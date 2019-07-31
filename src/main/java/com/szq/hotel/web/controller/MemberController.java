@@ -306,7 +306,10 @@ public class MemberController extends BaseCotroller {
 
     /**
      * 修改会员信息
+     * @param cardNumber 会员卡号
      * @param memberBO
+     * @param money 金额
+     * @param payType 支付方式
      * @param request
      * @param response
      */
@@ -348,8 +351,12 @@ public class MemberController extends BaseCotroller {
 
                     //添加收银汇总
                     cashierSummaryService.addCard(memberBO.getName(), money, payType, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId());
+
+
+
+
                     //添加商品交易
-                    commodiryService.addCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), cardNumber);
+                    commodiryService.updateMemberAddCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), memberBO.getId());
 
                     String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改会员信息成功！"));
                     super.safeJsonPrint(response, result);
