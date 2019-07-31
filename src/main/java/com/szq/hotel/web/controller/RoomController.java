@@ -446,6 +446,12 @@ public class RoomController extends BaseCotroller {
         return;
     }
 
+    /**
+     * 修改维修房
+     * @param id
+     * @param request
+     * @param response
+     */
     @RequestMapping("/updateRoomMaintain")
     public void updateRoomState(Integer id, HttpServletRequest request, HttpServletResponse response) {
         try {
