@@ -326,7 +326,7 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            if (memberBO.getId() == null) {
+            if (memberBO.getId() == null||StringUtils.isEmpty(cardNumber)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
