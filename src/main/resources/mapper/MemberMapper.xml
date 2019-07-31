@@ -40,7 +40,7 @@ WHERE id = #{id}
 
     <!--查询会员级别所有信息-->
     <select id="selectMember" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.util.Map">
-        SELECT me.*,le.`name` memberLevelName,le.type,card.selling_time
+        SELECT me.*,le.`name` memberLevelName,le.type,card.selling_time,card.member_level_id
         FROM `hm_member` me LEFT JOIN hm_member_card card ON me.member_card_id = card.id
         LEFT JOIN hm_member_level le ON card.member_level_id = le.id
         <where>

@@ -22,6 +22,7 @@ public class MemberBO extends BaseModel {
     private String salesman;//销售员
     private String state;//状态
     private String memberLevelName;//会员级别名称
+    private Integer memberLevelId;//会员级别id
     private String type;//会员卡能否充值
     private Date createTime;//创建时间
     private Date sellingTime;//卡售出时间
@@ -154,6 +155,14 @@ public class MemberBO extends BaseModel {
 
     public void setMemberLevelName(String memberLevelName) {
         this.memberLevelName = memberLevelName;
+    }
+
+    public Integer getMemberLevelId() {
+        return memberLevelId;
+    }
+
+    public void setMemberLevelId(Integer memberLevelId) {
+        this.memberLevelId = memberLevelId;
     }
 
     public String getType() {
