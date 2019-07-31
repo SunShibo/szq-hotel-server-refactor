@@ -23,6 +23,19 @@ public class CheckInPersonController extends BaseCotroller {
     @Resource
     private CheckInPersonService checkInPersonService;
 
+    /**
+     * 添加同来人
+     * @param orderChildId 子订单id
+     * @param name 名称
+     * @param gender 性别
+     * @param phone 手机号
+     * @param certificateNumber 证件号
+     * @param certificateType 证件类型
+     * @param status 状态
+     * @param remark 备注
+     * @param request
+     * @param response
+     */
     @RequestMapping("/addCheckInPerson")
     public void addCheckInPerson(Integer orderChildId,String name,String gender,String phone,String certificateNumber,Integer certificateType,String status,String remark,HttpServletRequest request, HttpServletResponse response){
         try{
@@ -61,6 +74,19 @@ public class CheckInPersonController extends BaseCotroller {
 
     }
 
+    /**
+     * 修改同来人
+     * @param id
+     * @param name 名称
+     * @param gender 性别
+     * @param phone 手机号
+     * @param certificateNumber 证件号
+     * @param certificateType 证件类型
+     * @param status 状态
+     * @param remark 备注
+     * @param request
+     * @param response
+     */
     @RequestMapping("/updCheckInPerson")
     public void updCheckInPerson(Integer id,String name,String gender,String phone,String certificateNumber,Integer certificateType,String status,String remark,HttpServletRequest request, HttpServletResponse response){
 
