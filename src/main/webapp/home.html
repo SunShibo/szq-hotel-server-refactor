@@ -429,7 +429,7 @@
                     '</legend>',
                     '<div class="flex-container">'].join("");
                 for (var j = 0; j < f.length; j++) {
-                    str += ['<div data-dirty=', f[j].status === 'dirty', ' data-maintain=', f[j].maintain === 'yes', ' data-status="', f[j].status === 'inthe',
+                    str += ['<div data-dirty=', f[j].status === 'dirty', ' data-maintain=', f[j].maintain === 'yes', ' data-status="', f[j].status === 'inthe' || f[j].status === 'timeout',
                         '" data-state="', judgmentState(f[j].makeStatus),
                         '" class="item state-', f[j].status,
                         '" data-roomid="' + f[j].roomId, '">',

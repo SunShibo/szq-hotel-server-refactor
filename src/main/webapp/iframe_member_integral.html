@@ -95,12 +95,8 @@
             , index = 0;
         $.getJSON(api.queryUserIntgeralInfo + '?memberId=' + getUrl("id") + "&random=" + Date.now(), function (rs) {
             // console.info(rs)
-            try {
-                for (var i in rs.data) {
-                    document.getElementById(i).value = rs.data[i];
-                }
-            } catch (err) {
-                alert(err);
+            for (var i in rs.data) {
+                document.getElementById(i).value = rs.data[i];
             }
         });
         //关闭

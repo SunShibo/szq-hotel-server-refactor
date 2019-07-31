@@ -215,7 +215,7 @@
         //获取价格设置对象数组
         function formPrice(data) {
             var arr = [];
-
+            //循环获取数据
             for (var i = 0, len = priceRevisionData.length; i < len; i++) {
                 arr.push({
                     id: data['id' + i],
@@ -271,67 +271,65 @@
                         '<td><input class="layui-input" required lay-verify="required" autocomplete="off" name="certificateNumber' + i + '" value="' + d[i - 1].certificateNumber + '"/></td>',
                         '<td><input class="layui-input" required lay-verify="required" autocomplete="off" name="phone' + i + '" value="' + d[i - 1].phone + '"/></td>',
                         '<td><input class="layui-input" autocomplete="off" name="remark' + i + '" value="' + d[i - 1].remark.trim() + '"/></td>',
-                        '<td><select name="gender' + i + '">',
-                        '<option value="" selected="', !d[i - 1].gender,
-                        '"></option><option value="男" selected="',
-                        d[i - 1].gender == '男',
-                        '">男</option><option value="女"  selected="',
-                        d[i - 1].gender == '女',
-                        '">女</option>',
+                        '<td><select id="gender' + i + '" name="gender' + i + '">',
+                        '<option value=""></option>',
+                        '<option value="男">男</option>',
+                        '<option value="女">女</option>',
                         '</select></td>',
                         '<td><a class="layui-btn layui-btn-xs IDCardReader">识别证件</a>',
                         // '<button class="layui-btn layui-btn-normal layui-btn-xs update-btn" data-id="' + d[i-1].id + '">修改</button>',
                         '<a class="layui-btn layui-btn-danger layui-btn-xs del-btn" data-id="' + i + '">删除</a></td>',
                         '</tr>'].join("")
                 );
-                layui.form.render();
-
+                $('#gender' + i).val(d[i - 1].gender);
             }
-
-            //删除
-            $(document).on('click', '.del-btn', function () {
-                // console.info($(this).closest('tr').nextAll().data("num",3));
-                $(this).closest('tr').remove();
-            });
-
-            //初始化显示证件类型名称
-            function dealSelect(certificateType) {
-                var str = '', data = selecteData;
-                for (var i = 0; i < data.length; i++) {
-                    if (certificateType == data[i].id) {
-                        str += '<option selected="selected" value="' + data[i]['id'] + '">' + data[i]['value'] + '</option>'
-                    } else {
-                        str += '<option value="' + data[i]['id'] + '">' + data[i]['value'] + '</option>'
-                    }
-                }
-                return str;
-            }
-
-            //清空表单
-            function clearForm1() {
-                $(this).siblings('input[name="name"]').val('');
-                $(this).siblings('input[class="gender"]').val(1);
-                $(this).siblings('select[name="certificateType"]').val(1);
-                $(this).siblings('input[name="credentialNo"]').val('');
-                $(this).siblings('input[name="phoneNumber"]').val('');
-                $(this).siblings('input[name="remark"]').val('');
-                layui.form.render();
-            }
-
-            //扫描身份证
-            $(document).on('click', '.IDCardReader', function () {
-                var CVR_IDCard = IDCardReader();
-                if (!!CVR_IDCard) {
-                    clearForm1(this);
-                    $(this).siblings('input[name="name"]').val(CVR_IDCard.Name);
-                    $(this).siblings('input[class="gender"]').val(CVR_IDCard.sex);
-                    $(this).siblings('select[name="certificateType"]').val(1);
-                    $(this).siblings('input[name="credentialNo"]').val(CVR_IDCard.CardNo);
-                    $(this).siblings('input[name="address"]').val(CVR_IDCard.Address);
-                    layui.form.render();
-                }
-            });
+            layui.form.render();
         }
+
+        //删除
+        $(document).on('click', '.del-btn', function () {
+            // console.info($(this).closest('tr').nextAll().data("num",3));
+            $(this).closest('tr').remove();
+        });
+
+        //初始化显示证件类型名称
+        function dealSelect(certificateType) {
+            var str = '', data = selecteData;
+            for (var i = 0; i < data.length; i++) {
+                if (certificateType == data[i].id) {
+                    str += '<option selected="selected" value="' + data[i]['id'] + '">' + data[i]['value'] + '</option>'
+                } else {
+                    str += '<option value="' + data[i]['id'] + '">' + data[i]['value'] + '</option>'
+                }
+            }
+            return str;
+        }
+
+        //清空表单
+        function clearForm1() {
+            $(this).siblings('input[name="name"]').val('');
+            $(this).siblings('input[class="gender"]').val(1);
+            $(this).siblings('select[name="certificateType"]').val(1);
+            $(this).siblings('input[name="credentialNo"]').val('');
+            $(this).siblings('input[name="phoneNumber"]').val('');
+            $(this).siblings('input[name="remark"]').val('');
+            layui.form.render();
+        }
+
+        //扫描身份证
+        $(document).on('click', '.IDCardReader', function () {
+            var CVR_IDCard = IDCardReader();
+            if (!!CVR_IDCard) {
+                clearForm1(this);
+                $(this).siblings('input[name="name"]').val(CVR_IDCard.Name);
+                $(this).siblings('input[class="gender"]').val(CVR_IDCard.sex);
+                $(this).siblings('select[name="certificateType"]').val(1);
+                $(this).siblings('input[name="credentialNo"]').val(CVR_IDCard.CardNo);
+                $(this).siblings('input[name="address"]').val(CVR_IDCard.Address);
+                layui.form.render();
+            }
+        });
+
 
         form.on('submit(formSubmit)', function (data) {
             // console.info(data);
@@ -360,6 +358,7 @@
 
             return false;
         });
+
     });
 </script>
 </body>

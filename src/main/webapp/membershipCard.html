@@ -37,7 +37,7 @@
             <input type="radio" name="state" value="" title="全部" lay-skin="primary" checked>
             <input type="radio" name="state" value="unsold" title="未售出" lay-skin="primary">
             <input type="radio" name="state" value="use" title="使用中" lay-skin="primary">
-            <!--<input type="radio" name="state" value="freeze" title="冻结" lay-skin="primary">-->
+            <input type="radio" name="state" value="freeze" title="冻结" lay-skin="primary">
             <!--<input type="radio" name="state" value="no" title="删除" lay-skin="primary">-->
         </div>
     </div>
@@ -57,7 +57,9 @@
         <div class="layui-inline">
             <label class="layui-form-label">会员级别</label>
             <div class="layui-input-inline">
-                <input type="text" name="name" autocomplete="off" class="layui-input">
+                <select name="name" id="memberLevel">
+                    <option value=""></option>
+                </select>
             </div>
         </div>
         <div class="layui-inline">
@@ -73,8 +75,10 @@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    {{# if(d.state != "no") { }}
+    {{# if(d.state != "no" && d.state != "use") { }}
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{# } else if(d.state != "freeze" && d.state != "use") { }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="freeze">冻结</a>
     {{# } }}
 </script>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
@@ -83,22 +87,22 @@
         var $ = layui.$, form = layui.form, table = layui.table;
         renderReport($)
         $(function () {
-            // initData();
+            initData();
             setInterval(function () {
                 getReport($)
             }, 60000)
         });
 
-        // function initData() {
-        //     $.ajax({
-        //         url: api.memberLevel,
-        //         type: 'POST',
-        //         dataType: 'json',
-        //         success: function (res) {
-        //             setSelectData(res.data);
-        //         }
-        //     })
-        // }
+        function initData() {
+            $.ajax({
+                url: api.memberLevel,
+                type: 'POST',
+                dataType: 'json',
+                success: function (res) {
+                    setSelectData(res.data);
+                }
+            })
+        }
 
         //第一个实例
         var tab = table.render({
@@ -156,10 +160,10 @@
         //监听导出按钮提交
         form.on('submit(outExcel)', function (data) {
             var href = api.cartExport;
-            data.field.state ? href+="?state=" + data.field.state: '';
-            data.field.money ? href+="?money=" + data.field.money: '';
-            data.field.cardNumber ? href+="?cardNumber=" + data.field.cardNumber: '';
-            data.field.name ? href+="?name=" + data.field.name: '';
+            data.field.state ? href += "?state=" + data.field.state : '';
+            data.field.money ? href += "?money=" + data.field.money : '';
+            data.field.cardNumber ? href += "?cardNumber=" + data.field.cardNumber : '';
+            data.field.name ? href += "?name=" + data.field.name : '';
             window.open(href);
             return false;
         });
@@ -180,6 +184,11 @@
                         type: 'POST',
                         dataType: 'json',
                         success: function (data) {
+                            if (data.success) {
+                                showMsg(data.data, 1, false);
+                            } else {
+                                showMsg(data.errMsg, 2, false);
+                            }
                             tab.reload();//刷新表格
                         }
                     });
@@ -196,8 +205,30 @@
                     shadeClose: true,
                     content: 'iframe_membersCard.html?state=1',
                     end: function (index, layero) {
+                        sessionStorage.removeItem('membersCard');
                         tab.reload();
                     }
+                });
+            } else if (layEvent === 'freeze') {
+                layer.confirm('真的冻结吗', function (index) {
+                    $.ajax({
+                        url: api.cartDelete,
+                        data: {
+                            id: data.id,
+                            state: 'freeze'
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.success) {
+                                showMsg(data.data, 1, false);
+                            } else {
+                                showMsg(data.errMsg, 2, false);
+                            }
+                            tab.reload();//刷新表格
+                        }
+                    });
+                    layer.close(index);
                 });
             }
         });
@@ -218,12 +249,12 @@
         });
 
         //绑定下拉框数据
-        // function setSelectData(second) {
-        //     for (var i = 0, len = second.length; i < len; i++) {
-        //         $('#memberLevel').append("<option value=" + second[i].id + ">" + second[i].name + "</option>");
-        //     }
-        //     form.render('select');
-        // }
+        function setSelectData(second) {
+            for (var i = 0, len = second.length; i < len; i++) {
+                $('#memberLevel').append("<option value=" + second[i].name + ">" + second[i].name + "</option>");
+            }
+            form.render('select');
+        }
 
         //监听查询按钮提交
         form.on('submit(formData)', function (data) {

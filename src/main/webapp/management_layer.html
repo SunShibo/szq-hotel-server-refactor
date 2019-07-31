@@ -93,7 +93,7 @@
                 startTime = new Date(DateToLStr4(new Date()).concat(' 04:00:00'))
             }
             if (!endTime) {
-                endTime = new Date(new Date(DateToLStr4(new Date()).concat(' 04:00:00')).getTime() + (24 * 60 * 60 * 1000));
+                endTime = new Date(DateToLStr4(new Date().getTime() + (24 * 60 * 60 * 1000))).concat(' 04:00:00');
             }
             $.ajax({
                 url: api.FormManangeResponse,
@@ -101,7 +101,7 @@
                 dataType: 'json',
                 data: {
                     startTime: startTime,
-                    endTime: new Date(endTime)
+                    endTime: endTime
                 },
                 success: function (rs) {
                     if (rs.success) {
@@ -136,18 +136,18 @@
 
 
         function formatDataInfo(data) {
-            data['guestRoomCount'].name = '客房总数';
-            data['roomCount'].name = '房晚数';
-            data['people'].name = '人晚数';
-            data['vacancies'].name = '空房数';
-            data['rents'].name = '出租率';
-            data['freeRoom'].name = '免费房数';
-            data['rents'].day = data['rents'].day ? toPercent(data['rents'].day) : '0%';
-            data['rents'].month = data['rents'].month ? toPercent(data['rents'].month) : '0%';
-            data['rents'].year = data['rents'].year ? toPercent(data['rents'].year) : '0%';
-            data['rents'].lastYear = data['rents'].lastYear ? toPercent(data['rents'].lastYear) : '0%';
-            data['rents'].lastYearMonth = data['rents'].lastYearMonth ? toPercent(data['rents'].lastYearMonth) : '0%';
-            data['rents'].lastYearDay = data['rents'].lastYearDay ? toPercent(data['rents'].lastYearDay == '' ? 0 : data['rents'].lastYearDay) : '0%';
+            data['roomSum'].name = '客房总数';
+            data['roomLateSum'].name = '房晚数';
+            data['personLateSum'].name = '人晚数';
+            data['emptyRoomSum'].name = '空房数';
+            data['occupancyRate'].name = '出租率';
+            data['freeCheckInSum'].name = '免费房数';
+            data['occupancyRate'].day = data['occupancyRate'].day ? toPercent(data['occupancyRate'].day) : '0%';
+            data['occupancyRate'].month = data['occupancyRate'].month ? toPercent(data['occupancyRate'].month) : '0%';
+            data['occupancyRate'].year = data['occupancyRate'].year ? toPercent(data['occupancyRate'].year) : '0%';
+            data['occupancyRate'].lastYear = data['occupancyRate'].lastYear ? toPercent(data['occupancyRate'].lastYear) : '0%';
+            data['occupancyRate'].lastYearMonth = data['occupancyRate'].lastYearMonth ? toPercent(data['occupancyRate'].lastYearMonth) : '0%';
+            data['occupancyRate'].lastYearDay = data['occupancyRate'].lastYearDay ? toPercent(data['occupancyRate'].lastYearDay == '' ? 0 : data['rents'].lastYearDay) : '0%';
             data['stopRoom'].name = '停用房数';
             data['maintenanceRoom'].name = '维修房数';
             data['memberRoom'].name = '会员房晚';
@@ -169,7 +169,6 @@
             data['averageHousePay'].name = '房均消费';
             data['capitaPay'] = formatObj(data, 'capitaPay');
             data['capitaPay'].name = '人均消费';
-            // data['newRoom'].name = '新增房晚数';
             data['nightRoom'].name = '夜核房晚数';
             data['zdRoom'].name = '钟点房晚数';
             data['revpar'].name = 'REVPAR';
@@ -183,28 +182,6 @@
                 if(typeof data[item] != 'object' || !data[item])continue;
                 arr.push(data[item]);
             }
-            // arr.push(data['guestRoomCount']);
-            // arr.push(data['roomCount']);
-            // arr.push(data['people']);
-            // arr.push(data['vacancies']);
-            // arr.push(data['rents']);
-            // arr.push(data['freeRoom']);
-            // arr.push(data['stopRoom']);
-            // arr.push(data['maintenanceRoom']);
-            // arr.push(data['memberRoom']);
-            // arr.push(data['accountsReceivable']);
-            // arr.push(data['theRent']);
-            // arr.push(data['product']);
-            // arr.push(data['compensation']);
-            // arr.push(data['membership']);
-            // arr.push(data['rateAdjustment']);
-            // arr.push(data['averageHouse']);
-            // arr.push(data['averageHousePay']);
-            // arr.push(data['capitaPay']);
-            // // arr.push(data['newRoom']);
-            // arr.push(data['nightRoom']);
-            // arr.push(data['zdRoom']);
-            // arr.push(data['revpar']);
             return arr
         }
 

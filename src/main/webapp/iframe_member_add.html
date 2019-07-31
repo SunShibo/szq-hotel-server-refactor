@@ -8,7 +8,7 @@
 <body>
 
 <section>
-    <div class="layui-form-item layui-form" style="padding-top: 20px;">
+    <div class="layui-form-item layui-form" lay-filter="form" style="padding-top: 20px;">
         <div class="layui-inline">
             <label class="layui-form-label require">姓名</label>
             <div class="layui-input-inline">
@@ -49,7 +49,8 @@
         <div class="layui-inline">
             <label class="layui-form-label require">证件号</label>
             <div class="layui-input-inline">
-                <input type="text" name="certificateNumber" id="certificateNumber" lay-verify="required" autocomplete="off"
+                <input type="text" name="certificateNumber" id="certificateNumber" lay-verify="required"
+                       autocomplete="off"
                        class="layui-input">
             </div>
         </div>
@@ -62,7 +63,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">卡级别</label>
             <div class="layui-input-inline">
-                <select name="leaveId" id="leaveId">
+                <select name="memberLevelId" id="memberLevelId">
                 </select>
             </div>
         </div>
@@ -94,7 +95,7 @@
     var $, element;
 
     layui.use(['element', 'jquery', 'laytpl', 'laydate', 'form'], function () {
-        var flag = getUrl("id") == 'null' ? true : false;
+        var flag = getUrl("id") == 'null' ? true : false, certificateTypeData = [], leaveData = [];
         laydate = layui.laydate,
             element = layui.element,
             form = layui.form,
@@ -109,11 +110,16 @@
         $(function () {
             IDCardReaderInfo($(document.body));
             //绑定下拉框数据
-            renderSelect("certificateType", 'id', 'value', api.certificate, form);
-            renderSelect("leaveId", 'id', 'name', api.memberLevel, form);
-            if (!flag) {//编辑
-                dealData();
-            }
+            renderSelect("certificateType", 'id', 'value', api.certificate, form, function (dom, d) {
+                certificateTypeData = d;
+            });
+            renderSelect("memberLevelId", 'id', 'name', api.memberLevel, form, function (dom, d) {
+                leaveData = d;
+                if (!flag) {//编辑
+                    dealData();
+                }
+            });
+
         });
 
         $(document).on('click', '.IDCardReader', function () {
@@ -147,13 +153,12 @@
 
         form.on('submit(btnSave)', function (data) {
 
-
             console.info('开始保存')
             var isDisabled = $("#btnSave").hasClass('layui-btn-disabled');
             if (isDisabled) return false;
             var formData = data.field;
             sessionStorage.addMemberInfo = JSON.stringify(formData);
-            if ($("#leaveId").val() == null || $("#leaveId").val() == 'null') {
+            if ($("#memberLevelId").val() == null || $("#memberLevelId").val() == 'null') {
                 layer.alert("会员级别不能为空")
                 return false;
             }
@@ -161,13 +166,13 @@
             if (flag) {
                 // delete formData.birthday;
                 // sessionStorage.addMemberInfo = JSON.stringify(formData);
-                $.getJSON(api.getCardNoByLeaveId + $("#leaveId").val() + "&phone=" + data.field.phone + "&certificateNumber=" + data.field.certificateNumber, function (rs) {
+                $.getJSON(api.getCardNoByLeaveId + $("#memberLevelId").val() + "&phone=" + data.field.phone + "&certificateNumber=" + data.field.certificateNumber, function (rs) {
                     if (!rs.success) {
                         layer.alert(rs.errMsg);
                         return false;
                     }
                     if (rs.data.monye !== 0) {
-                        layer.open({
+                        parent.layer.open({
                             area: ['520px', '320px'],
                             type: 2,
                             content: "iframe_card_pay.html?no=" + rs.data.cardNumber + "&price=" + rs.data.monye,
@@ -191,80 +196,69 @@
                     }
                 })
             } else {
-                $.getJSON(api.getCardUpdate + "&userId=" + getUrl("id") + "&memberCardLevelId=" + $("#leaveId").val() + "&random=" + Date.now(), function (rs) {
+                $.getJSON(api.getCardUpdate + "&phone=" + data.field.phone + "&certificateNumber=" + data.field.certificateNumber + "&memberCardLevelId=" + $("#memberLevelId").val() + "&random=" + Date.now(), function (rs) {
                     if (!rs.success) {
-                        layer.alert(rs.errMsg)
+                        layer.alert(rs.errMsg);
                         return false;
                     }
-                    layer.open({
-                        area: ['520px', '320px'],
-                        type: 2,
-                        content: "iframe_card_pay.html?state=" + rs.data.state + "&no=" + rs.data.Number + "&price=" + rs.data.price + "&id=" + getUrl("id"),
-                        title: "提示"
-                    })
-                })
+                    console.log(rs);
+                    if (rs.data.money !== 0) {
+                        parent.layer.open({
+                            area: ['520px', '320px'],
+                            type: 2,
+                            content: "iframe_card_pay.html?id=" + getUrl('id') + "&no=" + rs.data.cardNumber + "&price=" + rs.data.monye,
+                            title: "提示"
+                        })
+                    } else {
+                        formData.cardNumber = rs.data.cardNumber;
+                        formData.money = rs.data.monye;
+                        formData.payType = 'cash';
+                        formData.id = getUrl('id');
+                        console.log(formData);
+                        $.ajax({
+                            url: api.updateMember,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: formData,
+                            success: function (res) {
+                                if (res.success) {
+                                    showMsg(res.data, 1, false);
+                                } else {
+                                    showMsg(res.errMsg, 2, false);
+                                }
+                            }
+                        })
+                    }
+
+                });
                 return false;
             }
         });
+
+        //编辑回显功能
+        function dealData() {
+            var d = JSON.parse(localStorage.getItem('member' + getUrl('id')));
+            var obj = {};
+            for (var i in d) {
+                if (d[i] == null) continue;
+                obj[i] = d[i];
+                if (i == 'birthday') {
+                    if (!d[i]) ;
+                    laydate.render({
+                        elem: '#' + i
+                        , value: d[i]
+                    });
+                }
+            }
+            form.val('form', obj);
+            form.render();
+        }
+
+        function confirmYes() {
+            no();
+        }
     });
 
-    function yes() {
-        // parent.parAdd();
-
-    }
-
-    function dealData() {
-
-
-        $.getJSON(api.queryMemberById + getUrl("id") + "&random=" + Date.now(), function (rs) {
-            var dom1 = $("#leaveId");
-            var dom2 = $("#certificateType");
-            if (rs.success) {
-                var d1 = rs.data.cartLeaveBOs;
-                var d2 = rs.data.certificateTypeBOs;
-                var d = rs.data.data;
-                delete d.createTime;
-                for (var i = 0; i < d1.length; i++)
-                    dom1.append(
-                        '<option value="' + d1[i].id + '">' + d1[i].name + '</option>'
-                    );
-                for (var i = 0; i < d2.length; i++)
-                    dom2.append(
-                        '<option value="' + d2[i].id + '">' + d2[i].type + '</option>'
-                    );
-                for (var i in d) {
-                    try {
-                        console.info(i)
-                        // debugger;
-                        if (d[i] == null) continue;
-                        document.getElementById(i).value = d[i];
-// debugger;
-                        // debugger;
-                        if (i == 'birthday') {
-
-                            if (!d[i]) ;
-                            laydate.render({
-                                elem: '#' + i
-                                , value: new Date(d[i].time)
-                            });
-                        }
-                        // if(i==)
-                    } catch (v) {
-                        console.info(v)
-                    }
-                }
-
-                form.render("select");
-            }
-
-
-        })
-
-    }
-
-    function confirmYes() {
-        no();
-    }
 
 </script>
 </body>

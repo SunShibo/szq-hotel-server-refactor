@@ -42,8 +42,11 @@ var api = {
     // , deductionIntegral: '/integral/updateIntegral?v=1'//积分减少?userId=3&number=20  废弃
     , queryMember: '/member/selectMember'//会员查询?query=张三      已修改
     , addMember: '/member/addMember?v=1'//会员添加   已修改
-    , updateMember: '/member/update?v=1'//会员信息修改?userId
+    , updateMember: '/member/updateMember'//会员信息修改?userId   已修改
     , memberLevel: '/memberLevel/selectmemberLevel?v=1'//获取会员级别000
+    , consumeRecord:'/member/getConsumptionRecord'//消费明细  已修改
+    , integralRecord:'/integralRecord/getIntegralRecord'//积分明细   已修改
+    , storedRecord:'/storedValueRecord/getStoredValueRecord'//储值明细   已修改
     , certificate: '/Dictionary/getDic?kid=1'//获取证件000
     , getMemberByCre: '/user/queryByCredentialNumber?credentialNumber='//根据证件号码获取会员信息
     , getHouseType: '/queryRoomTypeNum'//获取房屋类型000
@@ -52,7 +55,7 @@ var api = {
     , cardImport: '/memberCard/importMemberCard'//会员卡导入
     , import: '/member/importMember'//会员导入
     , exportExcel: '/manage/outExce?v=1'//导出会员信息
-    , offMember: '/member/logout?userId='//注销会员userId
+    , offMember: '/member/deleteMember?id='//注销会员userId   已修改
     , roomDelete: '/room/deleteByPrimaryKey'  //客房删除   已修改
     , roomQuery: '/room/queryRoom'   //客房查询    已修改
     , roomAdd: '/room/insertSelective'   //新增客房  已修改
@@ -154,8 +157,8 @@ var api = {
     , adminQuery: '/admin/query'//按ID查找权限
     , adminUpdate: '/admin/update'//权限修改
     , updateStatus: '/admin/updateStatus'//权限注销
-    , getCardNoByLeaveId: '/member/getMemberCardNumber?memberCardLevelId='//根据级别id查询卡费用信息
-    , getCardUpdate: '/member/queryCartUpdate?v=1'//根据用户id卡级别判断是否缴费member/queryCartUpdate?userId=1&leaveId=1
+    , getCardNoByLeaveId: '/member/getMemberCardNumber?memberCardLevelId='//根据级别id查询卡费用信息   已修改
+    , getCardUpdate: '/member/updateGetMemberCardNumber?v=1'//根据用户id卡级别判断是否缴费member/queryCartUpdate?userId=1&leaveId=1   已修改
     , cartInfo: '/memberCard/selectMemberCard'//会员卡查询   已修改
     , cartDelete: '/memberCard/deleteMemberCard'//会员卡删除   已修改
     , cartExport: '/memberCard/exportMemberCard'//会员卡导出    已修改
@@ -188,7 +191,7 @@ var api = {
     , scheduleUpdate: '/subcribe/updateSub?v=1'//选房确定后需要调用算价格
     , orderInfoHistory: 'OrderManage/orderInfoHistory'//消费明细
     , queryOrderByRoom: '/commodity/querySuspend'//商品交易挂账000
-    , buying: 'OrderManage/buying'//挂账
+    , buying: '/commodity/suspend'//商品交易挂账生成订单信息 已修改
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
     , FormManangeResponse: '/managementReport/getManagementReport'//管理层报表000
     , stamOrder: '/OrderManage/stamOrder'//在住打印

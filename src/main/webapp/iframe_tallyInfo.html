@@ -21,8 +21,7 @@
         $(function () {
             tally = JSON.parse(sessionStorage.getItem('tally'));
             tallyInfo = JSON.parse(sessionStorage.getItem('tallyInfo'));
-            // tab.reload({data: tallyInfo});
-            // debugger;
+
             setTimeout(function () {
                 tab.reload({data: tallyInfo});
             }, 200)
@@ -40,15 +39,13 @@
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    id: tallyInfo.id,
-                    info: tally.orderInfo,
-                    type: tally.type,
-                    price: tally.orderPrice
+                    childId: tallyInfo[0].id,
+                    info: tally.info,
+                    consumptionType: tally.consumptionType,
+                    money: tally.money
                 },
                 success: function (rs) {
                     console.log(rs);
-                    sessionStorage.removeItem('tally');
-                    sessionStorage.removeItem('tallyInfo');
                     showMsg('挂账成功', 1, false);
                     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     parent.layer.close(index); //再执行关闭
@@ -60,10 +57,9 @@
             elem: '#tallyInfo'
             , limit: 10000
             , cols: [[ //表头
-                {field: 'name', title: '姓名', align: 'center', }
-                , {field: 'phone', title: '电话', align: 'center', }
-
-
+                {field: 'roomName', title: '房间名', align: 'center'}
+                , {field: 'name', title: '姓名', align: 'center'}
+                , {field: 'phone', title: '电话', align: 'center'}
             ]]
         });
     });

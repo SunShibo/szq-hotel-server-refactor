@@ -21,9 +21,7 @@
         $(function () {
             tallyInfo = JSON.parse(sessionStorage.getItem('tallyInfo1'));
             setTimeout(function () {
-                var arr = []
-                arr.push(tallyInfo);
-                tab.reload({data: arr});
+                tab.reload({data: tallyInfo});
             }, 200)
         });
 
@@ -36,14 +34,13 @@
         $('#formData').on('click', function () {
 
             var oo = JSON.parse(sessionStorage.addMemberInfo);
-            var urlll = "/OrderManage/MemberbuyingAdd";
-            if(oo.birthday)oo.birthday = new Date(oo.birthday)
-            if(getUrl("id")){
-                oo.id=getUrl("id");
-                urlll = "/OrderManage/MemberbuyingUpdate";
+            var urlll = api.addMember;
+            if (getUrl("id")) {
+                oo.id = getUrl("id");
+                urlll = api.updateMember;
             }
             oo.id=getUrl("id");
-            oo.childId = tallyInfo.id;
+            oo.childId = tallyInfo[0].id;
             console.info(oo)
             $.ajax({
                 url: urlll,
@@ -52,8 +49,6 @@
                 data: oo,
                 success: function (rs) {
                     if(rs.success){
-
-
                         showMsg('挂账成功', 1, false);
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
@@ -72,8 +67,8 @@
                 {field: 'roomName', title: '房号', align: 'center', width: 90}
                 , {field: 'name', title: '姓名', align: 'center', width: 100}
                 , {
-                    field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
-                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
+                    field: 'createTime', title: '入住时间', align: 'center', templet: function (data) {
+                        return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
                     }
                 }
             ]]

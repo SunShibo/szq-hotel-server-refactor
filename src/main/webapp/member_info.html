@@ -9,12 +9,9 @@
 <div class="m-head">
     <div class="layui-btn-group">
         <button class="layui-btn" id="updateData">编辑</button>
-        <!--<button class="layui-btn" id="changeCard">换卡</button>-->
         <button class="layui-btn" id="cancellation">注销</button>
-        <!--<button class="layui-btn" id="loss">挂失</button>-->
-        <button class="layui-btn" id="integral">积分增减</button>
-        <button class="layui-btn" id="debitCard">储值调整</button>
-        <!--<button class="layui-btn" id="membership">会员级别升降</button>-->
+        <button class="layui-btn member-type" id="integral">积分增减</button>
+        <button class="layui-btn member-type" id="debitCard">储值调整</button>
     </div>
 </div>
 <div class="tab-box">
@@ -24,7 +21,6 @@
     <div class="nav-query">
         <div class="layui-btn-group">
             <button class="layui-btn layui-btn-sm" lay-event="consumptionDetail">消费明细</button>
-            <!--<button class="layui-btn" id="integralDetail">积分明细</button>-->
             <button class="layui-btn layui-btn-sm" lay-event="integralDetail">积分明细</button>
             <button class="layui-btn layui-btn-sm" lay-event="storageDetails">储值明细</button>
         </div>
@@ -37,6 +33,10 @@
 
         $(document).ready(function () {
             id = getUrl('id');//获取id
+            var member = JSON.parse(localStorage.getItem('member' + id));
+            if (member.type === 'no') {
+                $('.member-type').hide();
+            }
         });
 
         //头工具栏事件
@@ -44,8 +44,9 @@
             var checkStatus = table.checkStatus(obj.config.id), data = checkStatus.data;
             switch (obj.event) {
                 case 'consumptionDetail':
+                    //消费明细
                     tab.reload({
-                        url: '/member/getConsumptionRecord'
+                        url: api.consumeRecord
                         , where: {memberId: id}
                         , method: 'POST'
                         , page: {
@@ -72,9 +73,15 @@
                         }
                         , cols: [[
                             {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
-                            {field: 'payType', title: '支付方式', minWidth: 80, align: 'center', templet: function (data) {
+                            {
+                                field: 'payType',
+                                title: '支付方式',
+                                minWidth: 80,
+                                align: 'center',
+                                templet: function (data) {
                                     return orderPayType(data.payType);
-                                }},
+                                }
+                            },
                             {field: 'orderNumber', title: '单号', minWidth: 80, align: 'center'},
                             {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
                             {field: 'money', title: '交易金额', minWidth: 120, align: 'center'},
@@ -94,9 +101,10 @@
                     });
                     break;
                 case 'integralDetail':
+                    //积分明细
                     tab.reload({
-                        url: '/integral/queryUserStoreOrInter'
-                        , where: {status: 1, userId: id}
+                        url: api.integralRecord
+                        , where: {memberId: id}
                         , method: 'POST'
                         , page: {
                             curr: 1 //重新从第 1 页开始
@@ -117,35 +125,35 @@
                                 "code": 200, //解析接口状态
                                 "msg": res.errMsg, //解析提示文本
                                 "count": res.data.count, //解析数据长度
-                                "data": res.data.data //解析数据列表
+                                "data": res.data.integralRecordBOS //解析数据列表
                             };
                         }
                         , cols: [[
-                            {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
-                            {field: 'type', title: '类型', minWidth: 80, align: 'center'},
-                            {field: 'single', title: '组单', minWidth: 80, align: 'center'},
-                            {field: 'guestList', title: '客单', minWidth: 80, align: 'center'},
-                            {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
-                            {field: 'variation', title: '余额变动', minWidth: 120, align: 'center'},
-                            {field: 'present', title: '当前余额', minWidth: 80, align: 'center'},
+                            {field: 'type', title: '类型', align: 'center'},
                             {
-                                field: 'createTime',
-                                title: '创建时间',
-                                minWidth: 80,
-                                align: 'center',
+                                field: 'oddNumbers', title: '单号', align: 'center',
                                 templet: function (data) {
+                                    return data.oddNumbers
+                                }
+                            },
+                            {field: 'presenterMoney', title: '赠送积分', align: 'center'},
+                            {field: 'integralChange', title: '积分变动', align: 'center'},
+                            {field: 'currentBalance', title: '剩余积分', align: 'center'},
+                            {
+                                field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
                                     return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
                                 }
                             },
-                            {field: 'remark', title: '备注', minWidth: 80, align: 'center'},
-                            {field: 'operator', title: '收银员', minWidth: 80, align: 'center'}
+                            {field: 'remark', title: '备注', align: 'center'},
+                            {field: 'name', title: '收银员', align: 'center'}
                         ]]
                     });
                     break;
                 case 'storageDetails':
+                    //储值明细
                     tab.reload({
-                        url: '/integral/queryUserStoreOrInter'
-                        , where: {status: 2, userId: id}
+                        url: api.storedRecord
+                        , where: {memberId: id}
                         , method: 'POST'
                         , page: {
                             curr: 1 //重新从第 1 页开始
@@ -166,41 +174,47 @@
                                 "code": 200, //解析接口状态
                                 "msg": res.errMsg, //解析提示文本
                                 "count": res.data.count, //解析数据长度
-                                "data": res.data.data //解析数据列表
+                                "data": res.data.storedValueRecordBOS //解析数据列表
                             };
                         }
                         , cols: [[
-                            {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
-                            {field: 'type', title: '类型', minWidth: 80, align: 'center'},
-                            {field: 'single', title: '组单', minWidth: 80, align: 'center'},
-                            {field: 'guestList', title: '客单', minWidth: 80, align: 'center'},
-                            {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
-                            {field: 'variation', title: '余额变动', minWidth: 120, align: 'center'},
-                            {field: 'present', title: '当前余额', minWidth: 80, align: 'center'},
+                            {field: 'type', title: '类型', align: 'center'},
+                            {
+                                field: 'oddNumbers', title: '单号', align: 'center',
+                                templet: function (data) {
+                                    return data.oddNumbers
+                                }
+                            },
+                            {field: 'storedValueMoney', title: '储值金额', align: 'center'},
+                            {field: 'presenterMoney', title: '赠送金额', align: 'center'},
+                            {field: 'currentBalance', title: '当前余额', align: 'center'},
                             {
                                 field: 'createTime',
                                 title: '创建时间',
-                                minWidth: 80,
                                 align: 'center',
                                 templet: function (data) {
                                     return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
                                 }
                             },
-                            {field: 'remark', title: '备注', minWidth: 80, align: 'center'},
-                            {field: 'operator', title: '收银员', minWidth: 80, align: 'center'}
+                            {field: 'remark', title: '备注', align: 'center'},
+                            {field: 'name', title: '收银员', align: 'center'}
                         ]]
                     });
                     break;
             }
         });
 
-
+        //消费明细
         var tab = table.render({
             elem: '#memberInfo'
+            , url: api.consumeRecord
+            , where: {memberId: id}
             , method: 'POST'
-            , url: '/integral/queryUserInformation'
-            , where: {userId: id}
+            , toolbar: '#toolbarDemo'
             , even: true
+            , page: {
+                curr: 1 //重新从第 1 页开始
+            }
             , request: {
                 pageName: 'pageNo'
                 , limitName: 'pageSize'
@@ -217,19 +231,19 @@
                     "code": 200, //解析接口状态
                     "msg": res.errMsg, //解析提示文本
                     "count": res.data.count, //解析数据长度
-                    "data": res.data.data //解析数据列表
+                    "data": res.data.consumptionRecordBOS //解析数据列表
                 };
             }
-            , toolbar: '#toolbarDemo'
-            , page: true //开启分页
             , cols: [[
                 {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
-                {field: 'type', title: '类型', minWidth: 80, align: 'center'},
-                {field: 'single', title: '组单', minWidth: 80, align: 'center'},
-                {field: 'guestList', title: '客单', minWidth: 80, align: 'center'},
+                {
+                    field: 'payType', title: '支付方式', minWidth: 80, align: 'center', templet: function (data) {
+                        return orderPayType(data.payType);
+                    }
+                },
+                {field: 'orderNumber', title: '单号', minWidth: 80, align: 'center'},
                 {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
-                {field: 'voucher', title: '原始凭证', minWidth: 120, align: 'center'},
-                {field: 'price', title: '交易金额', minWidth: 80, align: 'center'},
+                {field: 'money', title: '交易金额', minWidth: 120, align: 'center'},
                 {field: 'project', title: '交易项目', minWidth: 80, align: 'center'},
                 {
                     field: 'createTime',
@@ -241,27 +255,27 @@
                     }
                 },
                 {field: 'remark', title: '备注', minWidth: 80, align: 'center'},
-                {field: 'operator', title: '收银员', minWidth: 80, align: 'center'}
+                {field: 'name', title: '收银员', minWidth: 80, align: 'center'}
             ]]
         });
 
 
         $('#updateData').on('click', function () {
-            layer.open({
+            parent.layer.open({
                 type: 2,
                 title: "编辑",
-                content: './iframe_member_add.html?id=' + getUrl("id"),
-                area: ['820px', '520px'],
+                content: './iframe_member_add.html?id=' + id,
+                area: ['820px', '520px']
             });
         });
 
 
         $('#cancellation').on('click', function () {//注销
-            layer.confirm('确认注销吗?', {icon: 3, title: '提示'}, function (index) {
+            parent.layer.confirm('确认注销吗?', {icon: 3, title: '提示'}, function (index) {
                 //请求
                 $.getJSON(api.offMember + getUrl("id") + "&random=" + Date.now(), function (rs) {
                     if (rs.success) {
-                        layer.alert("操作成功", function () {
+                        parent.layer.alert("操作成功", function () {
                             location.reload();
                         })
                     } else {
@@ -273,10 +287,10 @@
         });
 
         $('#integral').on('click', function () {//积分增减
-            layer.open({
+            parent.layer.open({
                 type: 2,
                 title: '积分增减',
-                content: './iframe_member_integral.html?id='+id+'&v=' + Date.now(),
+                content: './iframe_member_integral.html?id=' + id + '&v=' + Date.now(),
                 skin: 'demo-class',
                 shadeClose: true,
                 shade: 0.6,
@@ -297,6 +311,35 @@
                 area: ['800px', '85%']
             });
         });
+
+        window.onbeforeunload = function (event) {
+            debugger
+            var isIE = document.all;
+            evt = evt ? evt : (window.event ? window.event : null);
+            if (isIE) {//IE浏览器
+                var n = evt.screenX - window.screenLeft;
+                var b = n > document.documentElement.scrollWidth - 20;
+                if (b && evt.clientY < 0 || evt.altKey) {
+                    //alert("是关闭而非刷新");
+                    console.log('是关闭而非刷新')
+                }
+                else {
+                    //alert("是刷新而非关闭");
+                    return false;
+                }
+            }
+            else {//火狐浏览器
+                if (document.documentElement.scrollWidth != 0) {
+                    //alert("是刷新而非关闭");
+                    console.log('是刷新而非关闭');
+                    return false;
+
+                }
+                else {
+                    console.log('是关闭而非刷新')
+                }
+            }
+        }
     });
 
 
