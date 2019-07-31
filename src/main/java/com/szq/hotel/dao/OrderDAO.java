@@ -57,7 +57,7 @@ public interface OrderDAO {
     Integer updOrderChildNoValidation(OrderChildBO orderChildBO);
 
     //根据主订单id查询房间信息（客帐管理）
-    List<OrderChildBO> getRoomInfoById(Integer orderId);
+    List<OrderChildBO> getRoomInfoById(String alCode);
     //获取在住报表
     List<OrderResult> getCheckInReport(Integer hotelId);
     //获取预离报表

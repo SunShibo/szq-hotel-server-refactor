@@ -292,10 +292,10 @@ public class OrderController extends BaseCotroller {
 
     /**
      * 根据主订单id查询房间信息(客帐管理)
-     * @param orderId 订单号
+     * @param alCode 联房码
      * */
     @RequestMapping("/getRoomInfoById")
-    public void getRoomInfoById(Integer orderId,HttpServletRequest request, HttpServletResponse response){
+    public void getRoomInfoById(String alCode,HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -308,13 +308,13 @@ public class OrderController extends BaseCotroller {
                 return ;
             }
             //验证参数
-            if(orderId== null){
+            if(alCode== null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;
             }
-            List<OrderChildBO> orderBO=orderService.getRoomInfoById(orderId);
+            List<OrderChildBO> orderBO=orderService.getRoomInfoById(alCode);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderBO)) ;
             super.safeJsonPrint(response, result);
             log.info("result{}",result);

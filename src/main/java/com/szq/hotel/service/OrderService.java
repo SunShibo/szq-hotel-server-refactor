@@ -471,8 +471,8 @@ public class OrderService {
     }
 
     //根据主订单id查询房间信息（客帐管理）
-    public List<OrderChildBO> getRoomInfoById(Integer orderId) {
-        List<OrderChildBO> orderChildBOS = orderDAO.getRoomInfoById(orderId);
+    public List<OrderChildBO> getRoomInfoById(String alCode) {
+        List<OrderChildBO> orderChildBOS = orderDAO.getRoomInfoById(alCode);
         int index = -1;
         OrderChildBO orderChildBO = null;
         for (int i = 0; i < orderChildBOS.size(); i++) {
