@@ -544,8 +544,8 @@ public class RoomService {
 
 
     /*
-        修改房间是否为维修房
-     */
+         修改房间是否为维修房
+      */
     public void updateRoomState(Integer id, Integer userId) {
         //查询房间主状态
         String majorState = roomDAO.getRoomMajorState(id);
@@ -562,13 +562,13 @@ public class RoomService {
             RoomRecordBO recordBO = new RoomRecordBO();
             recordBO.setRoomId(id);
             recordBO.setVirginState(majorState);
-            recordBO.setNewState(roomBO.getRoomState());
+            recordBO.setNewState(majorState);
             recordBO.setRemark("改为维修房");
             recordBO.setCreateUserId(userId);
             recordBO.setCreateTime(new Date());
             roomRecordDAO.insert(recordBO);
-            //之前是维修房
-        } else if ("yes".equals(state)) {
+            //之前是维修房而且是空房则改为脏房
+        } else if ("yes".equals(state)&Constants.VACANT.getValue().equals(majorState)) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", id);
             map.put("state", Constants.DIRTY.getValue());
@@ -581,6 +581,24 @@ public class RoomService {
             recordBO.setRoomId(id);
             recordBO.setVirginState(majorState);
             recordBO.setNewState(Constants.DIRTY.getValue());
+            recordBO.setRemark("取消维修房");
+            recordBO.setCreateUserId(userId);
+            recordBO.setCreateTime(new Date());
+            roomRecordDAO.insert(recordBO);
+            //之前是维修房而且不是空房则改为原状态
+        }else if ("yes".equals(state)&(!Constants.VACANT.getValue().equals(majorState))){
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", id);
+            map.put("state",majorState);
+            roomDAO.updateroomMajorState(map);
+            //执行修改
+            roomBO.setRoomState("no");
+            roomDAO.updateRoomState(roomBO);
+            //添加操作日志
+            RoomRecordBO recordBO = new RoomRecordBO();
+            recordBO.setRoomId(id);
+            recordBO.setVirginState(majorState);
+            recordBO.setNewState(majorState);
             recordBO.setRemark("取消维修房");
             recordBO.setCreateUserId(userId);
             recordBO.setCreateTime(new Date());
