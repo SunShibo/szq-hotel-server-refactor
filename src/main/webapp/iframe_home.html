@@ -297,7 +297,7 @@
             }
             //如果是入住或者超时状态  不允许点击
             if (status === 'true') {
-                $('#finish').addClass('layui-btn-disabled').prop('disabled', 'disabled');
+                $('#finish，#checkIn').addClass('layui-btn-disabled').prop('disabled', 'disabled');
             }
 
             $.ajax({
@@ -393,7 +393,7 @@
             /*
              * 天数 每循环一次为一天
              */
-            debugger
+            // debugger
             for (var i = 0; i < 15; i++) {
                 var timestamp = new Date(data[i].startDate.replace(/-/g, "/"));
                 var month = timestamp.getMonth() + 1 < 10 ? "0" + (timestamp.getMonth() + 1) : timestamp.getMonth() + 1;
