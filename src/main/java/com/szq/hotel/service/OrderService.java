@@ -762,8 +762,8 @@ public class OrderService {
 
 
     //查询所有可用联房
-    public List<CheckInPersonBO> getAlRoom(Integer roomId, Integer hotelId) {
-        return orderDAO.getAlRoom(roomId, hotelId);
+    public List<CheckInPersonBO> getAlRoom(Integer hotelId, String alCode) {
+        return orderDAO.getAlRoom(hotelId, alCode);
     }
 
     //解除联房
@@ -799,21 +799,19 @@ public class OrderService {
                 childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]));
             }
 
-            //修改子帐房联房码
+            //修改旧联房码
             OrderChildBO orderChildBO = orderDAO.getOrderChildById(new Integer(orderChildIdArr[i]));
-            List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBO.getAlRoomCode(), "no");
+            List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBO.getAlRoomCode(), null);
             for (OrderChildBO child : orderChildBOList) {
                 child.setAlRoomCode(orderChildBONew.getAlRoomCode());
+                child.setMain("no");
                 orderDAO.updOrderChild(child);
             }
-
-            //修改主账房信息
-            OrderChildBO mainOrder = new OrderChildBO();
-            mainOrder.setId(new Integer(orderChildIdArr[i]));
-            mainOrder.setMain("no");
-            mainOrder.setAlRoomCode(orderChildBONew.getAlRoomCode());
-            orderDAO.updOrderChild(mainOrder);
         }
+        OrderChildBO mainOrderChild=new OrderChildBO();
+        mainOrderChild.setId(orderChildId);
+        orderChildBONew.setMain("yes");
+        orderDAO.updOrderChild(mainOrderChild);
 
     }
 

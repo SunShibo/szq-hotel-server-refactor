@@ -701,7 +701,7 @@ public class OrderController extends BaseCotroller {
      * 查询所有可用联房
      * */
     @RequestMapping("/getAlRoom")
-    public void  getAlRoom(Integer roomId,HttpServletRequest request,HttpServletResponse response){
+    public void  getAlRoom(String alCode,HttpServletRequest request,HttpServletResponse response){
         //验证管理员
         try {
             log.info(request.getRequestURI());
@@ -714,13 +714,13 @@ public class OrderController extends BaseCotroller {
                 return ;
             }
             //验证参数
-            if (roomId == null||roomId.equals("")) {
+            if (alCode == null||alCode.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;
             }
-            List<CheckInPersonBO> checkInPersonBOS=orderService.getAlRoom(roomId,userInfo.getHotelId());
+            List<CheckInPersonBO> checkInPersonBOS=orderService.getAlRoom(userInfo.getHotelId(),alCode);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInPersonBOS));
             super.safeJsonPrint(response, result);
         }catch (Exception e){

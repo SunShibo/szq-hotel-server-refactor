@@ -78,7 +78,7 @@ public interface OrderDAO {
     //通过联房码查询联房信息
     List<CheckRoomPersonResult> getOrderRoomByCode(String code);
     //查询所有可用联房
-    List<CheckInPersonBO> getAlRoom(@Param("roomId") Integer roomId,@Param("hotelId")Integer hotelId);
+    List<CheckInPersonBO> getAlRoom(@Param("hotelId")Integer hotelId,@Param("alRoomCode")String alRoomCode);
     //通过联房码查询子订单
     List<OrderChildBO> getOrderByCode(@Param("code") String code,@Param("main") String main);
     //备份子订单

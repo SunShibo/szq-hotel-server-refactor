@@ -554,7 +554,10 @@
 
     <!--通过联房码查询子订单-->
     <select id="getOrderByCode"  resultType="com.szq.hotel.entity.bo.OrderChildBO" >
-        select * from hm_order_child where al_room_code=#{code} and main=#{main}
+        select * from hm_order_child where al_room_code=#{code}
+        <if test="main!=null and main!=''">
+            and main=#{main}
+        </if>
     </select>
 
     <!--查询所有可用联房-->
@@ -565,7 +568,7 @@
         and hm_order_child.main='yes'
         and hm_check_in_person.order_child_id=hm_order_child.id
         and hm_check_in_person.status='checkin'
-        and hm_order_child.room_id!=#{roomId}
+        and al_room_code!=#{alRoomCode}
         and hm_order.hotel_id=#{hotelId}
         and hm_order_child.order_id=hm_order.id
         group by hm_order_child.id
