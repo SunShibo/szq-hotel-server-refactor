@@ -292,4 +292,39 @@ public class ManagerdailyBO {
     public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
+
+    @Override
+    public String toString() {
+        return "ManagerdailyBO{" +
+                "id=" + id +
+                ", grossrealIncome=" + grossrealIncome +
+                ", totalTurnover=" + totalTurnover +
+                ", numberOrder=" + numberOrder +
+                ", maintenanceroomNumber=" + maintenanceroomNumber +
+                ", numberlockedStores=" + numberlockedStores +
+                ", numberroomsAvailablerent=" + numberroomsAvailablerent +
+                ", totalnumberGuestrooms=" + totalnumberGuestrooms +
+                ", cashDisbursements=" + cashDisbursements +
+                ", cash=" + cash +
+                ", throughoutDayrent=" + throughoutDayrent +
+                ", rateAdjustment=" + rateAdjustment +
+                ", hourRate=" + hourRate +
+                ", timeoutRate=" + timeoutRate +
+                ", nuclearnightRoomcharge=" + nuclearnightRoomcharge +
+                ", compensation=" + compensation +
+                ", membershipFee=" + membershipFee +
+                ", goods=" + goods +
+                ", subtotal=" + subtotal +
+                ", members=" + members +
+                ", agreementUnit=" + agreementUnit +
+                ", app=" + app +
+                ", microLetter=" + microLetter +
+                ", individualTraveler=" + individualTraveler +
+                ", directBooking=" + directBooking +
+                ", enter=" + enter +
+                ", dailyType=" + dailyType +
+                ", hotelId=" + hotelId +
+                ", dateTime=" + dateTime +
+                '}';
+    }
 }

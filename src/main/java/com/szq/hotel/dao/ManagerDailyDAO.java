@@ -67,7 +67,7 @@ public interface ManagerDailyDAO {
                                                   @Param("endTime")String endTime);
 
     /**
-     * 计算今天日租出去房间数量
+     * 计算今天日租出去房间价格
      * @param hotelId
      * @param startTime
      * @param endTime

@@ -377,32 +377,32 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="queryManagerdaily" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+  <select id="queryManagerdaily" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
     select * from hm_managerdaily where hotel_id = #{hotelId} and date_time = #{dateTime} and daily_type = ${dailyType};
   </select>
 
-  <select id="queryManagerdailyList" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+  <select id="queryManagerdailyList" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
     SELECT * FROM hm_managerdaily
     WHERE hotel_id = #{hotelId}
     AND daily_type = #{dailyType}
-    AND #{startTime} &lt;= date_time &lt; #{endTime}
+    AND  date_time between #{startTime} and #{endTime}
   </select>
 
 
-  <select id="queryManagerdailyList2" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+  <select id="queryManagerdailyList2" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
   SELECT * FROM hm_managerdaily
   WHERE daily_type = #{dailyType} AND hotel_id = #{hotelId}
   AND date_time = #{date}
   </select>
 
-  <select id="queryYear" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+  <select id="queryYear" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
   SELECT  * FROM hm_managerdaily
   WHERE  daily_type = #{dailyType}
   AND hotel_id = #{hotelId}
-  AND date_tine LIKE CONCAT(CONCAT('%', #{date}), '%');
+  AND date_time LIKE CONCAT(#{date}, '%');
   </select>
 
-  <select id="queryHy" parameterType="com.szq.hotel.entity.bo.ManagerdailyBO">
+  <select id="queryHy" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
     SELECT * FROM hm_managerdaily
   WHERE hotel_id = #{hotelId} and date_time = #{date}
   AND daily_type = #{dailyType}
@@ -434,13 +434,15 @@
     subscribe_remark
   FROM
   hotel.hm_order
-    WHERE #{startTime} &lt;= create_time &lt; #{endTime}
+    WHERE
+     create_time &gt;= #{startTime} and create_time &lt; #{endTime}
     AND hotel_id = #{hotelId}
   </select>
 
   <select id="queryConsumption" resultType="com.szq.hotel.entity.bo.CashierSummary">
     SELECT * FROM hm_cashier_summary
     WHERE hotel_id = #{hotelId}
-    AND #{startTime} &lt;= create_time &lt; #{endTime}
+    AND
+     create_time &gt;= #{startTime} and create_time &lt; #{endTime}
   </select>
 </mapper>

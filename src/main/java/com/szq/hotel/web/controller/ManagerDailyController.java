@@ -3,21 +3,21 @@ package com.szq.hotel.web.controller;
 import com.szq.hotel.entity.bo.AdminBO;
 import com.szq.hotel.entity.bo.HotelTableBO;
 import com.szq.hotel.entity.bo.ManagerdailyChangeBO;
-import com.szq.hotel.entity.dto.DateRoomDTO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.service.ManagerDailyService;
+import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
-import org.apache.struts.config.BaseConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Calendar;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+
+
 
 /**
  * @Author: Bin Wang
@@ -26,6 +26,8 @@ import java.util.Date;
 @Controller
 @RequestMapping("/managerDaliy")
 public class ManagerDailyController extends BaseCotroller {
+
+    final static Logger log = LoggerFactory.getLogger(ManagerDailyService.class);
 
     @Resource
     private ManagerDailyService  managerDailyService;
@@ -172,12 +174,9 @@ public class ManagerDailyController extends BaseCotroller {
     @RequestMapping("/queryTest")
     public void queryManagerDaliy(HttpServletRequest request, HttpServletResponse response, String date){
         AdminBO userBO = super.getLoginUser(request);
-        if (userBO == null) {
-            String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "请登录"));
-            safeTextPrint(response, json);
-            return;
-        }
-        ManagerdailyChangeBO managerdailyChangeBO = managerDailyService.queryInfo(date, userBO.getHotelId());
+
+
+        ManagerdailyChangeBO managerdailyChangeBO = managerDailyService.queryInfo(date, 1);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(managerdailyChangeBO));
         super.safeJsonPrint(response, result);
         return;
@@ -185,13 +184,13 @@ public class ManagerDailyController extends BaseCotroller {
 
 
     @RequestMapping("/insertTest")
-    public void insertTest(HttpServletRequest request, HttpServletResponse response, String date){
+    public void insertTest(HttpServletRequest request, HttpServletResponse response, Integer hotelId){
         AdminBO userBO = super.getLoginUser(request);
         if (userBO == null) {
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "请登录"));
             safeTextPrint(response, json);
             return;
         }
-        managerDailyService.insertManagerDaliy(userBO.getHotelId(), date);
+        managerDailyService.insertManagerDaliy(userBO.getHotelId(), new SimpleDateFormat("yyyy-MM-dd").format(DateUtils.getYesTaday()));
     }
 }

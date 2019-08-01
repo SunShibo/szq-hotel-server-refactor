@@ -240,7 +240,7 @@ public class RoomController extends BaseCotroller {
      * @param state
      */
     @RequestMapping("/updateroomMajorState")
-    public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state) {
+    public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state, String remark) {
         log.info("updateroomMajorState**********************************");
         log.info("id:{}", id);
         log.info("state:{}", state);
@@ -264,12 +264,9 @@ public class RoomController extends BaseCotroller {
         map.put("id", id);
         map.put("state", state);
         map.put("userId", loginAdmin.getId());
+        map.put("remark", remark);
         roomService.updateroomMajorState(map);
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
         super.safeJsonPrint(response, result);

@@ -86,6 +86,7 @@ public class RoomService {
         mp.put("newState", map.get("state"));
         mp.put("roomId", roomBO.getId());
         mp.put("virginState", roomBO.getRoomMajorState());
+        mp.put("remark", map.get("remark"));
         log.info("mp:{}", mp);
         int i = roomRecordDAO.insertRoomState(mp);
         log.info("i:{}", i);

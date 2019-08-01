@@ -73,7 +73,7 @@ public interface ManagerdailyBOMapper {
     List<TotalPriceBO> queryOrderTotalPrice(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
     /**
-     * 获取总收入
+     * 获取当天总收入
      * @param hotelId
      * @param startTime
      * @param endTime
