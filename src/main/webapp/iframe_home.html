@@ -151,6 +151,7 @@
         var element = layui.element, $ = jQuery = layui.$, table = layui.table,
             id = 0,//房间ID
             orderId = 0,//在住信息主订单ID
+            alRoomCode = 0,//在住信息联房码
             reservationOrderId = 0, //预约信息主订单ID
             orderChildId = 0,//子订单ID
             state = false,//预约状态
@@ -221,6 +222,7 @@
                     checkInObj = data.data;
                     //获取订单ID
                     orderId = data.data.orderId;
+                    alRoomCode = data.data.alRoomCode;
                     orderChildId = data.data.orderChildId;
                     //离店时间
                     endTime = data.data.endTime;
@@ -294,7 +296,7 @@
                 $('#finish').text('待打扫');
             }
             //如果是入住或者超时状态  不允许点击
-            if(status === 'true'){
+            if (status === 'true') {
                 $('#finish').addClass('layui-btn-disabled').prop('disabled', 'disabled');
             }
 
@@ -554,7 +556,7 @@
 
         //客账
         $('#outRoom').on('click', function () {
-            parent.location.href = 'orderInfo.html?state=0&back=1&id=' + orderId;
+            parent.location.href = 'orderInfo.html?state=0&back=1&id=' + encodeURI(alRoomCode);
         });
 
         //取消预订
@@ -605,30 +607,29 @@
                 title: '联房',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_accounts.html?c=' + childId,
+                content: 'iframe_accounts.html?roomId=' + id + '&orderChildId=' + orderChildId + '&alRoomCode=' + encodeURI(alRoomCode),
                 end: function () {
-                    getResult();
-                    parent.getRoomsInfo();
+                    initStayInData();
                 }
             });
         });
 
-        //预约备注
-        $('#reservationsRemarks').on('click', function () {
-            parent.layer.open({
-                type: 2,
-                skin: 'demo-class',
-                area: ['500px', '300px'],
-                title: '房屋备注',
-                shade: 0.6,
-                shadeClose: true,
-                content: 'iframe_exemption.html?s=4&o=' + subId + '&id=' + id + "&remark=" + encodeURI(subMessageRemark),
-                end: function () {
-                    tab.reload();
-                    getResult();
-                }
-            });
-        });
+        // //预约备注
+        // $('#reservationsRemarks').on('click', function () {
+        //     parent.layer.open({
+        //         type: 2,
+        //         skin: 'demo-class',
+        //         area: ['500px', '300px'],
+        //         title: '房屋备注',
+        //         shade: 0.6,
+        //         shadeClose: true,
+        //         content: 'iframe_exemption.html?s=4&o=' + subId + '&id=' + id + "&remark=" + encodeURI(subMessageRemark),
+        //         end: function () {
+        //             tab.reload();
+        //             getResult();
+        //         }
+        //     });
+        // });
     });
 </script>
 </body>

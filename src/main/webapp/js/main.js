@@ -133,6 +133,9 @@ var api = {
     , homeCleanThe: '/room/updateroomMajorState'//切换脏房状态 已修改
     , updateMainCommment: '/room/updateRoomRemark'//首页房屋备注   已修改
     , updateCheckInData: '/order/updCheckInInfo'//首页入住信息修改   已修改
+    , jointHousingt: '/order/getAlRoom '//查询可加入联房信息   已修改
+    , join: '/order/addAlRoom'//加入联房   已修改
+    , dismiss: '/order/updAlRoom'//解散联房  已修改
 
 
     , reportList: '/room/querySs'//按时间段查询图表000
@@ -185,21 +188,18 @@ var api = {
     , cashStamp: 'commodity/queryCommodiryById'//打印000
     , addMaseTo: '/roomDetailsController/addMaseTo'//添加同来
     , waitIn: '/checkin/laterCheckIn?v=1'//稍后入住
-    , jointHousingt: '/OrderManage/jointHousing '//联房按钮
     , calcPrice2: '/room/updateOrderInfo?v=1'//预定修改，选房确定后需要调用算价格
     , calcPrice1: '/room/sumRoomPriceAndHouseTypePrice?v=1'//选房确定后需要调用算价格
     , scheduleUpdate: '/subcribe/updateSub?v=1'//选房确定后需要调用算价格
-    , orderInfoHistory: 'OrderManage/orderInfoHistory'//消费明细
+    // , orderInfoHistory: 'OrderManage/orderInfoHistory'//消费明细  废弃
     , queryOrderByRoom: '/commodity/querySuspend'//商品交易挂账000
     , buying: '/commodity/suspend'//商品交易挂账生成订单信息 已修改
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
     , FormManangeResponse: '/managementReport/getManagementReport'//管理层报表000
     , stamOrder: '/OrderManage/stamOrder'//在住打印
-    , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人
-    , delRoomPerson: '/roomDetailsController/delRoomPerson'//删除同来人
-    , updateRoomPerson: '/roomDetailsController/updateRoomPerson'//修改同来人
-    , join: '/OrderManage/join'//加入联房
-    , dismiss: '/OrderManage/dismiss'//解散联房
+    // , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人  废弃
+    // , delRoomPerson: '/roomDetailsController/delRoomPerson'//删除同来人  废弃
+    // , updateRoomPerson: '/roomDetailsController/updateRoomPerson'//修改同来人 废弃
     , addHotel: 'hotel/addHotel'//添加酒店000
     , queryHotelInfo: 'hotel/queryHotel'//查询酒店000
     , updateHotelInfo: 'hotel/updateHotel'//编辑酒店000

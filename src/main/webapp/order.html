@@ -325,9 +325,9 @@
             if (layEvent === 'edit') {//编辑
                 location.href = 'schedule_change.html?id=' + data.orderId + "&idNum=" + data.certificateNumber;
             } else if (layEvent === 'queryManage') {//查看详情
-                window.open('orderInfo.html?id=' + data.orderId + '&state=1', '_blank')
+                window.open('orderInfo.html?id=' + encodeURI(data.alRoomCode) + '&state=1', '_blank')
             } else if (layEvent === 'accountManage') { //客账管理
-                window.open('orderInfo.html?id=' + data.orderId + '&back=0&state=0', '_blank')
+                window.open('orderInfo.html?id=' + encodeURI(data.alRoomCode) + '&back=0&state=0', '_blank')
             } else if (layEvent === 'center') { //入住
                 location.href = 'appoint.html?phone=' + data.phone + "&idNum=" + data.certificateNumber + "&random=" + Date.now();
             } else if (layEvent === 'cancel') {//取消订单

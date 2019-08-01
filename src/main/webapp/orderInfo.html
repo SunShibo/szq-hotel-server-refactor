@@ -110,7 +110,7 @@
         renderReport($)
         $(function () {
             //id为初始化使用
-            id = parseInt(getUrl('id'));
+            id = decodeURI(getUrl('id'));
             var state = parseInt(getUrl('state'));
             setInterval(function () {
                 getReport($)
@@ -215,7 +215,7 @@
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    orderId: id
+                    alCode: id
                 },
                 success: function (left) {
                     oId = left.data[0].id;

@@ -42,8 +42,10 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form', 'table'], function () {
-        var form = layui.form, $ = layui.$, c = 0, caaountsTop, caaountsBottom, table = layui.table, selectNewArr = []
-            , selectOldArr = [];
+        var form = layui.form, $ = layui.$, roomId = 0, alRoomCode = 0, orderChildId = 0, caaountsTop = {},
+            caaountsBottom = {}, table = layui.table,
+            selectNewArr = [],
+            selectDelArr = [];
 
         $('#back').on('click', function () {
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
@@ -52,7 +54,9 @@
 
 
         $(function () {
-            c = parseInt(getUrl('c'));
+            roomId = parseInt(getUrl('roomId'));//房间ID
+            alRoomCode = decodeURI(getUrl('alRoomCode'));//主订单ID
+            orderChildId = parseInt(getUrl('orderChildId'));//主订单ID
             getData()
         });
         caaountsBottom = table.render({
@@ -60,7 +64,7 @@
             , limit: 10000
             , method: 'POST'
             , cols: [[ //表头
-                {field: 'checkbox', title: 'ID', type: 'checkbox', fixed: 'roomId', align: 'center'}
+                {field: 'orderChildId', title: 'ID', type: 'checkbox', fixed: 'roomId', align: 'center'}
                 , {field: 'roomName', title: '房号', align: 'center'}
                 , {field: 'name', title: '姓名', align: 'center'}
                 , {
@@ -76,49 +80,42 @@
             , limit: 10000
             , method: 'POST'
             , cols: [[ //表头
+                {field: 'id', title: 'ID', type: 'checkbox', fixed: 'roomId', align: 'center'}
                 , {field: 'roomName', title: '房号', align: 'center'}
                 , {field: 'name', title: '姓名', align: 'center'}
-                , {
-                    field: 'startTime', title: '入住时间', align: 'center', templet: function (data) {
-                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
-                    }
-                }
+                , {field: 'createTime', title: '入住时间', align: 'center'}
             ]]
         });
 
         //监听表格复选框选择
         table.on('checkbox(caaountsBottom)', function (obj) {
             var checkStatus = table.checkStatus('caaountsBottom'), data = checkStatus.data;
-            selectNewArr = selectOldArr;
             for (var i = 0, len = data.length; i < len; i++) {
-                selectNewArr.push(data[i].id);
+                selectNewArr.push(data[i].orderChildId);
             }
         });
 
-
-        function getData() {
-            $.ajax({
-                url: api.jointHousingt,
-                type: 'POST',
-                dataType: 'json',
-                data: {id: c},
-                success: function (rs) {
-                    if(!rs.success){
-                        showMsg(rs.errMsg, 2, false);
-                        return;
-                    }
-                    formatData(rs.data.old);
-                    caaountsTop.reload({data: rs.data.old});
-                    caaountsBottom.reload({data: rs.data.new});
-                }
-            })
-        }
-
-        function formatData(data) {
+        //监听表格复选框选择
+        table.on('checkbox(caaountsTop)', function (obj) {
+            var checkStatus = table.checkStatus('caaountsTop'), data = checkStatus.data;
             for (var i = 0, len = data.length; i < len; i++) {
-                selectOldArr.push(data[i].id);
+                selectDelArr.push(data[i].id);
             }
+        });
+
+        //获取联房信息
+        function getData() {
+
+            $.when(
+                $.ajax({url: api.queryOrderById, type: 'POST', dataType: 'json', data: {alCode: alRoomCode}}),
+                $.ajax({url: api.jointHousingt, type: 'POST', dataType: 'json', data: {roomId: roomId}})
+            ).then(function (v1, v2) {
+                caaountsTop.reload({data: v1[0].data});
+                caaountsBottom.reload({data: v2[0].data});
+            });
         }
+
+
 
         //添加
         form.on('submit(addAccounts)', function (data) {
@@ -126,11 +123,12 @@
                 url: api.join,
                 typeL: 'POST',
                 dataType: 'json',
-                data: {ids: selectNewArr.join(',')},
+                data: {orderChildId: orderChildId, orderChildIds: selectNewArr.join(',')},
                 success: function (rs) {
                     if (rs.success) {
                         showMsg('加入成功', 1, false);
-                        parent.layer.closeAll();
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
                     } else {
                         showMsg(rs.errMsg, 2, false);
                     }
@@ -144,11 +142,12 @@
                 url: api.dismiss,
                 typeL: 'POST',
                 dataType: 'json',
-                data: {ids: selectOldArr.join(',')},
+                data: {orderChildIds: JSON.stringify(selectDelArr)},
                 success: function (rs) {
                     if (rs.success) {
                         showMsg('解散成功', 1, false);
-                        parent.layer.closeAll();
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
                     } else {
                         showMsg(rs.errMsg, 2, false);
                     }

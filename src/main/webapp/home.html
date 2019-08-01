@@ -132,14 +132,7 @@
         var $cb = $("#checkBox");
         var stateArr = []
             , z = 0;    //全部类型的总数
-        renderReport($)
-        try {
-            $.getJSON('/flag/info?v=' + Date.now(), function (rs) {
-                if (rs.success) return;
-                console.log(rs.errMsg);
-            })
-        } catch (e) {
-        }
+        renderReport($);
 
         $(document).on('click', '.item', function (e) {
             var roomId = $(this).data("roomid");
