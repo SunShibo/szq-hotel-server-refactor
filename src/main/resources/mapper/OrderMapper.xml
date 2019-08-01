@@ -476,10 +476,10 @@
         <where>
             <if test="hotelId!=null">der.hotel_id=#{hotelId}</if>
             <if test="orderState!=null and orderState!=''">and child.order_state=#{orderState}</if>
-            <if test="admissionsStartTime!=null and admissionsEndTime!=null">and der.check_time BETWEEN
+            <if test="admissionsStartTime!=null and admissionsStartTime!='' and admissionsEndTime!=null and  admissionsEndTime!=''">and der.check_time BETWEEN
                 #{admissionsStartTime} and #{admissionsEndTime}
             </if>
-            <if test="departureStartTime!=null and departureEndTime!=null">and der.check_out_time BETWEEN
+            <if test="departureStartTime!=null and departureStartTime!=''  and  departureEndTime!=null and departureEndTime">and der.check_out_time BETWEEN
                 #{departureStartTime} and #{departureEndTime}
             </if>
             <if test="roomName!=null and roomName!=''">and room.room_name =#{roomName}</if>
