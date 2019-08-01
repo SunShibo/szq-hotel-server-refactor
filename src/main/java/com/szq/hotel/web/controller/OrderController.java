@@ -748,8 +748,16 @@ public class OrderController extends BaseCotroller {
                     return;
                 }
             }
+            OrderChildBO orderChildBO = orderService.getOrderChildById(orderChildId);
             //bug验证续租是否冲突
-
+            boolean bool=orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(),orderChildBO.getRoomTypeId(),
+                    orderChildBO.getStartTime(),endTime,userInfo.getHotelId());
+            if (bool){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097" , "用户未登录")) ;
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return ;
+            }
 
             orderService.updCheckInInfo(orderId,channel,OTA,orderChildId,endTime,remark,checkInPersonJson,everyDayRoomPrice);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success( "修改成功"));

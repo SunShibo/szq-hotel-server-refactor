@@ -74,7 +74,7 @@
     <!-- 下拉框展示 查询所有角色  -->
     <select id="getRoleList" resultType="com.szq.hotel.entity.bo.RoleBO">
         SELECT id,role_name FROM hm_role
-        <if test="status==null and status==''">
+        <if test="status==null or status==''">
             where id!='1'
         </if>
     </select>

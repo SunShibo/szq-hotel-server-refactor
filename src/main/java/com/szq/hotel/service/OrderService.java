@@ -555,7 +555,6 @@ public class OrderService {
                 }
             }
             //计算房费
-
             return orderChildBO;
         } catch (ParseException e) {
             e.printStackTrace();
@@ -611,7 +610,7 @@ public class OrderService {
         }
         Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
         Long minute = DateUtils.getQuotMinute(endTime, orderChildBO.getStartTime());
-        //bug: 正常小时房 就不能-1了 跨天小时房需要-1 全天房
+        //正常小时房 就不能-1了 跨天小时房需要-1 全天房
         if (simp.format(endTime).equals(simp.format(currDate))) {
             if(minute>4*60){
                 currDate = DateUtils.getAppointDate(currDate, -1);
@@ -1169,15 +1168,22 @@ public class OrderService {
     }
 
     //验证这个房间或者房型  是否可以续租或者入住 是否会与预约中的房间房型发生冲突
-    public boolean getOrderChildCountByRoomIdByTime(Integer roomId,String endTime){
+    public boolean getOrderChildCountByRoomIdByTime(Integer roomId,Integer roomType,Date endTime,Date startTime,Integer hotelId){
         //验证房间
         if(roomId!=null){
-            Integer roomCount=orderDAO.getOrderChildCountByRoomIdByTime(roomId,endTime,Constants.RESERVATION.getValue());
+            Integer roomCount=orderDAO.getOrderChildCountByRoomIdByTime(roomId,DateUtils.longDate(endTime),DateUtils.longDate(startTime));
             if(roomCount>0){
                 return false;
             }
         }
         //bug 验证房型未写完
+        if(roomType!=null){
+            Integer orderCount=orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType,DateUtils.longDate(endTime),DateUtils.longDate(startTime));
+            Integer roomCount=orderDAO.getRoomCountByRoomTypeIdByTime(roomType,DateUtils.longDate(endTime),DateUtils.longDate(startTime),hotelId);
+            if(roomCount-orderCount<=0){
+                return false;
+            }
+        }
 
         return true;
     }

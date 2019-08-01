@@ -94,7 +94,11 @@ public interface OrderDAO {
     //获取入住支付信息
     List<OrderChildBO> getPayInfo(Integer orderId);
     //根据入住时间 房间号 预约中的子订单
-    Integer getOrderChildCountByRoomIdByTime(@Param("roomId") Integer roomId,@Param("endTime")String endTime,@Param("orderState")String orderState);
+    Integer getOrderChildCountByRoomIdByTime(@Param("roomId") Integer roomId,@Param("endTime")String endTime,@Param("startTime")String startTime);
+    //根据一个时间段 查询预约中的房型数量
+    Integer getOrderChildCountByRoomTypeIdByTime(@Param("roomTypeId") Integer roomId,@Param("endTime")String endTime,@Param("startTime")String startTime);
+    //根据一个时间段 房型id 查询可入住的数量
+    Integer getRoomCountByRoomTypeIdByTime(@Param("roomTypeId") Integer roomId,@Param("endTime")String endTime,@Param("startTime")String startTime,@Param("hotelId")Integer hotelId);
 
     /**
      * 订单列表

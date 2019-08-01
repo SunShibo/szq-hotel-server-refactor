@@ -73,10 +73,12 @@
         </set>
 
     </insert>
+
     <!-- 查询备份的子订单 -->
     <select id="getOrderChildBackup" resultType="com.szq.hotel.entity.param.OrderChildBackupParam" parameterType="java.lang.Integer">
         select * from hm_order_child_backup where id=#{id}
     </select>
+
     <!-- 删除备份的子订单 -->
     <delete id="delOrderChildBackup" parameterType="java.lang.Integer">
         delete from hm_order_child_backup where id=#{id}
@@ -574,8 +576,33 @@
         group by hm_order_child.id
     </select>
 
+    <!--根据时间段 查询这个房间的预约数量 还得关联主订单 查询酒店条件-->
     <select id="getOrderChildCountByRoomIdByTime" resultType="java.lang.Integer">
-        select count(*) from hm_order_child where roomId=#{roomId} and #{endTime} &gt;check_time and order_state=#{orderState}
+        select count(*) from hm_order_child
+        where roomId=#{roomId}
+        and #{endTime} &gt; check_time
+        and #{startTime} &lt; check_out_time
+        and order_state='reservation'
+    </select>
+
+    <!--根据一个时间段 查询预约中的房型数量-->
+    <select id="getOrderChildCountByRoomTypeIdByTime" resultType="java.lang.Integer">
+        select count(*) from hm_order_child
+        where room_type_id=#{roomTypeId}
+        and #{endTime} &gt; check_time
+        and #{startTime} &lt; check_out_time
+        and order_state='reservation'
+    </select>
+
+    <!--根据一个时间段 房型id 查询可入住的数量-->
+    <select id="getRoomCountByRoomTypeIdByTime" resultType="java.lang.Integer">
+        select count(*) from hm_room
+        where room_type_id=#{roomTypeId}
+        and show='yes'
+        and hotel_id=#{hotelId}
+        and room_major_state='vacant'
+        and (lock_room_start_time is null or #{endTime}&lt;=lock_room_start_time )
+        and (lock_room_end_time is null or #{startTime}>lock_room_end_time)
     </select>
 
     <!--找查首日房价-->
