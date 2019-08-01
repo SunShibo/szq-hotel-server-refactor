@@ -532,14 +532,14 @@ public class ChildOrderService {
         //酒店信息
         HotelBO hotelBO = hotelService.queryHotelById(hotelId);
         PrintHotelBO printHotelBO=new PrintHotelBO();
-        printHotelBO.setAddress(hotelBO.getPicture());
+        printHotelBO.setAddress(hotelBO.getSite());
         printHotelBO.setPhone(hotelBO.getPhone());
 
         //所有消费项目
         List<OrderRecoredBO> orderRecoredBOS = orderRecordService.queryOrderRecordByList(id);
         BigDecimal bigDecimal = orderRecordService.queryAloneMoney(id);
         printHotelBO.setMoney(bigDecimal);
-        resultMap.put("hotel",hotelBO);
+        resultMap.put("hotel",printHotelBO);
         resultMap.put("data",orderRecoredBOS);
         log.info("end  alonePrint.........................................");
         return resultMap;
@@ -562,7 +562,7 @@ public class ChildOrderService {
         //酒店信息
         HotelBO hotelBO = hotelService.queryHotelById(hotelId);
         PrintHotelBO printHotelBO=new PrintHotelBO();
-        printHotelBO.setAddress(hotelBO.getPicture());
+        printHotelBO.setAddress(hotelBO.getSite());
         printHotelBO.setPhone(hotelBO.getPhone());
 
         //所有消费项目
@@ -570,7 +570,7 @@ public class ChildOrderService {
         List<OrderRecoredBO> orderRecoredBOS = orderRecordService.queryOrderRecordsByChildId(mainId);
         BigDecimal bigDecimal = orderRecordService.queryMoneyByChildId(mainId);
         printHotelBO.setMoney(bigDecimal);
-        resultMap.put("hotel",hotelBO);
+        resultMap.put("hotel",printHotelBO);
         resultMap.put("data",orderRecoredBOS);
         resultMap.put("top",printBO);
 
