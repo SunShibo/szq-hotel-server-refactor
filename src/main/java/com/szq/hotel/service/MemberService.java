@@ -331,7 +331,7 @@ public class MemberService {
                 memberBO.setPhone(member.get("phone").toString());
                 memberBO.setName(member.get("name").toString());
                 memberBO.setBirthday(member.get("birthday").toString());
-                memberBO.setCertificateType(Integer.parseInt(member.get("certificateType").toString()));//证件类型
+                memberBO.setCertificateType(member.get("certificateType").toString());//证件类型//todo
                 memberBO.setCertificateNumber(member.get("certificateNumber").toString());
                 String gender = member.get("gender").toString();
                 if ("男".equals(gender)){
