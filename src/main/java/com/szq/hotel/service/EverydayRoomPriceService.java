@@ -15,6 +15,9 @@ public class EverydayRoomPriceService {
     @Resource
     EverydayRoomPriceDAO everydayRoomPriceDAO;
 
-
+    //根据子订单id查询每日房价
+    public List<EverydayRoomPriceBO> getEverydayRoomById(Integer id){
+        return everydayRoomPriceDAO.getEverydayRoomById(id);
+    }
 
 }

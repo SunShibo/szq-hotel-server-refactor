@@ -49,6 +49,9 @@ public class OrderController extends BaseCotroller {
 
     @Resource
     MemberService memberService;
+
+    @Resource
+    EverydayRoomPriceService everydayRoomPriceService;
     /**
      * 房间预定 预约入住 直接入住 修改
      * @param orderBO 预约信息
@@ -470,6 +473,7 @@ public class OrderController extends BaseCotroller {
 
     }
 
+
     /**
      * 入住成功支付页面
      * @param orderId 订单id
@@ -514,6 +518,66 @@ public class OrderController extends BaseCotroller {
 
        }
     }
+
+    /**
+     * 入住待支付 订单列表 支付页面
+     * @param orderId 订单id
+     * */
+    @RequestMapping("/getOrderChildPayInfo")
+    public void getOrderChildPayInfo(Integer orderId, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            log.info(request.getRequestURI());
+            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request);
+            if (userInfo == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            //验证参数
+            if (orderId == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
+            List<OrderChildBO> orderChildBOS=orderService.getPayInfo(orderId);
+            System.err.println(orderChildBOS.size()+"id"+orderId);
+            List<OrderChildBO> oneOrderChild=new ArrayList<OrderChildBO>();
+            BigDecimal totalPrice=new BigDecimal(0);
+            //所有未支付的子订单
+            for (OrderChildBO orderChild:orderChildBOS) {
+                //查找主账房
+                if("yes".equals(orderChild.getMain())){
+                    oneOrderChild.add(orderChild);
+                }
+                if(orderChild.getOrderState().equals(Constants.NOTPAY.getValue())){
+                    List<EverydayRoomPriceBO> everydayRoomPriceBOList=everydayRoomPriceService.getEverydayRoomById(orderChild.getId());
+                    for (EverydayRoomPriceBO e:everydayRoomPriceBOList) {
+                        totalPrice=totalPrice.add(e.getMoney());
+                    }
+                }
+
+            }
+
+            Map<String,Object> map=new HashMap<String, Object>();
+            if(oneOrderChild.size()>0){
+                map.put("orderChildBOS",oneOrderChild);
+            }else{
+                map.put("orderChildBOS",orderChildBOS);
+            }
+            map.put("totalPrice",totalPrice);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+            super.safeJsonPrint(response, result);
+            log.info("result{}",result);
+        }catch (Exception e){
+            log.error("getPayInfo",e);
+
+        }
+    }
+
 
     /**
      * 获取在住报表

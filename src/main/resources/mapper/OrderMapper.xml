@@ -405,7 +405,7 @@
 
     <!--获取入住支付信息 查询付款人-->
     <select id="getPayInfo" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
-        select oc.id,ip.name,ip.certificate_number,main
+        select oc.id,ip.name,ip.certificate_number,main,order_state
         from hm_order_child as oc,hm_check_in_person as ip
         where oc.id=ip.order_child_id
         and order_id=#{orderId}
