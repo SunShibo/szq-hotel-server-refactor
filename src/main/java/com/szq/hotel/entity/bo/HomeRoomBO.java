@@ -12,7 +12,7 @@ public class HomeRoomBO {
     private String checkType;//入住方式
     private String lockRoomState;//锁房状态 yes/no
     private String maintain;//维修
-
+    private String alRoomCode;//联房识别码
 
     public Integer getRoomId() {
         return roomId;
@@ -102,6 +102,14 @@ public class HomeRoomBO {
         this.maintain = maintain;
     }
 
+    public String getAlRoomCode() {
+        return alRoomCode;
+    }
+
+    public void setAlRoomCode(String alRoomCode) {
+        this.alRoomCode = alRoomCode;
+    }
+
     @Override
     public String toString() {
         return "HomeRoomBO{" +
@@ -110,11 +118,13 @@ public class HomeRoomBO {
                 ", roomName='" + roomName + '\'' +
                 ", roomType='" + roomType + '\'' +
                 ", status='" + status + '\'' +
-                ", makeStatus='" + makeStatus + '\'' +
+                ", makeStatus=" + makeStatus +
                 ", outStatus='" + outStatus + '\'' +
                 ", balance='" + balance + '\'' +
                 ", checkType='" + checkType + '\'' +
                 ", lockRoomState='" + lockRoomState + '\'' +
+                ", maintain='" + maintain + '\'' +
+                ", alRoomCode='" + alRoomCode + '\'' +
                 '}';
     }
 }

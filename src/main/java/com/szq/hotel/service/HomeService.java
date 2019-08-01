@@ -76,16 +76,11 @@ public class HomeService {
             for(int roomi=0;roomi<home.get(floori).getRooms().size();roomi++){
                 try {
                     HomeRoomBO homeRoomBO = home.get(floori).getRooms().get(roomi);
-                  /*  //判断是否有预约
-                    paramMap.put("roomId", homeRoomBO.getRoomId());
-                    Integer count = homeDAO.querySubStatus(paramMap);
-                    if (count !=null) {
-                        homeRoomBO.setMakeStatus(count);
-                    }*/
                     //是否是在住中
                     if (homeRoomBO.getStatus().equals(Constants.INTHE.getValue()) || homeRoomBO.getStatus().equals(Constants.TIMEOUT.getValue())) {
                         HomeOrderBO homeOrderBO = homeDAO.queryChildOrder(paramMap);
                         if (homeOrderBO != null) {
+                            homeRoomBO.setAlRoomCode(homeOrderBO.getAlRoomCode());
                             homeRoomBO.setChildId(homeOrderBO.getId());
                             homeRoomBO.setCheckType(homeOrderBO.getCheckType());
                             //余额不足  押金小于消费

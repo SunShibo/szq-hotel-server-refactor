@@ -8,7 +8,7 @@ public class HomeOrderBO {
     private double cash;//总押金
     private Date endTime;//离店时间
     private String checkType;//入住方式
-
+    private String alRoomCode;//联房码
     public Integer getId() {
         return id;
     }
@@ -47,5 +47,25 @@ public class HomeOrderBO {
 
     public void setCheckType(String checkType) {
         this.checkType = checkType;
+    }
+
+    public String getAlRoomCode() {
+        return alRoomCode;
+    }
+
+    public void setAlRoomCode(String alRoomCode) {
+        this.alRoomCode = alRoomCode;
+    }
+
+    @Override
+    public String toString() {
+        return "HomeOrderBO{" +
+                "id=" + id +
+                ", total=" + total +
+                ", cash=" + cash +
+                ", endTime=" + endTime +
+                ", checkType='" + checkType + '\'' +
+                ", alRoomCode='" + alRoomCode + '\'' +
+                '}';
     }
 }
