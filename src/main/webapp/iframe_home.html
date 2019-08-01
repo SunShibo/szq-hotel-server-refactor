@@ -393,8 +393,9 @@
             /*
              * 天数 每循环一次为一天
              */
+            debugger
             for (var i = 0; i < 15; i++) {
-                var timestamp = new Date(data[i].startDate);
+                var timestamp = new Date(data[i].startDate.replace(/-/g, "/"));
                 var month = timestamp.getMonth() + 1 < 10 ? "0" + (timestamp.getMonth() + 1) : timestamp.getMonth() + 1;
                 var date = timestamp.getDate() < 10 ? '0' + timestamp.getDate() : timestamp.getDate();
                 var div = '<div class="room-state-item"><div id="time">' + month + '/' + date + '</div><div id="roomItemState">' + data[i].state + '</div></div>'

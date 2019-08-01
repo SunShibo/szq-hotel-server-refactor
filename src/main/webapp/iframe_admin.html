@@ -78,6 +78,7 @@
         //监听确定按钮提交
         form.on('submit(formData)', function (data) {
             if(s){//编辑
+                delete data.field.password;
                 data.field.id = adminData.id;
                 $.ajax({
                     url: api.updateAdmin,
