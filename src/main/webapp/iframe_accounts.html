@@ -90,6 +90,7 @@
         //监听表格复选框选择
         table.on('checkbox(caaountsBottom)', function (obj) {
             var checkStatus = table.checkStatus('caaountsBottom'), data = checkStatus.data;
+            selectNewArr = [];
             for (var i = 0, len = data.length; i < len; i++) {
                 selectNewArr.push(data[i].orderChildId);
             }
@@ -98,6 +99,7 @@
         //监听表格复选框选择
         table.on('checkbox(caaountsTop)', function (obj) {
             var checkStatus = table.checkStatus('caaountsTop'), data = checkStatus.data;
+            selectDelArr = [];
             for (var i = 0, len = data.length; i < len; i++) {
                 selectDelArr.push(data[i].id);
             }
@@ -116,9 +118,9 @@
         }
 
 
-
         //添加
         form.on('submit(addAccounts)', function (data) {
+            debugger
             $.ajax({
                 url: api.join,
                 typeL: 'POST',
