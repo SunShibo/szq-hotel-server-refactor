@@ -902,26 +902,32 @@ public class OrderService {
         }
         //获取离店时间
         Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
+        System.err.println("entaa"+DateUtils.longDate(endTime));
         Long minute = DateUtils.getQuotMinute(endTime, orderChildBO.getStartTime());
         if(minute>4*60){
             Calendar calendar2=Calendar.getInstance();
             calendar2.setTime(endTime);
-            calendar.set(Calendar.HOUR_OF_DAY, 14);
-            endTime = calendar.getTime();
+            calendar2.set(Calendar.HOUR_OF_DAY, 14);
+            endTime = calendar2.getTime();
         }
+        System.err.println("entaaa"+DateUtils.longDate(endTime));
         //当天入住当天退房 滚一天当天房费
         if (ymd.format(hotelDate).equals(ymd.format(startTime))) {
             this.addOrderChildRecordAndRoomRate(backup, hotelDate, orderChildBO, userId);
         }
 
         //未超时
-        if (currentTimeDate.compareTo(endTime) <= 0) {
+        if (currentTimeDate.compareTo(endTime) < 0) {
             Date currentDate = ymd.parse(ymd.format(hotelDate));
             Date endDate = ymd.parse(ymd.format(endTime));
             //剩余每日房价
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = this.getRemainingLease(orderChildId);
             //提前退房
-            if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && everydayRoomPriceBOList.size() > 1) {
+            System.err.println("====");
+            System.err.println(orderChildBO.getStartTime().compareTo(m6)<0);
+            System.err.println(DateUtils.longDate(orderChildBO.getStartTime()));
+            System.err.println(DateUtils.longDate(m6));
+            if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0&&orderChildBO.getStartTime().compareTo(m6)<0&& everydayRoomPriceBOList.size() > 1) {
                 this.addOrderChildRecordAndRoomRate2(backup, hotelDate, orderChildBO, userId);
             }
             backup.setRoomMajorState(Constants.INTHE.getValue());
