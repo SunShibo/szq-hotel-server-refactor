@@ -1,6 +1,5 @@
 package com.szq.hotel.service;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.*;
 import com.szq.hotel.entity.bo.*;
@@ -9,17 +8,13 @@ import com.szq.hotel.entity.param.OrderParam;
 import com.szq.hotel.entity.result.CheckInInfoResult;
 import com.szq.hotel.entity.result.CheckRoomPersonResult;
 import com.szq.hotel.entity.result.OrderResult;
-import com.szq.hotel.pop.Constant;
-import com.szq.hotel.system.idempotency.Null;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.IDBuilder;
 import com.szq.hotel.util.JsonUtils;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -128,8 +123,17 @@ public class OrderService {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", orderChild.getRoomId());
                 map.put("state", Constants.INTHE.getValue());
+                map.put("remark","直接入住");
                 roomService.updateroomMajorState(map);
+            }else{
+                if(orderChild.getRoomId()!=null){
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("id", orderChild.getRoomId());
+                    map.put("remark","房间预约");
+                    roomService.updateroomMajorState(map);
+                }
             }
+
         }
         //修改总房价
         OrderBO order = orderDAO.getOrderById(orderBO.getId());
@@ -192,6 +196,7 @@ public class OrderService {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", orderChildBO.getRoomId());
             map.put("state", Constants.INTHE.getValue());
+            map.put("remark","预约入住");
             roomService.updateroomMajorState(map);
 
             System.err.println(orderChildBO.getId());
@@ -590,6 +595,7 @@ public class OrderService {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", orderChildBO.getRoomId());
                 map.put("state", Constants.VACANT.getValue());
+                map.put("remark","入住未支付，支付时间以过");
                 roomService.updateroomMajorState(map);
                 //修改订单状态
                 orderDAO.closeOrder();
@@ -779,7 +785,7 @@ public class OrderService {
     }
 
     //联房
-    public void addAlRoom(Integer orderChildId, String orderChildIds, Integer userId) {
+    public void addAlRoom(Integer orderChildId, String orderChildIds, Integer userId) throws Exception {
         //旧主账房
         String[] orderChildIdArr = orderChildIds.split(",");
         //新主账房
@@ -788,13 +794,16 @@ public class OrderService {
         for (int i = 0; i < orderChildIdArr.length; i++) {
             //主账房的账单记录id
             String ids = "";
+            System.err.println("orderChildIdArr["+i+"]"+orderChildIdArr[i]);
             List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(new Integer(orderChildIdArr[i]));
+            System.err.println("orderRecoredBO.size"+orderRecoredBO.size());
             for (int y = 0; y < orderRecoredBO.size(); y++) {
                 ids = ids + orderRecoredBO.get(y).getId() + ",";
             }
             System.err.println("ids"+ids);
             //房间消费转账到新的主账房 添加消费记录
             if(!ids.equals("")){
+                System.err.println("orderChildId"+orderChildId);
                 childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]));
             }
 
@@ -809,9 +818,8 @@ public class OrderService {
         }
         OrderChildBO mainOrderChild=new OrderChildBO();
         mainOrderChild.setId(orderChildId);
-        orderChildBONew.setMain("yes");
+        mainOrderChild.setMain("yes");
         orderDAO.updOrderChild(mainOrderChild);
-
     }
 
     //获取子订单剩余租期价格
@@ -851,10 +859,13 @@ public class OrderService {
         //之前的房间修改为脏房
         map.put("id", orderChildOld.getRoomId());
         map.put("state", Constants.DIRTY.getValue());
+        map.put("remark","由此房换入其他房");
         roomService.updateroomMajorState(map);
+
         //新住的修改为在住
         map.put("id", orderChildBO.getRoomId());
         map.put("state", Constants.INTHE.getValue());
+        map.put("remark","由其他房换入此房");
         roomService.updateroomMajorState(map);
         //修改房间 房型
         orderDAO.updOrderChild(orderChildBO);
@@ -968,6 +979,7 @@ public class OrderService {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", orderChildBO.getRoomId());
         map.put("state", Constants.DIRTY.getValue());
+        map.put("remark","退房");
         roomService.updateroomMajorState(map);
 
         //修改入住人状态
@@ -1097,6 +1109,7 @@ public class OrderService {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", orderChildBOResult.getRoomId());
         map.put("state", backup.getRoomMajorState());
+        map.put("remark","退房回滚");
         roomService.updateroomMajorState(map);
 
         //修改入住人状态
@@ -1138,6 +1151,7 @@ public class OrderService {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", orderChildBO.getRoomId());
             map.put("state", Constants.TIMEOUT.getValue());
+            map.put("remark","入住超时");
             roomService.updateroomMajorState(map);
 
         }
@@ -1147,6 +1161,7 @@ public class OrderService {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", orderChildBO.getRoomId());
             map.put("state", Constants.TIMEOUT.getValue());
+            map.put("remark","入住超时");
             roomService.updateroomMajorState(map);
 
         }
@@ -1164,6 +1179,7 @@ public class OrderService {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", orderChildBO.getRoomId());
             map.put("state", Constants.INTHE.getValue());
+            map.put("remark","入住支付");
             roomService.updateroomMajorState(map);
         }
     }
