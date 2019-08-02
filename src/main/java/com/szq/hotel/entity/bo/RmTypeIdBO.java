@@ -32,4 +32,13 @@ public class RmTypeIdBO {
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
+
+    @Override
+    public String toString() {
+        return "RmTypeIdBO{" +
+                "roomTypeId=" + roomTypeId +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                '}';
+    }
 }

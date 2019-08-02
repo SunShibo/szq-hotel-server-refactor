@@ -300,10 +300,11 @@ public class RoomService {
         //获取被预约掉的房型以及数量
         List<RmTypeIdBO> rmTypeIdBOS = roomDAO.queryOrderTypeRoom((String) map.get("checkTime"), (String) map.get("endTime"),
                 (Integer) map.get("hotelId"));
+
+        log.info("rmTypeIdBOS:{}",rmTypeIdBOS);
         //筛选掉被预约掉的房型数量
 
         List<RoomTypeNumberBO> roomTypeList = new ArrayList<RoomTypeNumberBO>();
-
         if(!CollectionUtils.isEmpty(rtBOS) && !CollectionUtils.isEmpty(rmTypeIdBOS)){
             for (RtBO rtBO : rtBOS) {
                 RoomTypeNumberBO roomTypeNumber = new RoomTypeNumberBO();
@@ -325,7 +326,12 @@ public class RoomService {
             for (RoomTypeNumBO l : ls) {
                 for (RoomTypeNumberBO roomTypeNumberBO : roomTypeList) {
                     if(l.getId().equals(roomTypeNumberBO.getRoomTypeId())){
-                        l.setCount(l.getCount()-roomTypeNumberBO.getCount());
+                        if(l.getCount()<roomTypeNumberBO.getCount()){
+                            l.setCount(0);
+                        }else{
+                            l.setCount(l.getCount()-roomTypeNumberBO.getCount());
+                        }
+
                     }
                 }
             }
@@ -641,6 +647,52 @@ public class RoomService {
         //不存在交集
         return false;
     }
+
+
+
+
+    /**
+     * 共用方法 查询某个时间下酒店所有房型的可用数量
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private List<DateRoomDTO> publicRoomNum(Integer hotelId, String startTime, String endTime){
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("hotelId", hotelId);
+        //获取酒店下面所有房型
+        List<RtBO> rtBOS = queryRt(hotelId);
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
+
+        List<DateRoomDTO> l = new ArrayList<DateRoomDTO>();
+        for (RtBO rtBO : rtBOS) {
+            map.put("checkTime", startTime);
+            map.put("endTime", endTime);
+            map.put("roomTypeId", rtBO.getId());
+
+            DateRoomDTO dateRoomDTO = new DateRoomDTO();
+
+            //房型总数
+            dateRoomDTO.setSumRoomType(roomDAO.querRoomTypeCount(rtBO.getId(), hotelId));
+            //房型名称
+            dateRoomDTO.setTypename(rtBO.getRoomTypeName());
+            List<RmBO> rmBOS1 = this.publicQuery(map, ll);
+            //房型可用房间数
+            dateRoomDTO.setUsableRoomNunber(rmBOS1.size());
+
+            l.add(dateRoomDTO);
+
+        }
+        return l;
+    }
+
+
+
 
 
     /**

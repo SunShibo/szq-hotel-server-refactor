@@ -209,4 +209,30 @@ public interface RoomDAO {
                                      @Param("endTime")String endTime,
                                      @Param("hotelId")Integer hotelId
                                      );
+
+    /**
+     * 获取某一时间段内不锁房的某个房型的所有房间
+     * @param hotelId
+     * @param roomTypeId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<RoomBO> queryRoomTypeNum(@Param("hotelId")Integer hotelId,
+                                  @Param("roomTypeId")Integer roomTypeId,
+                                  @Param("startTime")String startTime,
+                                  @Param("endTime")String endTime);
+
+
+    /**
+     * 获取某个时间段内被不可同的房间数量
+     * @param 
+     * @param roomTypeId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<Integer> queryOrderRoomTypeId( @Param("roomTypeId")Integer roomTypeId,
+                                       @Param("checkTime")String startTime,
+                                       @Param("endTime")String endTime, @Param("list")List<String> list);
 }

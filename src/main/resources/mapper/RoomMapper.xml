@@ -685,4 +685,32 @@
         OR (DATE_ADD(#{startTime},
         INTERVAL 1 SECOND) BETWEEN hm_order_child.start_time AND hm_order_child.end_time)
     </select>
+    
+    <select id="queryRoomTypeNum" resultType="com.szq.hotel.entity.bo.RoomBO">
+        SELECT * FROM hm_room
+        WHERE room_state = 'no'
+        AND hotel_id = #{hotelId}
+        AND room_type_id = #{roomTypeId}
+        AND `show` = 'yes'
+        HAVING hm_room.lock_room_start_time &gt;= #{endTime} OR
+        hm_room.lock_room_end_time &lt;=  #{startTime}
+        OR hm_room.lock_room_end_time IS NULL
+
+    </select>
+
+    <select id="queryOrderRoomTypeId" resultType="java.lang.Integer">
+     SELECT room_type_id FROM hm_order
+        AND room_type_id = #{roomTypeId}
+        <if test="list != null and list.size > 0">
+            and order_state IN
+            <foreach item="item" collection="list" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        having
+        (start_time BETWEEN DATE_ADD( #{checkTime},
+        INTERVAL 1 SECOND)  AND   DATE_SUB( #{endTime}, INTERVAL 1 SECOND))
+        OR (DATE_ADD(#{checkTime},
+        INTERVAL 1 SECOND) BETWEEN start_time AND end_time)
+    </select>
 </mapper>
