@@ -213,7 +213,7 @@
             } else if (layEvent === 'freeze') {
                 layer.confirm('真的冻结吗', function (index) {
                     $.ajax({
-                        url: api.cartDelete,
+                        url: api.cartUpdate,
                         data: {
                             id: data.id,
                             state: 'freeze'
