@@ -242,4 +242,15 @@ public interface ManagerDailyDAO {
      * @return
      */
     Integer queryFwDirectBooking(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+
+
+    /**
+     * 计算全天日租房的收入
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<OrderReBO> queryOrderRe(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+
 }

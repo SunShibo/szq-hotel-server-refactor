@@ -103,13 +103,13 @@ public class RoomService {
 
         //获取预入住时间
         String dt = (String) map.get("checkTime");
-        log.info("获取预约入住的时间:{}", dt);
+
         String et = (String) map.get("endTime");
-        log.info("获取结束入住的时间:{}", et);
+
         //获取符合条件的房间集合
         List<RmBO> list = roomDAO.queryRm(map);
 
-        log.info("获取符合条件的房间集合:{}", list);
+
         if (CollectionUtils.isEmpty(list)) {
             return list;
         }
@@ -120,28 +120,18 @@ public class RoomService {
                 ls.add(id.getId());
             }
         }
-        log.info("获取符合条件房间的id:{}", ls);
-        log.info("时间dt:{}", dt);
-        log.info("时间et:{}", et);
-        log.info("ll:{}", ll);
-        List<OcBO> l = roomDAO.queryOc(ls, dt, et, ll);
-        //根据房间id获取符合条件的订单
-       /* if (!CollectionUtils.isEmpty(ls)) {
-             l = roomDAO.queryOc(ls, dt, et, ll);
-        }*/
 
-        /*   List<OcBO>  l = roomDAO.queryOc(ls, dt, et, ll);*/
-        log.info("根据房间id获取符合条件的订单:{}", l);
+        List<OcBO> l = roomDAO.queryOc(ls, dt, et, ll);
 
         List<Integer> reId = new ArrayList<Integer>();
         if (!CollectionUtils.isEmpty(l)) {
             for (OcBO oc : l) {
-                log.info("获取符合条件房间的订单:{}", oc.getRoomId());
+
                 reId.add(oc.getRoomId());
             }
         }
 
-        log.info("要扣减调的房间id:{}", reId);
+
         //去重
         for (int i = 0; i < reId.size() - 1; i++) {
             for (int j = reId.size() - 1; j > i; j--) {
@@ -150,7 +140,7 @@ public class RoomService {
                 }
             }
         }
-        log.info("去重后:{}", reId);
+
 
         //去掉不能预约入住的房间的房间
         Iterator<RmBO> iterator = list.iterator();
@@ -165,7 +155,6 @@ public class RoomService {
             }
         }
 
-        log.info("最终筛选后可以入住的房间是:{}", list);
         return list;
     }
 
@@ -242,15 +231,6 @@ public class RoomService {
         List<RtBO> rtBOS = roomDAO.queryRt(hotelId);
 
         log.info("rtBOS:{}", rtBOS);
-
-
-
-
-
-
-
-
-
 
 
 
@@ -768,12 +748,20 @@ public class RoomService {
                 map.put("checkTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
                 map.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
                 map.put("roomTypeId", rtBO.getId());
-
+                log.info("开始时间:{}",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
+                log.info("结束时间:{}",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
                 DateRoomDTO dateRoomDTO = new DateRoomDTO();
                 dateRoomDTO.setSumRoomType(roomDAO.querRoomTypeCount(rtBO.getId(), hotrlId));
+
                 dateRoomDTO.setTypename(rtBO.getRoomTypeName());
+                log.info("房型名称:{}",rtBO.getRoomTypeName());
+                log.info("房型id:{}",rtBO.getId());
+                log.info("酒店id:{}",hotrlId);
+                log.info("房型总房间数:{}",roomDAO.querRoomTypeCount(rtBO.getId(), hotrlId));
                 List<RmBO> rmBOS1 = this.publicQuery(map, ll);
+                log.info("最终结果:{}",rmBOS1);
                 dateRoomDTO.setUsableRoomNunber(rmBOS1.size());
+                log.info("长度:{}",rmBOS1.size());
                 dateRoomDTO.setDate(dates.get(i));
                 log.info("dates.get(i):{}",dates.get(i));
                 l.add(dateRoomDTO);
@@ -820,7 +808,6 @@ public class RoomService {
         Date date1 = DateUtils.parseDate(endTime, "yyyy/MM/dd HH:mm:ss");
         log.info("date1:{}",date1);
 
-        //todo
         boolean b = belongCalendar(new Date(),date ,date1);
 
         if(b){
@@ -956,9 +943,12 @@ public class RoomService {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
         //获取当前时间
-        Date date = new Date();
+        String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String date = format + " 06:00:00";
+        log.info("当前时间:{}", date);
         //获取明天早上六点的时间
         Date date1 = lDate(quDate(6, 0, 0), 1);
+        log.info("明天早上六点:{}", date1);
 
         //查询今天房型可用数量
         //查询中当前酒店有多少房型
@@ -972,12 +962,12 @@ public class RoomService {
 
         Map<String, Object> mp = new HashMap<String, Object>();
 
-        mp.put("checkTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+        mp.put("checkTime", date);
         mp.put("hotelId", hotelId);
         mp.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));
 
         //获取今天统计房价
-        Integer integer1 = roomDAO.queryEverydayRoomPrice(new SimpleDateFormat("yyyy-MM-dd").format(date));
+        Integer integer1 = roomDAO.queryEverydayRoomPrice(date);
         map.put("three", integer1);
         for (RtBO rtBO : rtBOS) {
             mp.put("roomTypeId", rtBO.getId());
@@ -989,7 +979,8 @@ public class RoomService {
             //查询当前正在入住的
             List<RmBO> rmBOS1 = roomDAO.queryInthe(rtBO.getId(), hotelId, "inthe", "timeout");
             roomTypeCountDTO.setCountChinkRoom(rmBOS1.size());
-            List<OrderChildBO> orderChildBOS = roomDAO.querySubscribe(rtBO.getId(), hotelId, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));
+            //获取预约中的
+            List<OrderChildBO> orderChildBOS = roomDAO.querySubscribe(rtBO.getId(), hotelId, date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));
             roomTypeCountDTO.setCountOrderRoom(orderChildBOS.size());
             int integer = roomDAO.querRoomTypeCount(rtBO.getId(), hotelId);
             roomTypeCountDTO.setRotio(baifenbi(rmBOS1.size(), integer));
@@ -1003,7 +994,7 @@ public class RoomService {
         //查询全部会员级别
         List<MemberLevelBO> memberLevelBOS = roomDAO.queryMemberLevel();
         //查询当前在住的订单
-        List<OrderBO> orderBOS = roomDAO.queryOrder(hotelId, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+        List<OrderBO> orderBOS = roomDAO.queryOrder(hotelId, date);
         int j = 0;
         for (MemberLevelBO memberLevelBO : memberLevelBOS) {
             XxDTO xxDTO = new XxDTO();

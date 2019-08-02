@@ -185,12 +185,7 @@ public class ManagerDailyController extends BaseCotroller {
 
     @RequestMapping("/insertTest")
     public void insertTest(HttpServletRequest request, HttpServletResponse response, Integer hotelId){
-        AdminBO userBO = super.getLoginUser(request);
-        if (userBO == null) {
-            String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "请登录"));
-            safeTextPrint(response, json);
-            return;
-        }
-        managerDailyService.insertManagerDaliy(userBO.getHotelId(), new SimpleDateFormat("yyyy-MM-dd").format(DateUtils.getYesTaday()));
+
+        managerDailyService.insertManagerDaliy(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(DateUtils.getYesTaday()));
     }
 }

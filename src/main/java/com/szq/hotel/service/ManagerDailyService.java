@@ -130,25 +130,39 @@ public class ManagerDailyService {
         log.info("获取上一年日期:{}",year);
 
 
+        log.info("managerdailyBO:{}",managerdailyBO);
+        log.info("managerdailyBO1:{}",managerdailyBO1);
+        log.info("managerdailyBO2:{}",managerdailyBO2);
+        log.info("managerdailyBO3:{}",managerdailyBO3);
+        log.info("managerdailyBO4:{}",managerdailyBO4);
+        log.info("managerdailyBO5:{}",managerdailyBO5);
         //当天营业收入
         grossrealIncome.setDay(managerdailyBO.getGrossrealIncome()+"");
+        log.info("当天营业收入");
         //本月营业收入
         grossrealIncome.setMonth(month(hotelId, date)+"");
+        log.info("本月营业收入");
         //上月同期
         grossrealIncome.setLastMonthDay(lastMonthDay(hotelId, date) + "");
+        log.info("上月同期");
         //本年累计
         grossrealIncome.setYear(year(hotelId, date)+"");
+        log.info("本年累计");
         //上年同期
         grossrealIncome.setLastYearDay(lastYearDay(hotelId, date)+"");
+        log.info("上年同期");
         //计算年增长率
         grossrealIncome.setInsertRial(isIncrease(year(hotelId, yyyy),year(hotelId, year)));
+        log.info("年增长率");
 
 
 
         //获取当天营业额
         totalTurnover.setDay(managerdailyBO.getTotalTurnover()+"");
+        log.info("获取当天营业额");
         //计算本月累计营业额
         totalTurnover.setMonth(queryMonth(hotelId, date)+"");
+        log.info("计算本月积累营业额");
         //计算上月同期营业额
         totalTurnover.setLastMonthDay(queryLastMonthDay(hotelId, date)+"");
         //计算本年累计营业额
@@ -2117,6 +2131,8 @@ public class ManagerDailyService {
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        log.info("当月第一天:{}", new SimpleDateFormat("yyyy-MM-dd").format(date1));
+        log.info("当月最后一天:{}", new SimpleDateFormat("yyyy-MM-dd").format(dete2));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 3);
         if(CollectionUtils.isEmpty(managerdailyBOS)){
@@ -3139,14 +3155,23 @@ public class ManagerDailyService {
 
         //添加营业收入明细
         ManagerdailyBO managerdailyBO2 = new ManagerdailyBO();
-        managerdailyBO2.setThroughoutDayrent((double)throughoutDayrent(hotelId, startTime, endTime));//全天日租
-        managerdailyBO2.setRateAdjustment(rateAdjustment(startTime, endTime));//计算房费调整
-        managerdailyBO2.setHourRate(hourRate(hotelId, startTime, endTime));//计算钟点房费
-        managerdailyBO2.setTimeoutRate(timeoutRate(startTime, endTime));//计算超时房费
-        managerdailyBO2.setNuclearnightRoomcharge(nuclearnightRoomcharge(startTime, endTime));//计算夜核房费
-        managerdailyBO2.setCompensation(compensation(startTime, endTime));//赔偿
-        managerdailyBO2.setMembershipFee(membershipFee(startTime, endTime));//计算会员卡费
-        managerdailyBO2.setGoods(goods(startTime, endTime));//计算商品
+        double v8 = throughoutDayrent(hotelId, startTime, endTime);
+        managerdailyBO2.setThroughoutDayrent(v8);//全天日租
+        double v9 = rateAdjustment(startTime, endTime);
+        managerdailyBO2.setRateAdjustment(v9);//计算房费调整
+        double v10 = hourRate(hotelId, startTime, endTime);
+        managerdailyBO2.setHourRate(v10);//计算钟点房费
+        double v11 = timeoutRate(startTime, endTime);
+        managerdailyBO2.setTimeoutRate(v11);//计算超时房费
+        double v12 = nuclearnightRoomcharge(startTime, endTime);
+        managerdailyBO2.setNuclearnightRoomcharge(v12);//计算夜核房费
+        double v13 = compensation(startTime, endTime);
+        managerdailyBO2.setCompensation(v13);//赔偿
+        double v14 = membershipFee(startTime, endTime);
+        managerdailyBO2.setMembershipFee(v14);//计算会员卡费
+        double v15 = goods(startTime, endTime);
+        managerdailyBO2.setGoods(v15);//计算商品
+        managerdailyBO2.setSubtotal(v8+v9+v10+v11+v12+v13+v14+v15);//小计
         managerdailyBO2.setDailyType(2);
         managerdailyBO2.setHotelId(hotelId);
         managerdailyBO2.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
@@ -3169,8 +3194,10 @@ public class ManagerDailyService {
         managerdailyBO3.setIndividualTraveler(v1);
         //直接入住
         double enter = enter(hotelId, startTime, endTime);
+        managerdailyBO3.setEnter(enter);
         //预约入住
         double v2 = directBooking(hotelId, startTime, endTime);
+        managerdailyBO3.setDirectBooking(v2);
         managerdailyBO3.setSubtotal(members+v+v1+enter+v2);
         managerdailyBO3.setDailyType(3);
         managerdailyBO3.setHotelId(hotelId);
@@ -3352,9 +3379,16 @@ public class ManagerDailyService {
      *
      * @return
      */
-    private int throughoutDayrent(Integer hotelId, String startTime, String endTime){
-        Integer integer = managerDailyDAO.queryThroughoutDayrent2(hotelId, startTime, endTime);
-        return integer;
+    private double throughoutDayrent(Integer hotelId, String startTime, String endTime){
+        List<OrderReBO> orderReBOS = managerDailyDAO.queryOrderRe(hotelId, startTime, endTime);
+        if(CollectionUtils.isEmpty(orderReBOS)){
+            return 0;
+        }
+        double n = 0;
+        for (OrderReBO orderReBO : orderReBOS) {
+            n = n + orderReBO.getMoney();
+        }
+        return n;
     }
 
     /**
@@ -3627,6 +3661,10 @@ public class ManagerDailyService {
         double members = members(hotelId, startTime, endTime);
         //会员开放数量
         double i = FwMembers(hotelId, startTime, endTime);
+        Double a = members/i;
+        if(a.equals(Double.NaN)){
+            return 0;
+        }
         return members/i;
     }
 
@@ -3730,7 +3768,7 @@ public class ManagerDailyService {
      */
     private double orderTotalPrice(Integer hotelId, String startTime, String endTime){
         List<TotalPriceBO> totalPriceBOS = managerdailyBOMapper.queryOrderTotalPrice(hotelId, startTime, endTime);
-        log.info("3534*******totalPriceBOS:{}",totalPriceBOS);
+        log.info("totalPriceBOS:{}",totalPriceBOS);
         double n = 0;
         for (TotalPriceBO totalPriceBO : totalPriceBOS) {
             n = n +totalPriceBO.getTotalPrice();

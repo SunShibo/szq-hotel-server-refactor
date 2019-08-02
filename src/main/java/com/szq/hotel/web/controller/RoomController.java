@@ -769,6 +769,11 @@ public class RoomController extends BaseCotroller {
         return;
     }
 
+    /**
+     * 首页侧边栏
+     * @param request
+     * @param response
+     */
     @RequestMapping("/todayPictureView")
     public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
         log.info("todayPictureView*****************************************************************");

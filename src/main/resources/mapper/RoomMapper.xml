@@ -602,9 +602,15 @@
     <select id="querySubscribe" resultType="com.szq.hotel.entity.bo.OrderChildBO">
     SELECT hm_order_child.* FROM hm_order_child, hm_room_type
     WHERE  hm_order_child.room_type_id = hm_room_type.id AND hm_room_type.hotel_id = #{hotelId}
-    AND order_state = 'reservation' AND #{endTime} &lt; start_time &gt;= #{checkTime}
+    AND hm_order_child.order_state = 'reservation' AND hm_order_child.room_type_id = #{roomTypeId} having
+    (hm_order_child.start_time BETWEEN DATE_ADD( #{checkTime},
+        INTERVAL 1 SECOND)  AND   DATE_SUB( #{endTime}, INTERVAL 1 SECOND))
+        OR (DATE_ADD(#{checkTime},
+        INTERVAL 1 SECOND) BETWEEN hm_order_child.start_time AND hm_order_child.end_time)
+
   </select>
 
+<!-- hm_order_child.start_time &gt;= #{checkTime} and hm_order_child.start_time &lt; #{endTime}-->
 
     <select id="queryEverydayRoomPrice" resultType="java.lang.Integer">
     SELECT SUM(money) FROM hm_everyday_room_price WHERE  `time` = #{date} AND `status` = 'no'
