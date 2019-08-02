@@ -54,6 +54,13 @@
             <if test="otherRate!=null and otherRate!=''">
                 other_rate=#{otherRate},
             </if>
+            <if test="roomRateStatus!=null and roomRateStatus!=''">
+                room_rate_status=#{roomRateStatus},
+            </if>
+
+            <if test="otherRateStatus!=null and otherRateStatus!=''">
+                other_rate_status=#{otherRateStatus},
+            </if>
 
             <if test="practicalDepartureTime!=null and practicalDepartureTime!=''">
                 practical_departure_time=#{practicalDepartureTime},
@@ -74,8 +81,21 @@
 
     </insert>
 
+    <!--修改备份信息-->
+    <update id="updOrderChildBackup" parameterType="com.szq.hotel.entity.param.OrderChildBackupParam">
+        update hm_order_child_backup set
+        <if test="roomRateStatus!=null and roomRateStatus!=''">
+            room_rate_status=#{roomRateStatus},
+        </if>
+        <if test="otherRateStatus!=null and otherRateStatus!=''">
+            other_rate_status=#{otherRateStatus}
+        </if>
+        where id=#{id}
+    </update>
+
     <!-- 查询备份的子订单 -->
-    <select id="getOrderChildBackup" resultType="com.szq.hotel.entity.param.OrderChildBackupParam" parameterType="java.lang.Integer">
+    <select id="getOrderChildBackup" resultType="com.szq.hotel.entity.param.OrderChildBackupParam"
+            parameterType="java.lang.Integer">
         select * from hm_order_child_backup where id=#{id}
     </select>
 
@@ -164,7 +184,8 @@
     </update>
 
     <!--在住报表-->
-    <select id="getCheckInReport" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.result.OrderResult">
+    <select id="getCheckInReport" parameterType="java.lang.Integer"
+            resultType="com.szq.hotel.entity.result.OrderResult">
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
         c.room_rate,other_rate,c.free_rate_num
@@ -183,7 +204,7 @@
     </select>
 
     <!--预离报表-->
-    <select id="getCheckOutReport"  resultType="com.szq.hotel.entity.result.OrderResult">
+    <select id="getCheckOutReport" resultType="com.szq.hotel.entity.result.OrderResult">
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
         c.room_rate,other_rate,c.free_rate_num
@@ -194,8 +215,8 @@
         inner join hm_check_in_person as p on c.id=p.order_child_id
         inner join hm_dictionaries_value as v on p.certificate_type=v.id
         inner join hm_everyday_room_price as e on c.id=e.order_child_id
-        left join hm_order_record as `or` on  c.id=`or`.order_child_id
-        where  p.status='checkin'
+        left join hm_order_record as `or` on c.id=`or`.order_child_id
+        where p.status='checkin'
         and (order_state='admissions')
         <if test="afterTime!=null and afterTime!=''">
             and c.end_time&gt;=#{afterTime}
@@ -206,11 +227,11 @@
         and o.hotel_id=#{hotelId}
         group by c.id
         order by c.end_time
-        <include refid="limit" />
+        <include refid="limit"/>
     </select>
 
     <!--预离报表总数-->
-    <select id="getCheckOutReportCount"  resultType="com.szq.hotel.entity.result.OrderResult">
+    <select id="getCheckOutReportCount" resultType="com.szq.hotel.entity.result.OrderResult">
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
         c.room_rate,other_rate,c.free_rate_num
@@ -221,8 +242,8 @@
         inner join hm_check_in_person as p on c.id=p.order_child_id
         inner join hm_dictionaries_value as v on p.certificate_type=v.id
         inner join hm_everyday_room_price as e on c.id=e.order_child_id
-        left join hm_order_record as `or` on  c.id=`or`.order_child_id
-        where  p.status='checkin'
+        left join hm_order_record as `or` on c.id=`or`.order_child_id
+        where p.status='checkin'
         and (order_state='admissions')
         <if test="afterTime!=null and afterTime!=''">
             and c.end_time&gt;=#{afterTime}
@@ -270,7 +291,7 @@
 
     <!-- 根据订单id 订单状态 查询子订单 带房型 房间信息信息 -->
     <select id="getOrderChildByOrderId2" resultType="com.szq.hotel.entity.bo.OrderChildBO">
-        select  oc.*,rt.room_type_name,r.room_name
+        select oc.*,rt.room_type_name,r.room_name
         from hm_order_child as oc inner join hm_room_type as rt on oc.room_type_id=rt.id
         left join hm_room as r on oc.room_id=r.id
         where oc.order_id=#{id}
@@ -295,7 +316,7 @@
 
 
     <!-- 根据订单id以及状态查询未入住的子订单  -->
-    <select id="getOrderChildByOrderId4"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getOrderChildByOrderId4" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select *
         from hm_order_child
         where order_id=#{id} and order_state=#{orderState}
@@ -311,7 +332,7 @@
     </select>
 
     <!-- 查询入住超时的子订单  -->
-    <select id="getTimeOutOrder"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getTimeOutOrder" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select hm_order_child.*
         from hm_order_child,hm_room
         where order_state=#{orderState}
@@ -322,14 +343,14 @@
     </select>
 
     <!--根据房间id查询预约中的子订单-->
-    <select id="getResOrderChildByRoomId"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getResOrderChildByRoomId" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select id from hm_order_child
         where order_state='reservation'
         and room_id=#{roomId}
         and order_id=#{orderId}
     </select>
     <!--根据房型id查询预约中的子订单-->
-    <select id="getResOrderChildByRoomTypeId"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getResOrderChildByRoomTypeId" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select id from hm_order_child
         where order_state='reservation'
         and room_type_id=#{roomTypeId}
@@ -424,7 +445,7 @@
     </select>
 
     <!--根据子订单id查询子订单-->
-    <select id="getOrderChildById"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getOrderChildById" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
        select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
         from hm_order_child
         left join hm_room on hm_order_child.room_id=hm_room.id
@@ -433,7 +454,7 @@
     </select>
 
     <!--根据子订单id查询子订单-->
-    <select id="getOrderChildById2"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getOrderChildById2" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select * from hm_order_child where id=#{id}
     </select>
 
@@ -449,10 +470,12 @@
         <where>
             <if test="hotelId!=null">der.hotel_id=#{hotelId}</if>
             <if test="orderState!=null and orderState!=''">and child.order_state=#{orderState}</if>
-            <if test="admissionsStartTime!=null and admissionsStartTime!='' and admissionsEndTime!=null and  admissionsEndTime!=''">and der.check_time BETWEEN
+            <if test="admissionsStartTime!=null and admissionsStartTime!='' and admissionsEndTime!=null and  admissionsEndTime!=''">
+                and der.check_time BETWEEN
                 #{admissionsStartTime} and #{admissionsEndTime}
             </if>
-            <if test="departureStartTime!=null and departureStartTime!=''  and  departureEndTime!=null and departureEndTime">and der.check_out_time BETWEEN
+            <if test="departureStartTime!=null and departureStartTime!=''  and  departureEndTime!=null and departureEndTime">
+                and der.check_out_time BETWEEN
                 #{departureStartTime} and #{departureEndTime}
             </if>
             <if test="roomName!=null and roomName!=''">and room.room_name =#{roomName}</if>
@@ -464,7 +487,7 @@
             <if test="channel!=null and channel!=''">and der.channel LIKE '%${channel}%'</if>
             <if test="OTA!=null and OTA!=''">and der.OTA LIKE '%${OTA}%'</if>
         </where>
-        ORDER  BY  der.create_time DESC
+        ORDER BY der.create_time DESC
         <include refid="orderLimit"/>
     </select>
 
@@ -477,10 +500,12 @@
         <where>
             <if test="hotelId!=null">der.hotel_id=#{hotelId}</if>
             <if test="orderState!=null and orderState!=''">and child.order_state=#{orderState}</if>
-            <if test="admissionsStartTime!=null and admissionsStartTime!='' and admissionsEndTime!=null and  admissionsEndTime!=''">and der.check_time BETWEEN
+            <if test="admissionsStartTime!=null and admissionsStartTime!='' and admissionsEndTime!=null and  admissionsEndTime!=''">
+                and der.check_time BETWEEN
                 #{admissionsStartTime} and #{admissionsEndTime}
             </if>
-            <if test="departureStartTime!=null and departureStartTime!=''  and  departureEndTime!=null and departureEndTime">and der.check_out_time BETWEEN
+            <if test="departureStartTime!=null and departureStartTime!=''  and  departureEndTime!=null and departureEndTime">
+                and der.check_out_time BETWEEN
                 #{departureStartTime} and #{departureEndTime}
             </if>
             <if test="roomName!=null and roomName!=''">and room.room_name =#{roomName}</if>
@@ -501,14 +526,15 @@
         where round((unix_timestamp(now())-unix_timestamp(update_time))/60)>15
         and order_state='notpay'
     </update>
-    <select id="getCloseOrder" resultType="com.szq.hotel.entity.bo.OrderChildBO" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
+    <select id="getCloseOrder" resultType="com.szq.hotel.entity.bo.OrderChildBO"
+            parameterType="com.szq.hotel.entity.bo.OrderChildBO">
         select * from hm_order_child
       where round((unix_timestamp(now())-unix_timestamp(update_time))/60)>15
         and order_state='notpay'
     </select>
 
     <!--通过房间id查找在住订单信息-->
-    <select id="getOrderChildByRoomId" resultType="com.szq.hotel.entity.result.CheckInInfoResult" >
+    <select id="getOrderChildByRoomId" resultType="com.szq.hotel.entity.result.CheckInInfoResult">
         select hm_order.id as orderId,time,hm_order_child.id as orderChildId,start_time,end_time,practical_departure_time,
         (room_rate+other_rate-free_rate_num) as totalConsumption,
         (pay_cash_num+other_pay_num) as sumPayment,channel,memberId_or_organizationId,
@@ -545,7 +571,8 @@
     </select>
 
     <!--通过联房码查询联房信息-->
-    <select id="getOrderRoomByCode" resultType="com.szq.hotel.entity.result.CheckRoomPersonResult" parameterType="java.lang.String" >
+    <select id="getOrderRoomByCode" resultType="com.szq.hotel.entity.result.CheckRoomPersonResult"
+            parameterType="java.lang.String">
         select name,hm_order_child.start_time,room_name
         from hm_check_in_person,hm_order_child,hm_room
         where hm_order_child.id=hm_check_in_person.order_child_id
@@ -556,7 +583,7 @@
     </select>
 
     <!--通过联房码查询子订单-->
-    <select id="getOrderByCode"  resultType="com.szq.hotel.entity.bo.OrderChildBO" >
+    <select id="getOrderByCode" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select * from hm_order_child where al_room_code=#{code}
         <if test="main!=null and main!=''">
             and main=#{main}
@@ -605,7 +632,12 @@
         where room_type_id=#{roomTypeId}
         and `show`='yes'
         and hotel_id=#{hotelId}
-        and room_major_state='vacant'
+        <if test="roomId!=null and roomId!=''">
+            and (room_major_state='vacant' or id=#{roomId})
+        </if>
+        <if test="roomId==null || roomId==''">
+            and (room_major_state='vacant')
+        </if>
         and (lock_room_start_time is null or #{endTime}&lt;=lock_room_start_time )
         and (lock_room_end_time is null or #{startTime}>lock_room_end_time)
     </select>

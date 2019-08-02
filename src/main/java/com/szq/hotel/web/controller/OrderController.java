@@ -97,7 +97,6 @@ public class OrderController extends BaseCotroller {
             Map<String, Object> resultMap = new HashMap<String, Object>();
 
             //bug判断房型是否够用 房间预定和 预约修改都要判断房型 房间是否够用 与预约中的是不是不会冲突
-
             for (OrderChildBO orderChildBO : list) {
                 boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
                          orderBO.getCheckOutTime(),orderBO.getCheckTime(), userInfo.getHotelId());

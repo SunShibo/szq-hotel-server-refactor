@@ -125,15 +125,15 @@ public class OrderService {
                 map.put("state", Constants.INTHE.getValue());
                 map.put("remark", "直接入住");
                 roomService.updateroomMajorState(map);
-            } else {
-                if (orderChild.getRoomId() != null) {
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("id", orderChild.getRoomId());
-                    map.put("remark", "房间预约");
-                    map.put("state", Constants.VACANT.getValue());
-                    roomService.updateroomMajorState(map);
-                }
             }
+//            else {
+//                if (orderChild.getRoomId() != null) {
+//                    Map<String, Object> map = new HashMap<String, Object>();
+//                    map.put("id", orderChild.getRoomId());
+//                    map.put("remark", "房间预约");
+//                    roomService.updateroomMajorState(map);
+//                }
+//            }
 
         }
         //修改总房价
@@ -1060,6 +1060,8 @@ public class OrderService {
         backup.setEndTime(orderChildBO.getEndTime());
         backup.setPracticalDepartureTime(orderChildBO.getPracticalDepartureTime());
         backup.setId(orderChildId);
+        backup.setOtherRateStatus("no");
+        backup.setRoomRateStatus("no");
         orderDAO.addOrderChildBackup(backup);
 
         //修改房间状态
@@ -1171,6 +1173,13 @@ public class OrderService {
     public void checkOutRollback(Integer orderChildId, Integer userId, Integer hotelId) {
         //备份的信息
         OrderChildBackupParam backup = orderDAO.getOrderChildBackup(orderChildId);
+        if(backup.getOtherRateStatus().equals("yes")){
+            backup.setOtherRate(new BigDecimal(0));
+        }
+        if(backup.getRoomRateStatus().equals("yes")){
+            backup.setRoomRate(new BigDecimal(0));
+        }
+
         //订单信息
         OrderChildBO orderChildBOResult = orderDAO.getOrderChildById(orderChildId);
 
@@ -1203,9 +1212,12 @@ public class OrderService {
         checkInPersonDAO.updPersonCheckOut(orderChildId, Constants.CHECKIN.getValue());
 
         //添加回滚记录 退房存入负数 退房回滚存证书
-        orderRecordService.addOrderRecord(orderChildId, "误操作回滚(房费)",
-                null, backup.getRoomRate(), Constants.ROOMRATE.getValue(),
-                userId, "1天", "no");
+        if (backup.getRoomRate().compareTo(new BigDecimal(0)) != 0) {
+            orderRecordService.addOrderRecord(orderChildId, "误操作回滚(房费)",
+                    null, backup.getRoomRate(), Constants.ROOMRATE.getValue(),
+                    userId, "1天", "no");
+        }
+
 
         //添加超时费回滚记录
         if (backup.getOtherRate().compareTo(new BigDecimal(0)) != 0) {
@@ -1238,6 +1250,18 @@ public class OrderService {
 
         //退房回滚
         orderDAO.delOrderChildBackup(orderChildId);
+    }
+
+    //修改备份信息
+    public void updOrderChildBackup(Integer orderChildId,String project){
+        OrderChildBackupParam orderChildBackupParam=new OrderChildBackupParam();
+        orderChildBackupParam.setId(orderChildId);
+        if(project.equals(Constants.ROOMRATE.getValue())){
+            orderChildBackupParam.setRoomRateStatus("yes");
+        }
+        if(project.equals(Constants.TIMEOUTCOST.getValue())){
+            orderChildBackupParam.setOtherRateStatus("yes");
+        }
     }
 
     //获取超时的子订单 修改他们的房间状态
@@ -1290,7 +1314,7 @@ public class OrderService {
             System.err.println("DateUtils.longDate(endTime)" + DateUtils.longDate(endTime));
             System.err.println("DateUtils.longDate(startTime)" + DateUtils.longDate(startTime));
             Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId);
-            Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId);
+            Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId,roomId);
             System.err.println("orderCount:" + orderCount);
             System.err.println("roomCount:" + roomCount);
             if (roomCount - orderCount <= 0) {
