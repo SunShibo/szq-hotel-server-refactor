@@ -423,11 +423,11 @@
 
     <!--根据子订单id查询子订单-->
     <select id="getOrderChildById"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.OrderChildBO">
-        select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
-        from hm_order_child,hm_room,hm_room_type
+       select hm_order_child.*,hm_room.room_name,hm_room_type.room_type_name
+        from hm_order_child
+        left join hm_room on hm_order_child.room_id=hm_room.id
+        inner join hm_room_type on hm_order_child.room_type_id=hm_room_type.id
         where hm_order_child.id=#{id}
-        and hm_room.room_type_id=hm_room_type.id
-        and hm_order_child.room_id=hm_room.id
     </select>
 
     <!--根据子订单id查询子订单-->

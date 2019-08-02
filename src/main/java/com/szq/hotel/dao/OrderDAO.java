@@ -40,7 +40,7 @@ public interface OrderDAO {
     //根据子订单id查询子订单
     OrderChildBO getOrderChildById(Integer id);
     //根据子订单id查询子订单
-    OrderChildBO getOrderChildById2(Integer id);
+    List<OrderChildBO> getOrderChildById2(Integer id);
     //根据房间id查询正在预约中的子订单
     OrderChildBO getResOrderChildByRoomId(@Param("roomId") Integer roomId,@Param("orderId")Integer orderId);
     //根据房型id查询正在预约中的子订单

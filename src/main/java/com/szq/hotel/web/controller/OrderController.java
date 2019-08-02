@@ -100,9 +100,9 @@ public class OrderController extends BaseCotroller {
 
             for (OrderChildBO orderChildBO : list) {
                 boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
-                        orderBO.getCheckTime(), orderBO.getCheckOutTime(), userInfo.getHotelId());
+                         orderBO.getCheckOutTime(),orderBO.getCheckTime(), userInfo.getHotelId());
                 if (!bool) {
-                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "续租日期冲突"));
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "入住日期冲突"));
                     super.safeJsonPrint(response, result);
                     log.info("result{}", result);
                     return;
@@ -1033,7 +1033,7 @@ public class OrderController extends BaseCotroller {
                 return;
             }
 
-            OrderChildBO orderChildBO = orderService.getOrderChildById(orderChildId);
+            OrderChildBO orderChildBO = orderService.getCheckOutInfo(orderChildId);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(orderChildBO));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
