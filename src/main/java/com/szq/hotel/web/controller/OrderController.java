@@ -720,7 +720,7 @@ public class OrderController extends BaseCotroller {
     public void updCheckInInfo(Integer orderId,String channel,String OTA,
                                Integer orderChildId, @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")Date endTime,String remark,
                                String checkInPersonJson,HttpServletResponse response,
-                               String everyDayRoomPrice,HttpServletRequest request) throws ParseException {
+                               String everyDayRoomPrice,HttpServletRequest request){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -752,8 +752,8 @@ public class OrderController extends BaseCotroller {
             //bug验证续租是否冲突
             boolean bool=orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(),orderChildBO.getRoomTypeId(),
                     orderChildBO.getStartTime(),endTime,userInfo.getHotelId());
-            if (bool){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097" , "用户未登录")) ;
+            if (!bool){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097" , "房间状态冲突，不能入住")) ;
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;

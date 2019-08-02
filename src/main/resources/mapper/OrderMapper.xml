@@ -578,7 +578,7 @@
     <!--根据时间段 查询这个房间的预约数量-->
     <select id="getOrderChildCountByRoomIdByTime" resultType="java.lang.Integer">
         select count(*) from hm_order_child,hm_order
-        where roomId=#{roomId}
+        where room_id=#{roomId}
         and #{endTime} &gt; check_time
         and #{startTime} &lt; check_out_time
         and order_state='reservation'
@@ -601,7 +601,7 @@
     <select id="getRoomCountByRoomTypeIdByTime" resultType="java.lang.Integer">
         select count(*) from hm_room
         where room_type_id=#{roomTypeId}
-        and show='yes'
+        and `show`='yes'
         and hotel_id=#{hotelId}
         and room_major_state='vacant'
         and (lock_room_start_time is null or #{endTime}&lt;=lock_room_start_time )
