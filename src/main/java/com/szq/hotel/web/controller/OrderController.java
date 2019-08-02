@@ -772,8 +772,9 @@ public class OrderController extends BaseCotroller {
             }
             OrderChildBO orderChildBO = orderService.getOrderChildById(orderChildId);
             //bug验证续租是否冲突
+            Date startTime=orderChildBO.getPracticalDepartureTime()==null?orderChildBO.getEndTime():orderChildBO.getPracticalDepartureTime();
             boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
-                    endTime, orderChildBO.getStartTime(), userInfo.getHotelId());
+                    endTime, startTime, userInfo.getHotelId());
             if (!bool) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "续租日期冲突"));
                 super.safeJsonPrint(response, result);

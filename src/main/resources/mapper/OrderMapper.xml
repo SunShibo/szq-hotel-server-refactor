@@ -312,9 +312,11 @@
 
     <!-- 查询入住超时的子订单  -->
     <select id="getTimeOutOrder"  resultType="com.szq.hotel.entity.bo.OrderChildBO">
-        select *
-        from hm_order_child
+        select hm_order_child.*
+        from hm_order_child,hm_room
         where order_state=#{orderState}
+        and hm_order_child.room_id=hm_room.id
+        and hm_room.room_major_state!='timeout'
         and end_time &lt; now()
         and  (practical_departure_time is null or practical_departure_time &lt; now())
     </select>
