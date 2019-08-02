@@ -104,7 +104,7 @@
 
     <!--查询入住人姓名-->
     <select id="queryChildName"   parameterType="java.lang.Integer"  resultType="com.szq.hotel.entity.bo.CommonBO"  >
-        SELECT id,name FROM `hm_check_in_person`  WHERE order_child_id=#{id} AND `status`='checkIn'  LIMIT 0,1
+        SELECT id,name FROM `hm_check_in_person`  WHERE order_child_id=#{id}  LIMIT 0,1
     </select>
 
     <!--修改夜审状态-->
