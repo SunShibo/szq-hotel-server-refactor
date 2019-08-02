@@ -104,20 +104,26 @@ public class MemberController extends BaseCotroller {
                 //添加收银汇总
                 cashierSummaryService.addCard(memberBO.getName(), money, payType, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId());
                 //添加商品交易
-                commodiryService.addCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), null);
-
-            }else {
-                //挂账
-                childOrderService.recorded(childId,money,"办卡",Constants.APPLYCARD.getValue(),loginAdmin.getId(),loginAdmin.getHotelId());
-            }
-            //向数据库中添加数据
-            memberService.addMember(memberBO, loginAdmin.getId());
-
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功"));
+                Integer commodiryId = commodiryService.addCommodiry(payType, Constants.APPLYCARD.getValue(), money, null, IDBuilder.getOrderNumber(), loginAdmin.getId(), loginAdmin.getHotelId(), null);
+                //向数据库中添加数据
+                memberService.addMember(memberBO, loginAdmin.getId());
+                //刚刚生成的商品交易id返回给前端
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(commodiryId));
                 super.safeJsonPrint(response, result);
                 log.info("result{}", result);
                 return;
+            //挂账
+            }else {
+                childOrderService.recorded(childId,money,"办卡",Constants.APPLYCARD.getValue(),loginAdmin.getId(),loginAdmin.getHotelId());
 
+            //向数据库中添加数据
+            memberService.addMember(memberBO, loginAdmin.getId());
+
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加会员成功!"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
         }catch (Exception e){
             e.getStackTrace();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000004"));
