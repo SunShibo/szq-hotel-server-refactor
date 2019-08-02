@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -170,4 +171,23 @@ public class UpdatePriceService {
 
     }
 
+
+    public  Date  getEndTime(String checkType,Date startTime,Integer dayNum){
+        if(checkType.equals(Constants.HOUR.getValue())){
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(startTime) ;
+            cal.add(Calendar.HOUR_OF_DAY,4);
+            return cal.getTime();
+        }else {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(startTime) ;
+            if(cal.get(Calendar.HOUR_OF_DAY)<6 &&  cal.get(Calendar.HOUR_OF_DAY)>=0){
+                cal.add(Calendar.DATE,dayNum-1);
+            }else {
+                cal.add(Calendar.DATE,dayNum);
+            }
+            return cal.getTime();
+        }
+
+    }
 }

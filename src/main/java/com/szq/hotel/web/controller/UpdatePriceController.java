@@ -122,7 +122,7 @@ public class UpdatePriceController extends BaseCotroller {
      * 查询是入住方式是否符合
      */
     @RequestMapping("/queryCheckType")
-    public void queryCheckType(HttpServletRequest request, HttpServletResponse response,String roomIds,String checkType){
+    public void queryCheckType(HttpServletRequest request, HttpServletResponse response,String roomIds,String checkType,Date starTime,Integer dayNum){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -141,7 +141,7 @@ public class UpdatePriceController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-
+            //判断入住方式
             String s = updatePriceService.queryCheckType(checkType, roomIds);
             if(s!=null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001",s));
@@ -149,6 +149,13 @@ public class UpdatePriceController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
+            //判断房间可用状态
+
+
+            //判断房间数量
+
+
+
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
@@ -162,6 +169,5 @@ public class UpdatePriceController extends BaseCotroller {
         }
 
     }
-
 
 }

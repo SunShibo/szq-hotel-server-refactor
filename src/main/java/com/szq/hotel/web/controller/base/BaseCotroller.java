@@ -244,12 +244,7 @@ public class BaseCotroller {
 //    }
     /**wy获取登录管理员*/
     public AdminBO getLoginAdmin (HttpServletRequest request ) {
-        AdminBO adminBO = new AdminBO();
-        adminBO.setId(1);
-        adminBO.setHotelId(1);
-        adminBO.setName("系统");
-        return adminBO;
-       // return (AdminBO) this.getSession(request, SysConstants.CURRENT_LOGIN_USER) ;
+        return (AdminBO) this.getSession(request, SysConstants.CURRENT_LOGIN_USER) ;
     }
 
     /** wy把管理员信息存入redis*/
