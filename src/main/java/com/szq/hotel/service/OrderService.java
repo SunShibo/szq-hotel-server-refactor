@@ -470,14 +470,25 @@ public class OrderService {
         return orderBO;
     }
 
-    //取消预约中的子订单
+    //取消预约中 入住待支付的子订单
     public void closeOrderChild(String orderChildIdS) {
         String[] orderChildS = orderChildIdS.split(",");
         for (int i = 0; i < orderChildS.length; i++) {
+            OrderChildBO orderChildResult=orderDAO.getOrderChildById(new Integer(orderChildS[i]));
+            //关闭子订单
             OrderChildBO orderChildBO = new OrderChildBO();
             orderChildBO.setId(new Integer(orderChildS[i]));
             orderChildBO.setOrderState(Constants.CANCEL.getValue());
             orderDAO.updOrderChild(orderChildBO);
+            //修改入住人状态
+            checkInPersonDAO.updPersonCheckOut(orderChildBO.getId(), Constants.CHECKOUT.getValue());
+            //修改房态
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", orderChildResult.getRoomId());
+            map.put("state", Constants.VACANT.getValue());
+            map.put("remark","取消订单");
+            roomService.updateroomMajorState(map);
+
         }
 
     }
@@ -1184,6 +1195,9 @@ public class OrderService {
     public boolean getOrderChildCountByRoomIdByTime(Integer roomId,Integer roomType,Date endTime,Date startTime,Integer hotelId){
         //验证房间
         if(roomId!=null){
+            System.err.println(roomId);
+            System.err.println(DateUtils.longDate(endTime));
+            System.err.println(DateUtils.longDate(startTime));
             Integer roomCount=orderDAO.getOrderChildCountByRoomIdByTime(roomId,DateUtils.longDate(endTime),DateUtils.longDate(startTime),hotelId);
             if(roomCount>0){
                 return false;
@@ -1193,6 +1207,8 @@ public class OrderService {
         if(roomType!=null){
             Integer orderCount=orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType,DateUtils.longDate(endTime),DateUtils.longDate(startTime),hotelId);
             Integer roomCount=orderDAO.getRoomCountByRoomTypeIdByTime(roomType,DateUtils.longDate(endTime),DateUtils.longDate(startTime),hotelId);
+            System.err.println("orderCount:"+orderCount);
+            System.err.println("roomCount:"+roomCount);
             if(roomCount-orderCount<=0){
                 return false;
             }
