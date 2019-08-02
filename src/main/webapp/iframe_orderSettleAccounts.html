@@ -241,7 +241,7 @@
                             showMsg('结账成功', 1, false);
                             //打印
                             parent.layer.confirm('是否打印账单吗？', {icon: 3, title: '提示'}, function (index) {
-                                window.open('querySubPrice.html?s=1&id=' + res.data+ '&date=' + Date.now(), '_block', "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=600");
+                                window.open('querySubPrice.html?s=1&id=' + res.data + '&date=' + Date.now(), '_block', "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=600");
                                 parent.layer.closeAll();
                             }, function () {
                                 parent.layer.closeAll();
@@ -262,9 +262,10 @@
                             showMsg('结账成功', 1, false);
                             //打印
                             parent.layer.confirm('是否打印账单吗？', {icon: 3, title: '提示'}, function (index) {
+                                var id = sessionData.ids[0];
                                 //关闭父页面
                                 closeWin();
-                                window.open('queryPrice.html?childId=' + res.data+ '&date=' + Date.now(), '_block', "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=600");
+                                window.open('queryPrice.html?childId=' + id + '&date=' + Date.now(), '_block', "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=600");
                                 parent.layer.closeAll();
                             }, function () {
                                 parent.layer.closeAll();

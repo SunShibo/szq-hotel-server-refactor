@@ -48,7 +48,7 @@
 </div>
 <div class="remark-info">备注：<span class="remark"></span></div>
 <div class="p-price">
-    <div class="p-title" style="display: none">总消费:<span id="money"></span>元</div>
+    <div class="p-title" style="display: none">消费金额:<span id="money"></span>元</div>
     <div>酒店地址：<span id="address"></span></div>
     <div>酒店电话：<span id="phone"></span></div>
     <div>签字：<span id="sign"></span></div>
@@ -75,8 +75,8 @@
                     //渲染表格数据
                     tab.reload({data: r.data});
                     //渲染酒店信息
-                    for (var item in res.data.hotel) {
-                        if (typeof res.data.hotel[item] === 'object') {
+                    for (var item in r.hotel) {
+                        if (typeof r.hotel[item] === 'object') {
                             $('#' + item).text(DateToLStr(new Date(r.hotel[item].time)))
                         } else {
                             $('#' + item).text(r.hotel[item]);
@@ -91,7 +91,7 @@
             , limit: 10000
             , cols: [[ //表头
                 {
-                    field: 'payType', title: '支付方式', align: 'center', templet: function (data) {
+                    field: 'payType', title: '支付方式', width: 200, align: 'center', templet: function (data) {
                         return orderPayType(data.payType);
                     }
                 }

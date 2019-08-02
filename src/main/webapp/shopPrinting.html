@@ -50,7 +50,6 @@
         $(function () {
             id = parseInt(getUrl('id'));
             getResult();
-            console.log(id);
         });
 
         function getResult() {
@@ -66,10 +65,10 @@
                     $("#time").html(DateToLStr(new Date()));
                     $("#addr").text(data.data.site);
                     $("#phone").text(data.data.phone);
-                     var arr = [];
-                     arr.push(data.data);
+                    var arr = [];
+                    arr.push(data.data);
 
-                    tab.reload({data:arr});
+                    tab.reload({data: arr});
                 }
             })
         }
@@ -86,18 +85,7 @@
 
                 {
                     field: 'payType', title: '支付方式', templet: function (data) {
-                        switch (data.payType) {
-                            case 'cash ':
-                                return '现金';
-                            case 'cart':
-                                return 'POS';
-                            case 'wechat':
-                                return '微信';
-                            case 'alipay':
-                                return '支付宝';
-                            case 'stored':
-                                return '储值支付';
-                        }
+                        return orderPayType(data.payType);
                     }
                 }
             ]]

@@ -132,8 +132,7 @@
             , limit: 10000
             , method: 'POST'
             , cols: [[ //表头
-                {field: 'id', title: 'ID', type: 'checkbox', align: 'center'}
-                , {field: 'roomName', title: '房号', align: 'center', width: 100}
+                {field: 'roomName', title: '房号', align: 'center', width: 100}
                 , {field: 'name', title: '姓名', align: 'center', width: 120}
                 , {field: 'createTime', title: '入住时间', align: 'center'}
             ]]
@@ -209,7 +208,6 @@
 
         //客账管理
         function queryOrderInfo() {
-
             $.ajax({
                 url: api.queryOrderById,
                 type: 'POST',
@@ -220,6 +218,11 @@
                 success: function (left) {
                     oId = left.data[0].id;
                     orderList.reload({data: JSON.parse(JSON.stringify(left.data))});
+                    //保存所有子订单ID
+                    for (var i = 0, len = left.data.length; i < len; i++) {
+                        oIds.push(left.data[i].id);
+                    }
+                    sessionStorage.setItem('oIds', oIds);
                     //第一行高亮
                     $('.o-left .layui-table-body tr[data-index="0"]').css('backgroundColor', '#33ABA0');
                     //查询第一行的子订单消费信息
@@ -342,13 +345,13 @@
                     orderChildId: oId
                 },
                 success: function (data) {
+                    parent.layer.closeAll('loading');
                     if (!data.success) {
                         layer.alert(data.errMsg, function () {
                             parent.layer.closeAll('dialog');
                         });
                         return;
                     }
-                    parent.layer.closeAll('loading');
                     sessionStorage.setItem('outData', JSON.stringify(data.data));
                     layer.open({
                         type: 2,
@@ -433,16 +436,16 @@
         });
 
 
-        //监听表格复选框选择
-        table.on('checkbox(orderList)', function (obj) {
-            //获取表格内复选框已选中的数据data
-            var checkStatus = table.checkStatus('orderList'), data = checkStatus.data;
-            oIds = [];
-            for (var i = 0, len = data.length; i < len; i++) {
-                oIds.push(data[i].id);
-            }
-            sessionStorage.setItem('oIds', oIds);
-        });
+        // //监听表格复选框选择
+        // table.on('checkbox(orderList)', function (obj) {
+        //     //获取表格内复选框已选中的数据data
+        //     var checkStatus = table.checkStatus('orderList'), data = checkStatus.data;
+        //     oIds = [];
+        //     for (var i = 0, len = data.length; i < len; i++) {
+        //         oIds.push(data[i].id);
+        //     }
+        //     sessionStorage.setItem('oIds', oIds);
+        // });
 
         //子订单消费项复选框选中事件
         layui.table.on('checkbox(orderInfo)', function (obj) {

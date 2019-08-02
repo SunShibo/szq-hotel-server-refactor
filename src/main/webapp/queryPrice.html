@@ -36,10 +36,13 @@
     </style>
 </head>
 <body>
-<div id="main" style="width:1024px;margin: 0 auto;"></div>
+<div id="main" style="width:1024px;margin: 0 auto;">
+    <div style="padding: 20px 0"><table id="topTable" lay-filter="topTable"></table></div>
+    <div style="padding: 20px 0"><table id="bottomTable" lay-filter="bottomTable"></table></div>
+</div>
 <div class="p-price">
-    <div class="p-title">总消费:<span id="total"></span>元</div>
-    <div>酒店地址：<span id="addr"></span></div>
+    <div class="p-title">消费金额:<span id="money"></span>元</div>
+    <div>酒店地址：<span id="address"></span></div>
     <div>酒店电话：<span id="phone"></span></div>
     <div>签字：<span id="sign"></span></div>
     <div>打印时间：<span id="time"></span></div>
@@ -47,154 +50,76 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use('table', function () {
-        var table = layui.table, $ = layui.$, ids = '', num = 1, state = '';
+        var table = layui.table, $ = layui.$, childId = '';
         $(function () {
-            ids = sessionStorage.getItem('oIds');
-            state = getUrl('state');
-            //判断是结账打印，还是订单列表页打印按钮，请求参数不同
-            if (state === '1') {
-                getResultAll()
-            } else if (state === '2') {
-                getResultById();
-            }
+            childId = getUrl('childId');
+            getResultAll();
         });
 
         //获取列表数据
         function getResultAll() {
             $.ajax({
-                url: '/OrderManage/stamp',
+                url: '/chilOrder/print',
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    ids: ids
+                    childId: childId
                 },
                 success: function (data) {
-                    $('#addr').html(data.data.hotelBO.address);
-                    $('#phone').html(data.data.hotelBO.phoneNumber);
-                    $('#time').html(DateToLStr(new Date(data.data.time.time)));
-                    addTableDom(data.data.lst);
-                }
-            })
-        }
-
-        //订单列表页打印按钮
-        function getResultById() {
-            $.ajax({
-                url: '/OrderManage/stampOrder',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    id: ids
-                },
-                success: function (data) {
+                    var r = data.data;
                     console.log(data);
-                    $('#addr').html(data.data.hotelBO.address);
-                    $('#phone').html(data.data.hotelBO.phoneNumber);
-                    $('#time').html(DateToLStr(new Date(data.data.time.time)));
-                    addTableDom(data.data.lst);
+                    topTable.reload({data: r.top});
+                    bottomTable.reload({data: r.data});
+
+                    for (var item in r.hotel){
+                        if (typeof r.hotel[item] === 'object') {
+                            $('#' + item).text(DateToLStr(new Date(r.hotel[item].time)))
+                        } else {
+                            $('#' + item).text(r.hotel[item]);
+                        }
+                    }
+
                 }
             })
         }
 
-        //创建表格DOM
-        function addTableDom(data) {
-            //总价计算
-            var total = 0;
-            //循环创建打印表格
-            for (var i = 0, len = data.length; i < len; i++, num++) {
-                //子订单表格
-                var topDiv = '<div style="padding: 20px 0"><table id="topTable' + num + '" lay-filter="topTable' + num + '"></table></div>';
-                //子订单详情表格
-                var bottomDiv = '<div style="padding: 20px 0"><table id="bottomTable' + num + '" lay-filter="bottomTable' + num + '"></table></div>';
-                //创建表格
-                $('#main').append(topDiv).append(bottomDiv);
-                //累加金额
-                total += data[i].payCount;
-                //订单号
-                data[i].id = data[i].number.toString() + data[i].childOrderId.toString();
-                //生成表格，并显示数据
-                var top = setTopTableHead(num);
-                top.reload({data: JSON.parse(JSON.stringify([data[i]]))});
-                var bottom = setBottomTableHead(num);
-                bottom.reload({data: JSON.parse(JSON.stringify(data[i].orderManageBOs))});
-            }
-            $('#total').text(total);
+        var bottomTable = table.render({
+            elem: '#bottomTable'
+            , method: 'POST'
+            , limit: 10000
+            , cols: [[ //表头
+                {
+                    field: 'createTime', width: 200, title: '消费时间', templet: function (data) {
+                        return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
+                    }
+                }
+                , {field: 'project', title: '项目'}
+                , {field: 'info', width: 230, title: '详情'}
+                , {field: 'number', title: '数量'}
+                , {field: 'money', title: '价格'}
+                , {
+                    field: 'payType', title: '支付方式', templet: function (data) {
+                        return orderPayType(data.payType);
+                    }
+                }
+            ]]
+        });
 
-        }
-
-        //设置子订单表头
-        function setBottomTableHead(num) {
-            //第一个实例
-            return table.render({
-                elem: '#bottomTable' + num
-                , method: 'POST'
-                , limit: 10000
-                , cols: [[ //表头
-                    {
-                        field: 'createTime', title: '消费时间', templet: function (data) {
-                            return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
-                        }
+        var topTable = table.render({
+            elem: '#topTable'
+            , method: 'POST'
+            , cols: [[ //表头
+                {field: 'orderNumber', title: '订单号'}
+                , {field: 'roomName', title: '房号'}
+                , {field: 'name', title: '姓名'}
+                , {
+                    field: 'startTime', title: '入住时间', templet: function (data) {
+                        return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
                     }
-                    , {
-                        field: 'project', title: '项目', templet: function (data) {
-                            if (data.project === '1') {
-                                return '商品';
-                            } else if (data.project === '2') {
-                                return '赔偿'
-                            } else if (data.project === '3') {
-                                return '会员卡'
-                            } else {
-                                return data.project
-                            }
-                        }
-                    }
-                    , {field: 'info', title: '详情'}
-                    , {field: 'operator', title: '操作人'}
-                    , {field: 'number', title: '数量'}
-                    , {field: 'price', title: '价格'}
-                    , {
-                        field: 'payStatu', title: '支付方式', templet: function (data) {
-                            switch (data.payStatu) {
-                                case '':
-                                case 0:
-                                    return '';
-                                case 1:
-                                    return '现金';
-                                case 2:
-                                    return 'POS';
-                                case 3:
-                                    return '其他支付';
-                                case 4:
-                                    return '积分支付';
-                                case 5:
-                                    return '储值支付';
-                            }
-                        }
-                    }
-                ]]
-            });
-        }
-
-        //设置子订单表头
-        function setTopTableHead(num) {
-            //第一个实例
-            return table.render({
-                elem: '#topTable' + num
-                , method: 'POST'
-                , cols: [[ //表头
-                    {field: 'id', title: '订单号'}
-                    , {field: 'roomName', title: '房号'}
-                    , {field: 'userName', title: '姓名'}
-                    , {
-                        field: 'startTime', title: '入住时间', templet: function (data) {
-                            return !!data.startTime ? DateToLStr(new Date(data.startTime.time)) : '';
-                        }
-                    }
-                    , {field: 'remark', title: '备注'}
-                    , {field: 'payCount', title: '订单消费'}
-                ]]
-            });
-        }
+                }
+                , {field: 'remark', title: '备注'}
+            ]]
+        });
     });
 </script>
 </body>
