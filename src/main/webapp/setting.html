@@ -34,9 +34,9 @@
 <div class="layui-form-item layui-form" style="margin: 20px auto; width: 90%;">
 
     <div class="layui-inline">
-        <label class="layui-form-label">证件类型</label>
+        <label class="layui-form-label">字典类型</label>
         <div class="layui-input-inline">
-            <select name="certificateId" id="certificateId">
+            <select name="getDic" id="getDic">
 
             </select>
         </div>
@@ -55,36 +55,39 @@
 <script>
     layui.use(['form', 'laydate', 'table'], function () {
         var $ = layui.$, form = layui.form, laydate = layui.laydate, table = layui.table;
-
-        //初始化表格数据
-        var tab = table.render({
-            elem: '#hotelManage'
-            , url: 'Dictionary/getDic'
-            , method: 'POST'
-            , response: {
-                statusName: 'code' //规定数据状态的字段名称，默认：code
-                , statusCode: 200 //规定成功的状态码，默认：0
-                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
-                , countName: 'count' //规定数据总数的字段名称，默认：count
-                , dataName: 'data' //规定数据列表的字段名称，默认：data
-            }
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "code": 200, //解析接口状态
-                    "msg": res.errMsg, //解析提示文本
-                    "count": res.data.count, //解析数据长度
-                    "data": res.data //解析数据列表
-                };
-            }
-            , height: 'full'
-            , even: true
-            , loading: true // 是否显示加载条
-            , cols: [[ //表头
-                {field: 'name', title: '酒店名称', align: 'center'}
-                , {field: 'site', title: '酒店地址', align: 'center'}
-                , {field: 'phone', title: '酒店电话', align: 'center'}
-                , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barDemo'}
-            ]]
+        var tableObj;
+        renderSelect("getDic",'id','name','Dictionary/getDictionaryBOs?v=1',form,function (str,rs) {
+            //初始化表格数据
+            tableObj = table.render({
+                elem: '#hotelManage'
+                , url: 'Dictionary/getDic'
+                , method: 'POST'
+                , where: {kid:$("#getDic").val()}
+                , response: {
+                    statusName: 'code' //规定数据状态的字段名称，默认：code
+                    , statusCode: 200 //规定成功的状态码，默认：0
+                    , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                    , countName: 'count' //规定数据总数的字段名称，默认：count
+                    , dataName: 'data' //规定数据列表的字段名称，默认：data
+                }
+                , parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": 200, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": res.data //解析数据列表
+                    };
+                }
+                , height: 'full'
+                , even: true
+                , loading: true // 是否显示加载条
+                , cols: [[ //表头
+                    // {field: 'name', title: '分类值', align: 'center'}
+                    {field: 'value', title: '名称', align: 'center'}
+                    // , {field: 'phone', title: '排序', align: 'center'}
+                    , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barDemo'}
+                ]]
+            });
         });
 
         //表格操作按钮
@@ -93,42 +96,95 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
 
-            if (layEvent === 'setup') { //设置楼层
-                window.open('iframe_hotel_floor.html?s='+data.id+"&r="+Math.random(),'','width=800,height=400,top=300px,left=300px,location=no')
+            if (layEvent === 'delete') { //
+                layer.confirm('确定删除吗？', {icon: 3, title:'提示'}, function (index) {
+                    del(data.id);
+                    layer.close(index);
+                });
 
             } else if (layEvent === 'edit') { //编辑
-                sessionStorage.setItem('hm', JSON.stringify(data));
-                layer.open({
-                    type: 2,
-                    skin: 'demo-class',
-                    area: ['700px', '40%'],
-                    title: '酒店编辑',
-                    shade: 0.6,
-                    shadeClose: true,
-                    content: 'iframe_hotelUpdate.html?s=0'+"&r="+Math.random(),
-                    end: function (index, layero) {
-                        tab.reload();
-                    }
+                // console.log(data)
+                // return;
+                //prompt层
+                layer.prompt({title: '请修改名称', formType: 3,value:data.value}, function(pass, index){
+
+                    $.ajax({
+                        url: 'Dictionary/updDic',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {id: data.id,value:pass},
+                        success: function (data) {
+                            if (data.success) {
+                                layer.msg('修改成功');
+                                layer.close(index);
+                                search();
+                            } else {
+                                showMsg(data.errMsg, 2, false);
+                            }
+                        }
+                    })
+
                 });
             }
         });
 
-        //添加
-        $(document).on('click', '#addSchedule', function () {
-            layer.open({
-                type: 2,
-                skin: 'demo-class',
-                area: ['700px', '80%'],
-                title: '酒店添加',
-                shade: 0.6,
-                shadeClose: true,
-                content: 'iframe_hotelUpdate.html?s=1&random='+Date.now(),
-                end: function (index, layero) {
-                    tab.reload();
-                }
-            });
+        $('#queryBtn').on('click', function () {
+            search();
         });
 
+        function search() {
+            tableObj.reload({
+                where: {
+                    kid: $("#getDic").val()
+                },
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        }
+
+
+        //添加
+        $(document).on('click', '#addSchedule', function () {
+            //prompt层
+            layer.prompt({title: '请输入名称', formType: 3}, function(pass, index){
+
+                $.ajax({
+                    url: 'Dictionary/addDic ',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {kid: $("#getDic").val(),value:pass},
+                    success: function (data) {
+                        if (data.success) {
+                            layer.msg('添加成功');
+                            layer.close(index);
+                            search();
+                        } else {
+                            showMsg(data.errMsg, 2, false);
+                        }
+                    }
+                })
+            });
+
+        });
+        //删除
+        function del(id) {
+            // var dd  =  [{DcId: id}];
+            $.ajax({
+                url: 'Dictionary/delDic',
+                type: 'POST',
+                dataType: 'json',
+                data: {DcId:JSON.stringify([id])},
+                success: function (data) {
+                    if(data.success){
+                        showMsg('成功', 1, false);
+                        search();
+                    } else {
+                        showMsg(data.errMsg, 2, false);
+                    }
+                }
+            })
+        }
     })
 </script>
 </body>
