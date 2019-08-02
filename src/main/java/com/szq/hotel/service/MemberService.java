@@ -195,7 +195,7 @@ public class MemberService {
        MemberBO memberBO1 = memberDAO.queryMemberById(memberId);
 
        String type = "结账退款";
-       storedValueRecordService.addStoredValueRecord(memberId,money,remark,type,null,memberBO1.getStoredValue(),userId);
+       storedValueRecordService.addStoredValueRecord(memberId,money,remark,type,BigDecimal.valueOf(0),memberBO1.getStoredValue(),userId);
     }
 
     /**
