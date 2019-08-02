@@ -130,6 +130,7 @@ public class OrderService {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put("id", orderChild.getRoomId());
                     map.put("remark","房间预约");
+                    map.put("state", Constants.VACANT.getValue());
                     roomService.updateroomMajorState(map);
                 }
             }
