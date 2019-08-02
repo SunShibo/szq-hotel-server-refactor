@@ -157,13 +157,13 @@
             ]]
         });
 
-        //监听导出按钮提交
+        //监听导出按钮提交   有问题
         form.on('submit(outExcel)', function (data) {
-            var href = api.cartExport;
-            data.field.state ? href += "?state=" + data.field.state : '';
-            data.field.money ? href += "?money=" + data.field.money : '';
-            data.field.cardNumber ? href += "?cardNumber=" + data.field.cardNumber : '';
-            data.field.name ? href += "?name=" + data.field.name : '';
+            var href = api.cartExport+'?';
+            data.field.state ? href += "state=" + data.field.state : '';
+            data.field.money ? href += "money=" + data.field.money : '';
+            data.field.cardNumber ? href += "cardNumber=" + data.field.cardNumber : '';
+            data.field.name ? href += "name=" + data.field.name : '';
             window.open(href);
             return false;
         });
@@ -203,7 +203,7 @@
                     title: '编辑',
                     shade: 0.6,
                     shadeClose: true,
-                    content: 'iframe_membersCard.html?state=1',
+                    content: 'iframe_membersCard.html?state=1&date=' + Date.now(),
                     end: function (index, layero) {
                         sessionStorage.removeItem('membersCard');
                         tab.reload();
@@ -241,7 +241,7 @@
                 title: '添加会员卡',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_membersCard.html?state=0',
+                content: 'iframe_membersCard.html?state=0&date=' + Date.now(),
                 end: function (index, layero) {
                     tab.reload();
                 }

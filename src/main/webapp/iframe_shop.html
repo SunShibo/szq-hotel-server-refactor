@@ -35,7 +35,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">会员详情</label>
             <div class="layui-input-block" style="line-height: 38px">
-                拥有积分：<span class="integral" style="color:#ff0000;"></span>，储值卡余额：<span class="prepaidCard"
+                拥有积分：<span class="integral" style="color:#ff0000;"></span>元，储值卡余额：<span class="prepaidCard"
                                                                                        style="color:#ff0000;"></span>元
             </div>
         </div>
@@ -161,7 +161,7 @@
                 if (rs.success) {
                     parent.layer.confirm('打印账单吗?', {icon: 3, title: '提示'}, function (index) {
                         //do something
-                        window.open('shopPrinting.html?id=' + rs.data, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
+                        window.open('shopPrinting.html?id=' + rs.data+ '&date=' + Date.now(), "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
                         parent.layer.closeAll();
                     },function () {
                         parent.layer.closeAll();

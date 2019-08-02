@@ -100,7 +100,7 @@
                 title: '新添',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_operationPermission.html?state=1',
+                content: 'iframe_operationPermission.html?state=1&date=' + Date.now(),
                 end: function (index, layero) {
                     tab.reload();
                 }
@@ -138,7 +138,7 @@
                     title: '编辑',
                     shade: 0.6,
                     shadeClose: true,
-                    content: 'iframe_operationPermission.html?state=0&id='+data.id,
+                    content: 'iframe_operationPermission.html?state=0&id='+data.id+ '&date=' + Date.now(),
                     end: function (index, layero) {
                         tab.reload();
                     }

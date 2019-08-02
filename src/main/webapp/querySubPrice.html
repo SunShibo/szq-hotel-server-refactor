@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>结账打印</title>
+    <title>子项结账打印</title>
     <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
 
@@ -20,7 +20,7 @@
             line-height: 40px;
         }
 
-        .remark-info{
+        .remark-info {
             width: 1024px;
             margin: 0 auto;
             font-size: 14px;
@@ -43,13 +43,13 @@
 </head>
 <body>
 <div id="main" style="width:1024px;margin: 0 auto;">
-
+    <table id="subTable" lay-filter="subTable"></table>
 
 </div>
 <div class="remark-info">备注：<span class="remark"></span></div>
 <div class="p-price">
-    <div class="p-title" style="display: none">总消费:<span id="total"></span>元</div>
-    <div>酒店地址：<span id="addr"></span></div>
+    <div class="p-title" style="display: none">总消费:<span id="money"></span>元</div>
+    <div>酒店地址：<span id="address"></span></div>
     <div>酒店电话：<span id="phone"></span></div>
     <div>签字：<span id="sign"></span></div>
     <div>打印时间：<span id="time"></span></div>
@@ -57,79 +57,53 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use('table', function () {
-        var table = layui.table, $ = layui.$, num = 1;
+        var table = layui.table, $ = layui.$, state = 0;
         $(function () {
-            var data = JSON.parse(sessionStorage.getItem('QSD'));
-            $('.remark').text(data.remark);
-            var state = getUrl('s');
-            //判断是子订单结账打印，还是订单列表的在住打印
-            if (!!state) {
-                addTable(data.data);
-                $('#addr').text(data.hotelBO.address);
-                $('#phone').text(data.hotelBO.phoneNumber);
-                $('#time').text(DateToLStr(new Date(data.date.time)));
-            } else {
-                //隐藏总消费
-                $('.p-title').css('display', 'block');
-                var div = '<div style="padding: 20px 0"><div id="date">结账时间： ' + DateToLStr(new Date(data.date.time)) + '</div><table id="topTable' + num + '" lay-filter="topTable' + num + '"></table></div>';
-                $('#main').append(div);
-                var tab = table.render({
-                    elem: '#topTable' + num
-                    , limit: 10000
-                    , cols: [[ //表头
-                        {field: 'childOrderId', title: '子订单号', align: 'center'}
-                        , {
-                            field: 'price', title: '消费金额', align: 'center'
-                        }
-                        , {
-                            field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
-                                return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
-                            }
-                        }
-                        , {field: 'info', title: '消费详情', align: 'center'}
-
-                    ]]
-                });
-                tab.reload({data: JSON.parse(JSON.stringify(data.Info))});
-                if (data.price < 0) {
-                    $('#total').text('应退' + Math.abs(data.price));
-                } else {
-                    $('#total').text('应收' + data.price);
-                }
-                $('#addr').text(data.hotelBO.address);
-                $('#phone').text(data.hotelBO.phoneNumber);
-                $('#time').text(DateToLStr(new Date(data.date.time)));
-            }
+            state = getUrl('s');//state为1是子项结账打印   为0是订单列表实时打印
+            getData();
         });
 
-        function addTable(data) {
-
-            for (var i = 0, len = data.length; i < len; i++, num++) {
-                var money = data[i].price < 0 ? '应退' + Math.abs(data[i].price) : "应收" + data[i].price;
-                var div = '<div style="padding: 20px 0"><div>结账时间： ' + DateToLStr(new Date(data[i].date.time)) + '</div><table id="topTable' + num + '" lay-filter="topTable' + num + '"></table><div class="p-title">总消费:' + money + '元</div></div>';
-                $('#main').append(div);
-                var tab = table.render({
-                    elem: '#topTable' + num
-                    , limit: 10000
-                    , data: data[i].list
-                    , cols: [[ //表头
-                        {field: 'childOrderId', title: '子订单号', align: 'center'}
-                        , {
-                            field: 'price', title: '消费金额', align: 'center'
+        function getData() {
+            $.ajax({
+                url: api.subPrinting,
+                type: 'POST',
+                dataType: 'json',
+                data: {ids: getUrl('id')},
+                success: function (res) {
+                    console.log(res);
+                    var r = res.data;
+                    //渲染表格数据
+                    tab.reload({data: r.data});
+                    //渲染酒店信息
+                    for (var item in res.data.hotel) {
+                        if (typeof res.data.hotel[item] === 'object') {
+                            $('#' + item).text(DateToLStr(new Date(r.hotel[item].time)))
+                        } else {
+                            $('#' + item).text(r.hotel[item]);
                         }
-                        , {
-                            field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
-                                return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
-                            }
-                        }
-                        , {field: 'info', title: '消费详情', align: 'center'}
-
-                    ]]
-                });
-            }
-
-
+                    }
+                }
+            })
         }
+
+        var tab = table.render({
+            elem: '#subTable'
+            , limit: 10000
+            , cols: [[ //表头
+                {
+                    field: 'payType', title: '支付方式', align: 'center', templet: function (data) {
+                        return orderPayType(data.payType);
+                    }
+                }
+                , {field: 'info', title: '消费详情', align: 'center'}
+                , {field: 'money', title: '消费金额', align: 'center'}
+                , {
+                    field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
+                        return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';
+                    }
+                }
+            ]]
+        });
 
 
     });

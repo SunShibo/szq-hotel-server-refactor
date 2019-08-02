@@ -108,7 +108,7 @@
                     layer.close(index);
                     if (rs.success) {
                         parent.layer.confirm('打印账单吗?', {icon: 3, title: '提示'}, function (index) {
-                            window.open('shopPrinting.html?id=' + rs.data, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
+                            window.open('shopPrinting.html?id=' + rs.data+ '&date=' + Date.now(), "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
                             parent.layer.closeAll();
                         }, function () {
                             parent.parent.location.reload()

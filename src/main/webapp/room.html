@@ -259,7 +259,7 @@
                     title: '编辑',
                     shade: 0.6,
                     shadeClose: true,
-                    content: 'iframe_roomInfo.html?s=1',
+                    content: 'iframe_roomInfo.html?s=1&date=' + Date.now(),
                     end: function (index, layero) {
                         sessionStorage.removeItem('roomItem');
                         tab.reload();//刷新表格
@@ -277,7 +277,7 @@
                 title: '新增',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_roomInfo.html',
+                content: 'iframe_roomInfo.html?date=' + Date.now(),
                 end: function (index, layero) {
                     tab.reload();//刷新表格
                 }
@@ -317,7 +317,7 @@
                 title: '批量锁房',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_lockRoom.html',
+                content: 'iframe_lockRoom.html?date=' + Date.now(),
                 end: function () {
                     tab.reload();//刷新表格
                 }

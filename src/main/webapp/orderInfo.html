@@ -276,7 +276,7 @@
                 title: '押金',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_orderDeposit.html?id=' + oId,
+                content: 'iframe_orderDeposit.html?id=' + oId+ '&date=' + Date.now(),
                 end: function (index, layero) {
                     getRightData(oId);
                 }
@@ -295,7 +295,7 @@
                 title: '其他费用',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_orderOther.html?id=' + oId,
+                content: 'iframe_orderOther.html?id=' + oId+ '&date=' + Date.now(),
                 end: function (index, layero) {
                     getRightData(oId);
                 }
@@ -314,7 +314,7 @@
                 title: '免单',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_orderFree.html?id=' + oId,
+                content: 'iframe_orderFree.html?id=' + oId+ '&date=' + Date.now(),
                 end: function () {
                     getRightData(oId);
                 }
@@ -342,7 +342,7 @@
                     orderChildId: oId
                 },
                 success: function (data) {
-                    if (data.errCode === '00100010') {
+                    if (!data.success) {
                         layer.alert(data.errMsg, function () {
                             parent.layer.closeAll('dialog');
                         });
@@ -357,8 +357,9 @@
                         title: '退房',
                         shade: 0.6,
                         shadeClose: true,
-                        content: 'iframe_orderCheckOut.html?id=' + oId,
+                        content: 'iframe_orderCheckOut.html?id=' + oId + '&date=' + Date.now(),
                         end: function () {
+                            sessionStorage.removeItem('outData')
                             getRightData(oId);
                         }
                     });
@@ -422,7 +423,10 @@
                         title: '结账',
                         shade: 0.6,
                         shadeClose: true,
-                        content: 'iframe_orderSettleAccounts.html?s=1&back='+getUrl('back')
+                        content: 'iframe_orderSettleAccounts.html?s=1&back=' + getUrl('back')+ '&date=' + Date.now(),
+                        end: function () {
+                            sessionStorage.removeItem('payData');
+                        }
                     });
                 }
             });
@@ -542,9 +546,10 @@
                             title: '消费项目结账',
                             shade: 0.6,
                             shadeClose: true,
-                            content: 'iframe_orderSettleAccounts.html?id=' + oId,
+                            content: 'iframe_orderSettleAccounts.html?id=' + oId+ '&date=' + Date.now(),
                             end: function () {
                                 getRightData(oId);
+                                sessionStorage.removeItem('ids');
                             }
                         });
                     } else {

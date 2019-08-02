@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>在住报表</title>
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .layui-table th {
+            padding: 0 15px !important;
+        }
+        .layui-table td{
+            padding: 9px 15px !important;
+        }
+    </style>
 </head>
 <body>
 <nav class="hotel-nav">
@@ -88,34 +96,39 @@
             , limit: 10000
             , totalRow: true
             , cols: [[ //标题栏
-                {field: 'orderNumber', width:180, title: '订单号', rowspan: 2, totalRowText: "合计："} //rowspan即纵向跨越的单元格数
-                , {field: 'name', title: '姓名', rowspan: 2}
-                , {field: 'value', title: '证件类型', rowspan: 2}
-                , {field: 'certificateNumber', title: '证件号码', rowspan: 2}
-                , {field: 'roomName', title: '房号', rowspan: 2}
-                , {field: 'roomTypeName', title: '房型', rowspan: 2}
-                , {field: 'money', title: '当天价格', rowspan: 2, totalRow: true}
+                {field: 'orderNumber', width: 180, title: '订单号', align: 'center', rowspan: 2, totalRowText: "合计："} //rowspan即纵向跨越的单元格数
+                , {field: 'name', title: '姓名', align: 'center', rowspan: 2}
+                , {field: 'value', title: '证件类型', align: 'center', rowspan: 2}
+                , {field: 'certificateNumber', title: '证件号码', align: 'center', rowspan: 2}
+                , {field: 'roomName', title: '房号', align: 'center', rowspan: 2}
+                , {field: 'roomTypeName', title: '房型', align: 'center', rowspan: 2}
+                , {field: 'money', title: '当天价格', align: 'center', width:120, rowspan: 2, totalRow: true}
                 , {
-                    field: 'startTime', width:180, title: '入住时间', align: 'center', templet: function (data) {
+                    field: 'startTime',
+                    width: 180,
+                    rowspan: 2,
+                    align: 'center',
+                    title: '入住时间',
+                    templet: function (data) {
                         if (data.startTime)
                             return DateToLStr(new Date(data.startTime.time))
                         else return ''
-                    },rowspan: 2
+                    }
                 }
                 , {
-                    field: 'endTime', width:180, title: '预离时间', align: 'center', templet: function (data) {
+                    field: 'endTime', width: 180, title: '预离时间', rowspan: 2, align: 'center', templet: function (data) {
                         if (data.endTime)
                             return DateToLStr(new Date(data.endTime.time))
                         else return ''
-                    },rowspan: 2
+                    }
                 }
-                , {align: 'center', title: '收款明细', colspan: 3} //colspan即横跨的单元格数，这种情况下不用设置field和width
-                , {field: 'roomRate', title: '房费', rowspan: 2}
-                , {field: 'otherRate', title: '其他费用', rowspan: 2}
-                , {field: 'freeRateNum', title: '免单费用', rowspan: 2}
+                , {align: 'center', title: '收款明细', colspan: 2} //colspan即横跨的单元格数，这种情况下不用设置field和width
+                , {field: 'roomRate', title: '房费', align: 'center', rowspan: 2}
+                , {field: 'otherRate', title: '其他费用', align: 'center', rowspan: 2}
+                , {field: 'freeRateNum', title: '免单费用', align: 'center', rowspan: 2}
             ], [
-                {field: 'otherPayNum', title: '其他支付'}
-                , {field: 'payCashNum', title: '现金'}
+                {field: 'otherPayNum', align: 'center', title: '其他支付'}
+                , {field: 'payCashNum', align: 'center', title: '现金'}
             ]]
         });
     });

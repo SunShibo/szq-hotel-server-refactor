@@ -108,7 +108,7 @@
 
             if (layEvent === 'print') { //打印
                 //do somehing
-                window.open('shopPrinting.html?id=' + data.id, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
+                window.open('shopPrinting.html?id=' + data.id+ '&date=' + Date.now(), "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=no, resizable=no, copyhistory=yes");
             }
         });
 

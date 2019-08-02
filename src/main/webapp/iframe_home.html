@@ -297,7 +297,7 @@
             }
             //如果是入住或者超时状态  不允许点击
             if (status === 'true') {
-                $('#finish，#checkIn').addClass('layui-btn-disabled').prop('disabled', 'disabled');
+                $('#finish,#checkIn').addClass('layui-btn-disabled').prop('disabled', 'disabled');
             }
 
             $.ajax({
@@ -398,7 +398,8 @@
                 var timestamp = new Date(data[i].startDate.replace(/-/g, "/"));
                 var month = timestamp.getMonth() + 1 < 10 ? "0" + (timestamp.getMonth() + 1) : timestamp.getMonth() + 1;
                 var date = timestamp.getDate() < 10 ? '0' + timestamp.getDate() : timestamp.getDate();
-                var div = '<div class="room-state-item"><div id="time">' + month + '/' + date + '</div><div id="roomItemState">' + data[i].state + '</div></div>'
+                var color = data[i].state === '有预约' ? "color:#ff0000;" : "";
+                var div = '<div class="room-state-item"><div id="time">' + month + '/' + date + '</div><div id="roomItemState" style="' + color + '">' + data[i].state + '</div></div>'
                 $('#roomStateItem').append(div);
             }
         }
@@ -485,7 +486,7 @@
                 title: '锁房',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_lockRoom.html',
+                content: 'iframe_lockRoom.html?&date=' + Date.now(),
                 end: function () {
                     sessionStorage.removeItem('selectArr');
                     initRoomInfoData();
@@ -527,7 +528,7 @@
                 title: '房屋备注',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_exemption.html?s=3&id=' + id,
+                content: 'iframe_exemption.html?s=3&id=' + id + '&date=' + Date.now(),
                 end: function () {
                     sessionStorage.removeItem('remark');
                     initRoomInfoData();
@@ -591,7 +592,7 @@
                 title: '编辑',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_homeUpdate.html?id=' + orderId + '&orderChildId=' + orderChildId,
+                content: 'iframe_homeUpdate.html?id=' + orderId + '&orderChildId=' + orderChildId+ '&date=' + Date.now(),
                 end: function () {
                     sessionStorage.removeItem('checkIn');
                     initStayInData();
@@ -608,7 +609,7 @@
                 title: '联房',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_accounts.html?roomId=' + id + '&orderChildId=' + orderChildId + '&alRoomCode=' + encodeURI(alRoomCode),
+                content: 'iframe_accounts.html?roomId=' + id + '&orderChildId=' + orderChildId + '&alRoomCode=' + encodeURI(alRoomCode)+ '&date=' + Date.now(),
                 end: function () {
                     initStayInData();
                 }

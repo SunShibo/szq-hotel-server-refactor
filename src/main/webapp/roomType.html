@@ -99,7 +99,7 @@
                     title: data.roomTypeName + '价格设置',
                     shade: 0.6,
                     shadeClose: true,
-                    content: 'iframe_roomTypePrice.html?s=1&id='+data.id,
+                    content: 'iframe_roomTypePrice.html?s=1&id='+data.id+ '&date=' + Date.now(),
                     end: function () {
                         tab.reload();
                     }
@@ -131,7 +131,7 @@
                 title: '新增房型',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_roomTypePrice.html',
+                content: 'iframe_roomTypePrice.html?&date=' + Date.now(),
                 end: function () {
                     tab.reload();
                 }

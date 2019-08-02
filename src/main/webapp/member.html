@@ -136,7 +136,7 @@
             if (layEvent === 'detail') { //查看
                 console.log(JSON.stringify(data));
                 localStorage.setItem('member' + data.id, JSON.stringify(data));
-                window.open('member_info.html?id=' + data.id);
+                window.open('member_info.html?id=' + data.id+ '&date=' + Date.now());
             }
         });
 
@@ -144,7 +144,7 @@
             layer.open({
                 type: 2,
                 title: "新增",
-                content: './iframe_member_add.html?id=null',
+                content: './iframe_member_add.html?id=null&date=' + Date.now(),
                 area: ['820px', '520px']
             });
         });
@@ -153,7 +153,7 @@
             layer.open({
                 type: 2,
                 title: "会员导入",
-                content: './iframe_member_import.html',
+                content: './iframe_member_import.html?&date=' + Date.now(),
                 area: ['820px', '600px']
 
             });
@@ -162,7 +162,7 @@
             layer.open({
                 type: 2,
                 title: "卡号导入",
-                content: './iframe_member_import.html?v=1',
+                content: './iframe_member_import.html?v=1?&date=' + Date.now(),
                 area: ['820px', '600px']
 
             });

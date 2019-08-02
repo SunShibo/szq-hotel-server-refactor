@@ -94,7 +94,7 @@ var api = {
     , largeUpdatePriceTime: '/room/largeUpdatePriceTime'//批量修改全天房时间
     , updatePriceAll: '/room/largeUpdatePriceTimeByOtherPrice'//批量修改其他价格  除全天房以外的其他价格
     , reserveRoom: 'order/reservationRoom'//预定房间000
-    , stamp: '/OrderManage/stamp' //打印数据
+    // , stamp: '/OrderManage/stamp' //打印数据 废弃
     , priceAll: '/room/queryRoomPrice'//查询当前roomId的所有未过期价格
     // , queryCondition: '/dealShiftServiceController/queryCondition'//交班信息   废弃
     , offDuty: '/shiftRecords/shifRecord'//确定交班  已修改
@@ -139,27 +139,31 @@ var api = {
 
 
     , reportList: '/room/querySs'//按时间段查询图表000
-    , otherView: '/room/querySc'//数据表格
+    , otherView: '/room/querySc'//数据表格  已修改
 
 
-    , delRoomItemPrice: '/room/deleteRoomPrice'//删除特殊价格
-    , operationLog: '/roomDetailsController/operationLog'//首页弹出层操作记录
+    , subPrinting: '/chilOrder/alonePrint'//子项打印
+    , mainOrderPrinting: ''//主订单打印
+
+
+    // , delRoomItemPrice: '/room/deleteRoomPrice'//删除特殊价格  废弃
+    // , operationLog: '/roomDetailsController/operationLog'//首页弹出层操作记录
     , checkIdentify: '/checkin/isCheckinByIdNumber?idNumber='//查看这个证件号码是否有在住信息
     , cashInfo: '/commodity/queryCommodiry'//现金订单000
     , cashAdd: '/commodity/addCommodity'//商品交易添加000
-    , stayOver: '/roomDetailsController/stayOver'//续住
-    , stayOverPay: '/roomDetailsController/stayOverPay'//续住后支付
-    , updateCheckInComment: '/order/updateCheckInRemark'//首页入住房屋备注
-    , hotelInfo: '/hotel/queryLoginHotel'//权限页酒店list
-    , hotel: '/OrderManage/hotel'//权限页酒店list
-    , detail: '/admin/detail'//权限列表
+    // , stayOver: '/roomDetailsController/stayOver'//续住  废弃
+    // , stayOverPay: '/roomDetailsController/stayOverPay'//续住后支付  废弃
+    // , updateCheckInComment: '/order/updateCheckInRemark'//首页入住房屋备注  废弃
+    , hotelInfo: '/hotel/queryLoginHotel'//权限页酒店list   已修改
+    , hotel: '/OrderManage/hotel'//权限页酒店list   已修改
+    , detail: '/admin/detail'//权限列表  已修改
     , getReport: 'room/todayPictureView'//room/todayPictureView?v=1
     , getRoomInfoById: '/order/getRemainingLease?orderChildId='//在住换房获取价格信息
     , changeRoomPay: '/checkin/roomChangePay?v=1'
-    , adminAdd: '/admin/add'//添加权限
-    , adminQuery: '/admin/query'//按ID查找权限
-    , adminUpdate: '/admin/update'//权限修改
-    , updateStatus: '/admin/updateStatus'//权限注销
+    , adminAdd: '/admin/add'//添加权限  已修改
+    , adminQuery: '/admin/query'//按ID查找权限  已修改
+    , adminUpdate: '/admin/update'//权限修改  已修改
+    , updateStatus: '/admin/updateStatus'//权限注销  已修改
     , getCardNoByLeaveId: '/member/getMemberCardNumber?memberCardLevelId='//根据级别id查询卡费用信息   已修改
     , getCardUpdate: '/member/updateGetMemberCardNumber?v=1'//根据用户id卡级别判断是否缴费member/queryCartUpdate?userId=1&leaveId=1   已修改
     , cartInfo: '/memberCard/selectMemberCard'//会员卡查询   已修改
@@ -168,25 +172,25 @@ var api = {
     , cartAdd: '/memberCard/addMemberCard'//会员卡添加   已修改
     // , cartDetail: '/Cart/detail?v=1'//会员卡回显  废弃
     , cartUpdate: '/memberCard/updateMemberCard'//会员卡编辑     已修改
-    , checkRoomInfo: '/room/ifCheckIn'//判断选的房间是否可用
+    , checkRoomInfo: '/room/ifCheckIn'//判断选的房间是否可用  已修改
     , updatePassWord: 'login/updatePassWord'//修改密码
     , changeHotel: 'login/changeHotel'//切换酒店
     , logout: '/admin/exitLogin'//退出登录      已修改
-    , getScheduleById: '/order/queryOrderMsg'//根据订单号码查询预订信息
-    , updateFixRoomState: '/room/updateFixRoomState'//更改维修状态
-    , queryStatement: '/order/queryStatement'//在住报表和预离店报表
+    // , getScheduleById: '/order/queryOrderMsg'//根据订单号码查询预订信息  废弃
+    // , updateFixRoomState: '/room/updateFixRoomState'//更改维修状态  废弃
+    , queryStatement: '/order/queryStatement'//在住报表和预离店报表  已修改
     , addMemberLev: '/memberLevel/addMemberLevel?v=1'//添加会员级别000
     , getEditScheduleRoom: '/room/UpdateOrderInfoBySelectRoom?v=1'//修改预定房间模块获取房间信息
     , getEditScheduleRoomType: '/room/houseTypeAndPhoneAndNet?v=1'//修改预定房间类型模块获取房间信息
     , queryClassess: '/classes/queryClasses'//查询当前酒店下的所有班次000
     , deleteClasses: '/classes/deleteClasses'//删除班次000
     , addClasses: 'classes/addClasses'//添加班次000
-    , addRoomPerson: '/roomDetailsController/addRoomPerson'//添加同来人
+    // , addRoomPerson: '/roomDetailsController/addRoomPerson'//添加同来人  废弃
     , updateClasses: '/classes/updateClasses'//修改班次000
     , queryClassessByHotelId: '/classes/getClasses'//按酒店查班次      已修改
-    , cartLogout: '/Cart/logout'//会员卡注销
-    , cashStamp: 'commodity/queryCommodiryById'//打印000
-    , addMaseTo: '/roomDetailsController/addMaseTo'//添加同来
+    // , cartLogout: '/Cart/logout'//会员卡注销  废弃
+    // , cashStamp: 'commodity/queryCommodiryById'//打印000  废弃
+    // , addMaseTo: '/roomDetailsController/addMaseTo'//添加同来  废弃
     , waitIn: '/checkin/laterCheckIn?v=1'//稍后入住
     , calcPrice2: '/room/updateOrderInfo?v=1'//预定修改，选房确定后需要调用算价格
     , calcPrice1: '/room/sumRoomPriceAndHouseTypePrice?v=1'//选房确定后需要调用算价格
@@ -196,7 +200,7 @@ var api = {
     , buying: '/commodity/suspend'//商品交易挂账生成订单信息 已修改
     , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
     , FormManangeResponse: '/managementReport/getManagementReport'//管理层报表000
-    , stamOrder: '/OrderManage/stamOrder'//在住打印
+    // , stamOrder: '/OrderManage/stamOrder'//在住打印  废弃
     // , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人  废弃
     // , delRoomPerson: '/roomDetailsController/delRoomPerson'//删除同来人  废弃
     // , updateRoomPerson: '/roomDetailsController/updateRoomPerson'//修改同来人 废弃
@@ -283,7 +287,8 @@ layui.use(['jquery', 'element'], function () {
     });
 
     renderMenu($, element);
-    // renderReport($,element)
+
+
 
 })
 
@@ -358,8 +363,6 @@ function GetDateDiff(startDate, endDate) {
         }
         return c;
     }
-
-
 }
 
 /**
@@ -1008,4 +1011,34 @@ function clearTimeInfo() {
 
     document.getElementById("leaveDate1").value = "";
     document.getElementById("days1").value = "";
+}
+
+//关闭页面
+function closeWin(){
+    if (navigator.userAgent.indexOf("Firefox") != -1 || navigator.userAgent.indexOf("Chrome") !=-1) {
+        window.location.href="about:blank";
+        window.close();
+    } else {
+        window.parent.opener = null;
+        window.parent.open("", "_self");
+        window.parent.close();
+    }
+}
+
+//监听用户是否激活当前页面
+function visibilityChange() {
+    var hiddenProperty = 'hidden' in document ? 'hidden' :
+        'webkitHidden' in document ? 'webkitHidden' :
+            'mozHidden' in document ? 'mozHidden' :
+                null;
+    var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+    var onVisibilityChange = function(){
+        if (!document[hiddenProperty]) {
+            console.log('页面激活');
+            location.reload();
+        }else{
+            console.log('页面非激活');
+        }
+    };
+    document.addEventListener(visibilityChangeEvent, onVisibilityChange);
 }

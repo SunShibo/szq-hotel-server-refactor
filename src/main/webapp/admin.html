@@ -140,7 +140,7 @@
                     title: '编辑',
                     shade: 0.6,
                     shadeClose: true,
-                    content: 'iframe_admin.html?s=1',
+                    content: 'iframe_admin.html?s=1&date=' + Date.now(),
                     end: function (index, layero) {
                         sessionStorage.removeItem('roleItem');
                         tab.reload();//刷新表格
@@ -158,7 +158,7 @@
                 title: '新增',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_admin.html',
+                content: 'iframe_admin.html&date=' + Date.now(),
                 end: function (index, layero) {
                     tab.reload();//刷新表格
                 }

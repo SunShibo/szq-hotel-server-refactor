@@ -51,8 +51,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">会员详情</label>
             <div class="layui-input-block" style="line-height: 38px">
-                拥有积分：<span class="integral" style="color:#ff0000;"></span>，储值卡余额：<span class="prepaidCard"
-                                                                                       style="color:#ff0000;"></span>元
+                拥有积分：<span class="integral" style="color:#ff0000;"></span>元，储值卡余额：<span class="prepaidCard"
+                                                                                        style="color:#ff0000;"></span>元
             </div>
         </div>
     </div>
@@ -94,14 +94,14 @@
             //绑定Activex标签
             IDCardReaderInfo($(document.body));
 
-            s = getUrl('s');
+            s = getUrl('s');//s为undefined是子项结账  s为1是总结账
 
             //先获取存储的数据
             sessionData = JSON.parse(sessionStorage.getItem('payData'));
             //再获取chilId和ids
             sessionData.ids = JSON.parse(sessionStorage.getItem('ids'));
             dataInfo();
-            if(!s){//消费项目结账
+            if (!s) {//消费项目结账
                 sessionData.chilId = getUrl('id');
             }
         });
@@ -196,20 +196,29 @@
                 showMsg('减免金额不能大于应付金额', 2, false);
                 return false;
             }
+            debugger
             //退款时判断退款金额是否大于总金额
             if (sessionData.status === "no") {
-                var total = parseInt(requestData.cash) + parseInt(requestData.cart) + parseInt(requestData.wechat) + parseInt(requestData.alipay) + parseInt(requestData.other) + parseInt(requestData.stored);
-                if(total > parseInt(sessionData.money)){
-                    showMsg('退款金额不能大于总金额', 2, false);
+                delete requestData.payType;
+                var total = 0;
+                //循环用户输入计算退款金额
+                for (var i = 0, len = sessionData.payType.length; i < len; i++) {
+                    if (!!requestData[sessionData.payType[i]]) {
+                        total += parseInt(requestData[sessionData.payType[i]]);
+                    }
+                }
+                if (total !== sessionData.money) {
+                    showMsg('退款金额相加必须等于应退金额', 2, false);
                     return false;
                 }
+            } else if (sessionData.status === 'yes') {
+                //计算应收金额（应收总额 - 减免金额）
+                requestData.money = Math.abs(sessionData.money) - requestData.integral;
             }
 
             requestData.ids = sessionData.ids.join(',');
             requestData.status = sessionData.status;
-            if (sessionData.status !== 'no') {
-                requestData.money = Math.abs(sessionData.money) - requestData.integral;
-            }
+
             //删除不用的数据
             if (!requestData.integralReduction || requestData.payType !== 'stored') {
                 delete requestData.integral;
@@ -220,7 +229,7 @@
             console.log(requestData);
 
             //消费项目结账
-            if(!s){
+            if (!s) {//子项结账
                 requestData.chilId = sessionData.chilId;
                 $.ajax({
                     url: api.subitem,
@@ -230,13 +239,19 @@
                     success: function (res) {
                         if (res.success) {
                             showMsg('结账成功', 1, false);
+                            //打印
+                            parent.layer.confirm('是否打印账单吗？', {icon: 3, title: '提示'}, function (index) {
+                                window.open('querySubPrice.html?s=1&id=' + res.data+ '&date=' + Date.now(), '_block', "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=600");
+                                parent.layer.closeAll();
+                            }, function () {
+                                parent.layer.closeAll();
+                            });
                         } else {
                             showMsg('结账失败', 2, false);
                         }
-
                     }
                 });
-            } else {
+            } else {//总结账
                 $.ajax({
                     url: api.refundBtn,
                     type: 'POST',
@@ -245,11 +260,15 @@
                     success: function (res) {
                         if (res.success) {
                             showMsg('结账成功', 1, false);
-                            if(getUrl('back')){
-                                parent.location.href = "home.html";
-                            }else {
-                                parent.location.href = "order.html";
-                            }
+                            //打印
+                            parent.layer.confirm('是否打印账单吗？', {icon: 3, title: '提示'}, function (index) {
+                                //关闭父页面
+                                closeWin();
+                                window.open('queryPrice.html?childId=' + res.data+ '&date=' + Date.now(), '_block', "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=600");
+                                parent.layer.closeAll();
+                            }, function () {
+                                parent.layer.closeAll();
+                            });
                         } else {
                             showMsg('结账失败', 2, false);
                         }
@@ -257,8 +276,6 @@
                     }
                 });
             }
-            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-            parent.layer.close(index); //再执行关闭
         }
     });
 </script>
