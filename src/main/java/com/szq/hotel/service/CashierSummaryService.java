@@ -64,11 +64,14 @@ public class CashierSummaryService {
         CashierSummaryBO  cashierSummaryBO=new CashierSummaryBO();
         cashierSummaryBO.setProject(Constants.APPLYCARD.getValue());
         cashierSummaryBO.setType(payType);
-        cashierSummaryBO.setSettlement(money);
+        cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);
         cashierSummaryBO.setName(name);
         cashierSummaryBO.setHotelId(hotelId);
+        cashierSummaryDAO.addData(cashierSummaryBO);
+        cashierSummaryBO.setConsumption(new BigDecimal("0"));
+        cashierSummaryBO.setSettlement(money);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end addCard...........................................");
     }

@@ -292,21 +292,22 @@ public class ChildOrderService {
                 }
 
             } else if (Constants.ROOMRATE.getValue().equals(orderRecoredBO.getProject())) {
+
                 //房费
                 log.info("start reduceRoomRate....ROOMRATE.....................................................");
-                childOrderDAO.reduceRoomRate(chilId, orderRecoredBO.getMoney());
+                childOrderDAO.increaseRoomRate(chilId, orderRecoredBO.getMoney());
 
             } else if (Constants.COMMODITY.getValue().equals(orderRecoredBO.getProject()) || Constants.COMPENSATE.getValue().equals(orderRecoredBO.getProject())
                     || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())|| Constants.APPLYCARD.getValue().equals(orderRecoredBO.getProject())) {
                 //商品 赔偿 超时费 办卡
                 log.info("start reduceOtherRate....OtherRate.....................................................");
-                childOrderDAO.reduceOtherRate(chilId, orderRecoredBO.getMoney());
+                childOrderDAO.increaseOtherRate(chilId, orderRecoredBO.getMoney());
             } else  if (Constants.ROOMRATEFREE.getValue().equals(orderRecoredBO.getProject()) ||
                     Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())||Constants.COMMODITYFREE.getValue().equals(orderRecoredBO.getProject())
                     ||  Constants.COMPENSATIONFREE.getValue().equals(orderRecoredBO.getProject())) {
                 log.info("start reducefree....reducefree.....................................................");
-                //免单 超时费减免
-                childOrderDAO.reducefree(chilId, orderRecoredBO.getMoney());
+                //免单
+                childOrderDAO.free(chilId, orderRecoredBO.getMoney());
             }
 
         }
