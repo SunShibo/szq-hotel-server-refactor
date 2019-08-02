@@ -652,8 +652,8 @@ public class MemberController extends BaseCotroller {
             if (memberLevelBO!=null) {
                 //获取消费1元得多少积分
                 BigDecimal consumeGetIntegral = memberLevelBO.getConsumeGetIntegral();
-                //积分金额 = 积分 * 消费1元得多少积分
-                BigDecimal integralMoney = integral.multiply(consumeGetIntegral);
+                //积分金额 = 积分 * 消费1元得多少积分(保留两位小数)
+                BigDecimal integralMoney = integral.multiply(consumeGetIntegral).setScale(2,BigDecimal.ROUND_HALF_UP);
 
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("storeValue", storeValue);

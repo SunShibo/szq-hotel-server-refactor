@@ -55,7 +55,9 @@ public class MemberLevelController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
-            //设置默认折扣
+            //设置默认消费1元获得0积分
+            memberLevelBO.setConsumeGetIntegral(BigDecimal.valueOf(0));
+            //设置默认折扣1折
             memberLevelBO.setDiscount(BigDecimal.valueOf((int)1));
             memberLevelService.addMemberLevel(memberLevelBO,loginAdmin.getId());
             MemberLevelBO memberLevelBO1 = memberLevelService.selectMemberLevelByName(memberLevelBO.getName());
