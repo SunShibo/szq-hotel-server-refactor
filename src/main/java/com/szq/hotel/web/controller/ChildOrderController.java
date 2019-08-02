@@ -381,7 +381,7 @@ public class ChildOrderController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
-            boolean lean = orderRecordService.queryInvoicing(ids);
+            boolean lean = childOrderService.ifCheckOut(ids);
             if(lean){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000009"));
                 super.safeJsonPrint(response, result);
