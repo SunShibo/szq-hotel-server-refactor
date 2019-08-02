@@ -475,7 +475,7 @@ public class OrderController extends BaseCotroller {
 //            roomService.updateroomMajorState(map);
 
             //修改一起入住的订单信息
-            orderService.updateOrderChildRoom(orderBO.getId());
+            orderService.updateOrderChildRoom(orderBO.getId(),userInfo.getId());
 
             //插入订单记录
             orderRecordService.addOrderRecord(orderChildBO.getId(), Constants.INTHEDEPOSIT.getValue(),

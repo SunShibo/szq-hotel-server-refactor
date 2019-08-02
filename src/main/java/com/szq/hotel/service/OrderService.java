@@ -822,12 +822,26 @@ public class OrderService {
             //修改旧联房码
             OrderChildBO orderChildBO = orderDAO.getOrderChildById(new Integer(orderChildIdArr[i]));
             List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBO.getAlRoomCode(), null);
+            System.err.println("getAlRoomCode"+orderChildBO.getAlRoomCode());
+            System.err.println("orderChildBOList："+orderChildBOList);
             for (OrderChildBO child : orderChildBOList) {
+                System.err.println("旧主账房id"+child.getId());
                 child.setAlRoomCode(orderChildBONew.getAlRoomCode());
                 child.setMain("no");
                 orderDAO.updOrderChild(child);
             }
         }
+        //根据新主账房 查询出来这个联房码的旧主账房
+        OrderChildBO orderChildBo=orderDAO.getOrderChildById2(orderChildId);
+        List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBo.getAlRoomCode(), null);
+        for (OrderChildBO child : orderChildBOList) {
+            System.err.println("旧主账房id"+child.getId());
+            child.setAlRoomCode(orderChildBONew.getAlRoomCode());
+            child.setMain("no");
+            orderDAO.updOrderChild(child);
+        }
+
+        //设置新主账房
         OrderChildBO mainOrderChild = new OrderChildBO();
         mainOrderChild.setId(orderChildId);
         mainOrderChild.setMain("yes");
@@ -1285,7 +1299,7 @@ public class OrderService {
 
 
     //把已经有入住人 ，订单状态为未支付的房间改为已入住 房间修改为在住
-    public void updateOrderChildRoom(Integer id) {
+    public void updateOrderChildRoom(Integer id,Integer userId) {
         List<OrderChildBO> orderChildBOS = orderDAO.getOrderChildByOrderId5(id, Constants.NOTPAY.getValue());
         for (OrderChildBO orderChildBO : orderChildBOS) {
             orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
@@ -1296,6 +1310,7 @@ public class OrderService {
             map.put("id", orderChildBO.getRoomId());
             map.put("state", Constants.INTHE.getValue());
             map.put("remark", "入住支付");
+            map.put("userId",userId);
             roomService.updateroomMajorState(map);
         }
     }
