@@ -137,13 +137,13 @@ public class OrderController extends BaseCotroller {
 
             if (type.equals("roomReservation")) {
                 //房间预约
-                orderService.addOrderInfo(orderBO, list);
+                orderService.addOrderInfo(orderBO, list,userInfo.getId());
             } else if (type.equals("reservation")) {
                 //预约入住
-                orderService.reservation(list, orderBO);
+                orderService.reservation(list, orderBO,userInfo.getId());
             } else if (type.equals("directly")) {
                 //直接入住
-                orderService.addOrderInfo(orderBO, list);
+                orderService.addOrderInfo(orderBO, list,userInfo.getId());
                 resultMap.put("orderId", orderBO.getId());
             } else if (type.equals("updateInfo")) {
                 //预约修改
@@ -221,7 +221,7 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
-            orderService.closeOrderChild(orderChildIdS);
+            orderService.closeOrderChild(orderChildIdS,userInfo.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
@@ -468,11 +468,11 @@ public class OrderController extends BaseCotroller {
             orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
             orderChildBO.setMain("yes");
             orderService.updOrderChild(orderChildBO);
-            //把入住的房间修改为在住
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", orderChildResult.getRoomId());
-            map.put("state", Constants.INTHE.getValue());
-            roomService.updateroomMajorState(map);
+//            //把入住的房间修改为在住
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            map.put("id", orderChildResult.getRoomId());
+//            map.put("state", Constants.INTHE.getValue());
+//            roomService.updateroomMajorState(map);
 
             //修改一起入住的订单信息
             orderService.updateOrderChildRoom(orderBO.getId());
@@ -781,7 +781,7 @@ public class OrderController extends BaseCotroller {
                 return;
             }
 
-            orderService.updCheckInInfo(orderId, channel, OTA, orderChildId, endTime, remark, checkInPersonJson, everyDayRoomPrice);
+            orderService.updCheckInInfo(orderId, channel, OTA, orderChildId, endTime, remark, checkInPersonJson, everyDayRoomPrice,userInfo.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改成功"));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
@@ -989,7 +989,7 @@ public class OrderController extends BaseCotroller {
                 return;
             }
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = JsonUtils.getJSONtoList(everydayRoomPrice, EverydayRoomPriceBO.class);
-            orderService.changeRoom(orderChildBO, everydayRoomPriceBOList);
+            orderService.changeRoom(orderChildBO, everydayRoomPriceBOList,userInfo.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);

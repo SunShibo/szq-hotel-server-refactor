@@ -9,9 +9,9 @@ import java.util.Date;
 public class OrderChildBackupParam {
     private Integer id;//子订单id
     private BigDecimal roomRate;//房费 这天的房费
-    private String roomRateStatus;//房费 这天的房费
+    private Integer roomRateRecordId;//房费 这天的房费
     private BigDecimal otherRate;//其他费用 超时费存这就行
-    private String otherRateStatus;//其他费用 超时费存这就行
+    private Integer otherRateRecordId;//其他费用 超时费存这就行
     private String orderState;//订单状态
     private String roomMajorState;//房态
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -19,20 +19,20 @@ public class OrderChildBackupParam {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date practicalDepartureTime;//实际离店时间
 
-    public String getRoomRateStatus() {
-        return roomRateStatus;
+    public Integer getRoomRateRecordId() {
+        return roomRateRecordId;
     }
 
-    public void setRoomRateStatus(String roomRateStatus) {
-        this.roomRateStatus = roomRateStatus;
+    public void setRoomRateRecordId(Integer roomRateRecordId) {
+        this.roomRateRecordId = roomRateRecordId;
     }
 
-    public String getOtherRateStatus() {
-        return otherRateStatus;
+    public Integer getOtherRateRecordId() {
+        return otherRateRecordId;
     }
 
-    public void setOtherRateStatus(String otherRateStatus) {
-        this.otherRateStatus = otherRateStatus;
+    public void setOtherRateRecordId(Integer otherRateRecordId) {
+        this.otherRateRecordId = otherRateRecordId;
     }
 
     public Date getEndTime() {

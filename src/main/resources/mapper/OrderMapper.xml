@@ -54,12 +54,12 @@
             <if test="otherRate!=null and otherRate!=''">
                 other_rate=#{otherRate},
             </if>
-            <if test="roomRateStatus!=null and roomRateStatus!=''">
-                room_rate_status=#{roomRateStatus},
+            <if test="roomRateRecordId!=null and roomRateRecordId!=''">
+                room_rate_record_id=#{roomRateRecordId},
             </if>
 
-            <if test="otherRateStatus!=null and otherRateStatus!=''">
-                other_rate_status=#{otherRateStatus},
+            <if test="otherRateRecordId!=null and otherRateRecordId!=''">
+                other_rate__record_id=#{otherRateRecordId},
             </if>
 
             <if test="practicalDepartureTime!=null and practicalDepartureTime!=''">

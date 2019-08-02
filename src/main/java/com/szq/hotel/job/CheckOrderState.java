@@ -48,11 +48,11 @@ public class CheckOrderState {
         count++;
         try {
             //关闭未支付的
-            orderService.closeOrder();
+            orderService.closeOrder(1);
             //解除锁房
             roomService.updRoom();
             //入住超时修改房态
-            orderService.updTimeOutOrder();
+            orderService.updTimeOutOrder(1);
 
             System.err.println("执行" + count + "次当前时间:" + new Date());
         } catch (Exception e) {
