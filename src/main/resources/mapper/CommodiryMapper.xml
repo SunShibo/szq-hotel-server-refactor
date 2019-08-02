@@ -19,7 +19,7 @@
        SELECT com.*,admin.`name` FROM `hm_commodity_transaction` com LEFT JOIN hm_admin admin ON   admin.id=com.create_user_id
         WHERE
           hotel_id = #{hotelId}
-          <if test="startTime !=null and endTime!=null " >
+          <if test="startTime !=null and startTime !='' and  endTime!=null and  endTime!='' " >
              AND   com.create_time  BETWEEN #{startTime}  AND  #{endTime}
           </if>
          <if test="condition!=null and condition!=''" >
@@ -36,7 +36,7 @@
         SELECT count(com.id)   FROM `hm_commodity_transaction` com LEFT JOIN hm_admin admin ON   admin.id=com.create_user_id
         WHERE
         hotel_id = #{hotelId}
-        <if test="startTime !=null and endTime!=null " >
+        <if test="startTime !=null and startTime !='' and  endTime!=null and  endTime!='' " >
             AND   com.create_time  BETWEEN #{startTime}  AND  #{endTime}
         </if>
         <if test="condition!=null and condition!=''" >

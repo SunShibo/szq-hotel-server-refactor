@@ -107,7 +107,7 @@ public class CommoditytController extends BaseCotroller {
      * @param condition 查询条件
      */
     @RequestMapping("/queryCommodiry")
-    public void queryCommodiry(HttpServletRequest request, HttpServletResponse response, Integer pageNo, Integer pageSize, Date startTime, Date endTime, String condition) {
+    public void queryCommodiry(HttpServletRequest request, HttpServletResponse response, Integer pageNo, Integer pageSize, String startTime, String endTime, String condition) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));

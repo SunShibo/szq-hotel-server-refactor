@@ -106,12 +106,12 @@
 
     <!--维修房数量-->
     <select id="queryMaintainCount"  resultType="int">
-         SELECT COUNT(id) FROM  hm_room  WHERE  room_state='yes'  AND  hotel_id=#{hotelId}
+         SELECT COUNT(id) FROM  hm_room  WHERE  room_state='yes'  AND  hotel_id=#{hotelId}  AND   `show`='yes'
     </select>
 
     <!--锁房房数量-->
     <select id="queryLockCount"  resultType="int" >
-        SELECT COUNT(id) FROM  hm_room  WHERE lock_room_state='yes'  AND  hotel_id=#{hotelId}
+        SELECT COUNT(id) FROM  hm_room  WHERE lock_room_state='yes'  AND  hotel_id=#{hotelId}  AND   `show`='yes'
     </select>
 
     <!--预约数量-->
