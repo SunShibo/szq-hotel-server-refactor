@@ -94,7 +94,7 @@ public class OrderController extends BaseCotroller {
             List<OrderChildBO> list = JsonUtils.getJSONtoList(OrderChildJSON, OrderChildBO.class);
             Map<String,Object> resultMap=new HashMap<String, Object>();
 
-            //bug判断房型是否够用
+            //bug判断房型是否够用 房间预定和 预约修改都要判断房型 房间是否够用 与预约中的是不是不会冲突
             if(type.equals("roomReservation")){
 
             }
@@ -663,7 +663,7 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            CheckInInfoResult checkInInfoResult=orderService.getCheckInInfo(roomId);
+            CheckInInfoResult checkInInfoResult=orderService.getCheckInInfo(roomId,userInfo.getHotelId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInInfoResult));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
@@ -696,7 +696,7 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            CheckInInfoResult checkInInfoResult=orderService.getReservationInfo(roomId);
+            CheckInInfoResult checkInInfoResult=orderService.getReservationInfo(roomId,userInfo.getHotelId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInInfoResult));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);

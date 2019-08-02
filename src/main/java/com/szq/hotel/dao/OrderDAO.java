@@ -28,11 +28,11 @@ public interface OrderDAO {
     //根据订单id查询订单信息
     OrderBO getOrderById(Integer orderId);
     //根据订单id查询子订单 带房型房间信息
-    List<OrderChildBO> getOrderChildByOrderId(Integer id);
+    //List<OrderChildBO> getOrderChildByOrderId(Integer id);
     //根据订单id查询预约中的子订单 带房型信息
     List<OrderChildBO> getOrderChildByOrderId2(@Param("id") Integer id,@Param("orderState") String orderState);
     //根据订单id查询预约中的子订单 带房型房间信息
-    List<OrderChildBO> getOrderChildByOrderId3(@Param("id") Integer id,@Param("orderState") String orderState);
+    //List<OrderChildBO> getOrderChildByOrderId3(@Param("id") Integer id,@Param("orderState") String orderState);
     //根据订单id查询没有入住的子订单
     List<OrderChildBO> getOrderChildByOrderId4(@Param("id") Integer id,@Param("orderState") String orderState);
     //根据订单id查询所有已入住 状态为预约中的子订单
@@ -50,7 +50,7 @@ public interface OrderDAO {
     //根据主订单查询预约中的子订单
     List<OrderChildBO> getSubscribeOrderChild(@Param("orderId") Integer orderId,@Param("orderState") String orderState);
     //根据主订单删除预约中的子订单
-    Integer delOrderChild(Integer id);
+    //Integer delOrderChild(Integer id);
     //获取预约状态的子订单的联房码
     String getOrderChildAlRoomCode(Integer id);
     //修改子订单 无验证
@@ -69,11 +69,11 @@ public interface OrderDAO {
     //获取入住未支付的子订单
     List<OrderChildBO> getCloseOrder();
     //通过房间id查找在住订单信息
-    CheckInInfoResult getOrderChildByRoomId(@Param("roomId") Integer roomId,@Param("date") String date);
+    CheckInInfoResult getOrderChildByRoomId(@Param("roomId") Integer roomId,@Param("date") String date,@Param("hotelId")Integer hotelId);
     //通过房间id查找在住订单信息 未有时间条件
-    OrderChildBO getOrderChildByRoomIdNoTime(@Param("roomId") Integer roomId);
+    OrderChildBO getOrderChildByRoomIdNoTime(@Param("roomId") Integer roomId,@Param("hotelId")Integer hotelId);
     //通过房间id查找预约订单信息
-    CheckInInfoResult getReservationInfo(Integer roomId);
+    CheckInInfoResult getReservationInfo(@Param("roomId")Integer roomId,@Param("hotelId")Integer hotelId);
 
     //通过联房码查询联房信息
     List<CheckRoomPersonResult> getOrderRoomByCode(String code);
@@ -88,16 +88,14 @@ public interface OrderDAO {
     //删除备份的子订单
     Integer delOrderChildBackup(Integer id);
     //获取超时的子订单
-    List<OrderChildBO> getTimeOutOrder(String orderState);
-    //获取超时的子订单
-    List<OrderChildBO> getTimeOutOrder2(String orderState);
+    List<OrderChildBO> getTimeOutOrder(@Param("orderState") String orderState);
     //获取入住支付信息
     List<OrderChildBO> getPayInfo(Integer orderId);
-    //根据入住时间 房间号 预约中的子订单
-    Integer getOrderChildCountByRoomIdByTime(@Param("roomId") Integer roomId,@Param("endTime")String endTime,@Param("startTime")String startTime);
-    //根据一个时间段 查询预约中的房型数量
-    Integer getOrderChildCountByRoomTypeIdByTime(@Param("roomTypeId") Integer roomId,@Param("endTime")String endTime,@Param("startTime")String startTime);
-    //根据一个时间段 房型id 查询可入住的数量
+    //根据时间段  房间号 预约中的子订单
+    Integer getOrderChildCountByRoomIdByTime(@Param("roomId") Integer roomId,@Param("endTime")String endTime,@Param("startTime")String startTime,@Param("hotelId")Integer hotelId);
+    //根据时间段 查询预约中的房型数量
+    Integer getOrderChildCountByRoomTypeIdByTime(@Param("roomTypeId") Integer roomId,@Param("endTime")String endTime,@Param("startTime")String startTime,@Param("hotelId")Integer hotelId);
+    //根据时间段 房型id 查询可入住的数量
     Integer getRoomCountByRoomTypeIdByTime(@Param("roomTypeId") Integer roomId,@Param("endTime")String endTime,@Param("startTime")String startTime,@Param("hotelId")Integer hotelId);
 
     /**

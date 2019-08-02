@@ -386,13 +386,13 @@ public class OrderService {
         if (noCheckOrderChildBOS == null || noCheckOrderChildBOS.size() == 0) {
             return null;
         }
-        List<OrderChildBO> orderChildBOS = null;
+        List<OrderChildBO> orderChildBOS =orderDAO.getOrderChildByOrderId2(orderBO.getId(), Constants.RESERVATION.getValue());
         //按房型选择
-        if (noCheckOrderChildBOS.get(0).getRoomId() == null) {
-            orderChildBOS = orderDAO.getOrderChildByOrderId2(orderBO.getId(), Constants.RESERVATION.getValue());
-        } else {
-            orderChildBOS = orderDAO.getOrderChildByOrderId3(orderBO.getId(), Constants.RESERVATION.getValue());
-        }
+//        if (noCheckOrderChildBOS.get(0).getRoomId() == null) {
+//            orderChildBOS = orderDAO.getOrderChildByOrderId2(orderBO.getId(), Constants.RESERVATION.getValue());
+//        } else {
+//            orderChildBOS = orderDAO.getOrderChildByOrderId3(orderBO.getId(), Constants.RESERVATION.getValue());
+//        }
         if (orderChildBOS == null || orderChildBOS.size() == 0) {
             return null;
         }
@@ -597,20 +597,20 @@ public class OrderService {
                 map.put("state", Constants.VACANT.getValue());
                 map.put("remark","入住未支付，支付时间以过");
                 roomService.updateroomMajorState(map);
-                //修改订单状态
-                orderDAO.closeOrder();
             }
+            //修改订单状态
+            orderDAO.closeOrder();
 
         }
 
     }
 
     //首页查询在住信息
-    public CheckInInfoResult getCheckInInfo(Integer roomId) throws ParseException {
+    public CheckInInfoResult getCheckInInfo(Integer roomId,Integer hotelId) throws ParseException {
         //当天日期
         SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
         Date currDate = simp.parse(this.getDate());
-        OrderChildBO orderChildBO = orderDAO.getOrderChildByRoomIdNoTime(roomId);
+        OrderChildBO orderChildBO = orderDAO.getOrderChildByRoomIdNoTime(roomId,hotelId);
         if (orderChildBO == null) {
             return null;
         }
@@ -633,7 +633,7 @@ public class OrderService {
         }
         System.err.println("房价时间"+simp.format(currDate));
         //在住信息
-        CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId, simp.format(currDate));
+        CheckInInfoResult checkInInfoResult = orderDAO.getOrderChildByRoomId(roomId, simp.format(currDate),hotelId);
         checkInInfoResult.setEndTime(endTime);
         //同住人信息
         List<CheckInPersonBO> checkInPersonBOS = checkInPersonDAO.getCheckInPersonById(checkInInfoResult.getOrderChildId(), Constants.CHECKIN.getValue());
@@ -645,8 +645,8 @@ public class OrderService {
     }
 
     //查询预约信息
-    public CheckInInfoResult getReservationInfo(Integer roomId) {
-        return orderDAO.getReservationInfo(roomId);
+    public CheckInInfoResult getReservationInfo(Integer roomId,Integer hotelId) {
+        return orderDAO.getReservationInfo(roomId,hotelId);
     }
 
     //修改在住信息
@@ -1153,18 +1153,8 @@ public class OrderService {
             map.put("state", Constants.TIMEOUT.getValue());
             map.put("remark","入住超时");
             roomService.updateroomMajorState(map);
-
         }
 
-        List<OrderChildBO> orderChildBOS2 = orderDAO.getTimeOutOrder2(Constants.ADMISSIONS.getValue());
-        for (OrderChildBO orderChildBO : orderChildBOS2) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", orderChildBO.getRoomId());
-            map.put("state", Constants.TIMEOUT.getValue());
-            map.put("remark","入住超时");
-            roomService.updateroomMajorState(map);
-
-        }
     }
 
 
@@ -1193,14 +1183,14 @@ public class OrderService {
     public boolean getOrderChildCountByRoomIdByTime(Integer roomId,Integer roomType,Date endTime,Date startTime,Integer hotelId){
         //验证房间
         if(roomId!=null){
-            Integer roomCount=orderDAO.getOrderChildCountByRoomIdByTime(roomId,DateUtils.longDate(endTime),DateUtils.longDate(startTime));
+            Integer roomCount=orderDAO.getOrderChildCountByRoomIdByTime(roomId,DateUtils.longDate(endTime),DateUtils.longDate(startTime),hotelId);
             if(roomCount>0){
                 return false;
             }
         }
-        //bug 验证房型未写完
+        //bug验证房型
         if(roomType!=null){
-            Integer orderCount=orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType,DateUtils.longDate(endTime),DateUtils.longDate(startTime));
+            Integer orderCount=orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType,DateUtils.longDate(endTime),DateUtils.longDate(startTime),hotelId);
             Integer roomCount=orderDAO.getRoomCountByRoomTypeIdByTime(roomType,DateUtils.longDate(endTime),DateUtils.longDate(startTime),hotelId);
             if(roomCount-orderCount<=0){
                 return false;
