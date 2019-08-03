@@ -462,7 +462,7 @@
     <!--订单列表-->
     <select id="queryOrderList" parameterType="com.szq.hotel.entity.param.OrderParam"
             resultType="com.szq.hotel.entity.bo.OrderListBO">
-        SELECT child.id ,der.check_time ,der.check_out_time ,room.room_name ,type.room_type_name AS roomType ,
+        SELECT child.id ,child.start_time as checkTime  ,child.end_time as  checkOutTime ,room.room_name ,type.room_type_name AS roomType ,
         der.order_placer,der.phone ,der.order_type ,der.OTA ,der.channel,der.check_type,der.id as orderId ,
         child.remark,child.order_state ,der.ID_number as certificateNumber ,child.al_room_code
         FROM hm_order der LEFT JOIN hm_order_child child ON der.id=child.order_id
@@ -471,11 +471,11 @@
             <if test="hotelId!=null">der.hotel_id=#{hotelId}</if>
             <if test="orderState!=null and orderState!=''">and child.order_state=#{orderState}</if>
             <if test="admissionsStartTime!=null and admissionsStartTime!='' and admissionsEndTime!=null and  admissionsEndTime!=''">
-                and der.check_time BETWEEN
+                and child.start_time BETWEEN
                 #{admissionsStartTime} and #{admissionsEndTime}
             </if>
             <if test="departureStartTime!=null and departureStartTime!=''  and  departureEndTime!=null and departureEndTime">
-                and der.check_out_time BETWEEN
+                and child.end_time  BETWEEN
                 #{departureStartTime} and #{departureEndTime}
             </if>
             <if test="roomName!=null and roomName!=''">and room.room_name =#{roomName}</if>
@@ -501,11 +501,11 @@
             <if test="hotelId!=null">der.hotel_id=#{hotelId}</if>
             <if test="orderState!=null and orderState!=''">and child.order_state=#{orderState}</if>
             <if test="admissionsStartTime!=null and admissionsStartTime!='' and admissionsEndTime!=null and  admissionsEndTime!=''">
-                and der.check_time BETWEEN
+                and child.start_time BETWEEN
                 #{admissionsStartTime} and #{admissionsEndTime}
             </if>
             <if test="departureStartTime!=null and departureStartTime!=''  and  departureEndTime!=null and departureEndTime">
-                and der.check_out_time BETWEEN
+                and child.end_time  BETWEEN
                 #{departureStartTime} and #{departureEndTime}
             </if>
             <if test="roomName!=null and roomName!=''">and room.room_name =#{roomName}</if>

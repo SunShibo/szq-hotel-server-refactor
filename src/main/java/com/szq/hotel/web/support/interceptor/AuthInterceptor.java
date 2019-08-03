@@ -24,7 +24,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     // 不需要过滤的URL
     public static final Set<String> unCheckList = Sets.newHashSet("/hotel/queryLoginHotel" , "/hotel/queryHotel" ,
-            "/classes/queryClasses" , "/updatePrice/updatePrice","/updatePrice/addPrice","/updatePrice/queryCheckType","/Dictionary/getDic") ;
+            "/classes/queryClasses" , "/updatePrice/updatePrice","/updatePrice/addPrice","/updatePrice/queryCheckType","/Dictionary/getDic","/admin/adminLogin") ;
 
     public static final Set<String> CheckListForAjax = Sets.newHashSet("/client/login" , "/apiCourse/toDetail" ) ;
 

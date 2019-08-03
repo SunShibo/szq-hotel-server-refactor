@@ -85,7 +85,7 @@ public class ShiftRecordsService {
         BigDecimal cashBack = shiftRecordsDAO.queryBack(queryMap);
         shiftRecordsBO.setCashIncome(cashIncome);
         shiftRecordsBO.setCashBack(cashBack);
-        shiftRecordsBO.setCashAmount(shiftRecordsBO.getCashBack().add(shiftRecordsBO.getCashBack()));
+        shiftRecordsBO.setCashAmount(shiftRecordsBO.getCashIncome().add(shiftRecordsBO.getCashBack()));
         //银行卡
         queryMap.put("payType", Constants.CART.getValue());
         BigDecimal cardIncome = shiftRecordsDAO.queryIncome(queryMap);
