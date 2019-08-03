@@ -66,14 +66,14 @@ public class OrderController extends BaseCotroller {
 
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            Jedis jedis = new Jedis();
-            String requestId = UUID.randomUUID().toString();
-            if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 1000))) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
+//            Jedis jedis = new Jedis();
+//            String requestId = UUID.randomUUID().toString();
+////            if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 1000))) {
+////                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));
+////                super.safeJsonPrint(response, result);
+////                log.info("result{}", result);
+////                return;
+////            }
 
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
@@ -153,7 +153,7 @@ public class OrderController extends BaseCotroller {
             Thread.sleep(1000);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
             super.safeJsonPrint(response, result);
-            RedisTool.releaseDistributedLock(jedis, "500", requestId);
+            //RedisTool.releaseDistributedLock(jedis, "500", requestId);
             log.info("result{}", result);
 //        } catch (Exception e) {
 //            log.error("reservationRoomException", e);
