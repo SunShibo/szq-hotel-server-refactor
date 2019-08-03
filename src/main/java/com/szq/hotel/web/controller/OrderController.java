@@ -62,8 +62,8 @@ public class OrderController extends BaseCotroller {
      */
     @RequestMapping("/reservationRoom")
     public void reservationRoom(HttpServletRequest request, HttpServletResponse response,
-                                OrderBO orderBO, String OrderChildJSON, String type) {
-        try {
+                                OrderBO orderBO, String OrderChildJSON, String type) throws InterruptedException {
+
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             Jedis jedis = new Jedis();
@@ -155,9 +155,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             RedisTool.releaseDistributedLock(jedis, "500", requestId);
             log.info("result{}", result);
-        } catch (Exception e) {
-            log.error("reservationRoomException", e);
-        }
+//        } catch (Exception e) {
+//            log.error("reservationRoomException", e);
+//        }
     }
 
     /**
