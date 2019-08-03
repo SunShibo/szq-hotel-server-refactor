@@ -740,6 +740,25 @@ public class OrderService {
             orderChildBO.setRemark(remark);
             //修改实际离店时间
             orderChildBO.setPracticalDepartureTime(entTime);
+            //判断 是否续租超过一天
+            //获取离店时间是哪号 获取续住的离店时间是哪号
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(oldOrderChild.getEndTime());
+            int hour2 = calendar2.get(Calendar.HOUR_OF_DAY);
+            if (hour2 <= 6) {
+                calendar2.add(Calendar.DATE, -1);
+            }
+            int oldCheckOutDay=calendar2.get(Calendar.DATE);
+            int newCheckOutDay=calendar.get(Calendar.DATE);
+
+            System.err.println("变成新的日期才对在"+simpleDateFormat.format(calendar.getTime()));
+            System.err.println("newCheckOutDay"+newCheckOutDay);
+
+            System.err.println("旧的日期"+simpleDateFormat.format(calendar2.getTime()));
+            System.err.println("oldCheckOutDay"+oldCheckOutDay);
+            if(newCheckOutDay-oldCheckOutDay>0){
+                orderChildBO.setEndTime(entTime);
+            }
             orderDAO.updOrderChild(orderChildBO);
 
             //修改房态
