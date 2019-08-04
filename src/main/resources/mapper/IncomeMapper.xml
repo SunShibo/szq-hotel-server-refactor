@@ -42,7 +42,7 @@
         #{otherRate},#{commodity},#{compensation},
         #{memberCardRate},#{debtSum},#{cash},
         #{bankCard},#{wechat},#{alipay},#{storedPay},
-        #{creditSum},now(),#{hotelId})
+        #{creditSum},#{nightAuditorTime},#{hotelId})
     </insert>
     
     <!--收集营收信息-->

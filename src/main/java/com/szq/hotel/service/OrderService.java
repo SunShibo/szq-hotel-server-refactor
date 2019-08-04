@@ -566,8 +566,8 @@ public class OrderService {
 
 
     //获取在住报表
-    public List<OrderResult> getCheckInReport(Integer hotelId) {
-        return orderDAO.getCheckInReport(hotelId);
+    public List<OrderResult> getCheckInReport(Integer hotelId,Date startTime,Date endTime) {
+        return orderDAO.getCheckInReport(hotelId,startTime,endTime);
     }
 
     //获取预离店报表
@@ -1106,6 +1106,11 @@ public class OrderService {
             //剩余每日房价
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = this.getRemainingLease(orderChildId);
             //提前退房
+            System.err.println("currentDate"+ymd.format(currentDate));
+            System.err.println("endDate"+ymd.format(endDate));
+            System.err.println("hotelDate"+ymd.format(hotelDate));
+            System.err.println("m2"+m2);
+            System.err.println("orderChildBO.getStartTime()"+ymd.format(orderChildBO.getStartTime()));
             if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() > 1) {
                 this.addOrderChildRecordAndRoomRate2(backup, hotelDate, orderChildBO, userId, money);
             }

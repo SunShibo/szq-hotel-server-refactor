@@ -28,10 +28,10 @@ public class IncomeService {
         //获取今天日期
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if(hour<=6){
-            calendar.add(Calendar.DATE, -1);
-        }
+//        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//        if(hour<=6){
+//            calendar.add(Calendar.DATE, -1);
+//        }
         int year = calendar.get(Calendar.YEAR);//获取年份
 
         int month = calendar.get(Calendar.MONTH) + 1;//获取月份

@@ -189,7 +189,7 @@
     </update>
 
     <!--在住报表-->
-    <select id="getCheckInReport" parameterType="java.lang.Integer"
+    <select id="getCheckInReport"
             resultType="com.szq.hotel.entity.result.OrderResult">
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
@@ -202,9 +202,9 @@
         inner join hm_dictionaries_value as v on p.certificate_type=v.id
         inner join hm_everyday_room_price as e on c.id=e.order_child_id
         left join hm_order_record as `or` on  c.id=`or`.order_child_id
-        where  p.status='checkin'
-        and (order_state='admissions')
+        where (order_state !='reservation' and order_state !='cancel')
         and o.hotel_id=#{hotelId}
+        and #{startTime}>=start_time and #{endTime}&lt;=end_time
         group by c.id
     </select>
 

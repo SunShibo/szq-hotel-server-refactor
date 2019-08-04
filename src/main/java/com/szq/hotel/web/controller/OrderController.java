@@ -638,21 +638,21 @@ public class OrderController extends BaseCotroller {
      * 获取在住报表
      */
     @RequestMapping("/getCheckInReport")
-    public void getCheckInReport(HttpServletRequest request, HttpServletResponse response) {
+    public void getCheckInReport(Date startTime,Date endTime,HttpServletRequest request, HttpServletResponse response) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
 
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
+            if (userInfo == null||startTime==null||endTime==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}", result);
                 return;
             }
 
-            List<OrderResult> results = orderService.getCheckInReport(userInfo.getHotelId());
+            List<OrderResult> results = orderService.getCheckInReport(userInfo.getHotelId(),startTime,endTime);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
