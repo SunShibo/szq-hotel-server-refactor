@@ -27,6 +27,7 @@ public class OrderChildBO extends BaseModel {
     private Integer roomId;//房间id
     private String roomName;//房间号
     private Integer roomTypeId;//房型id
+    private Integer roomTypeCount=0;//这个房型的数量
     private String roomTypeName;//房型名字
     private String alRoomCode;//联房识别码
     private String nightAuditorState;//夜审状态
@@ -45,6 +46,14 @@ public class OrderChildBO extends BaseModel {
     private String createTime;//第一个入住人员入住时间
     private String orderNumber;//订单号
     private String orderPlacer;//预约人
+
+    public Integer getRoomTypeCount() {
+        return roomTypeCount;
+    }
+
+    public void setRoomTypeCount(Integer roomTypeCount) {
+        this.roomTypeCount = roomTypeCount;
+    }
 
     public String getOrderNumber() {
         return orderNumber;

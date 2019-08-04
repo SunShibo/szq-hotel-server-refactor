@@ -774,17 +774,17 @@ public class RoomController extends BaseCotroller {
      * @param request
      * @param response
      */
-    @RequestMapping("/todayPictureView")
-    public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
-        log.info("todayPictureView*****************************************************************");
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        log.info("loginUser:{}", loginAdmin);
-        Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
-        super.safeJsonPrint(response, result);
-        log.info("return:{}", result);
-        return;
-    }
+//    @RequestMapping("/todayPictureView")
+//    public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
+//        log.info("todayPictureView*****************************************************************");
+//        AdminBO loginAdmin = super.getLoginAdmin(request);
+//        log.info("loginUser:{}", loginAdmin);
+//        Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
+//        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+//        super.safeJsonPrint(response, result);
+//        log.info("return:{}", result);
+//        return;
+//    }
 
     /**
      * 预约房间反显

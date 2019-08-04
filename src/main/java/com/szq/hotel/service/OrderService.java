@@ -238,6 +238,9 @@ public class OrderService {
         //获取旧联房码
         String alRoomCode = orderChildBOListOld.get(0).getAlRoomCode();
 
+        if(orderChildBOList.get(0).getRoomId()==0){
+            orderChildBOList.get(0).setRoomId(null);
+        }
         //旧预约信息和新预约信息 预约的类型不一样
         if ((orderChildBOListOld.get(0).getRoomId() == null && orderChildBOList.get(0).getRoomId() != null) ||
                 ((orderChildBOListOld.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() == null))) {
@@ -253,11 +256,10 @@ public class OrderService {
             }
 
         } else if (orderChildBOListOld.get(0).getRoomId() == null && orderChildBOList.get(0).getRoomId() == null) {
-            System.err.println("22222222222");
             //如果新的子订单房型 和 旧房型对应上 则新修改子订单信息
             for (OrderChildBO orderChildNew : orderChildBOList) {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                    if (orderChildNew.getRoomTypeId() == orderChildOld.getRoomTypeId() && !("yes").equals(orderChildOld.getOrderState()) && !"yes".equals(orderChildNew.getOrderState())) {
+                    if (orderChildNew.getRoomTypeId().equals(orderChildOld.getRoomTypeId()) && !("yes").equals(orderChildOld.getOrderState()) && !"yes".equals(orderChildNew.getOrderState())) {
                         orderChildNew.setId(orderChildOld.getId());
                         orderChildNew.setStartTime(orderBO.getCheckTime());
                         orderChildNew.setEndTime(orderBO.getCheckOutTime());
@@ -293,11 +295,10 @@ public class OrderService {
                 }
             }
         } else if (orderChildBOListOld.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() != null) {
-            System.err.println("333333333333333333331");
             //如果新的子订单房间 和 旧房间对应上 则新修改子订单信息
             for (OrderChildBO orderChildNew : orderChildBOList) {
                 for (OrderChildBO orderChildOld : orderChildBOListOld) {
-                    if (orderChildNew.getRoomId() == orderChildOld.getRoomId() && !"yes".equals(orderChildOld.getOrderState()) && !("yes").equals(orderChildNew.getOrderState())) {
+                    if (orderChildNew.getRoomId().equals(orderChildOld.getRoomId()) && !"yes".equals(orderChildOld.getOrderState()) && !("yes").equals(orderChildNew.getOrderState())) {
                         orderChildNew.setId(orderChildOld.getId());
                         orderChildNew.setId(orderChildOld.getId());
                         orderChildNew.setStartTime(orderBO.getCheckTime());
@@ -305,7 +306,6 @@ public class OrderService {
                         orderDAO.updOrderChild(orderChildNew);
                         orderChildOld.setOrderState("yes");
                         orderChildNew.setOrderState("yes");
-
                         //删除旧每日房价
                         everydayRoomPriceDAO.delEverydayRoomById(orderChildOld.getId());
                         //添加新的每日房价
@@ -323,6 +323,7 @@ public class OrderService {
             //添加新子订单
             for (OrderChildBO orderChildNew : orderChildBOList) {
                 if (!"yes".equals(orderChildNew.getOrderState())) {
+                    System.err.println("loke"+orderChildNew.getOrderState());
                     this.addOrderChildEveryRoomPrice(orderChildNew, orderBO, alRoomCode);
                 }
             }
@@ -1339,32 +1340,66 @@ public class OrderService {
         return orderDAO.getOrderChildBackup(id);
     }
 
-    //验证这个房间或者房型  是否可以续租或者入住 是否会与预约中的房间房型发生冲突
-    public boolean getOrderChildCountByRoomIdByTime(Integer roomId, Integer roomType, Date endTime, Date startTime, Integer hotelId) {
+
+    /**
+     * 验证这个房间或者房型  是否可以续租或者入住 是否会与预约中的房间房型发生冲突
+     * @param roomId 房间id 没选房间可以传null
+     * @param roomType 房型id
+     * @param endTime 离店时间
+     * @param startTime 入住时间
+     * @param reservationRoomCount 这个房型要入住的数量
+     * @param roomId 房间id
+     * @param orderId 主订单id 没有可以为null
+     *
+     * */
+    public boolean getOrderChildCountByRoomIdByTime(Integer roomId, Integer roomType, Date endTime, Date startTime,Integer reservationRoomCount,Integer orderId, Integer hotelId) {
         //验证房间
         if (roomId != null) {
-            Integer roomCount = orderDAO.getOrderChildCountByRoomIdByTime(roomId, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId);
+            Integer roomCount = orderDAO.getOrderChildCountByRoomIdByTime(roomId, DateUtils.longDate(endTime), DateUtils.longDate(startTime),orderId, hotelId);
             if (roomCount > 0) {
                 return false;
             }
         }
+
         //bug验证房型
         if (roomType != null) {
-            System.err.println("roomType" + roomType);
-            System.err.println("DateUtils.longDate(endTime)" + DateUtils.longDate(endTime));
-            System.err.println("DateUtils.longDate(startTime)" + DateUtils.longDate(startTime));
-            Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId);
-            Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId,roomId);
-            System.err.println("orderCount:" + orderCount);
-            System.err.println("roomCount:" + roomCount);
-            if (roomCount - orderCount <= 0) {
-                return false;
+            //拆分获取多段结束日期
+            List<String> dateList=new ArrayList<String>();
+            dateList.add( DateUtils.longDate(startTime));
+            int count=1;
+            while (true){
+                Date afterDate=DateUtils.getAppointDate(startTime,count);
+                System.err.println("==================afterDate"+afterDate);
+                if(afterDate.compareTo(endTime)<=0){
+                    System.err.println("==================");
+                    dateList.add( DateUtils.longDate(afterDate));
+                    count++;
+                }else{
+                    break;
+                }
             }
+            //获取可用房间数
+            Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId,roomId);
+            System.err.println("===========roomCount"+roomCount);
+            for (int i=0;i<dateList.size()-1;i++){
+                //获取订单数
+                Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType,dateList.get(i+1),
+                        dateList.get(i),orderId, hotelId);
+                System.err.println("===========orderCount"+orderCount);
+                if (roomCount - orderCount <reservationRoomCount) {
+                    return false;
+                }
+            }
+
         }
 
         return true;
     }
 
+    //获取主订单信息
+    public OrderBO getOrderBoByOrderId(Integer orderId){
+        return orderDAO.getOrderById(orderId);
+    }
 
     /**
      * 订单列表

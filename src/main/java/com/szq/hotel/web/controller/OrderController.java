@@ -62,19 +62,18 @@ public class OrderController extends BaseCotroller {
      */
     @RequestMapping("/reservationRoom")
     public void reservationRoom(HttpServletRequest request, HttpServletResponse response,
-                                OrderBO orderBO, String OrderChildJSON, String type) throws InterruptedException {
-
+                                OrderBO orderBO, String OrderChildJSON, String type) {
+        try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-//            Jedis jedis = new Jedis();
-//            String requestId = UUID.randomUUID().toString();
-////            if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 1000))) {
-////                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));
-////                super.safeJsonPrint(response, result);
-////                log.info("result{}", result);
-////                return;
-////            }
-
+            Jedis jedis = new Jedis();
+            String requestId = UUID.randomUUID().toString();
+            if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 1000))) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
             if (userInfo == null) {
@@ -98,8 +97,16 @@ public class OrderController extends BaseCotroller {
 
             //bug判断房型是否够用 房间预定和 预约修改都要判断房型 房间是否够用 与预约中的是不是不会冲突
             for (OrderChildBO orderChildBO : list) {
+                for (OrderChildBO childBO : list) {
+                    if(orderChildBO.getRoomTypeId()==childBO.getRoomTypeId()){
+                        orderChildBO.setRoomTypeCount(orderChildBO.getRoomTypeCount()+1);
+                    }
+                }
+            }
+
+            for (OrderChildBO orderChildBO : list) {
                 boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
-                         orderBO.getCheckOutTime(),orderBO.getCheckTime(), userInfo.getHotelId());
+                        orderBO.getCheckOutTime(),orderBO.getCheckTime(),orderChildBO.getRoomTypeCount(),orderBO.getId(), userInfo.getHotelId());
                 if (!bool) {
                     String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "入住日期冲突"));
                     super.safeJsonPrint(response, result);
@@ -107,6 +114,34 @@ public class OrderController extends BaseCotroller {
                     return;
                 }
             }
+//            if(type.equals("directly")||type.equals("roomReservation")){
+//                for (OrderChildBO orderChildBO : list) {
+//                    boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
+//                            orderBO.getCheckOutTime(),orderBO.getCheckTime(),list.size(), userInfo.getHotelId());
+//                    if (!bool) {
+//                        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "入住日期冲突"));
+//                        super.safeJsonPrint(response, result);
+//                        log.info("result{}", result);
+//                        return;
+//                    }
+//                }
+//            }else{
+//                //如果是 预约入住 或者 预约修改
+//                OrderBO oldOrderBO=orderService.getOrderBoByOrderId(orderBO.getId());
+//                if(orderBO.getCheckOutTime().compareTo(oldOrderBO.getCheckOutTime())!=0){
+//                    for (OrderChildBO orderChildBO : list) {
+//                        boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
+//                                orderBO.getCheckOutTime(),orderBO.getCheckTime(),list.size(), userInfo.getHotelId());
+//                        if (!bool) {
+//                            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "入住日期冲突"));
+//                            super.safeJsonPrint(response, result);
+//                            log.info("result{}", result);
+//                            return;
+//                        }
+//                    }
+//                }
+//            }
+
 
             if (type.equals("reservation") || type.equals("directly")) {
                 String result = this.checkInPerson(list);
@@ -153,11 +188,11 @@ public class OrderController extends BaseCotroller {
             Thread.sleep(1000);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(resultMap));
             super.safeJsonPrint(response, result);
-            //RedisTool.releaseDistributedLock(jedis, "500", requestId);
+            RedisTool.releaseDistributedLock(jedis, "500", requestId);
             log.info("result{}", result);
-//        } catch (Exception e) {
-//            log.error("reservationRoomException", e);
-//        }
+        } catch (Exception e) {
+            log.error("reservationRoomException", e);
+        }
     }
 
     /**
@@ -773,7 +808,7 @@ public class OrderController extends BaseCotroller {
             //bug验证续租是否冲突
             Date startTime=orderChildBO.getPracticalDepartureTime()==null?orderChildBO.getEndTime():orderChildBO.getPracticalDepartureTime();
             boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
-                    endTime, startTime, userInfo.getHotelId());
+                    endTime, startTime, 1,null,userInfo.getHotelId());
             if (!bool) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "续租日期冲突"));
                 super.safeJsonPrint(response, result);

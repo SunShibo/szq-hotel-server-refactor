@@ -613,6 +613,9 @@
         and order_state='reservation'
         and hm_order_child.order_id=hm_order.id
         and hm_order.hotel_id=#{hotelId}
+        <if test="orderId!=null and orderId!=''">
+            and hm_order.id!=#{orderId}
+        </if>
     </select>
 
     <!--根据一个时间段 查询预约中的房型数量-->
@@ -624,6 +627,9 @@
         and order_state='reservation'
         and hm_order_child.order_id=hm_order.id
         and hm_order.hotel_id=#{hotelId}
+        <if test="orderId!=null and orderId!=''">
+            and hm_order.id!=#{orderId}
+        </if>
     </select>
 
     <!--根据一个时间段 房型id 查询可入住的数量-->
