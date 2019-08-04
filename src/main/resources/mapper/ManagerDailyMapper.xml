@@ -34,7 +34,7 @@
         WHERE hotel_id = #{hotelId}
     </select>
 
-    <select id="queryCash" resultType="com.szq.hotel.entity.bo.CommodityBO">
+    <select id="queryCash" resultType="com.szq.hotel.entity.bo.CommodityTransactionBO">
         SELECT * FROM hm_commodity_transaction
         WHERE
         create_time &gt;= #{startTime} and create_time &lt; #{endTime}

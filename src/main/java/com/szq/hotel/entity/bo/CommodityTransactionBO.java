@@ -99,4 +99,20 @@ public class CommodityTransactionBO extends BaseModel {
     public void setHotelId(int hotelId) {
         this.hotelId = hotelId;
     }
+
+    @Override
+    public String toString() {
+        return "CommodityTransactionBO{" +
+                "id=" + id +
+                ", memberId=" + memberId +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", createTime=" + createTime +
+                ", payType='" + payType + '\'' +
+                ", consumeType='" + consumeType + '\'' +
+                ", money=" + money +
+                ", createUserId=" + createUserId +
+                ", consumptionDetails='" + consumptionDetails + '\'' +
+                ", hotelId=" + hotelId +
+                '}';
+    }
 }

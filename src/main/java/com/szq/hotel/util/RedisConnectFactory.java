@@ -11,7 +11,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public class RedisConnectFactory {
     //Redis服务器IP
 //    private static String ADDR = "192.168.110.241";
-    private static String ADDR = "101.200.147.13";
+    private static String ADDR = "wisewin-tech.com";
 
     //Redis的端口号
 //    private static int PORT = 7001;

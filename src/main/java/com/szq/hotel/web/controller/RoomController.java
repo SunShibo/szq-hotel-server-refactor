@@ -8,11 +8,10 @@ import com.szq.hotel.entity.dto.RoomStateDTO;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.RoomRecordService;
 import com.szq.hotel.service.RoomService;
-import com.szq.hotel.util.JsonUtils;
-import com.szq.hotel.util.RedisTool;
-import com.szq.hotel.util.StringUtils;
+import com.szq.hotel.util.*;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import io.netty.handler.codec.http.HttpObject;
+import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
 import org.omg.PortableServer.AdapterActivator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +40,8 @@ public class RoomController extends BaseCotroller {
 
     @Resource
     private RoomService roomService;
+    @Resource
+    private RoomDAO roomDao;
 
     @RequestMapping("/queryRoom")
     public void queryRoom(HttpServletRequest request, HttpServletResponse response, Integer pageNo,
@@ -253,7 +254,7 @@ public class RoomController extends BaseCotroller {
             return;
         }
         Map<String, Object> map = new HashMap<String, Object>();
-        Jedis jedis = new Jedis();
+        Jedis jedis = RedisConnectFactory.getJedis();
         String requestId = request.getSession().getId();
         System.err.println(requestId);
         if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 5000))) {
@@ -280,11 +281,11 @@ public class RoomController extends BaseCotroller {
     public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime,
                         String endTime, String roomTypeId, String roomAuxiliaryStatus,
                         String phone, String state) {
-        log.info("quertRm****************************************");
+        log.info("start***************************************quertRm****************************************");
         AdminBO loginUser = super.getLoginAdmin(request);
+        String startTime = checkTime.replaceAll("/", "-");
+        String enTime =  endTime.replaceAll("/", "-");
         log.info("loginUser:{}", loginUser);
-        log.info("checkTime:{}", checkTime);
-        log.info("endTime:{}", endTime);
         log.info("roomTypeId:{}", roomTypeId);
         log.info("roomAuxiliaryStatus:{}", roomAuxiliaryStatus);
         log.info("phone:{}", phone);
@@ -321,21 +322,21 @@ public class RoomController extends BaseCotroller {
         }
         if ("hour".equals(roomAuxiliaryStatus)) {
             map.put("roomAuxiliaryStatus", "yes");
-            map.put("roomAuxiliaryStatusStand", "no");
+
         }
         if ("free".equals(roomAuxiliaryStatus)) {
-            map.put("roomAuxiliaryStatus", "no");
+
             map.put("roomAuxiliaryStatusStand", "yes");
         }
-        log.info("checkTime:{}", checkTime);
-        log.info("endTime:{}", endTime);
+        log.info("checkTime:{}", startTime);
+        log.info("endTime:{}", enTime);
         log.info("roomTypeId:{}", roomTypeId);
         log.info("hotelId:{}", loginUser.getHotelId());
         log.info("phone:{}", phone);
 
-        map.put("checkTime", checkTime);
+        map.put("checkTime", startTime);
         map.put("hotelId", loginUser.getHotelId());
-        map.put("endTime", endTime);
+        map.put("endTime", enTime);
         map.put("roomTypeId", roomTypeId);
         map.put("phone", phone);
 
@@ -359,8 +360,11 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/queryRoomTypeNum")
     public void queryRoomTypeNum(HttpServletRequest request, HttpServletResponse response, String checkTime,
                                  String endTime, String roomTypeId, String roomAuxiliaryStatus, String phone, String state) {
+       checkTime =  checkTime.replaceAll("/", "-");
+       endTime =  endTime.replaceAll("/", "-");
         log.info("queryRoomTypeNum*********************************************");
-        AdminBO loginUser = super.getLoginAdmin(request);
+       AdminBO loginUser = super.getLoginAdmin(request);
+
         log.info("loginUser:{}", loginUser);
         log.info("checkTime:{}", checkTime);
         log.info("endTime:{}", endTime);
@@ -408,9 +412,11 @@ public class RoomController extends BaseCotroller {
         log.info("hotelId:{}", loginUser.getHotelId());
         log.info("phone:{}", phone);
 
-        map.put("checkTime", checkTime);
+        /*map.put("checkTime", checkTime);
+        map.put("endTime", endTime);*/
+
         map.put("hotelId", loginUser.getHotelId());
-        map.put("endTime", endTime);
+
         map.put("roomTypeId", roomTypeId);
         map.put("hotelId", loginUser.getHotelId());
         map.put("phone", phone);
@@ -419,9 +425,45 @@ public class RoomController extends BaseCotroller {
             map.put("roomMajorState", "vacant");
         }
 
-        List<RoomTypeNumBO> roomTypeNumBOS = roomService.queryRoomTypeNum(map);
 
-        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(roomTypeNumBOS));
+
+        //获取时间段
+        List<String> strings = roomService.querSeTime(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
+        log.info("两段时间区间的每一天日期:{}", strings);
+        checkTime = checkTime.substring(0,10);
+        log.info("转换为yyyy-MM-dd 格式 checkTime:{}",checkTime);
+        String start = checkTime + " 14:00:00";
+        String end = checkTime + " 14:00:00";
+        List<Time> times = roomService.timeDate2(DateUtils.parseDate(start, "yyyy-MM-dd HH:mm:ss"),
+                DateUtils.parseDate(end, "yyyy-MM-dd HH:mm:ss"),
+                strings.size() );
+        log.info("times:{}",times);
+        List<RoomTypeNumBO> l = new ArrayList<RoomTypeNumBO>();
+        List<RtBO> rtBOS = roomDao.queryRt(loginUser.getHotelId());
+        for (RtBO rtBO : rtBOS) {
+            //存放同一房型不同时间段可用数量的集合
+            List<RoomTypeNumBO> list = new ArrayList<RoomTypeNumBO>();
+            for (Time time : times) {
+                map.put("checkTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
+                map.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
+                //同一时间段内同一房型的可用数量
+                RoomTypeNumBO roomTypeNumBO = roomService.queryRoomTypeNum2(map, rtBO);
+                log.info("同一时间段内同一房型的可用数量:{}",roomTypeNumBO);
+                list.add(roomTypeNumBO);
+            }
+            RoomTypeNumBO min = Collections.min(list);
+            log.info("最小值是:{}",min);
+            l.add(min);
+
+        }
+
+
+
+
+
+
+
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(l));
         super.safeJsonPrint(response, result);
         log.info("return:{}", request);
         return;
@@ -774,17 +816,17 @@ public class RoomController extends BaseCotroller {
      * @param request
      * @param response
      */
-//    @RequestMapping("/todayPictureView")
-//    public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
-//        log.info("todayPictureView*****************************************************************");
-//        AdminBO loginAdmin = super.getLoginAdmin(request);
-//        log.info("loginUser:{}", loginAdmin);
-//        Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
-//        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
-//        super.safeJsonPrint(response, result);
-//        log.info("return:{}", result);
-//        return;
-//    }
+    @RequestMapping("/todayPictureView")
+    public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
+        log.info("todayPictureView*****************************************************************");
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        log.info("loginUser:{}", loginAdmin);
+        Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
+        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
+        super.safeJsonPrint(response, result);
+        log.info("return:{}", result);
+        return;
+    }
 
     /**
      * 预约房间反显

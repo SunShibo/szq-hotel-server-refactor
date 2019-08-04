@@ -100,11 +100,12 @@ public class RoomService {
      * @return
      */
     public List<RmBO> publicQuery(Map<String, Object> map, List<String> ll) {
-
+        log.info("*************************************publicQuery***************************************************");
         //获取预入住时间
         String dt = (String) map.get("checkTime");
 
         String et = (String) map.get("endTime");
+
 
         //获取符合条件的房间集合
         List<RmBO> list = roomDAO.queryRm(map);
@@ -121,6 +122,7 @@ public class RoomService {
             }
         }
 
+
         List<OcBO> l = roomDAO.queryOc(ls, dt, et, ll);
 
         List<Integer> reId = new ArrayList<Integer>();
@@ -132,6 +134,7 @@ public class RoomService {
         }
 
 
+
         //去重
         for (int i = 0; i < reId.size() - 1; i++) {
             for (int j = reId.size() - 1; j > i; j--) {
@@ -140,6 +143,7 @@ public class RoomService {
                 }
             }
         }
+
 
 
         //去掉不能预约入住的房间的房间
@@ -155,6 +159,7 @@ public class RoomService {
             }
         }
 
+
         return list;
     }
 
@@ -163,6 +168,7 @@ public class RoomService {
      * 预约入住选择房间
      */
     public List<List<RmBO>> queryRm(Map<String, Object> map) {
+        log.info("*************************************************queryRm*********************************************");
         //Map<String, Object> mp = new LinkedHashMap<String, Object>();
         List<List<RmBO>> ls = new ArrayList<List<RmBO>>();
         //获取酒店下面所有楼层
@@ -175,6 +181,7 @@ public class RoomService {
         ll.add("notpay");
         ll.add("admissions");
         List<RmBO> list = this.publicQuery(map, ll);
+        log.info("结果:{}",list);
 
         String phone = (String) map.get("phone");
         MemberDiscountBO memberDiscountBO = queryMember(phone);
@@ -211,6 +218,9 @@ public class RoomService {
 
         return ls;
     }
+
+
+
 
     public List<RoomTypeNumBO> queryRoomTypeNum(Map<String, Object> map) {
         //Map<String, Object> mp = new HashMap<String, Object>();
@@ -340,7 +350,127 @@ public class RoomService {
         return ls;
     }
 
+    /**
+     * 获取同一时间同一房型的可用数量
+     * @param map
+     * @param rtBO
+     * @return
+     */
+    public RoomTypeNumBO queryRoomTypeNum2(Map<String, Object> map, RtBO rtBO) {
+        //Map<String, Object> mp = new HashMap<String, Object>();
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
+        //根据条件筛选出第一波可入住的房间
+        List<RmBO> list = this.publicQuery(map, ll);
+        Integer hotelId = (Integer) map.get("hotelId");
+        String phone = (String) map.get("phone");
 
+
+
+
+
+        RoomTypeNumBO roomTypeBO = new RoomTypeNumBO();
+
+        //判断用户是否是会员
+        MemberDiscountBO memberDiscountBO = queryMember(phone);
+        log.info("是否是会员:{}", memberDiscountBO);
+        //没有优惠
+        if (memberDiscountBO == null) {
+            log.info("没有优惠");
+            if ( !CollectionUtils.isEmpty(list)) {
+
+
+                    //roomTypeBO.setState(false);
+                    roomTypeBO.setName(rtBO.getRoomTypeName());
+                    roomTypeBO.setHotelId(rtBO.getHotelId());
+                    roomTypeBO.setId(rtBO.getId());
+                    roomTypeBO.setBasicPrice(rtBO.getBasicPrice());
+                    roomTypeBO.setHourRoomPrice(rtBO.getHourRoomPrice());
+                    //roomTypeBO.setName(rtBO.getRoomType());
+                    Integer i = 0;
+                    for (RmBO rmBO : list) {
+                        if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
+                            //roomTypeBO.setBasicPrice(rmBO.getBasicPrice());
+                            //roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice());
+                            //roomTypeBO.setHotelId(rmBO.getHotelId());
+                            i++;
+                        }
+                        roomTypeBO.setCount(i);
+                    }
+
+
+            }
+        } else {
+            //有优惠
+            if ( !CollectionUtils.isEmpty(list)) {
+                log.info("有优惠");
+                    //roomTypeBO.setState(true);
+                    roomTypeBO.setName(rtBO.getRoomTypeName());
+                    roomTypeBO.setId(rtBO.getId());
+                    roomTypeBO.setHotelId(rtBO.getHotelId());
+                    roomTypeBO.setBasicPrice(Math.ceil(rtBO.getBasicPrice() * memberDiscountBO.getDiscount()));
+                    roomTypeBO.setHourRoomPrice(Math.ceil(rtBO.getHourRoomPrice() * memberDiscountBO.getDiscount()));
+                    //roomTypeBO.setName(rtBO.getRoomType());
+                    Integer i = 0;
+                    for (RmBO rmBO : list) {
+                        if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
+                            //roomTypeBO.setBasicPrice(rmBO.getBasicPrice() * memberDiscountBO.getDiscount());
+                            // roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice() * memberDiscountBO.getDiscount());
+                            //roomTypeBO.setHotelId(rmBO.getHotelId());
+                            // roomTypeBO.setName(rmBO.getRoomType());
+                            //roomTypeBO.setId(rmBO.getId());
+                            i++;
+                        }
+                        roomTypeBO.setCount(i);
+                    }
+
+            }
+        }
+
+
+
+
+        //获取被预约掉的房型以及数量
+        List<RmTypeIdBO> rmTypeIdBOS = roomDAO.queryOrderTypeRoom((String) map.get("checkTime"), (String) map.get("endTime"),
+                (Integer) map.get("hotelId"));
+
+
+        //筛选掉被预约掉的房型数量
+
+        List<RoomTypeNumberBO> roomTypeList = new ArrayList<RoomTypeNumberBO>();
+        if(!CollectionUtils.isEmpty(rmTypeIdBOS)){
+                RoomTypeNumberBO roomTypeNumber = new RoomTypeNumberBO();
+                roomTypeNumber.setRoomTypeId(rtBO.getId());
+                int i = 0;
+                for (RmTypeIdBO integer : rmTypeIdBOS) {
+                    if(rtBO.getId().equals(integer.getRoomTypeId())){
+                        i++;
+                    }
+                }
+                roomTypeNumber.setCount(i);
+                roomTypeList.add(roomTypeNumber);
+
+            }
+
+
+
+        if(!CollectionUtils.isEmpty(roomTypeList)){
+                for (RoomTypeNumberBO roomTypeNumberBO : roomTypeList) {
+                    if(roomTypeBO.getId().equals(roomTypeNumberBO.getRoomTypeId())){
+                        if(roomTypeBO.getCount()<roomTypeNumberBO.getCount()){
+                            roomTypeBO.setCount(0);
+                        }else{
+                            roomTypeBO.setCount(roomTypeBO.getCount()-roomTypeNumberBO.getCount());
+                        }
+
+                    }
+                }
+        }
+
+        return roomTypeBO;
+    }
     /**
      * 判断时间是否在某一区间内
      *
@@ -997,10 +1127,10 @@ public class RoomService {
         //获取当前时间
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String date = format + " 06:00:00";
-        log.info("当前时间:{}", date);
+
         //获取明天早上六点的时间
         Date date1 = lDate(quDate(6, 0, 0), 1);
-        log.info("明天早上六点:{}", date1);
+
 
         //查询今天房型可用数量
         //查询中当前酒店有多少房型

@@ -171,19 +171,22 @@ public class ManagerDailyController extends BaseCotroller {
      * @param response
      * @param
      */
-    @RequestMapping("/queryTest")
-    public void queryManagerDaliy(HttpServletRequest request, HttpServletResponse response, String date){
+    @RequestMapping("/selectManagerDaliy")
+    public void queryManagerDaliy(HttpServletRequest request, HttpServletResponse response, String endTime){
         AdminBO userBO = super.getLoginUser(request);
+        log.info("date:{}", endTime);
+        String substring = endTime.substring(0, 10);
+        log.info("substring:{}",substring);
+        String s = substring.replaceAll("/", "-");
 
-
-        ManagerdailyChangeBO managerdailyChangeBO = managerDailyService.queryInfo(date, 1);
+        ManagerdailyChangeBO managerdailyChangeBO = managerDailyService.queryInfo(s, userBO.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(managerdailyChangeBO));
         super.safeJsonPrint(response, result);
         return;
     }
 
 
-    @RequestMapping("/insertTest")
+    @RequestMapping("/test")
     public void insertTest(HttpServletRequest request, HttpServletResponse response, Integer hotelId){
 
         managerDailyService.insertManagerDaliy(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(DateUtils.getYesTaday()));

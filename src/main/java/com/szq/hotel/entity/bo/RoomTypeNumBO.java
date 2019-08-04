@@ -6,7 +6,7 @@ import com.szq.hotel.common.base.BaseModel;
  * @Author: Bin Wang
  * @date: Created in 16:10 2019/7/12
  */
-public class RoomTypeNumBO extends BaseModel {
+public class RoomTypeNumBO extends BaseModel  implements Comparable <RoomTypeNumBO>  {
 
     private Integer count; //酒店数量
     private Integer hotelId;//酒店id
@@ -66,4 +66,8 @@ public class RoomTypeNumBO extends BaseModel {
     }
 
 
+    @Override
+    public int compareTo(RoomTypeNumBO o) {
+        return  this.getCount().compareTo(o.getCount());
+    }
 }
