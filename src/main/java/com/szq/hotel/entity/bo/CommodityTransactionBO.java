@@ -2,6 +2,7 @@ package com.szq.hotel.entity.bo;
 
 import com.szq.hotel.common.base.BaseModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -15,7 +16,7 @@ public class CommodityTransactionBO extends BaseModel {
     private Date createTime;
     private String payType;
     private String consumeType;
-    private double money;
+    private BigDecimal money;
     private int createUserId;
     private String consumptionDetails;
     private int hotelId;
@@ -68,11 +69,11 @@ public class CommodityTransactionBO extends BaseModel {
         this.consumeType = consumeType;
     }
 
-    public double getMoney() {
+    public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(double money) {
+    public void setMoney(BigDecimal money) {
         this.money = money;
     }
 

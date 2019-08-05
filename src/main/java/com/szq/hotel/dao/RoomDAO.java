@@ -235,4 +235,13 @@ public interface RoomDAO {
     List<Integer> queryOrderRoomTypeId( @Param("roomTypeId")Integer roomTypeId,
                                        @Param("checkTime")String startTime,
                                        @Param("endTime")String endTime, @Param("list")List<String> list);
+
+
+    /**
+     * 反显被预约过的房型
+     * @param hotelId
+     * @param phone
+     * @return
+     */
+    List<Integer> queryRoomTypeAndId(@Param("hotelId")Integer hotelId, @Param("phone")String phone);
 }

@@ -439,6 +439,7 @@ public class RoomController extends BaseCotroller {
                 strings.size() );
         log.info("times:{}",times);
         List<RoomTypeNumBO> l = new ArrayList<RoomTypeNumBO>();
+
         List<RtBO> rtBOS = roomDao.queryRt(loginUser.getHotelId());
         for (RtBO rtBO : rtBOS) {
             //存放同一房型不同时间段可用数量的集合
@@ -457,10 +458,15 @@ public class RoomController extends BaseCotroller {
 
         }
 
+        List<Integer> integers = roomService.queryRoomTypeAndId(loginUser.getHotelId(), phone);
 
-
-
-
+        for (RoomTypeNumBO roomTypeNumBO : l) {
+            for (Integer integer : integers) {
+                if(roomTypeNumBO.getId().equals(integer)){
+                    roomTypeNumBO.setCount(roomTypeNumBO.getCount()+1);
+                }
+            }
+        }
 
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(l));
@@ -625,6 +631,9 @@ public class RoomController extends BaseCotroller {
             log.info("result{}", result);
             return;
         }
+
+        checkTime = checkTime.replaceAll("/", "-");
+        endTime = endTime.replaceAll("/", "-");
         if (StringUtils.isEmpty(checkTime)) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
@@ -678,18 +687,12 @@ public class RoomController extends BaseCotroller {
 
 
 
-
-
-
-
-
-
-
-
     @RequestMapping("/updatelockRoomState")
     public void updatelockRoomState(HttpServletRequest request, HttpServletResponse response,
                                     String startTime, String endTime,
                                     String roomId, String state, String remark) {
+        startTime = startTime.replaceAll("/","-");
+        endTime = endTime.replaceAll("/","-");
         log.info("updatelockRoomState*************************************");
         log.info("startTime:{}", startTime);
         log.info("endTime:{}", endTime);

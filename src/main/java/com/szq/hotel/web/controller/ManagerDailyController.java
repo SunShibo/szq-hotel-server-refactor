@@ -32,7 +32,7 @@ public class ManagerDailyController extends BaseCotroller {
     @Resource
     private ManagerDailyService  managerDailyService;
 
-    @RequestMapping("/selectManagerDaliy")
+    @RequestMapping("/queryTest")
     public void selectManagerDaliy(HttpServletRequest request, HttpServletResponse response,String date){
         AdminBO userBO = super.getLoginUser(request);
         if (userBO == null) {
@@ -171,7 +171,7 @@ public class ManagerDailyController extends BaseCotroller {
      * @param response
      * @param
      */
-    @RequestMapping("/queryTest")
+    @RequestMapping("/selectManagerDaliy")
     public void queryManagerDaliy(HttpServletRequest request, HttpServletResponse response, String endTime){
         AdminBO userBO = super.getLoginUser(request);
         log.info("date:{}", endTime);

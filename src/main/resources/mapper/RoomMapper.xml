@@ -713,4 +713,9 @@
         OR (DATE_ADD(#{checkTime},
         INTERVAL 1 SECOND) BETWEEN start_time AND end_time)
     </select>
+
+    <select id="queryRoomTypeAndId" resultType="java.lang.Integer">
+      SELECT hm_order_child.room_type_id  FROM hm_order, hm_order_child WHERE hm_order_child.order_id = hm_order.id
+        AND hm_order.phone = #{phone} AND hm_order.hotel_id = #{hotelId} AND order_state = 'reservation'
+    </select>
 </mapper>

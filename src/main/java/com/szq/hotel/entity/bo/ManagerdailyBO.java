@@ -1,13 +1,14 @@
 package com.szq.hotel.entity.bo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class ManagerdailyBO {
     private Integer id;
 
-    private Double grossrealIncome;
+    private BigDecimal grossrealIncome;
 
-    private Double totalTurnover;
+    private BigDecimal totalTurnover;
 
     private Integer numberOrder;
 
@@ -19,41 +20,41 @@ public class ManagerdailyBO {
 
     private Integer totalnumberGuestrooms;
 
-    private Double cashDisbursements;
+    private BigDecimal cashDisbursements;
 
-    private Double cash;
+    private BigDecimal cash;
 
-    private Double throughoutDayrent;
+    private BigDecimal throughoutDayrent;
 
-    private Double rateAdjustment;
+    private BigDecimal rateAdjustment;
 
-    private Double hourRate;
+    private BigDecimal hourRate;
 
-    private Double timeoutRate;
+    private BigDecimal timeoutRate;
 
-    private Double nuclearnightRoomcharge;
+    private BigDecimal nuclearnightRoomcharge;
 
-    private Double compensation;
+    private BigDecimal compensation;
 
-    private Double membershipFee;
+    private BigDecimal membershipFee;
 
-    private Double goods;
+    private BigDecimal goods;
 
-    private Double subtotal;
+    private BigDecimal subtotal;
 
-    private Double members;
+    private BigDecimal members;
 
-    private Double agreementUnit;
+    private BigDecimal agreementUnit;
 
-    private Double app;
+    private BigDecimal app;
 
-    private Double microLetter;
+    private BigDecimal microLetter;
 
-    private Double individualTraveler;
+    private BigDecimal individualTraveler;
 
-    private Double directBooking;
+    private BigDecimal directBooking;
 
-    private Double enter;
+    private BigDecimal enter;
 
     private Integer dailyType;
 
@@ -69,19 +70,19 @@ public class ManagerdailyBO {
         this.id = id;
     }
 
-    public Double getGrossrealIncome() {
+    public BigDecimal getGrossrealIncome() {
         return grossrealIncome;
     }
 
-    public void setGrossrealIncome(Double grossrealIncome) {
+    public void setGrossrealIncome(BigDecimal grossrealIncome) {
         this.grossrealIncome = grossrealIncome;
     }
 
-    public Double getTotalTurnover() {
+    public BigDecimal getTotalTurnover() {
         return totalTurnover;
     }
 
-    public void setTotalTurnover(Double totalTurnover) {
+    public void setTotalTurnover(BigDecimal totalTurnover) {
         this.totalTurnover = totalTurnover;
     }
 
@@ -125,147 +126,147 @@ public class ManagerdailyBO {
         this.totalnumberGuestrooms = totalnumberGuestrooms;
     }
 
-    public Double getCashDisbursements() {
+    public BigDecimal getCashDisbursements() {
         return cashDisbursements;
     }
 
-    public void setCashDisbursements(Double cashDisbursements) {
+    public void setCashDisbursements(BigDecimal cashDisbursements) {
         this.cashDisbursements = cashDisbursements;
     }
 
-    public Double getCash() {
+    public BigDecimal getCash() {
         return cash;
     }
 
-    public void setCash(Double cash) {
+    public void setCash(BigDecimal cash) {
         this.cash = cash;
     }
 
-    public Double getThroughoutDayrent() {
+    public BigDecimal getThroughoutDayrent() {
         return throughoutDayrent;
     }
 
-    public void setThroughoutDayrent(Double throughoutDayrent) {
+    public void setThroughoutDayrent(BigDecimal throughoutDayrent) {
         this.throughoutDayrent = throughoutDayrent;
     }
 
-    public Double getRateAdjustment() {
+    public BigDecimal getRateAdjustment() {
         return rateAdjustment;
     }
 
-    public void setRateAdjustment(Double rateAdjustment) {
+    public void setRateAdjustment(BigDecimal rateAdjustment) {
         this.rateAdjustment = rateAdjustment;
     }
 
-    public Double getHourRate() {
+    public BigDecimal getHourRate() {
         return hourRate;
     }
 
-    public void setHourRate(Double hourRate) {
+    public void setHourRate(BigDecimal hourRate) {
         this.hourRate = hourRate;
     }
 
-    public Double getTimeoutRate() {
+    public BigDecimal getTimeoutRate() {
         return timeoutRate;
     }
 
-    public void setTimeoutRate(Double timeoutRate) {
+    public void setTimeoutRate(BigDecimal timeoutRate) {
         this.timeoutRate = timeoutRate;
     }
 
-    public Double getNuclearnightRoomcharge() {
+    public BigDecimal getNuclearnightRoomcharge() {
         return nuclearnightRoomcharge;
     }
 
-    public void setNuclearnightRoomcharge(Double nuclearnightRoomcharge) {
+    public void setNuclearnightRoomcharge(BigDecimal nuclearnightRoomcharge) {
         this.nuclearnightRoomcharge = nuclearnightRoomcharge;
     }
 
-    public Double getCompensation() {
+    public BigDecimal getCompensation() {
         return compensation;
     }
 
-    public void setCompensation(Double compensation) {
+    public void setCompensation(BigDecimal compensation) {
         this.compensation = compensation;
     }
 
-    public Double getMembershipFee() {
+    public BigDecimal getMembershipFee() {
         return membershipFee;
     }
 
-    public void setMembershipFee(Double membershipFee) {
+    public void setMembershipFee(BigDecimal membershipFee) {
         this.membershipFee = membershipFee;
     }
 
-    public Double getGoods() {
+    public BigDecimal getGoods() {
         return goods;
     }
 
-    public void setGoods(Double goods) {
+    public void setGoods(BigDecimal goods) {
         this.goods = goods;
     }
 
-    public Double getSubtotal() {
+    public BigDecimal getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(Double subtotal) {
+    public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
     }
 
-    public Double getMembers() {
+    public BigDecimal getMembers() {
         return members;
     }
 
-    public void setMembers(Double members) {
+    public void setMembers(BigDecimal members) {
         this.members = members;
     }
 
-    public Double getAgreementUnit() {
+    public BigDecimal getAgreementUnit() {
         return agreementUnit;
     }
 
-    public void setAgreementUnit(Double agreementUnit) {
+    public void setAgreementUnit(BigDecimal agreementUnit) {
         this.agreementUnit = agreementUnit;
     }
 
-    public Double getApp() {
+    public BigDecimal getApp() {
         return app;
     }
 
-    public void setApp(Double app) {
+    public void setApp(BigDecimal app) {
         this.app = app;
     }
 
-    public Double getMicroLetter() {
+    public BigDecimal getMicroLetter() {
         return microLetter;
     }
 
-    public void setMicroLetter(Double microLetter) {
+    public void setMicroLetter(BigDecimal microLetter) {
         this.microLetter = microLetter;
     }
 
-    public Double getIndividualTraveler() {
+    public BigDecimal getIndividualTraveler() {
         return individualTraveler;
     }
 
-    public void setIndividualTraveler(Double individualTraveler) {
+    public void setIndividualTraveler(BigDecimal individualTraveler) {
         this.individualTraveler = individualTraveler;
     }
 
-    public Double getDirectBooking() {
+    public BigDecimal getDirectBooking() {
         return directBooking;
     }
 
-    public void setDirectBooking(Double directBooking) {
+    public void setDirectBooking(BigDecimal directBooking) {
         this.directBooking = directBooking;
     }
 
-    public Double getEnter() {
+    public BigDecimal getEnter() {
         return enter;
     }
 
-    public void setEnter(Double enter) {
+    public void setEnter(BigDecimal enter) {
         this.enter = enter;
     }
 

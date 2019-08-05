@@ -16,8 +16,8 @@ public class CashierSummary extends BaseModel {
     private String roomName;//房间名字
     private String roomTypeName;//房间类型
     private String name;//姓名
-    private double consumption;
-    private double settlement;
+    private BigDecimal consumption;
+    private BigDecimal settlement;
     private Date createTime;//发生日期
     private String remark;//备注
     private Integer userId;//操作员
@@ -99,19 +99,19 @@ public class CashierSummary extends BaseModel {
         this.name = name;
     }
 
-    public double getConsumption() {
+    public BigDecimal getConsumption() {
         return consumption;
     }
 
-    public void setConsumption(double consumption) {
+    public void setConsumption(BigDecimal consumption) {
         this.consumption = consumption;
     }
 
-    public double getSettlement() {
+    public BigDecimal getSettlement() {
         return settlement;
     }
 
-    public void setSettlement(double settlement) {
+    public void setSettlement(BigDecimal settlement) {
         this.settlement = settlement;
     }
 

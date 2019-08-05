@@ -1278,6 +1278,10 @@ public class RoomService {
         return roomDAO.selectRoomId(id, hotelId);
     }
 
+    public List<Integer> queryRoomTypeAndId(Integer hotelId, String phone){
+        return roomDAO.queryRoomTypeAndId(hotelId, phone);
+    }
+
 
 }
 

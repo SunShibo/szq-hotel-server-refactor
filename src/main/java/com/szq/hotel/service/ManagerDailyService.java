@@ -10,8 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static java.lang.Float.NaN;
 
 
 @Service
@@ -108,17 +112,34 @@ public class ManagerDailyService {
 
         //当天营业状况统计
         ManagerdailyBO managerdailyBO = managerdailyBOMapper.queryManagerdaily(hotelId, 1, date);
+        if (managerdailyBO == null){
+            managerdailyBO = new ManagerdailyBO();
+        }
         //当天营业收入明细
         ManagerdailyBO managerdailyBO1 = managerdailyBOMapper.queryManagerdaily(hotelId, 2, date);
+        if(managerdailyBO1 == null){
+            managerdailyBO1 = new ManagerdailyBO();
+        }
         //当天房费收入明细
         ManagerdailyBO managerdailyBO2 = managerdailyBOMapper.queryManagerdaily(hotelId, 3, date);
+        if(managerdailyBO2 == null){
+            managerdailyBO2 = new ManagerdailyBO();
+        }
         //当天房晚数分析
         ManagerdailyBO managerdailyBO3 = managerdailyBOMapper.queryManagerdaily(hotelId, 4 , date);
+        if(managerdailyBO3 == null){
+            managerdailyBO3 = new ManagerdailyBO();
+        }
         //当天平均房价分析
         ManagerdailyBO managerdailyBO4 = managerdailyBOMapper.queryManagerdaily(hotelId, 5 , date);
+        if(managerdailyBO4 == null){
+            managerdailyBO4 = new ManagerdailyBO();
+        }
         //当天出租率分析
         ManagerdailyBO managerdailyBO5 = managerdailyBOMapper.queryManagerdaily(hotelId, 6 , date);
-
+        if(managerdailyBO5 == null){
+            managerdailyBO5 = new ManagerdailyBO();
+        }
 
         log.info("获取今年日期");
         //获取今年日期
@@ -858,14 +879,14 @@ public class ManagerDailyService {
         log.info("858");
         //本月累计
         //本月会员房数除以本月小计
-        members6.setMonth((hy2Month(hotelId,date)/xj3Month(hotelId, date))+"");
+        members6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? (hy2Month(hotelId,date).divide(xj3Month(hotelId, date)))+"" : "0");
         log.info("862");
         //获取上月同期
-        members6.setLastMonthDay(hyrzlLastMonthDay(hotelId,date).getMembers()+"");
+        members6.setLastMonthDay(hyrzlLastMonthDay(hotelId,date) == null ? "0.0":hyrzlLastMonthDay(hotelId,date).getMembers()+"");
         log.info("865");
         //获取年会员出租率
         //年会员房数处于本年小计
-        members6.setLastYearDay((hy2Year(hotelId, date)/xj3Year(hotelId, date))+"");
+        members6.setLastYearDay( xj3Year(hotelId, date).intValue() != 0 ? (hy2Year(hotelId, date).divide(xj3Year(hotelId, date)))+"" : "0");
         log.info("869");
         //获取上年同期出租率
         members6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0%":hyrzLastYearDay(hotelId, date).getMembers()+"");
@@ -881,13 +902,13 @@ public class ManagerDailyService {
         individualTraveler6.setDay(managerdailyBO5.getIndividualTraveler()+"");
         log.info("880");
         //获取散客本月累计出租率
-        individualTraveler6.setMonth((sk2Month(hotelId, date)/xj3Month(hotelId, date))+"");
+        individualTraveler6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? sk2Month(hotelId, date).divide(xj3Month(hotelId, date))+"" : "0");
         log.info("883");
         //获取上月同期
-        individualTraveler6.setMonth(hyrzlLastMonthDay(hotelId, date).getIndividualTraveler()+"");
+        individualTraveler6.setMonth(hyrzlLastMonthDay(hotelId, date) == null ? "0.0":hyrzlLastMonthDay(hotelId, date).getIndividualTraveler()+"0" );
         log.info("886");
         //获取上年累计
-        individualTraveler6.setYear(sk2Year(hotelId, date)/xj3Year(hotelId, date)+"");
+        individualTraveler6.setYear(xj3Year(hotelId, date).intValue() != 0 ? sk2Year(hotelId, date).divide(xj3Year(hotelId, date))+"" : "0");
         log.info("889");
         //获取上年同期
         individualTraveler6.setLastYearDay( hyrzLastYearDay(hotelId, date) == null ? "0%":hyrzLastYearDay(hotelId, date).getIndividualTraveler()+"%");
@@ -901,13 +922,13 @@ public class ManagerDailyService {
         agreementUnit6.setDay(managerdailyBO5.getAgreementUnit()+"");
         log.info("900");
         //获取协议单位本月出租率
-        agreementUnit6.setMonth(xydw2Month(hotelId, date)/xj3Month(hotelId, date)+"");
+        agreementUnit6.setMonth(xj3Month(hotelId, date).intValue() !=0 ? xydw2Month(hotelId, date).divide(xj3Month(hotelId, date))+"%" : "0.00%");
         log.info("903");
         //获取协议单位上月同期
         agreementUnit6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0":hyrzlLastMonthDay(hotelId, date).getAgreementUnit()+"");
         log.info("906");
         //获取上年累计
-        agreementUnit6.setYear(xydw2Year(hotelId, date)/xj3Year(hotelId, date)+"");
+        agreementUnit6.setYear(xj3Year(hotelId, date).intValue() != 0 ?xydw2Year(hotelId, date).divide(xj3Year(hotelId, date))+"%" : "0.00%");
         log.info("909");
         //获取上年同期
         agreementUnit6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0":hyrzLastYearDay(hotelId, date).getAgreementUnit()+"");
@@ -921,13 +942,13 @@ public class ManagerDailyService {
         enter6.setDay(managerdailyBO5.getEnter()+"");
         log.info("920");
         //获取本月直接入住出租率
-        enter6.setMonth(zjrz2Month(hotelId, date)/xj3Month(hotelId, date)+"");
+        enter6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? zjrz2Month(hotelId, date).divide(xj3Month(hotelId, date))+"%" : "0.00%");
         log.info("923");
         //获取直接入住上月同期
         enter6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0" :  hyrzlLastMonthDay(hotelId, date).getEnter()+"");
         log.info("926");
         //获取上年累计
-        enter6.setYear(xydw3Year(hotelId, date)/xj4Year(hotelId, date)+"");
+        enter6.setYear(xj4Year(hotelId, date).intValue() != 0 ? xydw3Year(hotelId, date).divide(xj4Year(hotelId, date))+"" : "0");
         log.info("929");
         //获取上年同期
         enter6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0" : hyrzLastYearDay(hotelId, date).getEnter()+"");
@@ -941,13 +962,13 @@ public class ManagerDailyService {
         directBooking6.setDay(managerdailyBO5.getDirectBooking()+"");
         log.info("940");
         //获取预约入住本月出租率
-        directBooking6.setMonth(fjyd3Month(hotelId,date)/xj4Month(hotelId, date)+"");
+        directBooking6.setMonth(xj4Month(hotelId, date).intValue() != 0 ? fjyd3Month(hotelId,date).divide(xj4Month(hotelId, date))+"%":"0.00%");
         log.info("943");
         //获取预约入住上月同期
-        directBooking6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date).getDirectBooking()+"");
+        directBooking6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.0" : hyrzlLastMonthDay(hotelId, date).getDirectBooking()+"");
         log.info("946");
         //获取预约入住上年累计
-        directBooking6.setYear(fjyd3Year(hotelId, date)/xj4Year(hotelId, date)+"");
+        directBooking6.setYear(xj4Year(hotelId, date).intValue() != 0 ? fjyd3Year(hotelId, date).divide(xj4Year(hotelId, date))+"%" : "0.00%");
         log.info("949");
         //获取上年同期
         directBooking6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0": hyrzLastYearDay(hotelId, date).getDirectBooking()+"");
@@ -961,13 +982,13 @@ public class ManagerDailyService {
         subtotal6.setDay(managerdailyBO5.getSubtotal()+"");
         log.info("960");
         //获取本月累计
-        subtotal6.setMonth(xj3Month(hotelId, date)/xj3Month(hotelId, date)+"");
+        subtotal6.setMonth( xj3Month(hotelId, date).intValue() != 0 ? xj3Month(hotelId, date).divide(xj3Month(hotelId, date))+"" : "0.00");
         log.info("963");
         //获取上月同期
         subtotal6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0" : hyrzlLastMonthDay(hotelId, date).getSubtotal()+"");
         log.info("966");
         //获取上年累计
-        subtotal6.setYear(xj3Year(hotelId, date)/xj3Year(hotelId, date)+"");
+        subtotal6.setYear(xj3Year(hotelId, date).intValue() != 0 ? xj3Year(hotelId, date).divide(xj3Year(hotelId, date))+"" : "0.00");
         log.info("969");
 
 
@@ -1098,59 +1119,71 @@ public class ManagerDailyService {
     //获取今年出租率和去年出租率 用去年减去今年
     //今年出租率 今年累计房晚数/今年累计小计*100
     private String isRentalRate(Integer hotelId, String date, String yyyy, String year){
-
+        if(xj3Year(hotelId, yyyy).intValue() == 0 || xj3Year(hotelId, year).intValue() == 0 ){
+            return "0.00%";
+        }
 
         //今年出租率
-       double j =  hy2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+       BigDecimal j =  hy2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
        //去年出租率
-       double s =  hy2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+        BigDecimal s =  hy2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
 
-      return j-s+"%";
+      return  j.subtract(s)+"%";
     }
 
     //计算散客年增长出租率
     private String isRenta(Integer hotelId, String date,String yyyy, String year){
+        if(xj3Year(hotelId, yyyy).intValue() == 0 || xj3Year(hotelId, year).intValue() == 0 ){
+            return "0.00%";
+        }
 
+        sk2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
         //今年出租率
-        double j =  sk2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+        BigDecimal j =  sk2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
         //去年出租率
-        double s =  sk2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+        BigDecimal s =  sk2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
 
-        return j-s+"%";
+        return  j.subtract(s)+"%";
     }
 
     //计算协议单位年增长出租率
     private String isRentaXy(Integer hotelId, String date, String yyyy, String year){
-
+        if(xj3Year(hotelId, yyyy).intValue() == 0 || xj3Year(hotelId, year).intValue() == 0 ){
+            return "0.00%";
+        }
         //今年出租率
-        double j =  xydw2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+        BigDecimal j =  xydw2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
         //去年出租率
-        double s =  xydw2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+        BigDecimal s =  xydw2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
 
-        return j-s+"%";
+        return  j.subtract(s)+"%";
     }
 
     //计算直接入住年增长出租率
     private String isRentaZj(Integer hotelId, String date, String yyyy, String year){
-
+        if(xj3Year(hotelId, yyyy).intValue() == 0 || xj3Year(hotelId, year).intValue() == 0 ){
+            return "0.00%";
+        }
         //今年出租率
-        double j =  zjrz2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+        BigDecimal j =   zjrz2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
         //去年出租率
-        double s =  zjrz2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+        BigDecimal s =   zjrz2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
 
-        return j-s+"%";
+        return  j.subtract(s)+"%";
     }
 
     //计算预约入住年增长率
     private String isRentayy(Integer hotelId, String date, String yyyy, String year){
 
-
+        if(xj3Year(hotelId, yyyy).intValue() == 0 || xj3Year(hotelId, year).intValue() == 0 ){
+            return "0.00%";
+        }
         //今年出租率
-        double j =  fjyd2Year(hotelId, yyyy)/xj3Year(hotelId, yyyy)*100;
+        BigDecimal j =  fjyd2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
         //去年出租率
-        double s =  fjyd2Year(hotelId, year)/xj3Year(hotelId, year)*100;
+        BigDecimal s =   fjyd2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
 
-        return j-s+"%";
+        return j.subtract(s) + "%";
     }
 
 
@@ -1190,7 +1223,7 @@ public class ManagerDailyService {
      * @param date
      * @return
      */
-    private double month(Integer hotelId, String date){
+    private BigDecimal month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
@@ -1198,12 +1231,13 @@ public class ManagerDailyService {
 
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId,new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n  = n + managerdailyBO.getGrossrealIncome();
+            n.add(managerdailyBO.getGrossrealIncome());
         }
         return n;
     }
@@ -1213,16 +1247,16 @@ public class ManagerDailyService {
      * 获取上月同期总实际收入
      * @return
      */
-    private double  lastMonthDay(Integer hotelId, String date){
+    private BigDecimal  lastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1 , 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n  = n + managerdailyBO.getGrossrealIncome();
+            n.add(managerdailyBO.getGrossrealIncome()) ;
         }
         return n;
     }
@@ -1233,15 +1267,16 @@ public class ManagerDailyService {
      * @param date
      * @return
      */
-    private double year(Integer hotelId, String date){
+    private BigDecimal year(Integer hotelId, String date){
 
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n  = n + managerdailyBO.getGrossrealIncome();
+            n.add(managerdailyBO.getGrossrealIncome());
         }
         return n;
     }
@@ -1263,16 +1298,16 @@ public class ManagerDailyService {
      * @param date
      * @return
      */
-    private double lastYearDay(Integer hotelId, String date) {
+    private BigDecimal lastYearDay(Integer hotelId, String date) {
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n  = n + managerdailyBO.getGrossrealIncome();
+           n.add(managerdailyBO.getGrossrealIncome());
         }
         return n;
     }
@@ -1282,20 +1317,19 @@ public class ManagerDailyService {
      * 获取本月累计营业额
      * @return
      */
-    private double queryMonth(Integer hotelId, String date){
+    private BigDecimal queryMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
-        System.err.println("当月第一天:"+new SimpleDateFormat("yyyy-MM-dd").format(date1)+",当月最后一天"+ new SimpleDateFormat("yyyy-MM-dd").format(dete2));
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTotalTurnover();
+            n.add( managerdailyBO.getTotalTurnover());
         }
         return n;
     }
@@ -1306,16 +1340,17 @@ public class ManagerDailyService {
      * @param hotelId
      * @return
      */
-    private double queryLastMonthDay(Integer hotelId, String date){
+    private BigDecimal queryLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = n + managerdailyBO.getTotalTurnover();
+           n.add(managerdailyBO.getTotalTurnover());
         }
         return n ;
     }
@@ -1326,14 +1361,15 @@ public class ManagerDailyService {
      * @param
      * @return
      */
-    private double queryYear(Integer hotelId, String yyyy){
+    private BigDecimal queryYear(Integer hotelId, String yyyy){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, yyyy, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n  = n + managerdailyBO.getTotalTurnover();
+            n.add(managerdailyBO.getTotalTurnover());
         }
         return n;
     }
@@ -1344,16 +1380,16 @@ public class ManagerDailyService {
      * @param date
      * @return
      */
-    private double queryLastYearDay(Integer hotelId, String date){
+    private BigDecimal queryLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n  = n + managerdailyBO.getGrossrealIncome();
+           n.add(managerdailyBO.getGrossrealIncome()) ;
         }
         return n;
     }
@@ -1397,16 +1433,16 @@ public class ManagerDailyService {
     }
 
     //获取本年累计 预订未到房数
-    private int ydYear(Integer hotelId, String yyyy){
+    private BigDecimal ydYear(Integer hotelId, String yyyy){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, yyyy, 1);
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return new BigDecimal("0");
         }
         int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
             n  = n + managerdailyBO.getNumberOrder();
         }
-        return n;
+        return BigDecimal.valueOf((int)n);
     }
 
 
@@ -1460,16 +1496,16 @@ public class ManagerDailyService {
     }
 
     //计算本年累计维修房数
-    private int wxYear(Integer hotelId, String yyyy){
+    private BigDecimal wxYear(Integer hotelId, String yyyy){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, yyyy, 1);
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return new BigDecimal("0");
         }
         int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
             n = managerdailyBO.getMaintenanceroomNumber();
         }
-        return n;
+        return BigDecimal.valueOf((int)n);
     }
 
     //上年同期维修房数
@@ -1519,17 +1555,17 @@ public class ManagerDailyService {
         return n ;
     }
     //获取本年累计门店锁房数
-    private int sfYear(Integer hotelId, String date){
+    private BigDecimal sfYear(Integer hotelId, String date){
 
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return new BigDecimal("0");
         }
         int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
             n = managerdailyBO.getNumberlockedStores();
         }
-        return n;
+        return BigDecimal.valueOf((int)n);
     }
     //获取上年同期门店锁房数
     private int sfLastYearDay(Integer hotelId, String date){
@@ -1579,16 +1615,16 @@ public class ManagerDailyService {
     }
 
     //获取本年累计可出租房数
-    private int zfYear(Integer hotelId, String date){
+    private BigDecimal zfYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return new BigDecimal("0");
         }
         int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
             n = managerdailyBO.getNumberroomsAvailablerent();
         }
-        return n;
+        return BigDecimal.valueOf((int)n);
     }
     //获取上年同期可出租房数
     private int zfLastYearDay(Integer hotelId, String date){
@@ -1640,17 +1676,17 @@ public class ManagerDailyService {
     }
 
     //获取本年累计客房总数
-    private int kfYear(Integer hotelId, String date){
+    private BigDecimal kfYear(Integer hotelId, String date){
 
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return new BigDecimal("0");
         }
         int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
             n = managerdailyBO.getTotalnumberGuestrooms();
         }
-        return n;
+        return BigDecimal.valueOf((int)n);
     }
 
     //获取上年同期客房总数
@@ -1669,120 +1705,123 @@ public class ManagerDailyService {
     }
 
     //获取本月累计现金支出
-    private double zcMonth(Integer hotelId, String date){
+    private BigDecimal zcMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCashDisbursements();
+            n.add(managerdailyBO.getCashDisbursements()) ;
         }
         return n;
     }
+
     //获取上月同期现金支出
-    private double zcLastMonthDay(Integer hotelId, String date){
+    private BigDecimal zcLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCashDisbursements();
+            n.add( managerdailyBO.getCashDisbursements());
         }
         return n ;
     }
+
     //获取本年累计现金支出
-    private double zcYear(Integer hotelId, String date){
+    private BigDecimal zcYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCashDisbursements();
+            n.add(managerdailyBO.getCashDisbursements()) ;
         }
         return n;
     }
+
     //获取上年同期现金支出
-    private double zcLastYearDay(Integer hotelId, String date){
+    private BigDecimal zcLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCashDisbursements();
+            n.add(managerdailyBO.getCashDisbursements()) ;
         }
         return n;
     }
 
     //获取本月累计现金收入
-    private double srMonth(Integer hotelId, String date){
+    private BigDecimal srMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCash();
+            n.add( managerdailyBO.getCash());
         }
         return n;
     }
 
     //获取上月同期现金收入
-    private double srLastMonthDay(Integer hotelId, String date){
+    private BigDecimal srLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCash();
+            n.add(managerdailyBO.getCash()) ;
         }
         return n ;
     }
 
     //获取本年累计现金收入
-    private double srYear(Integer hotelId, String date){
+    private BigDecimal srYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCash();
+            n.add(managerdailyBO.getCash()) ;
         }
         return n;
     }
 
     //获取上年同期现金收入
-    private double srLastYearDay(Integer hotelId, String date){
+    private BigDecimal srLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCash();
+            n.add(managerdailyBO.getCash()) ;
         }
         return n;
     }
@@ -1790,243 +1829,250 @@ public class ManagerDailyService {
 
 
     //获取全天日租本月累计
-    private double qtrzMonth(Integer hotelId, String date){
+    private BigDecimal qtrzMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getThroughoutDayrent();
+            n.add( managerdailyBO.getThroughoutDayrent());
         }
         return n;
     }
 
     //获取全天日租上月同期
-    private double qtrzLastMonthDay(Integer hotelId, String date){
+    private BigDecimal qtrzLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getThroughoutDayrent();
+            n.add(managerdailyBO.getThroughoutDayrent()) ;
         }
         return n ;
     }
 
     //获取全天日租本年积累
-    private double qtrzYear(Integer hotelId, String date){
+    private BigDecimal qtrzYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getThroughoutDayrent();
+            n.add(managerdailyBO.getThroughoutDayrent()) ;
         }
         return n;
     }
+
+
     //获取全天日租上年同期
-    private double qtrzLastYearDay(Integer hotelId, String date){
+    private BigDecimal qtrzLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getThroughoutDayrent();
+            n.add(managerdailyBO.getThroughoutDayrent()) ;
         }
         return n;
     }
 
 
-
-
     //房费调整本月累计
-    private double fftzMonth(Integer hotelId, String date){
+    private BigDecimal fftzMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getRateAdjustment();
+            n.add(managerdailyBO.getRateAdjustment()) ;
         }
         return n;
     }
+
+
     //房费调整上月同期
-    private double fftzLastMonthDay(Integer hotelId, String date){
+    private BigDecimal fftzLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getRateAdjustment();
+            n.add(managerdailyBO.getRateAdjustment()) ;
         }
         return n ;
     }
+
     //房费调整本年累计
-    private double fftzYear(Integer hotelId, String date){
+    private BigDecimal fftzYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getRateAdjustment();
+            n.add(managerdailyBO.getRateAdjustment()) ;
         }
         return n;
     }
+
     //房费调整上年同期
-    private double fftzLastYearDay(Integer hotelId, String date){
+    private BigDecimal fftzLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getRateAdjustment();
+            n.add(managerdailyBO.getRateAdjustment()) ;
         }
         return n;
     }
 
 
-
-
-
      //钟点房费本月累计
-     private double zdffMonth(Integer hotelId, String date){
+     private BigDecimal zdffMonth(Integer hotelId, String date){
          //当月第一天
          Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
          //当月最后一天
          Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
          List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                  new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+         BigDecimal n = new BigDecimal("0");
          if(CollectionUtils.isEmpty(managerdailyBOS)){
-             return 0;
+             return n;
          }
-         double n = 0.0;
          for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-             n = managerdailyBO.getHourRate();
+             n.add(managerdailyBO.getHourRate()) ;
          }
          return n;
      }
+
     //钟点房费上月同期
-    private double zdffLastMonthDay(Integer hotelId, String date){
+    private BigDecimal zdffLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getHourRate();
+            n.add(managerdailyBO.getHourRate()) ;
         }
         return n ;
     }
+
     //钟点房费本年累计
-    private double zdffYear(Integer hotelId, String date){
+    private BigDecimal zdffYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getHourRate();
+            n.add( managerdailyBO.getHourRate());
         }
         return n;
     }
+
     //钟点房费上年同期
-    private double zdffLastYearDay(Integer hotelId, String date){
+    private BigDecimal zdffLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getHourRate();
+            n.add( managerdailyBO.getHourRate());
         }
         return n;
     }
 
 
     //超时房费本月累计
-    private double csffMonth(Integer hotelId, String date){
+    private BigDecimal csffMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTimeoutRate();
+            n.add(managerdailyBO.getTimeoutRate()) ;
         }
         return n;
     }
+
     //超时房费上月同期
-    private double csffLastMonthDay(Integer hotelId, String date){
+    private BigDecimal csffLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTimeoutRate();
+            n.add(managerdailyBO.getTimeoutRate()) ;
         }
         return n ;
     }
+
     //超时房费本年累计
-    private double csffYear(Integer hotelId, String date){
+    private BigDecimal csffYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTimeoutRate();
+            n.add( managerdailyBO.getTimeoutRate());
         }
         return n;
     }
+
     //超时房费上年同期
-    private double csffLastYearDay(Integer hotelId, String date){
+    private BigDecimal csffLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTimeoutRate();
+            n.add(managerdailyBO.getTimeoutRate()) ;
         }
         return n;
     }
@@ -2034,129 +2080,123 @@ public class ManagerDailyService {
     //超时房费年增长率
 
 
-
-
-
     //夜核房费本月累计
-    private double yhffMonth(Integer hotelId, String date){
+    private BigDecimal yhffMonth(Integer hotelId, String date){
     //当月第一天
     Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
     //当月最后一天
     Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
     List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
             new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+    BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-    double n = 0.0;
     for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-        n = managerdailyBO.getNuclearnightRoomcharge();
+        n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
     }
     return n;
-}
+  }
     //夜核房费上月同期
-    private double yhffLastMonthDay(Integer hotelId, String date){
+    private BigDecimal yhffLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNuclearnightRoomcharge();
+            n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
         }
         return n ;
     }
-    //夜核房费本年累计
-    private double yhffYear(Integer hotelId, String date){
 
+    //夜核房费本年累计
+    private BigDecimal yhffYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNuclearnightRoomcharge();
+            n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
         }
         return n;
     }
+
     //夜核房费上年同期
-    private double yhffLastYearDay(Integer hotelId, String date){
+    private BigDecimal yhffLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNuclearnightRoomcharge();
+            n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
         }
         return n;
     }
     //夜核房费年增长率
 
 
-
-
-
-
-
-
-
     //赔偿本月累计
-    private double pcMonth(Integer hotelId, String date){
+    private BigDecimal pcMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCompensation();
+            n.add(managerdailyBO.getCompensation()) ;
         }
         return n;
     }
+
     //赔偿上月同期
-    private double pcLastMonthDay(Integer hotelId, String date){
+    private BigDecimal pcLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCompensation();
+            n.add(managerdailyBO.getCompensation()) ;
         }
         return n ;
     }
+
     //赔偿上年同期
-    private double pcYear(Integer hotelId, String date){
+    private BigDecimal pcYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getCompensation();
+            n.add(managerdailyBO.getCompensation()) ;
         }
         return n;
     }
+
     //赔偿年增长率
-    private double pcLastYearDay(Integer hotelId, String date){
+    private BigDecimal pcLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
             n = managerdailyBO.getCompensation();
         }
@@ -2164,141 +2204,135 @@ public class ManagerDailyService {
     }
 
 
-
-
-
-
-
-
     //会员卡费本月累计
-    private double hykfMonth(Integer hotelId, String date){
+    private BigDecimal hykfMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembershipFee();
+            n.add(managerdailyBO.getMembershipFee()) ;
         }
         return n;
     }
 
     //会员卡费上月同期
-    private double hykfLastMonthDay(Integer hotelId, String date){
+    private BigDecimal hykfLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembershipFee();
+            n.add(managerdailyBO.getMembershipFee()) ;
         }
         return n ;
     }
+
     //会员卡费本年累计
-    private double hykfYear(Integer hotelId, String date){
+    private BigDecimal hykfYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembershipFee();
+            n.add(managerdailyBO.getMembershipFee()) ;
         }
         return n;
     }
+
     ///会员卡费上年同期
-    private double hykfLastYearDay(Integer hotelId, String date){
+    private BigDecimal hykfLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembershipFee();
+            n.add(managerdailyBO.getMembershipFee()) ;
         }
         return n;
     }
 
 
-
-
-
     //商品本月累计
-    private double spMonth(Integer hotelId, String date){
+    private BigDecimal spMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getGoods();
+            n.add(managerdailyBO.getGoods()) ;
         }
         return n;
     }
+
+
     //商品上月同期
-    private double spLastMonthDay(Integer hotelId, String date){
+    private BigDecimal spLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getGoods();
+            n.add(managerdailyBO.getGoods()) ;
         }
         return n ;
     }
+
     //商品本年累计
-    private double spYear(Integer hotelId, String date){
+    private BigDecimal spYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
-        double n = 0;
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getGoods();
+            n.add(managerdailyBO.getGoods()) ;
         }
         return n;
     }
 
     //商品上年同期
-    private double spLastYearDay(Integer hotelId, String date){
+    private BigDecimal spLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getGoods();
+            n.add(managerdailyBO.getGoods()) ;
         }
         return n;
     }
 
 
 
-
-
-
     //小计本月累计
-    private double xjMonth(Integer hotelId, String date){
+    private BigDecimal xjMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         log.info("当月第一天:{}", date1);
@@ -2307,269 +2341,252 @@ public class ManagerDailyService {
         log.info("当月最后一天:{}", dete2);
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
-        log.info("小计本月累计managerdailyBOS:{}",managerdailyBOS);
-        if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
-        }
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
+
     //小计上月同期
-    private double xjLastMonthDay(Integer hotelId, String date){
+    private BigDecimal xjLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 2);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
-        }
-        double n = 0;
-        if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal());
         }
         return n ;
     }
-    //小计本年累计 todo
-    private double xjYear(Integer hotelId, String date){
-        log.info("hotelId:{}",hotelId);
-        log.info("date:{}",date);
 
+        //小计本年累计
+    private BigDecimal xjYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 2);
-        System.err.println("小计本年累计:"+managerdailyBOS);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
+
     //小计上年同期
-    private double xjLastYearDay(Integer hotelId, String date){
+    private BigDecimal xjLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 2);
-
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
 
 
-
-
-
-
-
-
-
     //会员本月累计
-    private double hyMonth(Integer hotelId, String date){
+    private BigDecimal hyMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
+
     //会员上月同期
-    private double hyLastMonthDay(Integer hotelId, String date){
+    private BigDecimal hyLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n ;
     }
+
     //会员本年累计
-    private double hyYear(Integer hotelId, String date){
+    private BigDecimal hyYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
+
     //会员上年同期
-    private double hyLastYearDay(Integer hotelId, String date){
+    private BigDecimal hyLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
     //会员年增长率
 
 
-
-
-
-
     //散客本月累计
-    private double skMonth(Integer hotelId, String date){
+    private BigDecimal skMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
+
     //散客上月同期
-    private double skLastMonthDay(Integer hotelId, String date){
+    private BigDecimal skLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n ;
     }
+
     //散客本年累计
-    private double skYear(Integer hotelId, String date){
+    private BigDecimal skYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
+
     //散客上年同期
-    private double skLastYearDay(Integer hotelId, String date){
+    private BigDecimal skLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
-
-
 
 
     //协议单位本月累计
-    private double xydwMonth(Integer hotelId, String date){
+    private BigDecimal xydwMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getAgreementUnit();
+            n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
+
     //协议单位上月同期
-    private double xydwLastMonthDay(Integer hotelId, String date){
+    private BigDecimal xydwLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getAgreementUnit();
+            n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n ;
     }
+
     //协议单位本年累计
-    private double xydwYear(Integer hotelId, String date){
+    private BigDecimal xydwYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getAgreementUnit();
+            n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
+
     //协议单位上年同期
-    private double xydwLastYearDay(Integer hotelId, String date){
+    private BigDecimal xydwLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getAgreementUnit();
+            n.add( managerdailyBO.getAgreementUnit());
         }
         return n;
     }
-
-
-
-
-
-
 
 
 
     //直接入住本月累计
-    private double zjrzMonth(Integer hotelId, String date){
+    private BigDecimal zjrzMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
@@ -2578,436 +2595,430 @@ public class ManagerDailyService {
         log.info("当月最后一天:{}", new SimpleDateFormat("yyyy-MM-dd").format(dete2));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
+
     //直接入住上月同期
-    private double zjrzLastMonthDay(Integer hotelId, String date){
+    private BigDecimal zjrzLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add( managerdailyBO.getEnter());
         }
         return n ;
     }
+
     //直接入住本年累计
-    private double zjrzYear(Integer hotelId, String date){
+    private BigDecimal zjrzYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
+
     //直接入住上年同期
-    private double zjrzLastYearDay(Integer hotelId, String date){
+    private BigDecimal zjrzLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
-
-
-
 
 
     //预约入住本月累计
-    private double yyrzMonth(Integer hotelId, String date){
+    private BigDecimal yyrzMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
+
     //预约入住上月同期
-    private double yyrzLastMonthDay(Integer hotelId, String date){
+    private BigDecimal yyrzLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n ;
     }
+
     //预约入住本年累计
-    private double yyrzYear(Integer hotelId, String date){
+    private BigDecimal yyrzYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
+
     //预约入住上年同期
-    private double yyrzLastYearDay(Integer hotelId, String date){
+    private BigDecimal yyrzLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
-
-
-
-
-
-
 
     //小计本月累计
-    private double xj2Month(Integer hotelId, String date){
+    private BigDecimal xj2Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
+
     //小计上月同期
-    private double xj2LastMonthDay(Integer hotelId, String date){
+    private BigDecimal xj2LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add( managerdailyBO.getDirectBooking());
         }
         return n ;
     }
+
     //小计本年累计
-    private double xj2Year(Integer hotelId, String date){
+    private BigDecimal xj2Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
+
     //小计上年同期
-    private double xj2LastYearDay(Integer hotelId, String date){
+    private BigDecimal xj2LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 3);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
-
-
-
-
-
-
 
 
     //会员本月累计
-    private double hy2Month(Integer hotelId, String date){
+    private BigDecimal hy2Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
+
     //会员上月同期
-    private double hy2LastMonthDay(Integer hotelId, String date){
+    private BigDecimal hy2LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add( managerdailyBO.getMembers());
         }
         return n ;
     }
+
     //会员本年累计
-    private double hy2Year(Integer hotelId, String date){
+    private BigDecimal hy2Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
+
     //会员上年同期
-    private double hy2LastYearDay(Integer hotelId, String date){
+    private BigDecimal hy2LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
-
-
-
-
-
-
 
 
     //散客本月累计
-    private double sk2Month(Integer hotelId, String date){
+    private BigDecimal sk2Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
+
     //散客上月同期
-    private double sk2LastMonthDay(Integer hotelId, String date){
+    private BigDecimal sk2LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n ;
     }
+
     //散客本年累计
-    private double sk2Year(Integer hotelId, String date){
+    private BigDecimal sk2Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add( managerdailyBO.getIndividualTraveler());
         }
         return n;
     }
+
     //散客上年同期
-    private double sk2LastYearDay(Integer hotelId, String date){
+    private BigDecimal sk2LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
-
-
-
 
 
 
 
     //协议单位本月累计
-    private double xydw2Month(Integer hotelId, String date){
+    private BigDecimal xydw2Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
+
     //协议单位上月同期
-    private double xydw2LastMonthDay(Integer hotelId, String date){
+    private BigDecimal xydw2LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add( managerdailyBO.getIndividualTraveler());
         }
         return n ;
     }
+
     //协议单位本年累计
-    private double xydw2Year(Integer hotelId, String date){
+    private BigDecimal xydw2Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
+
     //协议单位上年同期
-    private double xydw2LastYearDay(Integer hotelId, String date){
+    private BigDecimal xydw2LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
-
-
-
-
-
 
 
     //直接入住本月累计
-    private double zjrz2Month(Integer hotelId, String date){
+    private BigDecimal zjrz2Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add( managerdailyBO.getEnter());
         }
         return n;
     }
+
     //直接入住上月同期
-    private double zjrz2LastMonthDay(Integer hotelId, String date){
+    private BigDecimal zjrz2LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n ;
     }
+
     //直接入住本年累计
-    private double zjrz2Year(Integer hotelId, String date){
+    private BigDecimal zjrz2Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
+
     //直接入住上年同期
-    private double zjrz2LastYearDay(Integer hotelId, String date){
+    private BigDecimal zjrz2LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -3018,59 +3029,62 @@ public class ManagerDailyService {
 
 
     //房间预订本月累计
-    private double fjyd2Month(Integer hotelId, String date){
+    private BigDecimal fjyd2Month(Integer hotelId, String date){
     //当月第一天
     Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
     //当月最后一天
     Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
     List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
             new SimpleDateFormat("yyyy-MM-dd").format(dete2), 4);
+    BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-    double n = 0.0;
     for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-        n = managerdailyBO.getDirectBooking();
+        n.add(managerdailyBO.getDirectBooking()) ;
     }
     return n;
 }
     //房间预订上月同期
-    private double fjyd2LastMonthDay(Integer hotelId, String date){
+    private BigDecimal fjyd2LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n ;
     }
+
     //房间预订本年累计
-    private double fjyd2Year(Integer hotelId, String date){
+    private BigDecimal fjyd2Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
+
     //房间预订上年同期
-    private double fjyd2LastYearDay(Integer hotelId, String date){
+    private BigDecimal fjyd2LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -3082,185 +3096,188 @@ public class ManagerDailyService {
 
 
     //小计本月累计
-    private double xj3Month(Integer hotelId, String date){
+    private BigDecimal xj3Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
+
     //小计上月同期
-    private double xj3LastMonthDay(Integer hotelId, String date){
+    private BigDecimal xj3LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n ;
     }
+
     //小计本年累计
-    private double xj3Year(Integer hotelId, String date){
+    private BigDecimal xj3Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
+
     //小计上年同期
-    private double xj3LastYearDay(Integer hotelId, String date){
+    private BigDecimal xj3LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 4);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
 
 
-
-
-
-
-
     //会员本月累计
-    private double hyfj2Month(Integer hotelId, String date){
+    private BigDecimal hyfj2Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
+
     //会员上月同期
-    private double hyfj2LastMonthDay(Integer hotelId, String date){
+    private BigDecimal hyfj2LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n ;
     }
+
     //会员本年年累计
-    private double hyfj2Year(Integer hotelId, String date){
+    private BigDecimal hyfj2Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
+
     //会员上年同期
-    private double hyfj2LastYearDay(Integer hotelId, String date){
+    private BigDecimal hyfj2LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMembers();
+            n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
-
-
 
 
 
     //散客本月累计
-    private double sk3Month(Integer hotelId, String date){
+    private BigDecimal sk3Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add( managerdailyBO.getIndividualTraveler());
         }
         return n;
     }
+
     //散客上月同期
-    private double sk3LastMonthDay(Integer hotelId, String date){
+    private BigDecimal sk3LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n ;
     }
+
     //散客本年年累计
-    private double sk3Year(Integer hotelId, String date){
+    private BigDecimal sk3Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
+
     //散客上年同期
-    private double sk3LastYearDay(Integer hotelId, String date){
+    private BigDecimal sk3LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getIndividualTraveler();
+            n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -3271,59 +3288,62 @@ public class ManagerDailyService {
 
 
     //协议单位本月累计
-    private double xydw3Month(Integer hotelId, String date){
+    private BigDecimal xydw3Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getAgreementUnit();
+            n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
+
     //协议单位上月同期
-    private double xydw3LastMonthDay(Integer hotelId, String date){
+    private BigDecimal xydw3LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getAgreementUnit();
+            n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n ;
     }
+
     //协议单位本年年累计
-    private double xydw3Year(Integer hotelId, String date){
+    private BigDecimal xydw3Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getAgreementUnit();
+            n.add( managerdailyBO.getAgreementUnit());
         }
         return n;
     }
+
     //协议单位上年同期
-    private double xydw3LastYearDay(Integer hotelId, String date){
+    private BigDecimal xydw3LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getAgreementUnit();
+            n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
@@ -3336,60 +3356,63 @@ public class ManagerDailyService {
 
 
     //直接入住本月累计
-    private double zjrz3Month(Integer hotelId, String date){
+    private BigDecimal zjrz3Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
+
     //协议单位上月同期
-    private double zjrz3LastMonthDay(Integer hotelId, String date){
+    private BigDecimal zjrz3LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter());
         }
         return n ;
     }
-    //直接入住本年年累计
-    private double zjrz3Year(Integer hotelId, String date){
 
+    //直接入住本年年累计
+    private BigDecimal zjrz3Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
+
     //直接入住上年同期
-    private double zjrz3LastYearDay(Integer hotelId, String date){
+    private BigDecimal zjrz3LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getEnter();
+            n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -3402,59 +3425,62 @@ public class ManagerDailyService {
 
 
     //房间预订本月累计
-    private double fjyd3Month(Integer hotelId, String date){
+    private BigDecimal fjyd3Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
+
     //房间预订上月同期
-    private double fjyd3LastMonthDay(Integer hotelId, String date){
+    private BigDecimal fjyd3LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n ;
     }
+
     //房间预定本年年累计
-    private double fjyd3Year(Integer hotelId, String date){
+    private BigDecimal fjyd3Year(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
+
     //房间预定上年同期
-    private double fjyd3LastYearDay(Integer hotelId, String date){
+    private BigDecimal fjyd3LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getDirectBooking();
+            n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -3466,60 +3492,63 @@ public class ManagerDailyService {
 
 
     //小计本月累计
-    private double xj4Month(Integer hotelId, String date){
+    private BigDecimal xj4Month(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0.0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
+
     //小计上月同期
-    private double xj4LastMonthDay(Integer hotelId, String date){
+    private BigDecimal xj4LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n ;
     }
+
     //小计本年年累计
-    private double xj4Year(Integer hotelId, String date){
+    private BigDecimal xj4Year(Integer hotelId, String date){
 
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
     //小计上年同期
-    private double xj4LastYearDay(Integer hotelId, String date){
+    private BigDecimal xj4LastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 5);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getSubtotal();
+            n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -3552,9 +3581,12 @@ public class ManagerDailyService {
      *  计算年增长率
      * @return
      */
-    public String isIncrease(double year1, double year2){
+    public String isIncrease(BigDecimal year1, BigDecimal year2){
+        if(year2.intValue() == 0){
+            return "0%";
+        }
+        BigDecimal n = (year1.subtract(year2)).divide(year2).multiply(new BigDecimal("100"));
 
-        double n = (year1-year2)/year2*100;
         return n+"%";
     }
 
@@ -3600,23 +3632,23 @@ public class ManagerDailyService {
 
         //添加营业收入明细
         ManagerdailyBO managerdailyBO2 = new ManagerdailyBO();
-        double v8 = throughoutDayrent(hotelId, startTime, endTime);
+        BigDecimal v8 = throughoutDayrent(hotelId, startTime, endTime);
         managerdailyBO2.setThroughoutDayrent(v8);//全天日租
-        double v9 = rateAdjustment(startTime, endTime);
+        BigDecimal v9 = rateAdjustment(startTime, endTime);
         managerdailyBO2.setRateAdjustment(v9);//计算房费调整
-        double v10 = hourRate(hotelId, startTime, endTime);
+        BigDecimal v10 = hourRate(hotelId, startTime, endTime);
         managerdailyBO2.setHourRate(v10);//计算钟点房费
-        double v11 = timeoutRate(startTime, endTime);
+        BigDecimal v11 = timeoutRate(startTime, endTime);
         managerdailyBO2.setTimeoutRate(v11);//计算超时房费
-        double v12 = nuclearnightRoomcharge(startTime, endTime);
+        BigDecimal v12 = nuclearnightRoomcharge(startTime, endTime);
         managerdailyBO2.setNuclearnightRoomcharge(v12);//计算夜核房费
-        double v13 = compensation(startTime, endTime);
+        BigDecimal v13 = compensation(startTime, endTime);
         managerdailyBO2.setCompensation(v13);//赔偿
-        double v14 = membershipFee(startTime, endTime);
+        BigDecimal v14 = membershipFee(startTime, endTime);
         managerdailyBO2.setMembershipFee(v14);//计算会员卡费
-        double v15 = goods(startTime, endTime);
+        BigDecimal v15 = goods(startTime, endTime);
         managerdailyBO2.setGoods(v15);//计算商品
-        managerdailyBO2.setSubtotal(v8+v9+v10+v11+v12+v13+v14+v15);//小计
+        managerdailyBO2.setSubtotal(v8.add(v9).add(v10).add(v11).add(v12).add(v13).add(v14).add(v15));//小计
         managerdailyBO2.setDailyType(2);
         managerdailyBO2.setHotelId(hotelId);
         managerdailyBO2.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
@@ -3629,21 +3661,22 @@ public class ManagerDailyService {
         //房费收入分析
         ManagerdailyBO managerdailyBO3 = new ManagerdailyBO();
         //会员
-        double members = members(hotelId, startTime, endTime);
+        BigDecimal members = members(hotelId, startTime, endTime);
         managerdailyBO3.setMembers(members);
         //协议单位
-        double v = agreementUnit(hotelId, startTime, endTime);
+        BigDecimal v = agreementUnit(hotelId, startTime, endTime);
         managerdailyBO3.setAgreementUnit(v);
         //散客
-        double v1 = individualTraveler(hotelId, startTime, endTime);
+        BigDecimal v1 = individualTraveler(hotelId, startTime, endTime);
         managerdailyBO3.setIndividualTraveler(v1);
         //直接入住
-        double enter = enter(hotelId, startTime, endTime);
+        BigDecimal enter = enter(hotelId, startTime, endTime);
         managerdailyBO3.setEnter(enter);
         //预约入住
-        double v2 = directBooking(hotelId, startTime, endTime);
+        BigDecimal v2 = directBooking(hotelId, startTime, endTime);
+
         managerdailyBO3.setDirectBooking(v2);
-        managerdailyBO3.setSubtotal(members+v+v1+enter+v2);
+        managerdailyBO3.setSubtotal(members.add(v).add(v1).add(enter).add(v2));
         managerdailyBO3.setDailyType(3);
         managerdailyBO3.setHotelId(hotelId);
         managerdailyBO3.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
@@ -3651,27 +3684,31 @@ public class ManagerDailyService {
 
 
 
-
+        BigDecimal f = new BigDecimal("0");
 
         //房晚数分析
         ManagerdailyBO managerdailyBO4 = new ManagerdailyBO();
         //会员房晚数
-        double a = (double)FwMembers(hotelId, startTime, endTime);
+        BigDecimal a = FwMembers(hotelId, startTime, endTime);
         managerdailyBO4.setMembers(a);
         //协议单位房晚数
-        double b = (double)FwAgreementUnit(hotelId, startTime, endTime);
+        BigDecimal b = FwAgreementUnit(hotelId, startTime, endTime);
         managerdailyBO4.setAgreementUnit(b);
         //散客房晚数
-        double c = (double)FwIndividualTraveler(hotelId, startTime, endTime);
+        BigDecimal c = FwIndividualTraveler(hotelId, startTime, endTime);
         managerdailyBO4.setIndividualTraveler(c);
         //直接入住房晚数
-        double d = (double)FwEnter(hotelId, startTime, endTime);
+        BigDecimal d = FwEnter(hotelId, startTime, endTime);
         managerdailyBO4.setEnter(d);
         //房间预订房晚数
-        double e = (double)FwDirectBooking(hotelId, startTime, endTime);
+        BigDecimal e = FwDirectBooking(hotelId, startTime, endTime);
         managerdailyBO4.setDirectBooking(e);
         //小计
-        double f = a+b+c+d+e;
+        f.add(a);
+        f.add(b);
+        f.add(c);
+        f.add(d);
+        f.add(e);
         managerdailyBO4.setSubtotal(f );
         managerdailyBO4.setDailyType(4);
         managerdailyBO4.setHotelId(hotelId);
@@ -3684,51 +3721,54 @@ public class ManagerDailyService {
         //平均房价分析
         ManagerdailyBO managerdailyBO5 = new ManagerdailyBO();
         //会员平均房价分析
-        double v3 = PjMembers(hotelId, startTime, endTime);
+        BigDecimal v3 = PjMembers(hotelId, startTime, endTime);
         log.info("v3:{}",v3);
         managerdailyBO5.setMembers(v3);
         //协议单位平均房价
-        double v4 = PjAgreementUnit(hotelId, startTime, endTime);
+        BigDecimal v4 = PjAgreementUnit(hotelId, startTime, endTime);
         managerdailyBO5.setAgreementUnit(v4);
         log.info("v4:{}",v4);
         //散客平均房价
-        double v5 = PjIndividualTraveler(hotelId, startTime, endTime);
+        BigDecimal v5 = PjIndividualTraveler(hotelId, startTime, endTime);
         log.info("v5:{}",v5);
         managerdailyBO5.setIndividualTraveler(v5);
         //直接入住平均房价
-        double v6 = PjEnter(hotelId, startTime, endTime);
+        BigDecimal v6 = PjEnter(hotelId, startTime, endTime);
         log.info("v6:{}",v6);
         managerdailyBO5.setEnter(v6);
         //预约入住平均房价
-        double v7 = PjDirectBooking(hotelId, startTime, endTime);
+        BigDecimal v7 = PjDirectBooking(hotelId, startTime, endTime);
         log.info("v7:{}",v7);
         managerdailyBO5.setDirectBooking(v7);
 
-        log.info("v3+v4+v5+v6+v7:{}",v3+v4+v5+v6+v7);
+        log.info("v3+v4+v5+v6+v7:{}",v3.add(v4).add(v5).add(v6).add(v7));
         //小计
-        managerdailyBO5.setSubtotal(v3+v4+v5+v6+v7);
+        managerdailyBO5.setSubtotal(v3.add(v4).add(v5).add(v6).add(v7));
         managerdailyBO5.setDailyType(5);
         managerdailyBO5.setHotelId(hotelId);
         managerdailyBO5.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO5);
 
-
-
+        //百分比格式
+        NumberFormat nf   =   NumberFormat.getPercentInstance();
+         nf.setMinimumFractionDigits( 2 );       // 保留到小数点后几位        显示：47.00%
 
         //出租率分析
         ManagerdailyBO managerdailyBO6 = new ManagerdailyBO();
         //会员出租率
-        managerdailyBO6.setMembers(a/f*100);
+        managerdailyBO6.setMembers(f.intValue() != 0 ? a.divide(f) : new BigDecimal("0"));
         //协议单位出租率
-        managerdailyBO6.setAgreementUnit(b/f*100);
+        managerdailyBO6.setAgreementUnit(f.intValue() != 0 ? b.divide(f)  : new BigDecimal("0"));
         //散客出租率
-        managerdailyBO6.setIndividualTraveler(c/f*100);
+        managerdailyBO6.setIndividualTraveler( f.intValue() != 0 ? c.divide(f) : new BigDecimal("0"));
+
         //直接入住出租率
-        managerdailyBO6.setEnter(d/f*100);
+        managerdailyBO6.setEnter( f.intValue() != 0 ?  d.divide(f) : new BigDecimal("0"));
+
         //预约入住出租率
-        managerdailyBO6.setDirectBooking(e/f*100);
+        managerdailyBO6.setDirectBooking( f.intValue() != 0 ? e.divide(f) : new BigDecimal("0"));
         //小计
-        managerdailyBO6.setSubtotal(f/f*100);
+        managerdailyBO6.setSubtotal( f.intValue() != 0 ? f.divide(f) : new BigDecimal("0") );
         managerdailyBO6.setDailyType(6);
         managerdailyBO6.setHotelId(hotelId);
         managerdailyBO6.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
@@ -3797,23 +3837,23 @@ public class ManagerDailyService {
     }
 
     /**
-     * 计算现金支出
+     * 计算现金支出  todo
      * @return
      */
-    private double cashDisbursements(){
-        return 0.0;
+    private BigDecimal cashDisbursements(){
+        return new BigDecimal("0");
     }
 
     /**
      * 计算现金收入
      * @return
      */
-    private double cash(Integer hotelId, String startTime, String endTime){
+    private BigDecimal cash(Integer hotelId, String startTime, String endTime){
         List<CommodityTransactionBO> commodityTransactionBOS = managerDailyDAO.queryCash(hotelId, startTime, endTime);
-        double n = 0.0;
+        BigDecimal n = new BigDecimal("0");
         System.err.println("计算现金收入:"+commodityTransactionBOS);
         for (CommodityTransactionBO commodityTransactionBO : commodityTransactionBOS) {
-            n = n + commodityTransactionBO.getMoney();
+            n.add(commodityTransactionBO.getMoney()) ;
         }
        return n;
     }
@@ -3825,14 +3865,15 @@ public class ManagerDailyService {
      *
      * @return
      */
-    private double throughoutDayrent(Integer hotelId, String startTime, String endTime){
+    private BigDecimal throughoutDayrent(Integer hotelId, String startTime, String endTime){
         List<OrderReBO> orderReBOS = managerDailyDAO.queryOrderRe(hotelId, startTime, endTime);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(orderReBOS)){
-            return 0;
+            return n;
         }
-        double n = 0;
+
         for (OrderReBO orderReBO : orderReBOS) {
-            n = n + orderReBO.getMoney();
+           n.add(orderReBO.getMoney()) ;
         }
         return n;
     }
@@ -3841,11 +3882,11 @@ public class ManagerDailyService {
      * 房费调整
      * @return
      */
-    private double rateAdjustment(String startTime, String endTime){
+    private BigDecimal rateAdjustment(String startTime, String endTime){
         List<CashierSummary> cashierSummaries = managerDailyDAO.queryRateAdjustment(startTime, endTime);
-        double n = 0.0;
+        BigDecimal n = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries) {
-            n = n + cashierSummary.getConsumption();
+            n.add(cashierSummary.getConsumption()) ;
         }
         return n;
     }
@@ -3857,11 +3898,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double hourRate(Integer hotelId, String startTime, String endTime){
+    private BigDecimal hourRate(Integer hotelId, String startTime, String endTime){
         List<Order> orders = managerDailyDAO.queryhourRate(hotelId, startTime, endTime);
-        double n = 0.0;
+        BigDecimal n = new BigDecimal("0");
         for (Order order : orders) {
-            n = n + order.getTotalPrice();
+             n.add(order.getTotalPrice()) ;
         }
         return n;
     }
@@ -3873,11 +3914,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double timeoutRate(String startTime, String endTime){
+    private BigDecimal timeoutRate(String startTime, String endTime){
         List<CashierSummary> cashierSummaries = managerDailyDAO.querytimeoutRate(startTime, endTime);
-        double n = 0;
+        BigDecimal n = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries) {
-            n = n + cashierSummary.getConsumption();
+            n.add(cashierSummary.getConsumption()) ;
         }
         return n ;
     }
@@ -3889,19 +3930,19 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double nuclearnightRoomcharge(String startTime, String endTime){
+    private BigDecimal nuclearnightRoomcharge(String startTime, String endTime){
         List<CashierSummary> cashierSummaries = managerDailyDAO.querynuclearnightRoomcharge1(startTime, endTime);
-        double n1 = 0.0;
+        BigDecimal n1 = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries) {
-            n1 = n1 + cashierSummary.getConsumption();
+            n1.add(cashierSummary.getConsumption()) ;
         }
 
         List<CashierSummary> cashierSummaries2 = managerDailyDAO.querynuclearnightRoomcharge2(startTime, endTime);
-        double n2 = 0.0;
+        BigDecimal n2 = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries2) {
-            n2 = n2 + cashierSummary.getConsumption();
+            n2.add(cashierSummary.getConsumption()) ;
         }
-        return n1 - n2 ;
+        return n1.subtract(n2);
     }
 
 
@@ -3911,11 +3952,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double compensation(String startTime, String endTime){
+    private BigDecimal compensation(String startTime, String endTime){
         List<CashierSummary> querycompensation = managerDailyDAO.querycompensation(startTime, endTime);
-        double n = 0.0;
+        BigDecimal n = new BigDecimal("0");
         for (CashierSummary cashierSummary : querycompensation) {
-            n = n + cashierSummary.getConsumption();
+             n.add(cashierSummary.getConsumption()) ;
         }
         return n;
     }
@@ -3926,11 +3967,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double membershipFee(String startTime, String endTime){
+    private BigDecimal membershipFee(String startTime, String endTime){
         List<CashierSummary> cashierSummaries = managerDailyDAO.querymembershipFee(startTime, endTime);
-        double n = 0.0;
+        BigDecimal n = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries) {
-            n = n + cashierSummary.getConsumption();
+             n.add(cashierSummary.getConsumption()) ;
         }
         return n ;
     }
@@ -3941,11 +3982,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double goods(String startTime, String endTime){
+    private BigDecimal goods(String startTime, String endTime){
         List<CashierSummary> querygoods = managerDailyDAO.querygoods(startTime, endTime);
-        double n = 0.0 ;
+        BigDecimal n = new BigDecimal("0");
         for (CashierSummary querygood : querygoods) {
-            n = n + querygood.getConsumption();
+            n.add(querygood.getConsumption()) ;
         }
        return n ;
     }
@@ -3958,11 +3999,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double members(Integer hotelId, String startTime, String endTime){
+    private BigDecimal members(Integer hotelId, String startTime, String endTime){
         List<Order> querymembers = managerDailyDAO.querymembers(hotelId, startTime, endTime);
-        double n =0.0;
+        BigDecimal n = new BigDecimal("0");
         for (Order querymember : querymembers) {
-            n = n + querymember.getTotalPrice();
+            n.add(querymember.getTotalPrice()) ;
         }
         return n ;
     }
@@ -3975,11 +4016,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double agreementUnit(Integer hotelId, String startTime, String endTime){
+    private BigDecimal agreementUnit(Integer hotelId, String startTime, String endTime){
         List<Order> orders = managerDailyDAO.qyeryagreementUnit(hotelId, startTime, endTime);
-        double n =0.0;
+        BigDecimal n = new BigDecimal("0");
         for (Order querymember : orders) {
-            n = n + querymember.getTotalPrice();
+             n.add(querymember.getTotalPrice());
         }
         return n ;
     }
@@ -3992,11 +4033,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double individualTraveler(Integer hotelId, String startTime, String endTime){
+    private BigDecimal individualTraveler(Integer hotelId, String startTime, String endTime){
         List<Order> orders = managerDailyDAO.queryindividualTraveler(hotelId, startTime, endTime);
-        double n = 0.0;
+        BigDecimal n = new BigDecimal("0");
         for (Order order : orders) {
-            n = n + order.getTotalPrice();
+            n.add(order.getTotalPrice()) ;
         }
         return n;
     }
@@ -4009,11 +4050,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double enter(Integer hotelId, String startTime, String endTime){
+    private BigDecimal enter(Integer hotelId, String startTime, String endTime){
         List<Order> orders = managerDailyDAO.queryEnter(hotelId, startTime, endTime);
-        double n = 0.0;
+        BigDecimal n = new BigDecimal("0");
         for (Order order : orders) {
-            n = n + order.getTotalPrice();
+             n.add(order.getTotalPrice()) ;
         }
         return n;
     }
@@ -4025,11 +4066,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double directBooking(Integer hotelId, String startTime, String endTime){
+    private BigDecimal directBooking(Integer hotelId, String startTime, String endTime){
         List<Order> orders = managerDailyDAO.queryDirectBooking(hotelId, startTime, endTime);
-        double n = 0.0;
+        BigDecimal n = new BigDecimal("0");
         for (Order order : orders) {
-            n = n + order.getTotalPrice();
+             n.add(order.getTotalPrice()) ;
         }
         return n;
     }
@@ -4042,9 +4083,9 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private int FwMembers(Integer hotelId, String startTime, String endTime){
+    private BigDecimal FwMembers(Integer hotelId, String startTime, String endTime){
         Integer integer = managerDailyDAO.queryFwMembers(hotelId, startTime, endTime);
-        return integer;
+        return BigDecimal.valueOf(integer);
     }
 
     /**
@@ -4054,9 +4095,9 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private int FwAgreementUnit(Integer hotelId, String startTime, String endTime){
+    private BigDecimal FwAgreementUnit(Integer hotelId, String startTime, String endTime){
         Integer integer = managerDailyDAO.queryFwAgreementUnit(hotelId, startTime, endTime);
-        return integer;
+        return BigDecimal.valueOf((int)integer);
     }
 
     /**
@@ -4066,9 +4107,9 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private int FwIndividualTraveler(Integer hotelId, String startTime, String endTime){
+    private BigDecimal FwIndividualTraveler(Integer hotelId, String startTime, String endTime){
         Integer integer = managerDailyDAO.queryFwIndividualTraveler(hotelId, startTime, endTime);
-        return integer;
+        return BigDecimal.valueOf((int)integer);
     }
 
     /**
@@ -4078,9 +4119,9 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private int FwEnter(Integer hotelId, String startTime, String endTime ){
+    private BigDecimal FwEnter(Integer hotelId, String startTime, String endTime ){
         Integer integer = managerDailyDAO.queryFwEnter(hotelId, startTime, endTime);
-        return integer;
+        return BigDecimal.valueOf((int)integer);
     }
 
     /**
@@ -4090,9 +4131,10 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private int FwDirectBooking(Integer hotelId, String startTime, String endTime ){
-        Integer integer = managerDailyDAO.queryFwDirectBooking(hotelId, startTime, endTime);
-        return integer;
+    private BigDecimal FwDirectBooking(Integer hotelId, String startTime, String endTime ){
+        int integer = managerDailyDAO.queryFwDirectBooking(hotelId, startTime, endTime);
+
+        return BigDecimal.valueOf((int)integer);
     }
 
     /**
@@ -4102,16 +4144,19 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double PjMembers(Integer hotelId, String startTime, String endTime){
+    private BigDecimal PjMembers(Integer hotelId, String startTime, String endTime){
         //会员总房价
-        double members = members(hotelId, startTime, endTime);
+        BigDecimal members = members(hotelId, startTime, endTime);
+        log.info("会员总房价:{}",members);
         //会员开放数量
-        double i = FwMembers(hotelId, startTime, endTime);
-        Double a = members/i;
-        if(a.equals(Double.NaN)){
-            return 0;
+        BigDecimal i = FwMembers(hotelId, startTime, endTime);
+        log.info("会员开房数量:{}",i);
+
+        BigDecimal divide = new BigDecimal("0");
+        if(i.intValue() != 0){
+             divide = members.divide(i);
         }
-        return members/i;
+        return divide;
     }
 
 
@@ -4122,19 +4167,17 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double PjAgreementUnit(Integer hotelId, String startTime, String endTime){
+    private BigDecimal PjAgreementUnit(Integer hotelId, String startTime, String endTime){
         //协议单位总房价
-        double v = agreementUnit(hotelId, startTime, endTime);
+        BigDecimal v = agreementUnit(hotelId, startTime, endTime);
         log.info("协议单位总房价:{}",v);
         //协议单位开放数量
-        double i = FwAgreementUnit(hotelId, startTime, endTime);
-        log.info("协议单位开房数:{}",i);
-        log.info("平均价格:{}",v/i);
-        Double a = v/i;
-        if(a.equals(Double.NaN)){
-            return 0;
+        BigDecimal i = FwAgreementUnit(hotelId, startTime, endTime);
+        BigDecimal divide = new BigDecimal("0");
+        if(i.intValue() != 0){
+             divide = v.divide(i);
         }
-        return v/i;
+        return divide;
     }
 
 
@@ -4145,21 +4188,17 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double PjIndividualTraveler(Integer hotelId, String startTime, String endTime){
+    private BigDecimal PjIndividualTraveler(Integer hotelId, String startTime, String endTime){
         //散客总房价
-        double v = individualTraveler(hotelId, startTime, endTime);
+        BigDecimal v = individualTraveler(hotelId, startTime, endTime);
         log.info("v:{}",v);
         //散客总开房数
-        double i = FwIndividualTraveler(hotelId, startTime, endTime);
-        log.info("i:{}",i);
-
-        log.info("v/i:{}",v/i);
-        Double a = v/i;
-        if(a.equals(Double.NaN)){
-            return 0;
+        BigDecimal i = FwIndividualTraveler(hotelId, startTime, endTime);
+        BigDecimal divide = new BigDecimal("0");
+        if(i.intValue() != 0){
+             divide = v.divide(i);
         }
-
-        return v/i;
+        return divide;
     }
 
     /**
@@ -4169,16 +4208,16 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double PjEnter(Integer hotelId, String startTime, String endTime){
+    private BigDecimal PjEnter(Integer hotelId, String startTime, String endTime){
         //直接入住总房价
-        double enter = enter(hotelId, startTime, endTime);
+        BigDecimal enter = enter(hotelId, startTime, endTime);
         //直接入住房间数
-        double i = FwEnter(hotelId, startTime, endTime);
-        Double a = enter/i;
-        if(a.equals(Double.NaN)){
-            return 0;
+        BigDecimal i = FwEnter(hotelId, startTime, endTime);
+        BigDecimal divide = new BigDecimal("0");
+        if(i.intValue() != 0){
+            divide = enter.divide(i);
         }
-        return enter/i;
+        return divide;
     }
 
 
@@ -4189,19 +4228,17 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double PjDirectBooking(Integer hotelId, String startTime, String endTime){
+    private BigDecimal PjDirectBooking(Integer hotelId, String startTime, String endTime){
         //房间预订总房价
-        double v = directBooking(hotelId, startTime, endTime);
+        BigDecimal v = directBooking(hotelId, startTime, endTime);
         log.info("房间预订总房价:{}", v);
         //房间预订总数量
-        double i = FwDirectBooking(hotelId, startTime, endTime);
-        log.info("房间预订总数量:{}", i);
-        log.info("房间预订平均房价:{}", v/i);
-        Double a = v/i;
-        if(a.equals(Double.NaN)){
-            return 0;
+        BigDecimal i = FwDirectBooking(hotelId, startTime, endTime);
+        BigDecimal divide = new BigDecimal("0");
+        if(i.intValue() != 0){
+            divide = v.divide(i);
         }
-        return v/i;
+        return divide;
     }
 
 
@@ -4212,12 +4249,12 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double orderTotalPrice(Integer hotelId, String startTime, String endTime){
+    private BigDecimal orderTotalPrice(Integer hotelId, String startTime, String endTime){
         List<TotalPriceBO> totalPriceBOS = managerdailyBOMapper.queryOrderTotalPrice(hotelId, startTime, endTime);
         log.info("totalPriceBOS:{}",totalPriceBOS);
-        double n = 0;
+        BigDecimal n = new BigDecimal("0");
         for (TotalPriceBO totalPriceBO : totalPriceBOS) {
-            n = n +totalPriceBO.getTotalPrice();
+            n = n.add(totalPriceBO.getTotalPrice());
         }
         return n;
     }
@@ -4229,11 +4266,11 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private double queryConsumption(Integer hotelId, String startTime, String endTime){
+    private BigDecimal queryConsumption(Integer hotelId, String startTime, String endTime){
         List<CashierSummary> cashierSummaries = managerdailyBOMapper.queryConsumption(hotelId, startTime, endTime);
-        double n = 0;
+        BigDecimal n = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries) {
-            n = n + cashierSummary.getConsumption();
+            n = n.add(cashierSummary.getConsumption()) ;
         }
         return n;
     }

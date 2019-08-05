@@ -16,7 +16,7 @@ public class OrderReBO extends BaseModel {
     private Integer createUserId;//创建用户id
     private String createUserName;//创建用户name
     private String payType;//支付方式
-    private double money;//金额
+    private BigDecimal money;//金额
     private String state;//状态
     private String project;//项目
     private String number;//数量
@@ -70,11 +70,11 @@ public class OrderReBO extends BaseModel {
         this.payType = payType;
     }
 
-    public double getMoney() {
+    public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(double money) {
+    public void setMoney(BigDecimal money) {
         this.money = money;
     }
 

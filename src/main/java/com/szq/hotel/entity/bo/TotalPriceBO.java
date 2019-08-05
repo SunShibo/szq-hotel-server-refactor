@@ -29,7 +29,7 @@ public class TotalPriceBO extends BaseModel {
     private Integer membersId;//会员id
     private Integer memberIdOrOrganizationId;//会员id 合作机构id
     private String subscribeRemark;//预约备注
-    private double totalPrice;
+    private BigDecimal totalPrice;
     private Date createTime;
     private Date updateTime;
     private String OTA;
@@ -171,11 +171,11 @@ public class TotalPriceBO extends BaseModel {
         this.subscribeRemark = subscribeRemark;
     }
 
-    public double getTotalPrice() {
+    public BigDecimal getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
 
