@@ -193,4 +193,13 @@
     <select id="getMenuList" resultType="com.szq.hotel.entity.bo.MenuBO">
         select * from hm_menu
     </select>
+
+    <!--查询角色是否有酒店权限-->
+    <select id="queryHotelCount"    resultType="int" >
+      SELECT COUNT(*)  FROM `hm_role_hotel` WHERE role_id =#{roleId} AND hotel_id =#{hotelId}
+    </select>
+
+    <insert id="addHotel"  >
+        INSERT INTO `hm_role_hotel` ( `role_id`, `hotel_id`) VALUES (#{roleId},#{hotelId});
+    </insert>
 </mapper>

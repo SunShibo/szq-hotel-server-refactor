@@ -47,7 +47,7 @@ public class HomeService {
     public List<FloorRoomBO> home(Integer hotelId, String vacant, String inthe, String timeout,
                                   String dirty, String subscribe, String departure, String maintain, String shop,
                                 /*  String network,*/ String types) {
-        log.info("start home.............................................");
+        log.info("start home.......................................................");
         log.info("vacant:{}\tinthe:{}\ttimeout:{}\tdirty:{}\tsubscribe:{}\tdeparture:{}\tmaintain:{}" +
                 "\tshop:{}\t",vacant,inthe,timeout,dirty,subscribe,departure,maintain,shop/*,network*/);
 
@@ -69,7 +69,7 @@ public class HomeService {
 
         Date startTime=new Date();
         Date endTime= DateUtils. getDataByStr(DateUtils.getBrightSiceStringData());
-        log.info("homeDAO.home..................................");
+        log.info("homeDAO.home...........................................................................");
         log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(paramMap));
         List<FloorRoomBO> home = homeDAO.home(paramMap);
         for(int floori=0;floori<home.size();floori++){
@@ -77,6 +77,11 @@ public class HomeService {
                 try {
                     HomeRoomBO homeRoomBO = home.get(floori).getRooms().get(roomi);
                     //是否是在住中
+                    paramMap.put("roomId",homeRoomBO.getRoomId());
+                    Integer integer = homeDAO.querySubStatus(paramMap);
+                    if(integer!=null){
+                        homeRoomBO.setMakeStatus(integer);
+                    }
                     if (homeRoomBO.getStatus().equals(Constants.INTHE.getValue()) || homeRoomBO.getStatus().equals(Constants.TIMEOUT.getValue())) {
                         HomeOrderBO homeOrderBO = homeDAO.queryChildOrder(paramMap);
                         if (homeOrderBO != null) {
@@ -103,7 +108,7 @@ public class HomeService {
         }
 
         log.info("result:{}",home);
-        log.info("end home.............................................");
+        log.info("end home......................................................................");
         return home;
     }
 

@@ -58,6 +58,14 @@ public class AdminController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return ;
         }
+        //验证权限
+
+        int count = adminService.queryHotelCount(hotelId, adminBO.getRoleId());
+        if(count<1){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000209")) ;
+            super.safeJsonPrint(response, result);
+            return;
+        }
         adminBO.setHotelId(hotelId);
         adminBO.setPassword("");
 
@@ -96,7 +104,7 @@ public class AdminController extends BaseCotroller {
             return ;
         }
         //验证参数
-        if(admin == null || StringUtils.isEmpty(admin.getPassword())
+        if(admin == null || StringUtils.isEmpty(admin.getPassword() )
                 || StringUtils.isEmpty(admin.getMobile()) || StringUtils.isEmpty(admin.getName()) || admin.getRoleId()==null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
             super.safeJsonPrint(response , result);
@@ -206,7 +214,8 @@ public class AdminController extends BaseCotroller {
             return ;
         }
         //验证参数
-        if(param.getId()==null||param.getId().equals("")||param.getMobile()==null||param.getMobile().equals("")||param.getName()==null||param.getName().equals("")){
+        if(param.getId()==null||param.getId().equals("")||param.getMobile()==null||param.getMobile().equals("")||param.getName()==null
+                ||param.getName().equals("") ){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
             super.safeJsonPrint(response , result);
             return ;
@@ -243,10 +252,9 @@ public class AdminController extends BaseCotroller {
      * 修改密码
      * @param request
      * @param response
-     * @param param
      */
     @RequestMapping("/changePassword")
-    public void changePassword(HttpServletRequest request, HttpServletResponse response, AdminBO param){
+    public void changePassword(HttpServletRequest request, HttpServletResponse response,String passWord,String newPassword){
         // 非空判断
         AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证用户
@@ -256,12 +264,20 @@ public class AdminController extends BaseCotroller {
             return ;
         }
         //验证参数
-        if(param.getId()==null||param.getId().equals("")||param.getPassword()==null||param.getPassword().equals("")){
+        if(StringUtils.isEmpty(passWord) || StringUtils.isEmpty(newPassword)){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
             super.safeJsonPrint(response , result);
             return ;
         }
-        adminService.updateAdminUser(param);
+        //判断之前的密码是否一样
+        AdminBO adminBO = adminService.queryAdminInfoByMobile(loginAdmin.getMobile());
+        if(!adminBO.getPassword().equals(MD5Util.digest(passWord))){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000208")) ;
+            super.safeJsonPrint(response , result);
+            return ;
+        }
+        adminBO.setPassword(MD5Util.digest(newPassword));
+        adminService.updateAdminUser(adminBO);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success( "修改成功")) ;
         super.safeJsonPrint(response , result);
 
@@ -287,8 +303,8 @@ public class AdminController extends BaseCotroller {
             return ;
         }
         //参数验证
-        if(StringUtils.isEmpty(roleName) || StringUtils.isEmpty(menuIds)){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常"+"roleName:"+roleName +"menuIds:"+menuIds)) ;
+        if(StringUtils.isEmpty(roleName) || StringUtils.isEmpty(menuIds)||StringUtils.isEmpty(hotelIds)){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001")) ;
             super.safeJsonPrint(response , result);
             return ;
         }
@@ -470,6 +486,7 @@ public class AdminController extends BaseCotroller {
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(menuBOList)) ;
         super.safeJsonPrint(response, result);
     }
+
 
 
 }

@@ -16,15 +16,12 @@
             <result property="lockRoomState"  column="lock_room_state" />
             <result property="maintain"  column="room_state" />
             <result property="makeStatus"  column="makeStatus" />
-
         </collection>
     </resultMap>
 
     <select id="home"  parameterType="java.util.Map"  resultMap="queryHome" >
          SELECT DISTINCT room.id s   ,flo.id,flo.name,room.id as roomId,room.room_name,type.room_type_name ,
-        room.room_major_state,room.lock_room_state,room.room_state ,
-        IF( child.order_state='reservation'  AND  start_time &lt;= #{endTime}  AND    end_time  > #{startTime} ,
-        child.id,NULL) as makeStatus
+        room.room_major_state,room.lock_room_state,room.room_state
         FROM hm_floor flo INNER JOIN hm_room room on room.floor_id=flo.id
                            INNER JOIN hm_room_type type ON type.id=room.room_type_id
 													 LEFT JOIN hm_order_child child ON child.room_id=room.id

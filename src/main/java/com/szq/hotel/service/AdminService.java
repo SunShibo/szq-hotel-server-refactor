@@ -327,7 +327,9 @@ public class AdminService {
      */
     public boolean updateAdminUser(AdminBO param) {
         //加密密码
-        param.setPassword(MD5Util.digest(param.getPassword()));
+        if(!StringUtils.isEmpty(param.getPassword())) {
+            param.setPassword(MD5Util.digest(param.getPassword()));
+        }
         return adminDAO.updateAdminUser(param) > 0;
     }
 
@@ -377,5 +379,11 @@ public class AdminService {
         return roleList;
     }
 
+    public int queryHotelCount(Integer hotelId,Integer roleId){
+       return adminDAO.queryHotelCount(hotelId,roleId);
+    }
 
+    public void addHotel(Integer hotelId,Integer roleId){
+         adminDAO.addHotel(hotelId,roleId);
+    }
 }

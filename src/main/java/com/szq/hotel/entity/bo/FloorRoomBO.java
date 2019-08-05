@@ -3,6 +3,7 @@ package com.szq.hotel.entity.bo;
 import com.szq.hotel.entity.bo.common.base.BaseModel;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 楼层和房间
@@ -12,7 +13,6 @@ public class FloorRoomBO extends BaseModel {
     private Integer id;
     private String name;
     private List<HomeRoomBO> rooms;
-
 
     public Integer getId() {
         return id;
@@ -36,14 +36,5 @@ public class FloorRoomBO extends BaseModel {
 
     public void setRooms(List<HomeRoomBO> rooms) {
         this.rooms = rooms;
-    }
-
-    @Override
-    public String toString() {
-        return "FloorRoomBO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", rooms=" + rooms +
-                '}';
     }
 }

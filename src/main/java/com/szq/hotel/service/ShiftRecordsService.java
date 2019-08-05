@@ -49,7 +49,7 @@ public class ShiftRecordsService {
         }
         //上班
         log.info("addShiftRecords............................");
-        shiftRecordsDAO.addShiftRecords(new ShiftRecordsBO(userId, classesId,hotelId));
+        shiftRecordsDAO.addShiftRecords(new ShiftRecordsBO(classesId,userId,hotelId));
         log.info("end beOnDuty............................");
     }
 
