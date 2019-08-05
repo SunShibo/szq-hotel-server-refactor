@@ -32,15 +32,15 @@
 <div style="height: 70px;"></div>
 <form class="layui-form" style="padding-top: 10px">
     <div class="layui-form-item">
-        <!--<label class="layui-form-label">起止时间</label>-->
-        <!--<div class="layui-input-inline" style="width: 165px;">-->
-            <!--<input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"-->
-                   <!--class="layui-input inline-input"-->
-                   <!--placeholder="时间">-->
-        <!--</div>-->
-        <!--<div class="layui-input-inline">-->
-            <!--<button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>-->
-        <!--</div>-->
+        <label class="layui-form-label">日期选择</label>
+        <div class="layui-input-inline" style="width: 165px;">
+            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
+                   class="layui-input inline-input"
+                   placeholder="开始时间">
+        </div>
+        <div class="layui-input-inline">
+            <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
+        </div>
     </div>
 </form>
 <div class="tab-box">
@@ -52,23 +52,27 @@
         var table = layui.table, $ = layui.$, form = layui.form, state = 0, laydate = layui.laydate;
         //监听提交
         form.on('submit(formData)', function (data) {
-            resultInfo();
+            var st = $("#startTime").val();
+            if(st==''){
+                layer.msg("请选择时间")
+                return false;
+            }
+            resultInfo(st);
             return false;
         });
-        // $(function () {
-        //     state = parseInt(getUrl('s'));
-            resultInfo()
-        // });
-
+        $(function () {
+            $("#startTime").val(DateToLStr3(new Date()));
+            resultInfo(DateToLStr3(new Date()))
+        })
         //获取
-        function resultInfo() {
+        function resultInfo(startTime) {
             var obj = {
-                // date:$("#startTime").val().replace(/-/g, "/")+" 04:00:00"
+                 date:startTime
             };
             $.ajax({
                 url: '/income/getIncome ',
                 type: 'POST',
-                // data: obj,
+                data: obj,
                 dataType: 'json',
                 success: function (data) {
                     var rs = data.data;
@@ -222,6 +226,7 @@
         laydate.render({
             elem: '#startTime',
             type: 'date',
+            format: 'yyyy/MM/dd',
             btns: ['confirm']
         });
     });
