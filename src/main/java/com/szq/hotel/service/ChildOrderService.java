@@ -342,7 +342,7 @@ public class ChildOrderService {
         orderRecordService.closedAccount(StringUtils.strToList(ids));
         // 是会员应增加相对应积分
         if (childOrderBO.getMembersId() != null) {
-            memberService.accountIntegral(childOrderBO.getMembersId(), new BigDecimal(orderRecordService.consumption(StringUtils.strToList(ids))), "结账", userId);
+            memberService.accountIntegral(childOrderBO.getMembersId(), new BigDecimal(orderRecordService.consumption(StringUtils.strToList(ids))).multiply(new BigDecimal("-1")), "结账", userId);
         }
 
         return buffer.toString();

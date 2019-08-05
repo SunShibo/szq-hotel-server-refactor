@@ -2,14 +2,12 @@ package com.szq.hotel.service;
 
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.UpdatePriceDAO;
-import com.szq.hotel.entity.bo.AddPriceBO;
-import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
-import com.szq.hotel.entity.bo.MemberDiscountBO;
-import com.szq.hotel.entity.bo.RoomTypeBO;
+import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.util.DateUtils;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.util.StringUtils;
 import org.apache.ibatis.annotations.Param;
+import org.omg.PortableInterceptor.ObjectReferenceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -173,10 +171,13 @@ public class UpdatePriceService {
 
 
     public  Date  getEndTime(String checkType,Date startTime,Integer dayNum){
+        log.info("start  getEndTime..............................................................................");
+        log.info("checkType:{}\tstartTime:{}\tdayNum:{}",checkType,startTime,dayNum);
         if(checkType.equals(Constants.HOUR.getValue())){
             Calendar cal = Calendar.getInstance();
             cal.setTime(startTime) ;
             cal.add(Calendar.HOUR_OF_DAY,4);
+            log.info("end  getEndTime..............................................................................");
             return cal.getTime();
         }else {
             Calendar cal = Calendar.getInstance();
@@ -186,8 +187,56 @@ public class UpdatePriceService {
             }else {
                 cal.add(Calendar.DATE,dayNum);
             }
+            log.info("end  getEndTime..............................................................................");
             return cal.getTime();
         }
+
+    }
+    public boolean upState(Date starTime, Integer dayNum, String roomIds,String checkType) {
+        log.info("start upState...........................................................");
+        log.info("startTime:{}\tdayNum:{}\troomIds:{}\tcheckType:{}",starTime,dayNum,roomIds,checkType);
+        List<Integer> roomId = StringUtils.strToList(roomIds);
+        if(roomId!=null && roomId.size()>0){
+            Date endTime = getEndTime(checkType,starTime,dayNum);
+            for (int i = 0; i < roomId.size(); i++) {
+                //判断房子有没有预约
+                int count=updatePriceDAO.queryCount(starTime,endTime,roomId.get(i));
+                if(count!=0){
+                    log.info("end sub exist...........................................................");
+                    return false;
+                }
+            }
+
+            List<Time> times = roomService.timeDate2(DateUtils.getNextAddDate(starTime),DateUtils.getNextAddDate(starTime),dayNum);
+            Map<Integer, Integer> roomType = this.roomTypeClassify(roomId);
+            for(Integer typeId:roomType.keySet()){
+                Integer roomTypeCount=updatePriceDAO.queryTypeCount(typeId);
+                for (int i = 0; i <times.size(); i++) {
+                    Time time = times.get(i);
+                    int count=updatePriceDAO.queryOrdedrTypeCount(time.getStartTime(),time.getEndTime(),typeId);
+                    if(roomTypeCount-count < roomType.get(typeId)){
+                        log.info("end count insufficient...........................................................");
+                        return  false;
+                    }
+                }
+            }
+        }
+        log.info("end upState...........................................................");
+        return  true;
+    }
+
+    public Map<Integer,Integer>  roomTypeClassify(List<Integer>  ids){
+        Map<Integer,Integer>  resultMap=new HashMap<Integer, Integer>();
+        for (int i = 0; i < ids.size() ; i++) {
+            RoomBO roomBO = roomService.selectByPrimaryKey(ids.get(i));
+            Integer typeIdCount = resultMap.get(roomBO.getRoomTypeId());
+            if(typeIdCount==null){
+                resultMap.put(roomBO.getRoomTypeId(),1);
+            }else {
+                resultMap.put(roomBO.getRoomTypeId(),typeIdCount++);
+            }
+        }
+        return resultMap;
 
     }
 }

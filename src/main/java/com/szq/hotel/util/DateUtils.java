@@ -810,5 +810,18 @@ public static void main(String[] args) {
 		return  simpleDateFormat.format(cal.getTime());
 	}
 
+	/**
+	 * 获取时间字符串
+	 */
+	public static Date getNextAddDate(Date date){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd 14:00:00");
+		String format = simpleDateFormat.format(date);
+		try {
+			return simpleDateFormat.parse(format);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
 

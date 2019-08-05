@@ -122,7 +122,7 @@ public class UpdatePriceController extends BaseCotroller {
      * 查询是入住方式是否符合
      */
     @RequestMapping("/queryCheckType")
-    public void queryCheckType(HttpServletRequest request, HttpServletResponse response,String roomIds,String checkType,Date starTime,Integer dayNum){
+    public void queryCheckType(HttpServletRequest request, HttpServletResponse response,String roomIds,String checkType,Date startTime,Integer dayNum){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -150,11 +150,13 @@ public class UpdatePriceController extends BaseCotroller {
                 return;
             }
             //判断房间可用状态
-
-
-            //判断房间数量
-
-
+           boolean b = updatePriceService.upState(startTime, dayNum, roomIds, checkType);
+            if(!b){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001","房间数量不足"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}",result);
+                return;
+            }
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);

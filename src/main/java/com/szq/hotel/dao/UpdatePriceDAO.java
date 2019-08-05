@@ -4,6 +4,7 @@ package com.szq.hotel.dao;
 import com.szq.hotel.entity.bo.EverydayRoomPriceBO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,4 +29,9 @@ public interface UpdatePriceDAO {
     List<String>  queryFree(@Param("list")List<Integer>  list);
 
 
+    int queryCount(@Param("startTime") Date starTime,@Param("endTime") Date endTime,@Param("roomId") Integer roomId);
+
+    int queryTypeCount(Integer typeId);
+
+    int queryOrdedrTypeCount(@Param("startTime") Date starTime,@Param("endTime") Date endTime,@Param("roomTypeId") Integer roomTypeId);
 }

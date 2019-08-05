@@ -2,6 +2,10 @@ package com.szq.hotel.web.support.interceptor;
 
 import com.google.common.collect.Sets;
 import com.szq.hotel.common.constants.SysConstants;
+import com.szq.hotel.entity.bo.AdminBO;
+import com.szq.hotel.entity.dto.ResultDTOBuilder;
+import com.szq.hotel.util.JsonUtils;
+import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -23,12 +27,16 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 //    private SystemService systemService ;
 
     // 不需要过滤的URL
-    public static final Set<String> unCheckList = Sets.newHashSet("/hotel/queryLoginHotel" , "/hotel/queryHotel" ,
-            "/classes/queryClasses" , "/updatePrice/updatePrice","/updatePrice/addPrice","/updatePrice/queryCheckType","/Dictionary/getDic","/admin/adminLogin") ;
+    public static final Set<String> unCheckSet = Sets.newHashSet("/hotel/queryLoginHotel" , "/hotel/queryHotel" ,
+             "/updatePrice/updatePrice","/updatePrice/addPrice","/updatePrice/queryCheckType","/member/selectMemberByNumber",
+            "/Dictionary/getDic","/admin/adminLogin","/","/classes/getClasses","/room/todayPictureView","/room/queryRoomTypeNum",
+            "/room/quertRm","/room/queryRoomFx","/room/verificationRoom","/room/queryRoomTypeNum","/room/queryRt","/room/quertRm",
+            "/room/updateroomMajorState","/room/queryRoomTypeCount","/member/getStoreValueIntegral","checkInPerson/updCheckInPerson",
+            "checkInPerson/addCheckInPerson") ;
 
     public static final Set<String> CheckListForAjax = Sets.newHashSet("/client/login" , "/apiCourse/toDetail" ) ;
 
-
+    private BaseCotroller baseCotroller=new BaseCotroller() ;
 //
     /**
      * 在业务处理器处理请求之前被调用
@@ -44,28 +52,27 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-//        String invokeMethod = this.getInvokeMethod(request) ;
-//        String requestUri = this.getUriAndParams(request) ;
-//        System.out.println("url:" + requestUri);
-//        System.out.println("invokeMethod:" + invokeMethod);
-//
-////        不过滤名单
-//        if (unCheckList.contains(invokeMethod)) {
-//            return true;
-//        }
-//
-//        // 不是ajax都记录
-//        if (!isAjaxRequest(request)) {
-//            // 将最近一次的页面请求保存到cookie
-//            setLastRequestUrl(response, requestUri);
-//        }else {// ajax 分部分记录
-//            if (CheckListForAjax.contains(invokeMethod)){
-//                // 将最近一次的页面请求保存到cookie
-//                setLastRequestUrl(response, requestUri);
-//            }
-//        }
+        String uri = this.getInvokeMethod(request);
+        if(unCheckSet.contains(uri) || uri.indexOf(".")!=-1 ){
+            return true;
+        }
 
-        return true;
+        AdminBO loginAdmin = baseCotroller.getLoginAdmin(request);
+        if(loginAdmin==null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002")) ;
+            baseCotroller.safeJsonPrint(response,result);
+            return false;
+        }
+
+
+        if(loginAdmin.getUrl().contains(uri)){
+            return true;
+        }else{
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000000")) ;
+            baseCotroller.safeJsonPrint(response,result);
+            return false;
+        }
+
     }
 
     /**

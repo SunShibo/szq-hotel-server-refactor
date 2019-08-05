@@ -58,4 +58,17 @@
         AND room_auxiliary_status_stand!='yes'
     </select>
 
+    <select id="queryCount"  resultType="int">
+        SELECT COUNT(id) FROM `hm_order_child` WHERE  room_id =#{roomId}  AND #{startTime} &lt;
+        end_time AND  #{endTime} >start_time   AND  order_state='reservation'
+    </select>
+
+    <select id="queryTypeCount" parameterType="java.lang.Integer" resultType="int" >
+         select COUNT(id)  FROM hm_room  WHERE `show`='yes' AND room_type_id =#{typeId}
+    </select>
+
+    <select id="queryOrdedrTypeCount"   resultType="int">
+        SELECT COUNT(id) FROM `hm_order_child` WHERE  room_type_id =#{roomTypeId}  AND  #{startTime} &lt;
+        end_time AND  #{endTime} >start_time   AND  (order_state='reservation'  OR  order_state='admissions' )
+    </select>
 </mapper>
