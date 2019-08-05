@@ -131,8 +131,8 @@ public class MemberService {
         //查询改会员所属会员级别
         MemberLevelBO memberLevelBO = memberLevelService.getLevelByCardId(memberCardId);
         BigDecimal consumeGetIntegral = memberLevelBO.getConsumeGetIntegral();
-        //积分数 = 消费金额 * 比例
-        BigDecimal integral = money.multiply(consumeGetIntegral);
+        //积分数 = 消费金额 * 比例(保留两位小数)
+        BigDecimal integral = money.multiply(consumeGetIntegral).setScale(2,BigDecimal.ROUND_HALF_UP);
         memberBO.setIntegral(integral);
         memberBO.setUpdateUserId(userId);
         memberDAO.integralChange(memberBO);
