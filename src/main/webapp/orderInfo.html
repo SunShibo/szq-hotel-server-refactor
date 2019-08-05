@@ -118,12 +118,11 @@
             if (state == 2 || state == 0) {
                 $('.room-state').css('display', 'block');
                 $('.order-state').css('display', 'block');
-                queryOrderInfo();
             } else if (state == 1) {
                 $('.r-btn').css('display', 'none');
                 $('#checkOutBox').css('display', 'none');
-                queryOrderInfo();
             }
+            queryOrderInfo();
         });
 
         orderList = table.render({

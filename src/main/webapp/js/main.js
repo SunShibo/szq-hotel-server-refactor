@@ -189,7 +189,7 @@ var api = {
     , updateClasses: '/classes/updateClasses'//修改班次000
     , queryClassessByHotelId: '/classes/getClasses'//按酒店查班次      已修改
     // , cartLogout: '/Cart/logout'//会员卡注销  废弃
-    // , cashStamp: 'commodity/queryCommodiryById'//打印000  废弃
+    , cashStamp: 'commodity/queryCommodiryById'//打印000
     // , addMaseTo: '/roomDetailsController/addMaseTo'//添加同来  废弃
     , waitIn: '/checkin/laterCheckIn?v=1'//稍后入住
     , calcPrice2: '/room/updateOrderInfo?v=1'//预定修改，选房确定后需要调用算价格
