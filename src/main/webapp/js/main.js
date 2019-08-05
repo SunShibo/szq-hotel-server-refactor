@@ -44,9 +44,9 @@ var api = {
     , addMember: '/member/addMember?v=1'//会员添加   已修改
     , updateMember: '/member/updateMember'//会员信息修改?userId   已修改
     , memberLevel: '/memberLevel/selectmemberLevel?v=1'//获取会员级别000
-    , consumeRecord: '/member/getConsumptionRecord'//消费明细  已修改
-    , integralRecord: '/integralRecord/getIntegralRecord'//积分明细   已修改
-    , storedRecord: '/storedValueRecord/getStoredValueRecord'//储值明细   已修改
+    , consumeRecord:'/member/getConsumptionRecord'//消费明细  已修改
+    , integralRecord:'/integralRecord/getIntegralRecord'//积分明细   已修改
+    , storedRecord:'/storedValueRecord/getStoredValueRecord'//储值明细   已修改
     , certificate: '/Dictionary/getDic?kid=1'//获取证件000
     , getMemberByCre: '/user/queryByCredentialNumber?credentialNumber='//根据证件号码获取会员信息
     , getHouseType: '/queryRoomTypeNum'//获取房屋类型000
@@ -118,7 +118,7 @@ var api = {
     , updateChannel: 'CooperativePrice/update'
     // , homePage: '/roomMain/homePageInfo?v=1'//获取首页数据  废弃
     , cashPay: '/order/pay'//现金支付接口000   ??  任何支付方式都走这个接口
-    , queryPayment: '/order/getOrderChildPayInfo'//查询订单应支付金额   已修改
+    , queryPayment: '/checkin/queryPayment'//查询订单应支付金额
 
 
     , homeRoom: '/home/home'//首页获取房间类型信息  已修改
@@ -189,7 +189,7 @@ var api = {
     , updateClasses: '/classes/updateClasses'//修改班次000
     , queryClassessByHotelId: '/classes/getClasses'//按酒店查班次      已修改
     // , cartLogout: '/Cart/logout'//会员卡注销  废弃
-    , cashStamp: 'commodity/queryCommodiryById'//打印000
+    // , cashStamp: 'commodity/queryCommodiryById'//打印000  废弃
     // , addMaseTo: '/roomDetailsController/addMaseTo'//添加同来  废弃
     , waitIn: '/checkin/laterCheckIn?v=1'//稍后入住
     , calcPrice2: '/room/updateOrderInfo?v=1'//预定修改，选房确定后需要调用算价格
@@ -287,6 +287,7 @@ layui.use(['jquery', 'element'], function () {
     });
 
     renderMenu($, element);
+
 
 
 })
@@ -759,7 +760,8 @@ function shopAdd() {
 }
 
 function renderReport($, ele) {
-    $('body').append(['<section id="side">',
+    $('body').append(['<section style=""  id="side">',
+        '<div style="overflow-y:auto;width: 417px;height: 100%">',
         '<div class="side_row side_title">',
         '<p class="side_td side_td1">房型</p>',
         '<p class="side_td">房价</p>',
@@ -777,9 +779,9 @@ function renderReport($, ele) {
         '<p class="side_td">间数</p>',
         '</div>',
         '<div id="allc">',
-        '</div>',
+        '</div></div>',
         '</section>'].join(""));
-    document.getElementById("side").style.height = (document.body.clientWidth - 100) + "px";
+    document.getElementById("side").style.height = (document.body.offsetHeight) + "px";
     getReport($);
 }
 
@@ -858,12 +860,16 @@ function getReport($) {
 
 
     })
-    $("#side").on("click", function () {
+    var _display = false;
+    $(document).on("click", "#side",function () {
+        // alert(12)
         if ($("#side").hasClass("side-open")) {
             $("#side").removeClass("side-open")
         } else {
             $("#side").addClass("side-open")
         }
+        // _display = !_display;
+        // document.getElementById("side").style.width = _display? "400px": "0px"
     });
 }
 
@@ -1013,11 +1019,15 @@ function clearTimeInfo() {
 }
 
 //关闭页面
-function closeWin() {
-    window.parent.opener = null;
-    window.parent.open("", "_self");
-    window.parent.close();
-
+function closeWin(){
+    if (navigator.userAgent.indexOf("Firefox") != -1 || navigator.userAgent.indexOf("Chrome") !=-1) {
+        window.location.href="about:blank";
+        window.close();
+    } else {
+        window.parent.opener = null;
+        window.parent.open("", "_self");
+        window.parent.close();
+    }
 }
 
 //监听用户是否激活当前页面
@@ -1027,11 +1037,11 @@ function visibilityChange() {
             'mozHidden' in document ? 'mozHidden' :
                 null;
     var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
-    var onVisibilityChange = function () {
+    var onVisibilityChange = function(){
         if (!document[hiddenProperty]) {
             console.log('页面激活');
             location.reload();
-        } else {
+        }else{
             console.log('页面非激活');
         }
     };
