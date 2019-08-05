@@ -1,4 +1,5 @@
 //预约房间修改价格
+//预约修改页面改价
 clearModifyPrice();
 function modifyPrice() {
     // debugger;
@@ -62,8 +63,7 @@ function modifyPrice() {
     layer.open({
         area: ['1000px', '420px'],
         type: 2,
-        content: "iframe_modifyPriceYY.html?v=" + Date.now()+"&dayNumber="+dayss + "&checkType=" + $("input[name='checkType']:checked").val()
-        + "&starttime=" + new Date($("#startTime").val()).getTime(),
+        content: "iframe_modifyPriceYYXG.html?v=" + Date.now()+"&dayNumber="+dayss,
         title: "修改价格"
     })
 }

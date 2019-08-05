@@ -124,12 +124,9 @@
         }
         function DateToLStr(t) {
   	      	var dt = null;
-            // new Date(decodeURIComponent(getUrl("startTime"))).getTime();
-            // DateToLStr(new Date(Date.now()+i*86400000)).split(" ")[0];
             if(checkType=="day"&&new Date().getHours()<6){
 				//入住时间在6点以前的情况特殊处理
                 dt = new Date(Date.now()+t-86400000);
-
 			}else{
 				if(!!getUrl("startTime")){
 					dt = new Date(new Date(decodeURIComponent(getUrl("startTime"))).getTime()+t);

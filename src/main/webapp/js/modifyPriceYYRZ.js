@@ -73,7 +73,8 @@ function modifyPrice() {
                 layer.open({
                     area: ['1000px', '420px'],
                     type: 2,
-                    content: "iframe_modifyPriceYYRZ.html?v=" + Date.now()+"&dayNumber=" + dda +"&orderId=" + yuyueData.id,
+                    content: "iframe_modifyPriceYYRZ.html?v=" + Date.now()+"&dayNumber=" + dda +"&orderId=" + yuyueData.id + "&checkType="
+                    + $("input[name='checkType']:checked").val() + "&starttime=" + new Date($("#startTime").val()).getTime(),
                     title: "修改价格"
                 })
             }
