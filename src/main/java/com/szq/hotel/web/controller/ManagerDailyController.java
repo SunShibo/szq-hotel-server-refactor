@@ -188,7 +188,7 @@ public class ManagerDailyController extends BaseCotroller {
 
     @RequestMapping("/insertTest")
     public void insertTest(HttpServletRequest request, HttpServletResponse response, Integer hotelId){
-
-        managerDailyService.insertManagerDaliy(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(DateUtils.getYesTaday()));
+/*
+        managerDailyService.insertManagerDaliy(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(DateUtils.getYesTaday()));*/
     }
 }

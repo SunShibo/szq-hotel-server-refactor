@@ -37,6 +37,8 @@ public class CheckOrderState {
     HotelDAO hotelDAO;
     @Resource
     ManagementReportService managementReportService;
+    @Resource
+     ManagerDailyService managerDailyService;
 
 
     int count = 0;
@@ -96,6 +98,8 @@ public class CheckOrderState {
             incomeService.addIncome(hotelBO.getId());
             //管理层报表
             managementReportService.addData(hotelBO.getId());
+
+            managerDailyService.insertManagerDaliy(hotelBO.getId());
         }
         log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }

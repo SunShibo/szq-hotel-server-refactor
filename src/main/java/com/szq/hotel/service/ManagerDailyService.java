@@ -3602,7 +3602,8 @@ public class ManagerDailyService {
      * 插入经理日报
      * @param hotelId
      */
-    public void insertManagerDaliy(Integer hotelId,String date){
+    public void insertManagerDaliy(Integer hotelId){
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(DateUtils.getYesTaday());
         log.info("date:{}",date);
         String startTime = date + " 04:00:00";
         String end = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
