@@ -171,7 +171,7 @@ public class ManagerDailyController extends BaseCotroller {
      * @param response
      * @param
      */
-    @RequestMapping("/selectManagerDaliy")
+    @RequestMapping("/queryTest")
     public void queryManagerDaliy(HttpServletRequest request, HttpServletResponse response, String endTime){
         AdminBO userBO = super.getLoginUser(request);
         log.info("date:{}", endTime);
@@ -186,7 +186,7 @@ public class ManagerDailyController extends BaseCotroller {
     }
 
 
-    @RequestMapping("/test")
+    @RequestMapping("/insertTest")
     public void insertTest(HttpServletRequest request, HttpServletResponse response, Integer hotelId){
 
         managerDailyService.insertManagerDaliy(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(DateUtils.getYesTaday()));

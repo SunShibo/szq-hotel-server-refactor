@@ -397,10 +397,10 @@ public class RoomController extends BaseCotroller {
         }
         if ("hour".equals(roomAuxiliaryStatus)) {
             map.put("roomAuxiliaryStatus", "yes");
-            map.put("roomAuxiliaryStatusStand", "no");
+
         }
         if ("free".equals(roomAuxiliaryStatus)) {
-            map.put("roomAuxiliaryStatus", "no");
+
             map.put("roomAuxiliaryStatusStand", "yes");
         }
         log.info("进入此方法");
