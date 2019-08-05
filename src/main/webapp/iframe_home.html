@@ -296,8 +296,10 @@
                 $('#finish').text('待打扫');
             }
             //如果是入住或者超时状态  不允许点击
-            if (status === 'true') {
+            if (status === 'true' || maintain === 'true') {
                 $('#finish,#checkIn').addClass('layui-btn-disabled').prop('disabled', 'disabled');
+            } else{
+                $('#finish,#checkIn').removeClass('layui-btn-disabled').prop('disabled', '');
             }
 
             $.ajax({
@@ -465,6 +467,7 @@
                         showMsg(res.data, 1, false);
                         //修改页面维修状态
                         maintain = maintain === 'true' ? 'false' : 'true';
+                        dirty = maintain === 'false' ? 'true': 'false';
                         //刷新弹出层房屋信息数据
                         initRoomInfoData();
                         //修改首页数据
@@ -592,7 +595,7 @@
                 title: '编辑',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_homeUpdate.html?id=' + orderId + '&orderChildId=' + orderChildId+ '&date=' + Date.now(),
+                content: 'iframe_homeUpdate.html?id=' + orderId + '&orderChildId=' + orderChildId + '&date=' + Date.now(),
                 end: function () {
                     sessionStorage.removeItem('checkIn');
                     initStayInData();
@@ -609,7 +612,7 @@
                 title: '联房',
                 shade: 0.6,
                 shadeClose: true,
-                content: 'iframe_accounts.html?roomId=' + id + '&orderChildId=' + orderChildId + '&alRoomCode=' + encodeURI(alRoomCode)+ '&date=' + Date.now(),
+                content: 'iframe_accounts.html?roomId=' + id + '&orderChildId=' + orderChildId + '&alRoomCode=' + encodeURI(alRoomCode) + '&date=' + Date.now(),
                 end: function () {
                     initStayInData();
                 }
