@@ -37,7 +37,7 @@ public class ManagementReportService {
         String endTime = DateUtils.getStringData(new Date(),"yyyy-MM-dd");
         String startTime = DateUtils.getLastDay(endTime);
         map.put("startTime",startTime+" 04:00:00");
-        map.put("endTime",endTime+" 04:00:00");
+        map.put("endTime",endTime+" 04:01:00");//推迟1分钟防止网络延迟
         map.put("hotelId",hotelId);
 
         ManagementReportBO managementReportBO = new ManagementReportBO();
