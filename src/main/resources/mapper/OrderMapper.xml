@@ -177,7 +177,7 @@
     </update>
 
     <update id="updOrderChildMoney" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
-        update hm_order_child set room_rate=#{roomRate},other_rate=#{otherRate} where id=#{id}
+        update hm_order_child set room_rate=#{roomRate},other_rate=#{otherRate},free_rate_num=#{freeRateNum} where id=#{id}
     </update>
     <!-- 修改子订单信息无if验证 -->
     <update id="updOrderChildNoValidation" parameterType="com.szq.hotel.entity.bo.OrderChildBO">
