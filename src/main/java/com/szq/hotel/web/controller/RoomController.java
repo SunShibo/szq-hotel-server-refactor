@@ -646,7 +646,7 @@ public class RoomController extends BaseCotroller {
             log.info("result{}", result);
             return;
         }
-        Map<String, Object> map = roomService.querySc(checkTime, endTime, loginAdmin.getHotelId());
+        Map<String, Object> map = roomService.querySc2(checkTime, endTime, loginAdmin.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
         super.safeJsonPrint(response, result);
         log.info("return:{}", result);
@@ -658,6 +658,8 @@ public class RoomController extends BaseCotroller {
     public void querySs(HttpServletRequest request, HttpServletResponse response, String checkTime, String endTime) {
         log.info("querySs************************************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
+        checkTime = checkTime.replaceAll("/","-");
+        endTime = endTime.replaceAll("/","-");
         log.info("loginUser:{}", loginAdmin);
         if (loginAdmin == null) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
@@ -677,7 +679,7 @@ public class RoomController extends BaseCotroller {
             log.info("result{}", result);
             return;
         }
-        List<List<DateRoomDTO>> lists = roomService.querySs(checkTime, endTime, loginAdmin.getHotelId());
+        List<List<DateRoomDTO>> lists = roomService.querySs2(checkTime, endTime, loginAdmin.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(lists));
         super.safeJsonPrint(response, result);
         log.info("return:{}", result);
@@ -692,8 +694,11 @@ public class RoomController extends BaseCotroller {
     public void updatelockRoomState(HttpServletRequest request, HttpServletResponse response,
                                     String startTime, String endTime,
                                     String roomId, String state, String remark) {
-        startTime = startTime.replaceAll("/","-");
-        endTime = endTime.replaceAll("/","-");
+        if(!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)){
+            startTime = startTime.replaceAll("/","-");
+            endTime = endTime.replaceAll("/","-");
+        }
+
         log.info("updatelockRoomState*************************************");
         log.info("startTime:{}", startTime);
         log.info("endTime:{}", endTime);

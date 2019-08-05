@@ -307,7 +307,7 @@ public class RoomService {
         log.info("endTime:{}",(String) map.get("endTime"));
         log.info("hotelId:{}", (Integer) map.get("hotelId"));
 
-        //获取被预约掉的房型以及数量
+        //获取被预约掉的房型以及数量  todo
         List<RmTypeIdBO> rmTypeIdBOS = roomDAO.queryOrderTypeRoom((String) map.get("checkTime"), (String) map.get("endTime"),
                 (Integer) map.get("hotelId"));
 
@@ -877,6 +877,80 @@ public class RoomService {
                 List<RmBO> rmBOS1 = this.publicQuery(map, ll);
                 m.put("date" + i, rmBOS1.size());
                 i++;
+
+
+            }
+            list.add(m);
+        }
+        mp.put("first", list);
+        mp.put("dateNumber", dates.size());
+        mp.put("date", dates);
+        return mp;
+    }
+
+
+
+    /**
+     * 查询某一时间段下每天剩下多少房
+     *
+     * @param checkTime
+     * @param endTime
+     * @param hotrlId
+     */
+    public Map<String, Object> querySc2(String checkTime, String endTime, Integer hotrlId) {
+        Map<String, Object> map = new HashMap<String, Object>();
+       /* long quot = DateUtils.getQuot(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
+        log.info("两个日期之间相差的天数:{}",quot);*/
+        List<String> dates = querSeTime(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
+        log.info("两段时间区间的每一天日期:{}", dates);
+
+        String start = checkTime + " 14:00:00";
+        String end = checkTime + " 14:00:00";
+
+        log.info("checkTime:{}", checkTime);
+        log.info("endTime:{}", endTime);
+
+
+        map.put("hotelId", hotrlId);
+
+
+        List<Time> times = timeDate2(DateUtils.parseDate(start, "yyyy-MM-dd HH:mm:ss"),
+                DateUtils.parseDate(end, "yyyy-MM-dd HH:mm:ss"),
+                dates.size());
+        log.info("times:{}", times);
+        //获取酒店下面所有房型
+        List<RtBO> rtBOS = queryRt(hotrlId);
+        log.info("酒店下面所有房型:{}", rtBOS);
+        Map<String, Object> mp = new HashMap<String, Object>();
+
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
+        for (RtBO rtBO : rtBOS) {
+            Map<String, Object> m = new HashMap<String, Object>();
+            m.put("sumCountRoomType", roomDAO.querRoomTypeCount(rtBO.getId(), hotrlId));
+            m.put("roomTypeName", rtBO.getRoomTypeName());
+            int i = 1;
+            for (Time time : times) {
+
+                map.put("checkTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
+                map.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
+                map.put("roomTypeId", rtBO.getId());
+
+                List<RmBO> rmBOS1 = this.publicQuery(map, ll);
+
+
+                //获取被预约掉的房型以及数量
+                List<RmTypeIdBO> rmTypeIdBOS = roomDAO.queryOrderTypeRoom2(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()),
+                        (Integer) map.get("hotelId"),rtBO.getId());
+
+                m.put("date" + i, rmBOS1.size() > rmTypeIdBOS.size() ? rmBOS1.size() - rmTypeIdBOS.size() : 0);
+                System.err.println("rmTypeIdBOS"+rmTypeIdBOS.size());
+                System.err.println("rmBOS1"+rmBOS1.size());
+                i++;
+
             }
             list.add(m);
         }
@@ -956,6 +1030,75 @@ public class RoomService {
         return list;
 
     }
+
+
+    public List<List<DateRoomDTO>> querySs2(String checkTime, String endTime, Integer hotrlId) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        List<String> dates = querSeTime(DateUtils.parseDate(checkTime, "yyyy-MM-dd"), DateUtils.parseDate(endTime, "yyyy-MM-dd"));
+        log.info("两段时间区间的每一天日期:{}", dates);
+
+        String start = checkTime + " 14:00:00";
+        String end = checkTime + " 14:00:00";
+
+        log.info("checkTime:{}", checkTime);
+        log.info("endTime:{}", endTime);
+
+
+        map.put("hotelId", hotrlId);
+
+
+        List<Time> times = timeDate2(DateUtils.parseDate(start, "yyyy-MM-dd HH:mm:ss"),
+                DateUtils.parseDate(end, "yyyy-MM-dd HH:mm:ss"),
+                dates.size());
+        log.info("times:{}", times);
+        //获取酒店下面所有房型
+        List<RtBO> rtBOS = queryRt(hotrlId);
+        log.info("酒店下面所有房型:{}", rtBOS);
+        List<List<DateRoomDTO>> list = new ArrayList<List<DateRoomDTO>>();
+
+
+        List<String> ll = new ArrayList<String>();
+        ll.add("reservation");
+        ll.add("notpay");
+        ll.add("admissions");
+        int i = 0;
+        for (Time time : times){
+            List<DateRoomDTO> l = new ArrayList<DateRoomDTO>();
+
+            for (RtBO rtBO : rtBOS) {
+                map.put("checkTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
+                map.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
+                map.put("roomTypeId", rtBO.getId());
+                log.info("开始时间:{}",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()));
+                log.info("结束时间:{}",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()));
+                DateRoomDTO dateRoomDTO = new DateRoomDTO();
+                dateRoomDTO.setSumRoomType(roomDAO.querRoomTypeCount(rtBO.getId(), hotrlId));
+
+                List<RmTypeIdBO> rmTypeIdBOS = roomDAO.queryOrderTypeRoom2(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getStartTime()), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time.getEndTime()),
+                        (Integer) map.get("hotelId"),rtBO.getId());
+
+                dateRoomDTO.setTypename(rtBO.getRoomTypeName());
+                log.info("房型名称:{}",rtBO.getRoomTypeName());
+                log.info("房型id:{}",rtBO.getId());
+                log.info("酒店id:{}",hotrlId);
+                log.info("房型总房间数:{}",roomDAO.querRoomTypeCount(rtBO.getId(), hotrlId));
+                List<RmBO> rmBOS1 = this.publicQuery(map, ll);
+                log.info("最终结果:{}",rmBOS1);
+                dateRoomDTO.setUsableRoomNunber(rmBOS1.size() > rmTypeIdBOS.size()  ? rmBOS1.size() - rmTypeIdBOS.size(): 0 );
+                log.info("长度:{}",rmBOS1.size());
+                dateRoomDTO.setDate(dates.get(i));
+                log.info("dates.get(i):{}",dates.get(i));
+                l.add(dateRoomDTO);
+
+            }
+            i++;
+            list.add(l);
+
+        }
+        return list;
+
+    }
+
 
 
     public List<String> querSeTime(Date bigtime, Date endtime) {

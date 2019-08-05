@@ -210,6 +210,12 @@ public interface RoomDAO {
                                      @Param("hotelId")Integer hotelId
                                      );
 
+
+    List<RmTypeIdBO> queryOrderTypeRoom2(@Param("startTime")String startTime,
+                                        @Param("endTime")String endTime,
+                                        @Param("hotelId")Integer hotelId,
+                                         @Param("roomTypeId")Integer roomTypeId
+    );
     /**
      * 获取某一时间段内不锁房的某个房型的所有房间
      * @param hotelId
