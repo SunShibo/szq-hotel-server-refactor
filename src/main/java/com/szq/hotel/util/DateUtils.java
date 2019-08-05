@@ -754,6 +754,15 @@ public static void main(String[] args) {
 	}
 
 	/**
+	 * 获取今天
+	 */
+	public static String getNow(){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String format = simpleDateFormat.format(new Date());
+		return format;
+	}
+
+	/**
 	 * 获得指定日期的前一天
 	 * @param specifiedDay
 	 * @return
