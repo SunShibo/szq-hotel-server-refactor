@@ -623,7 +623,7 @@
 
 
     <select id="queryOrder" resultType="com.szq.hotel.entity.bo.OrderBO">
-    SELECT * FROM hm_order WHERE hotel_id = #{hotelId} AND  check_out_time &lt; #{date} &gt;= check_time
+    SELECT * FROM hm_order WHERE hotel_id = #{hotelId} AND  check_out_time &lt;  #{date} and #{date} &gt;= check_time
     </select>
 
     <!--获取用户预约过的房间id-->

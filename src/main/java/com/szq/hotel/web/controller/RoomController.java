@@ -653,6 +653,7 @@ public class RoomController extends BaseCotroller {
         return;
     }
 
+
     @RequestMapping("/querySs")
     public void querySs(HttpServletRequest request, HttpServletResponse response, String checkTime, String endTime) {
         log.info("querySs************************************************");
@@ -696,7 +697,7 @@ public class RoomController extends BaseCotroller {
         log.info("updatelockRoomState*************************************");
         log.info("startTime:{}", startTime);
         log.info("endTime:{}", endTime);
-        log.info("roomId:{]", roomId);
+        log.info("roomId:{}", roomId);
         log.info("state:{}", state);
         log.info("remark:{}", remark);
         AdminBO loginAdmin = super.getLoginAdmin(request);

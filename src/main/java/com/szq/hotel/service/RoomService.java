@@ -1126,7 +1126,8 @@ public class RoomService {
 
         //获取当前时间
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        String date = format + " 06:00:00";
+        log.info("format:{}",format);
+        String date = format + " 06:00:00" ;
 
         //获取明天早上六点的时间
         Date date1 = lDate(quDate(6, 0, 0), 1);
@@ -1148,8 +1149,11 @@ public class RoomService {
         mp.put("hotelId", hotelId);
         mp.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));
 
+
+
         //获取今天统计房价
-        Integer integer1 = roomDAO.queryEverydayRoomPrice(date);
+        Integer integer1 = roomDAO.queryEverydayRoomPrice(format);
+        log.info("integer1:{}",integer1);
         map.put("three", integer1);
         for (RtBO rtBO : rtBOS) {
             mp.put("roomTypeId", rtBO.getId());
