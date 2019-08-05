@@ -41,11 +41,10 @@
         <div class="layui-input-inline" style="width: 165px;">
             <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
                    class="layui-input inline-input"
-                   id="startTime1"
                    placeholder="开始时间">
         </div>
         <div class="layui-input-inline">
-            <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
+            <button class="layui-btn" lay-submit lay-filter="formData">查询</button>
         </div>
     </div>
 </form>
@@ -65,19 +64,18 @@
         var form = layui.form, $ = layui.$, table = layui.table, laydate = layui.laydate
             , startTime = 0, endTime = 0;
         $(function () {
-            $('#startTime').val(DateToLStr3(new Date(Date.now()-(24 * 60 * 60 * 1000))));
             $.ajax({
                 url: api.FormManangeResponse,
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    startTime: $('#startTime').val()+' 04:05:00',
-                    endTime: DateToLStr3(new Date(Date.now()))+' 04:05:00'
+                    startTime: DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000))) + ' 04:05:00',
+                    endTime: DateToLStr3(new Date(Date.now())) + ' 04:05:00'
                 },
                 success: function (rs) {
                     if (rs.success) {
                         var data = formatData(rs.data);
-                        if(!!data.length){
+                        if (!!data.length) {
                             tab.reload({data: JSON.parse(JSON.stringify(data))})
                         }
                     } else {
@@ -90,10 +88,10 @@
         //监听提交
         form.on('submit(formData)', function (data) {
             if (!startTime) {
-                startTime = new Date(DateToLStr4(new Date()).concat(' 04:00:00'))
+                startTime = DateToLStr4(new Date()).concat(' 04:05:00')
             }
             if (!endTime) {
-                endTime = new Date(DateToLStr4(new Date().getTime() + (24 * 60 * 60 * 1000))).concat(' 04:00:00');
+                endTime = DateToLStr4(new Date(new Date().getTime() + (24 * 60 * 60 * 1000))).concat(' 04:05:00');
             }
             $.ajax({
                 url: api.FormManangeResponse,
@@ -105,8 +103,8 @@
                 },
                 success: function (rs) {
                     if (rs.success) {
-                        var data = formatData(rs.data);
-                        tab.reload({data: JSON.parse(JSON.stringify(data))})
+                        tab.reload({data: formatData(rs.data)});
+                        showMsg('查询成功', 1, false);
                     } else {
                         showMsg(rs.errMsg, 2, false);
                     }
@@ -186,10 +184,9 @@
         }
 
         function formatData(rs) {
-            debugger;
             var data = formatDataInfo(rs), arr = [];
             for (var item in data) {
-                if(typeof data[item] != 'object' || !data[item])continue;
+                if (typeof data[item] != 'object' || !data[item]) continue;
                 arr.push(data[item]);
             }
             return arr
@@ -225,10 +222,16 @@
         });
 
         var start = laydate.render({
-            elem: '#startTime',
-            type: 'date',
-            btns: ['confirm'],
-            format: 'yyyy/MM/dd'
+            elem: '#startTime'
+            , type: 'date'
+            , btns: ['confirm']
+            , format: 'yyyy/MM/dd'
+            , done: function (value, date) {
+                startTime = value.concat(' 04:05:00');
+                console.log(new Date(value.concat(' 04:05:00')).getTime() + (24 * 60 * 60 * 1000))
+                endTime = DateToLStr(new Date(new Date(value.concat(' 04:05:00')).getTime() + (24 * 60 * 60 * 1000)));
+            }
+
         });
     });
 </script>

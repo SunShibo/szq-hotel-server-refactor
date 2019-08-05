@@ -115,7 +115,14 @@
         });
 
         function checkOut() {
-            if(sessionData.timeoutRate > 0 && !requestData.money)return false;
+            debugger
+            //有超时费 并且减免金额为空
+            if (sessionData.timeoutRate > 0 && !requestData.money) {
+                return false;
+            }
+            if (sessionData.timeoutRate === 0 && !requestData.money) {//没有超时费
+                delete requestData.money;
+            }
             requestData.orderChildId = id;
             $.ajax({
                 url: api.outRoomBtn,

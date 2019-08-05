@@ -220,7 +220,7 @@
             requestData.status = sessionData.status;
 
             //删除不用的数据
-            if (!requestData.integralReduction || requestData.payType !== 'stored') {
+            if (!requestData.integralReduction || requestData.payType === 'stored') {
                 delete requestData.integral;
                 delete requestData.certificateNumber;
             }
