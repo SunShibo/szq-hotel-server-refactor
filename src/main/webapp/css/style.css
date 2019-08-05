@@ -661,6 +661,7 @@ body {
 .side-open{
   width: 400px!important;
   background: rgba(238,238,238,1)!important;
+  transition: width 0.6s;
 }
 .side_td{
   display: table-cell;vertical-align: middle;padding: 0 5px;min-width: 43px;font-size: 16px;text-align: center;

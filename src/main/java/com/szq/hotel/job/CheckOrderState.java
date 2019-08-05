@@ -16,9 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component("CheckOrderState")
 public class CheckOrderState {
@@ -71,7 +69,7 @@ public class CheckOrderState {
             for(int i=0;i<roomRateBOS.size();i++){
                 RoomRateBO roomRateBO = roomRateBOS.get(i);
                 log.info("roomRateBO:{} , i:{}",roomRateBO,i);
-                List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(), DateUtils.getFourPointsStr());
+                List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(), DateUtils.getNow());
                 log.info("everydayRoomPriceBOS:{}",everydayRoomPriceBOS);
                 if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
                     for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){

@@ -126,10 +126,10 @@
                 condition: ''
             };
             if (data.field.startTime) {
-                obj.startTime = new Date(data.field.startTime.replace(/-/g, "/"))
+                obj.startTime = data.field.startTime.replace(/-/g, "/")
             }
             if (data.field.endTime) {
-                obj.endTime = new Date(data.field.endTime.replace(/-/g, "/"))
+                obj.endTime = data.field.endTime.replace(/-/g, "/")
             }
             obj.condition = data.field.mate;
             tab.reload({

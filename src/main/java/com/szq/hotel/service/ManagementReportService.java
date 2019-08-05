@@ -5,6 +5,8 @@ import com.szq.hotel.entity.bo.ManagementReportResponseBO;
 import com.szq.hotel.entity.bo.FormUtilBO;
 import com.szq.hotel.entity.bo.ManagementReportBO;
 import com.szq.hotel.util.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import java.util.Map;
 
 @Service("managementReportService")
 public class ManagementReportService {
+    private static final Logger log = LoggerFactory.getLogger(ManagementReportService.class);
+
     @Resource
     private ManagementReportDAO managementReportDAO;
 
@@ -27,11 +31,13 @@ public class ManagementReportService {
      * @param hotelId 酒店id
      */
     public void addData(Integer hotelId){
+        log.info("start addData..........ManagementReportService.................................");
+        log.info("hotelId:{}",hotelId);
         Map<String,Object> map = new HashMap<String, Object>();
         String endTime = DateUtils.getStringData(new Date(),"yyyy-MM-dd");
         String startTime = DateUtils.getLastDay(endTime);
         map.put("startTime",startTime+" 04:00:00");
-        map.put("endTime",endTime+" 04:00:00");
+        map.put("endTime",endTime+" 04:01:00");//推迟1分钟防止网络延迟
         map.put("hotelId",hotelId);
 
         ManagementReportBO managementReportBO = new ManagementReportBO();
@@ -59,6 +65,7 @@ public class ManagementReportService {
         managementReportBO.setHotelId(hotelId);
 
         managementReportDAO.addData(managementReportBO);
+        log.info("end  addData............ManagementReportService...............................");
     }
 
     /*

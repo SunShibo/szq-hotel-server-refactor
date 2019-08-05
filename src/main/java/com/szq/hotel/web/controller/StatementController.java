@@ -18,7 +18,7 @@ import java.util.List;
 
 
 /**
- *  报表
+ *  收银汇总
  */
 @Controller
 @RequestMapping("/statement")

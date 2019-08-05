@@ -100,9 +100,8 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form', 'element', 'laydate', 'table'], function () {
-        var $ = layui.$, form = layui.form, table = layui.table, resLeft = [], resReight = [], orderList = null,
-            orderInfo = null, oId = 0, oIds = [], id = 0, manageState = '';
-        var tmpobj = null, tmpIndex = 0, roomId = '';
+        var $ = layui.$, form = layui.form, table = layui.table, resReight = [], orderList = null,
+            orderInfo = null, oId = 0, oIds = [], id = 0, remark = '';
         var state = {};
 
         //oId 子订单ID
@@ -218,6 +217,7 @@
                 success: function (left) {
                     oId = left.data[0].id;
                     orderList.reload({data: JSON.parse(JSON.stringify(left.data))});
+                    remark = left.data[0].remark;  //子订单备注
                     //保存所有子订单ID
                     for (var i = 0, len = left.data.length; i < len; i++) {
                         oIds.push(left.data[i].id);
@@ -262,6 +262,8 @@
             $(tr).css('backgroundColor', '#33ABA0');
             //获取点击的行的子订单ID
             oId = data.id;
+            //子订单备注
+            remark = data.remark;
             //更新右面表格的数据
             getRightData(oId);
         });
