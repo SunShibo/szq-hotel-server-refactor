@@ -10,6 +10,7 @@ import com.szq.hotel.entity.result.OrderResult;
 import com.szq.hotel.query.QueryInfo;
 import com.szq.hotel.service.*;
 import com.szq.hotel.util.JsonUtils;
+import com.szq.hotel.util.RedisConnectFactory;
 import com.szq.hotel.util.RedisTool;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public class OrderController extends BaseCotroller {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            Jedis jedis = new Jedis();
+            Jedis jedis = RedisConnectFactory.getJedis();
             String requestId = UUID.randomUUID().toString();
             if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 1000))) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("系统繁忙,请重试"));

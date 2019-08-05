@@ -722,7 +722,7 @@ public class RoomController extends BaseCotroller {
         log.info("list:{}", list);
         List<Integer> arrList = new ArrayList(list);
         log.info("arrList:{}", arrList);
-        Jedis jedis = new Jedis();
+        Jedis jedis = RedisConnectFactory.getJedis();
         UUID requestId = UUID.randomUUID();
         System.err.println(requestId);
         if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId.toString(), 5000))) {
