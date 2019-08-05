@@ -954,10 +954,18 @@ public class OrderService {
             Calendar calendar = Calendar.getInstance();
             //当前时间
             Date currentTimeDate = calendar.getTime();
+            if(calendar.get(Calendar.HOUR_OF_DAY)<6){
+                calendar.add(Calendar.DAY_OF_WEEK, -1); //得到前一天
+            }
             //当前酒店的时间
             Date hotelDate = new Date();
             if (new Integer(hh.format(currentTimeDate)) < 4) {
-                hotelDate = DateUtils.getBeforeDay(hotelDate, -1);
+                Calendar calendarHotel=Calendar.getInstance();
+                calendarHotel.setTime(hotelDate);
+                calendarHotel.set(Calendar.MINUTE, 59);
+                calendarHotel.set(Calendar.SECOND, 59);
+                calendarHotel.set(Calendar.HOUR_OF_DAY, 23);
+                hotelDate = DateUtils.getBeforeDay(calendarHotel.getTime(), -1);
             }
             //获取今天凌晨六点
             calendar.set(Calendar.MINUTE, 0);
@@ -979,6 +987,7 @@ public class OrderService {
                 startTime = calendar1.getTime();
             }
 
+            //当天退房
             if (ymd.format(hotelDate).equals(ymd.format(startTime))) {
                 Date date=hotelDate;
                 Calendar calendar2 = Calendar.getInstance();
@@ -990,9 +999,18 @@ public class OrderService {
                 }
                 //这天的房价信息
                 EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(date), orderChildBO.getId());
+                //bug:六点前 四点后入住算前一天没有滚房费 然后退房时候需滚出前天房费 目前认为 不滚也是合理的吧
+                if(hour>4&&hour<6){
+                    Date beforeDate=DateUtils.getAppointDate(date,-1);
+                    //这天的房价信息
+                    EverydayRoomPriceBO everydayRoomPriceBO2 = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(beforeDate), orderChildBO.getId());
+                    orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO2.getMoney()));
+                }
+
                 //修改房费
                 orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
             }
+
 
             //计算超时费信息
             if (currentTimeDate.compareTo(endTime) < 0) {
@@ -1001,6 +1019,9 @@ public class OrderService {
                 //剩余每日房价
                 List<EverydayRoomPriceBO> everydayRoomPriceBOList = this.getRemainingLease(orderChildId);
                 //提前退房
+                System.err.println("hotelDate"+ymdhms.format(hotelDate));
+                System.err.println("m2"+ymdhms.format(m2));
+                System.err.println("hotelDate.compareTo(m2) > 0"+(hotelDate.compareTo(m2) > 0));
                 if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() > 1) {
                     //这天的房价信息
                     EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(hotelDate), orderChildBO.getId());
@@ -1044,14 +1065,23 @@ public class OrderService {
         OrderChildBackupParam backup = new OrderChildBackupParam();
 
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat hh = new SimpleDateFormat("HH");
         Calendar calendar = Calendar.getInstance();
         //当前时间
         Date currentTimeDate = calendar.getTime();
+        if(calendar.get(Calendar.HOUR_OF_DAY)<6){
+            calendar.add(Calendar.DAY_OF_WEEK, -1); //得到前一天
+        }
         //当前酒店的时间
         Date hotelDate = new Date();
         if (new Integer(hh.format(currentTimeDate)) < 4) {
-            hotelDate = DateUtils.getBeforeDay(hotelDate, -1);
+            Calendar calendarHotel=Calendar.getInstance();
+            calendarHotel.setTime(hotelDate);
+            calendarHotel.set(Calendar.MINUTE, 59);
+            calendarHotel.set(Calendar.SECOND, 59);
+            calendarHotel.set(Calendar.HOUR_OF_DAY, 23);
+            hotelDate = DateUtils.getBeforeDay(calendarHotel.getTime(), -1);
         }
 
         //获取今天凌晨四点
@@ -1070,6 +1100,7 @@ public class OrderService {
         orderChildBO.setOtherRate(new BigDecimal(0));
         orderChildBO.setRoomRate(new BigDecimal(0));
 
+        //为了避免凌晨四点前退房
         Date startTime = orderChildBO.getStartTime();
         Calendar calendar1 = Calendar.getInstance();
         calendar1.setTime(startTime);
@@ -1101,7 +1132,10 @@ public class OrderService {
             this.addOrderChildRecordAndRoomRate(backup, date, orderChildBO, userId);
 
             //bug:六点前 四点后入住算前一天没有滚房费 然后退房时候需滚出前天房费 目前认为 不滚也是合理的吧
-
+            if(hour>4&&hour<6){
+                Date beforeDate=DateUtils.getAppointDate(date,-1);
+                this.addOrderChildRecordAndRoomRate(backup, beforeDate, orderChildBO, userId);
+            }
         }
 
         //未超时
@@ -1111,11 +1145,9 @@ public class OrderService {
             //剩余每日房价
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = this.getRemainingLease(orderChildId);
             //提前退房
-            System.err.println("currentDate"+ymd.format(currentDate));
-            System.err.println("endDate"+ymd.format(endDate));
-            System.err.println("hotelDate"+ymd.format(hotelDate));
-            System.err.println("m2"+m2);
-            System.err.println("orderChildBO.getStartTime()"+ymd.format(orderChildBO.getStartTime()));
+            System.err.println("hotelDate"+ymdhms.format(hotelDate));
+            System.err.println("m2"+ymdhms.format(m2));
+            System.err.println("hotelDate.compareTo(m2) > 0"+(hotelDate.compareTo(m2) > 0));
             if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() > 1) {
                 this.addOrderChildRecordAndRoomRate2(backup, hotelDate, orderChildBO, userId, money);
             }
@@ -1178,8 +1210,6 @@ public class OrderService {
         OrderChildBO orderChildBOMoney = new OrderChildBO();
         orderChildBOMoney.setOtherRate(orderChildBOMain.getOtherRate().add(orderChildBO.getOtherRate()));
         orderChildBOMoney.setRoomRate(orderChildBOMain.getRoomRate().add(orderChildBO.getRoomRate()));
-        System.err.println("orderChildBO.getFreeRateNum().negate()"+orderChildBO.getFreeRateNum().negate());
-        System.err.println("orderChildBO.getFreeRateNum()"+orderChildBO.getFreeRateNum());
         orderChildBOMoney.setFreeRateNum(orderChildBOMain.getFreeRateNum().add(orderChildBO.getFreeRateNum().negate()));
         orderChildBOMoney.setId(mainId);
         orderDAO.updOrderChild(orderChildBOMoney);
@@ -1216,7 +1246,7 @@ public class OrderService {
 
             //减免费用
             if (money.compareTo(new BigDecimal(0)) != 0) {
-                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "超时减免",
+                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(),  "超时减免",
                         null, money, Constants.MITIGATE.getValue(),
                         userId, null, "no");
                 backup.setTimeoutRateRecordId(recordId2);
@@ -1234,7 +1264,7 @@ public class OrderService {
 
             //减免费用
             if (money.compareTo(new BigDecimal(0)) != 0) {
-                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "超时减免",
+                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), "超时减免",
                         null, money, Constants.MITIGATE.getValue(),
                         userId, null, "no");
                 backup.setTimeoutRateRecordId(recordId2);
@@ -1266,7 +1296,7 @@ public class OrderService {
             backup.setOtherRateRecordId(recordId);
             //减免费用
             if (money.compareTo(new BigDecimal(0)) != 0) {
-                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(everydayRoomPriceBO.getTime()) + "超时减免",
+                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), "超时减免",
                         null, money, Constants.MITIGATE.getValue(),
                         userId, null, "no");
                 backup.setTimeoutRateRecordId(recordId2);
@@ -1288,7 +1318,7 @@ public class OrderService {
             backup.setOtherRateRecordId(recordId);
             //减免费用
             if (money.compareTo(new BigDecimal(0)) != 0) {
-                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(everydayRoomPriceBO.getTime()) + "超时减免",
+                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), "超时减免",
                         null, money, Constants.MITIGATE.getValue(),
                         userId, null, "no");
                 backup.setTimeoutRateRecordId(recordId2);
@@ -1306,9 +1336,9 @@ public class OrderService {
                 null, everydayRoomPriceBO.getMoney().negate(), Constants.ROOMRATE.getValue(),
                 userId, "1天", "no");
         //修改房费
-        orderChildBO.setRoomRate(everydayRoomPriceBO.getMoney());
+        orderChildBO.setRoomRate(everydayRoomPriceBO.getMoney().add(orderChildBO.getRoomRate()));
         //备份房费
-        backup.setRoomRate(everydayRoomPriceBO.getMoney());
+        backup.setRoomRate(everydayRoomPriceBO.getMoney().add(backup.getRoomRate()));
         backup.setRoomRateRecordId(recordId);
     }
 

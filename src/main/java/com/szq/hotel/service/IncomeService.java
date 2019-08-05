@@ -335,12 +335,12 @@ public class IncomeService {
         if(roomRateRoom==null){
             roomRateRoom=new BigDecimal(0);
         }
-        //商品减免
+        //商品减免bug 目前无用
         BigDecimal commodityFerr=incomeDAO.getCashierSummaryByProject(dateStr, endDateStr,Constants.COMMODITYFREE.getValue(),hotelId);
         if(commodityFerr==null){
             commodityFerr=new BigDecimal(0);
         }
-        //赔偿减免
+        //赔偿减免bug 目前无用
         BigDecimal compEnsatinonEecomp=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMPENSATIONFREE.getValue(),hotelId);
         if(compEnsatinonEecomp==null){
             compEnsatinonEecomp=new BigDecimal(0);
@@ -351,7 +351,7 @@ public class IncomeService {
             mitigate=new BigDecimal(0);
         }
         //房费调整
-        BigDecimal roomRateAdjustment=roomRateRoom.add(commodityFerr).add(compEnsatinonEecomp).add(mitigate);
+        BigDecimal roomRateAdjustment=roomRateRoom.add(mitigate);
         if(roomRateAdjustment==null){
             roomRateAdjustment=new BigDecimal(0);
         }

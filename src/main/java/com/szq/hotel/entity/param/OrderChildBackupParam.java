@@ -8,11 +8,11 @@ import java.util.Date;
 //备份退房信息  用于退房回滚
 public class OrderChildBackupParam {
     private Integer id;//子订单id
-    private BigDecimal roomRate;//房费 这天的房费
+    private BigDecimal roomRate=new BigDecimal(0);//房费 这天的房费
     private Integer roomRateRecordId;//房费 这天的房费
-    private BigDecimal otherRate;//其他费用 超时费存这就行
+    private BigDecimal otherRate=new BigDecimal(0);//其他费用 超时费存这就行
     private Integer otherRateRecordId;//其他费用 超时费存这就行
-    private BigDecimal timeoutRate;//超时费减免
+    private BigDecimal timeoutRate=new BigDecimal(0);//超时费减免
     private Integer timeoutRateRecordId;
     private String orderState;//订单状态
     private String roomMajorState;//房态
