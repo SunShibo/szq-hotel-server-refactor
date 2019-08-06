@@ -155,9 +155,11 @@
                     field: 'channel', title: '渠道', align: 'center', templet: function (data) {
                         switch (data.channel) {
                             case 'subscribe':
-                                return '预约订单';
+                                return '预约入住';
                             case 'directly':
                                 return '直接入住';
+                            case '':
+                                return '';
                         }
                     }
                 }
