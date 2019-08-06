@@ -1334,18 +1334,18 @@ public class RoomService {
                 log.info("hotelId:{}", hotelId);
                 log.info("dt:{}", dt);
                 log.info("memberLevelBO.getId():{}",memberLevelBO.getId());
-                xxDTO.setNumber(roomDAO.queryMemRomId(hotelId,dt,memberLevelBO.getId()));
+                xxDTO.setNumber(roomDAO.queryMemRomId(hotelId,memberLevelBO.getId()));
                 ls.add(xxDTO);
             }
         }
 
         XxDTO xx = new XxDTO();
-        xx.setNumber(roomDAO.queryOrder(hotelId, dt));
+        xx.setNumber(roomDAO.queryOrder(hotelId));
         xx.setName("散客");
         ls.add(xx);
 
         XxDTO xy = new XxDTO();
-        xy.setNumber(roomDAO.queryXy(hotelId, dt));
+        xy.setNumber(roomDAO.queryXy(hotelId));
         xy.setName("协议单位");
         ls.add(xy);
         map.put("second", ls);

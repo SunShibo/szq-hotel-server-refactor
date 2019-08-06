@@ -178,7 +178,7 @@ public interface RoomDAO {
      * @param date
      * @return
      */
-    Integer  queryOrder(@Param("hotelId")Integer hotelId,@Param("date")String date);
+    Integer  queryOrder(@Param("hotelId")Integer hotelId);
 
     /**
      * 查询当前在住会员
@@ -262,17 +262,17 @@ public interface RoomDAO {
     /**
      * 获取不同会员入住数量
      * @param hotelId
-     * @param date
+     * @param
      * @param memberLevelId
      * @return
      */
-    int queryMemRomId(@Param("hotelId")Integer hotelId,@Param("date")String date,@Param("memberLevelId")Integer memberLevelId);
+    int queryMemRomId(@Param("hotelId")Integer hotelId,@Param("memberLevelId")Integer memberLevelId);
 
     /**
      *
      * @param hotelId
-     * @param date
+     * @param
      * @return
      */
-    int queryXy(@Param("hotelId")Integer hotelId, @Param("date")String date);
+    int queryXy(@Param("hotelId")Integer hotelId);
 }
