@@ -750,7 +750,7 @@
         SELECT COUNT(1) FROM hm_member,hm_member_card,hm_member_level,hm_order,hm_order_child
         WHERE hm_member_card.member_level_id = hm_member_level.id AND hm_member.member_card_id = hm_member_card.id
         AND hm_member.id  =  hm_order.members_id AND hm_order_child.order_id = hm_order.id
-        AND hm_order.hotel_id = #{hotelId} AND hm_order.check_time &lt;= #{date} AND hm_order.check_out_time &gt; #{date} AND
+        AND hm_order.hotel_id = #{hotelId} AND hm_order_child.order_state = 'admissions' AND
         hm_member_level.id = #{memberLevelId}
     </select>
 

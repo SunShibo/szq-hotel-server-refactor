@@ -1331,7 +1331,9 @@ public class RoomService {
             for (MemberLevelBO memberLevelBO : memberLevelBOS) {
                 XxDTO xxDTO = new XxDTO();
                 xxDTO.setName(memberLevelBO.getName());
-
+                log.info("hotelId:{}", hotelId);
+                log.info("dt:{}", dt);
+                log.info("memberLevelBO.getId():{}",memberLevelBO.getId());
                 xxDTO.setNumber(roomDAO.queryMemRomId(hotelId,dt,memberLevelBO.getId()));
                 ls.add(xxDTO);
             }
