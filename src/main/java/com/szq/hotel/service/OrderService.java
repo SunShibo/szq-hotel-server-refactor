@@ -948,6 +948,7 @@ public class OrderService {
                 endTime = calendar2.getTime();
             }
             SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SimpleDateFormat hh = new SimpleDateFormat("HH");
 
             Calendar calendar = Calendar.getInstance();
@@ -1086,6 +1087,7 @@ public class OrderService {
             calendar2.set(Calendar.HOUR_OF_DAY, 14);
             endTime = calendar2.getTime();
         }
+
         //当天入住当天退房 滚一天当天房费
         if (ymd.format(hotelDate).equals(ymd.format(startTime))) {
             Date date=hotelDate;
@@ -1097,6 +1099,9 @@ public class OrderService {
                 date = calendar2.getTime();
             }
             this.addOrderChildRecordAndRoomRate(backup, date, orderChildBO, userId);
+
+            //bug:六点前 四点后入住算前一天没有滚房费 然后退房时候需滚出前天房费 目前认为 不滚也是合理的吧
+
         }
 
         //未超时

@@ -355,7 +355,7 @@ public class IncomeService {
         if(roomRateAdjustment==null){
             roomRateAdjustment=new BigDecimal(0);
         }
-        incomeBO.setRoomRateAdjustment(roomRateAdjustment);
+        incomeBO.setRoomRateAdjustment(roomRateAdjustment.negate());
         //商品
         BigDecimal commodity=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMMODITY.getValue(),hotelId);
         if(commodity==null){
