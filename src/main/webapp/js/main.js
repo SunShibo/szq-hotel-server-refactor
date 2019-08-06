@@ -173,7 +173,7 @@ var api = {
     // , cartDetail: '/Cart/detail?v=1'//会员卡回显  废弃
     , cartUpdate: '/memberCard/updateMemberCard'//会员卡编辑     已修改
     , checkRoomInfo: '/room/ifCheckIn'//判断选的房间是否可用  已修改
-    , updatePassWord: 'login/updatePassWord'//修改密码
+    , updatePassWord: '/admin/changePassword'//修改密码   已修改
     , changeHotel: 'login/changeHotel'//切换酒店
     , logout: '/admin/exitLogin'//退出登录      已修改
     // , getScheduleById: '/order/queryOrderMsg'//根据订单号码查询预订信息  废弃
@@ -320,8 +320,8 @@ function clearIDForm(form, formName) {
 
 function IDCardReaderInfo(dom) {
     var arr = [
-        '<object classid="clsid:10946843-7507-44FE-ACE8-2B3483D179B7" codebase="IDCardReader.ocx" id="CVR_IDCard" name="CVR_IDCard" width="0" height="0">',
-        '</object>',
+        '<object classid="classid:10946843-7507-44FE-ACE8-2B3483D179B7" codebase="IDCardReader.ocx" id="CVR_IDCard" name="CVR_IDCard" width="0" height="0">',
+        '</object>'
     ].join(' ');
     dom.append(arr);
 }

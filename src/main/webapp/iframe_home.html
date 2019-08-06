@@ -53,8 +53,12 @@
                     <td id="OTA" colspan="3"></td>
                 </tr>
                 <tr>
-                    <td>备注</td>
+                    <td>在住备注</td>
                     <td colspan="3" id="remake"></td>
+                </tr>
+                <tr>
+                    <td>预约备注</td>
+                    <td colspan="3" id="subRemark"></td>
                 </tr>
             </table>
             <div>
@@ -481,7 +485,7 @@
 
         //锁房
         $('#lockRoom').on('click', function () {
-            sessionStorage.setItem('selectArr', id);
+            sessionStorage.setItem('selectArr', JSON.stringify([id]));
             parent.layer.open({
                 type: 2,
                 skin: 'demo-class',

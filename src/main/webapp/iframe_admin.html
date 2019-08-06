@@ -10,14 +10,14 @@
     <div class="layui-form-item" style="padding-top: 5px;">
         <label class="layui-form-label">用户名</label>
         <div class="layui-input-inline">
-            <input type="text" name="name" placeholder="请输入角色名" autocomplete="off"
+            <input type="text" name="name" required  lay-verify="required" placeholder="请输入角色名" autocomplete="off"
                    class="layui-input">
         </div>
     </div>
     <div class="layui-form-item" style="padding-top: 5px;">
         <label class="layui-form-label">手机号</label>
         <div class="layui-input-inline">
-            <input type="text" name="mobile" placeholder="请输入角色名" autocomplete="off"
+            <input type="text" name="mobile" required  lay-verify="required" placeholder="请输入角色名" autocomplete="off"
                    class="layui-input">
         </div>
     </div>
@@ -32,7 +32,7 @@
     <div class="layui-form-item" style="padding-top: 5px;">
         <label class="layui-form-label">角色</label>
         <div class="layui-input-inline">
-            <select id="roleId" name="roleId">
+            <select id="roleId" name="roleId" required  lay-verify="required">
                 <option value="">全部</option>
             </select>
         </div>
@@ -59,10 +59,7 @@
             s = getUrl('s');
             adminData = JSON.parse(sessionStorage.getItem('adminItem'));
             if (s) {
-                $('#password').hide();
                 setTimeout(initData, 100);
-            }else {
-                $('#password').show();
             }
         });
 
@@ -78,7 +75,7 @@
         //监听确定按钮提交
         form.on('submit(formData)', function (data) {
             if(s){//编辑
-                delete data.field.password;
+                if(!data.field.password) delete data.field.password;
                 data.field.id = adminData.id;
                 $.ajax({
                     url: api.updateAdmin,
