@@ -52,11 +52,11 @@
         element = layui.element,
             $ = jQuery = layui.$;
         var upload = layui.upload;
-        //v 会员卡导入   !v  会员导入
-        if(getUrl("v")==""){
-            $("#member1").addClass("layui-hide");
-        }else{
+        //!v 会员卡导入   v  会员导入
+        if(!getUrl("v")){
             $("#member0").addClass("layui-hide");
+        }else{
+            $("#member1").addClass("layui-hide");
         }
         //执行实例
         var uploadInst = upload.render({
