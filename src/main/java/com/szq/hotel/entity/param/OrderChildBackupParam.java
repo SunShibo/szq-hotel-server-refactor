@@ -12,12 +12,31 @@ public class OrderChildBackupParam {
     private Integer roomRateRecordId;//房费 这天的房费
     private BigDecimal otherRate;//其他费用 超时费存这就行
     private Integer otherRateRecordId;//其他费用 超时费存这就行
+    private BigDecimal timeoutRate;//超时费减免
+    private Integer timeoutRateRecordId;
     private String orderState;//订单状态
     private String roomMajorState;//房态
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;//预离店时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date practicalDepartureTime;//实际离店时间
+
+
+    public Integer getTimeoutRateRecordId() {
+        return timeoutRateRecordId;
+    }
+
+    public void setTimeoutRateRecordId(Integer timeoutRateRecordId) {
+        this.timeoutRateRecordId = timeoutRateRecordId;
+    }
+
+    public BigDecimal getTimeoutRate() {
+        return timeoutRate;
+    }
+
+    public void setTimeoutRate(BigDecimal timeoutRate) {
+        this.timeoutRate = timeoutRate;
+    }
 
     public Integer getRoomRateRecordId() {
         return roomRateRecordId;

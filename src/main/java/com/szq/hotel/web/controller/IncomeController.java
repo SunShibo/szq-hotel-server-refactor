@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 
@@ -25,7 +26,7 @@ public class IncomeController extends BaseCotroller {
     private IncomeService incomeService;
     private static final Logger log = LoggerFactory.getLogger(IncomeController.class);
     @RequestMapping("/getIncome")
-    public void getIncome(HttpServletRequest request, HttpServletResponse response) {
+    public void getIncome(HttpServletRequest request, HttpServletResponse response, Date date) {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -37,7 +38,11 @@ public class IncomeController extends BaseCotroller {
                 log.info("result{}",result);
                 return ;
             }
-            List<IncomeBO> incomeBOS=incomeService.getIncome(userInfo.getHotelId());
+            if(date==null){
+                date=new Date();
+            }
+            List<IncomeBO> incomeBOS=incomeService.getIncome(userInfo.getHotelId(),date);
+
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(incomeBOS)) ;
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
@@ -46,10 +51,10 @@ public class IncomeController extends BaseCotroller {
         }
     }
 
-//    @RequestMapping("/addIncome")
-//    public void addIncome(){
-//        incomeService.addIncome(1);
-//    }
+    @RequestMapping("/addIncome")
+    public void addIncome(){
+        incomeService.addIncome(1);
+    }
 }
 
 

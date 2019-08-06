@@ -11,7 +11,7 @@ public interface IncomeDAO {
     //添加营收信息
     Integer addIncome(IncomeBO incomeBO);
     //收集营收信息
-    BigDecimal getCashierSummaryByProject(@Param("createTime")String createTime,@Param("project") String project,@Param("hotelId")Integer hotelId);
+    BigDecimal getCashierSummaryByProject(@Param("createTime")String createTime,@Param("endTime")String endTime,@Param("project") String project,@Param("hotelId")Integer hotelId);
     //收集营收信息
-    BigDecimal getCashierSummaryByType(@Param("createTime")String createTime,@Param("type") String type,@Param("hotelId")Integer hotelId);
+    BigDecimal getCashierSummaryByType(@Param("createTime")String createTime,@Param("endTime")String endTime,@Param("type") String type,@Param("hotelId")Integer hotelId);
 }

@@ -54,12 +54,17 @@
             <if test="otherRate!=null and otherRate!=''">
                 other_rate=#{otherRate},
             </if>
+            <if test="timeoutRate!=null and timeoutRate!=''">
+                timeout_rate=#{timeoutRate},
+            </if>
             <if test="roomRateRecordId!=null and roomRateRecordId!=''">
                 room_rate_record_id=#{roomRateRecordId},
             </if>
-
             <if test="otherRateRecordId!=null and otherRateRecordId!=''">
-                other_rate__record_id=#{otherRateRecordId},
+                other_rate_record_id=#{otherRateRecordId},
+            </if>
+            <if test="timeoutRateRecordId!=null and timeoutRateRecordId!=''">
+                timeout_rate_record_id=#{timeoutRateRecordId},
             </if>
 
             <if test="practicalDepartureTime!=null and practicalDepartureTime!=''">
@@ -415,7 +420,9 @@
 
     <!--根据主订单id查询房间信息（客帐管理）-->
     <select id="getRoomInfoById" parameterType="java.lang.String" resultType="com.szq.hotel.entity.bo.OrderChildBO">
-        select o.order_number,oc.id,r.room_name as roomName,cp.name as name,cp.create_time as createTime,main,rt.room_type_name
+        select o.order_number,oc.id,r.room_name as roomName,cp.name as name,
+        cp.create_time as createTime,main,rt.room_type_name,oc.remark
+
         from hm_order_child as oc,hm_check_in_person as cp,hm_room as r,hm_room_type as rt,hm_order as o
         where oc.al_room_code = #{alCode}
         and oc.room_id=r.id

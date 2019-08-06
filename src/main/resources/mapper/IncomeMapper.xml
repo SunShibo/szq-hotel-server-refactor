@@ -49,15 +49,15 @@
     <select id="getCashierSummaryByProject" resultType="java.math.BigDecimal">
         select sum(consumption)
         from hm_cashier_summary
-        where create_time like concat(#{createTime},"%")
+        where create_time &gt;#{createTime} and create_time &lt;=#{endTime}
         and project=#{project} and hotel_id=#{hotelId}
     </select>
 
     <!--收集营收信息-->
     <select id="getCashierSummaryByType" resultType="java.math.BigDecimal">
-        select sum(consumption)
+        select sum(settlement)
         from hm_cashier_summary
-        where create_time like concat(#{createTime},"%")
+        where create_time &gt;#{createTime} and create_time &lt;=#{endTime}
         and type=#{type} and hotel_id=#{hotelId}
     </select>
 

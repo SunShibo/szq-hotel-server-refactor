@@ -23,10 +23,11 @@ public class IncomeService {
     IncomeDAO incomeDAO;
 
     //获取营收入报表
-    public List<IncomeBO> getIncome(Integer hotelId){
+    public List<IncomeBO> getIncome(Integer hotelId,Date date){
         List<IncomeBO> incomeBOS=new ArrayList<IncomeBO>();
         //获取今天日期
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         if(hour<=6){
             calendar.add(Calendar.DATE, -1);
@@ -192,91 +193,91 @@ public class IncomeService {
         }else if(incomeBO5.getTimeoutRoomRate().intValue()>incomeBO3.getTimeoutRoomRate().intValue()){
             yearDifferences.setTimeoutRoomRate((incomeBO5.getTimeoutRoomRate().subtract(incomeBO3.getTimeoutRoomRate())).divide(incomeBO5.getTimeoutRoomRate(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setTimeoutRoomRate((incomeBO3.getTimeoutRoomRate().subtract(incomeBO5.getTimeoutRoomRate())).divide(incomeBO3.getTimeoutRoomRate(), RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
+            yearDifferences.setTimeoutRoomRate((incomeBO3.getTimeoutRoomRate().subtract(incomeBO5.getTimeoutRoomRate())).divide(incomeBO3.getTimeoutRoomRate(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getRoomRateAdjustment().intValue()<=0||incomeBO5.getRoomRateAdjustment().intValue()<=0){
             yearDifferences.setRoomRateAdjustment(new BigDecimal(100));
         }else if(incomeBO5.getRoomRateAdjustment().intValue()>incomeBO3.getRoomRateAdjustment().intValue()){
-            yearDifferences.setRoomRateAdjustment((incomeBO5.getRoomRateAdjustment().subtract(incomeBO3.getRoomRateAdjustment())).divide(incomeBO5.getRoomRateAdjustment()).multiply(new BigDecimal(100)));
+            yearDifferences.setRoomRateAdjustment((incomeBO5.getRoomRateAdjustment().subtract(incomeBO3.getRoomRateAdjustment())).divide(incomeBO5.getRoomRateAdjustment(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setRoomRateAdjustment((incomeBO3.getRoomRateAdjustment().subtract(incomeBO5.getRoomRateAdjustment())).divide(incomeBO3.getRoomRateAdjustment()).multiply(new BigDecimal(100)));
+            yearDifferences.setRoomRateAdjustment((incomeBO3.getRoomRateAdjustment().subtract(incomeBO5.getRoomRateAdjustment())).divide(incomeBO3.getRoomRateAdjustment(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getOtherRate().intValue()<=0||incomeBO5.getOtherRate().intValue()<=0){
             yearDifferences.setOtherRate(new BigDecimal(100));
         }else if(incomeBO5.getOtherRate().intValue()>incomeBO3.getOtherRate().intValue()){
-            yearDifferences.setOtherRate((incomeBO5.getOtherRate().subtract(incomeBO3.getOtherRate())).divide(incomeBO5.getOtherRate()).multiply(new BigDecimal(100)));
+            yearDifferences.setOtherRate((incomeBO5.getOtherRate().subtract(incomeBO3.getOtherRate())).divide(incomeBO5.getOtherRate(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
             yearDifferences.setOtherRate((incomeBO3.getOtherRate().subtract(incomeBO5.getOtherRate())).divide(incomeBO3.getOtherRate(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getCommodity().intValue()<=0||incomeBO5.getCommodity().intValue()<=0){
             yearDifferences.setCommodity(new BigDecimal(100));
         }else if(incomeBO5.getCommodity().intValue()>incomeBO3.getCommodity().intValue()){
-            yearDifferences.setCommodity((incomeBO5.getCommodity().subtract(incomeBO3.getCommodity())).divide(incomeBO5.getCommodity()).multiply(new BigDecimal(100)));
+            yearDifferences.setCommodity((incomeBO5.getCommodity().subtract(incomeBO3.getCommodity())).divide(incomeBO5.getCommodity(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setCommodity((incomeBO3.getCommodity().subtract(incomeBO5.getCommodity())).divide(incomeBO3.getCommodity()).multiply(new BigDecimal(100)));
+            yearDifferences.setCommodity((incomeBO3.getCommodity().subtract(incomeBO5.getCommodity())).divide(incomeBO3.getCommodity(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getCompensation().intValue()<=0||incomeBO5.getCompensation().intValue()<=0){
             yearDifferences.setCompensation(new BigDecimal(100));
         }else if(incomeBO5.getCompensation().intValue()>incomeBO3.getCompensation().intValue()){
-            yearDifferences.setCompensation((incomeBO5.getCompensation().subtract(incomeBO3.getCompensation())).divide(incomeBO5.getCompensation()).multiply(new BigDecimal(100)));
+            yearDifferences.setCompensation((incomeBO5.getCompensation().subtract(incomeBO3.getCompensation())).divide(incomeBO5.getCompensation(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setCompensation((incomeBO3.getCompensation().subtract(incomeBO5.getCompensation())).divide(incomeBO3.getCompensation()).multiply(new BigDecimal(100)));
+            yearDifferences.setCompensation((incomeBO3.getCompensation().subtract(incomeBO5.getCompensation())).divide(incomeBO3.getCompensation(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getMemberCardRate().intValue()<=0||incomeBO5.getMemberCardRate().intValue()<=0){
             yearDifferences.setMemberCardRate(new BigDecimal(100));
         }else if(incomeBO5.getMemberCardRate().intValue()>incomeBO3.getMemberCardRate().intValue()){
-            yearDifferences.setMemberCardRate((incomeBO5.getMemberCardRate().subtract(incomeBO3.getMemberCardRate())).divide(incomeBO5.getMemberCardRate()).multiply(new BigDecimal(100)));
+            yearDifferences.setMemberCardRate((incomeBO5.getMemberCardRate().subtract(incomeBO3.getMemberCardRate())).divide(incomeBO5.getMemberCardRate(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setMemberCardRate((incomeBO3.getMemberCardRate().subtract(incomeBO5.getMemberCardRate())).divide(incomeBO3.getMemberCardRate()).multiply(new BigDecimal(100)));
+            yearDifferences.setMemberCardRate((incomeBO3.getMemberCardRate().subtract(incomeBO5.getMemberCardRate())).divide(incomeBO3.getMemberCardRate(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getDebtSum().intValue()<=0||incomeBO5.getDebtSum().intValue()<=0){
             yearDifferences.setDebtSum(new BigDecimal(100));
         }else if(incomeBO5.getDebtSum().intValue()>incomeBO3.getDebtSum().intValue()){
-            yearDifferences.setDebtSum((incomeBO5.getDebtSum().subtract(incomeBO3.getDebtSum())).divide(incomeBO5.getDebtSum()).multiply(new BigDecimal(100)));
+            yearDifferences.setDebtSum((incomeBO5.getDebtSum().subtract(incomeBO3.getDebtSum())).divide(incomeBO5.getDebtSum(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setDebtSum((incomeBO3.getDebtSum().subtract(incomeBO5.getDebtSum())).divide(incomeBO3.getDebtSum()).multiply(new BigDecimal(100)));
+            yearDifferences.setDebtSum((incomeBO3.getDebtSum().subtract(incomeBO5.getDebtSum())).divide(incomeBO3.getDebtSum(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getCash().intValue()<=0||incomeBO5.getCash().intValue()<=0){
             yearDifferences.setCash(new BigDecimal(100));
         }else if(incomeBO5.getCash().intValue()>incomeBO3.getCash().intValue()){
-            yearDifferences.setCash((incomeBO5.getCash().subtract(incomeBO3.getCash())).divide(incomeBO5.getCash()).multiply(new BigDecimal(100)));
+            yearDifferences.setCash((incomeBO5.getCash().subtract(incomeBO3.getCash())).divide(incomeBO5.getCash(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setCash((incomeBO3.getCash().subtract(incomeBO5.getCash())).divide(incomeBO3.getCash()).multiply(new BigDecimal(100)));
+            yearDifferences.setCash((incomeBO3.getCash().subtract(incomeBO5.getCash())).divide(incomeBO3.getCash(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getBankCard().intValue()<=0||incomeBO5.getBankCard().intValue()<=0){
             yearDifferences.setBankCard(new BigDecimal(100));
         }else if(incomeBO5.getBankCard().intValue()>incomeBO3.getBankCard().intValue()){
-            yearDifferences.setBankCard((incomeBO5.getBankCard().subtract(incomeBO3.getBankCard())).divide(incomeBO5.getBankCard()).multiply(new BigDecimal(100)));
+            yearDifferences.setBankCard((incomeBO5.getBankCard().subtract(incomeBO3.getBankCard())).divide(incomeBO5.getBankCard(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setBankCard((incomeBO3.getBankCard().subtract(incomeBO5.getBankCard())).divide(incomeBO3.getBankCard()).multiply(new BigDecimal(100)));
+            yearDifferences.setBankCard((incomeBO3.getBankCard().subtract(incomeBO5.getBankCard())).divide(incomeBO3.getBankCard(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getWechat().intValue()<=0||incomeBO5.getWechat().intValue()<=0){
             yearDifferences.setWechat(new BigDecimal(100));
         }else if(incomeBO5.getWechat().intValue()>incomeBO3.getWechat().intValue()){
-            yearDifferences.setWechat((incomeBO5.getWechat().subtract(incomeBO3.getWechat())).divide(incomeBO5.getWechat()).multiply(new BigDecimal(100)));
+            yearDifferences.setWechat((incomeBO5.getWechat().subtract(incomeBO3.getWechat())).divide(incomeBO5.getWechat(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setWechat((incomeBO3.getWechat().subtract(incomeBO5.getWechat())).divide(incomeBO3.getWechat()).multiply(new BigDecimal(100)));
+            yearDifferences.setWechat((incomeBO3.getWechat().subtract(incomeBO5.getWechat())).divide(incomeBO3.getWechat(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getAlipay().intValue()<=0||incomeBO5.getAlipay().intValue()<=0){
             yearDifferences.setAlipay(new BigDecimal(100));
         }else if(incomeBO5.getAlipay().intValue()>incomeBO3.getAlipay().intValue()){
-            yearDifferences.setAlipay((incomeBO5.getAlipay().subtract(incomeBO3.getAlipay())).divide(incomeBO5.getAlipay()).multiply(new BigDecimal(100)));
+            yearDifferences.setAlipay((incomeBO5.getAlipay().subtract(incomeBO3.getAlipay())).divide(incomeBO5.getAlipay(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setAlipay((incomeBO3.getAlipay().subtract(incomeBO5.getAlipay())).divide(incomeBO3.getAlipay()).multiply(new BigDecimal(100)));
+            yearDifferences.setAlipay((incomeBO3.getAlipay().subtract(incomeBO5.getAlipay())).divide(incomeBO3.getAlipay(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getStoredPay().intValue()<=0||incomeBO5.getAlipay().intValue()<=0){
             yearDifferences.setStoredPay(new BigDecimal(100));
         }else if(incomeBO5.getStoredPay().intValue()>incomeBO3.getStoredPay().intValue()){
-            yearDifferences.setStoredPay((incomeBO5.getStoredPay().subtract(incomeBO3.getStoredPay())).divide(incomeBO5.getStoredPay()).multiply(new BigDecimal(100)));
+            yearDifferences.setStoredPay((incomeBO5.getStoredPay().subtract(incomeBO3.getStoredPay())).divide(incomeBO5.getStoredPay(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setStoredPay((incomeBO3.getStoredPay().subtract(incomeBO5.getStoredPay())).divide(incomeBO3.getStoredPay()).multiply(new BigDecimal(100)));
+            yearDifferences.setStoredPay((incomeBO3.getStoredPay().subtract(incomeBO5.getStoredPay())).divide(incomeBO3.getStoredPay(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
         if(incomeBO3.getCreditSum().intValue()<=0||incomeBO5.getAlipay().intValue()<=0){
             yearDifferences.setCreditSum(new BigDecimal(100));
         }else if(incomeBO5.getCreditSum().intValue()>incomeBO3.getCreditSum().intValue()){
-            yearDifferences.setCreditSum((incomeBO5.getCreditSum().subtract(incomeBO3.getCreditSum())).divide(incomeBO5.getCreditSum()).multiply(new BigDecimal(100)));
+            yearDifferences.setCreditSum((incomeBO5.getCreditSum().subtract(incomeBO3.getCreditSum())).divide(incomeBO5.getCreditSum(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }else{
-            yearDifferences.setCreditSum((incomeBO3.getCreditSum().subtract(incomeBO5.getCreditSum())).divide(incomeBO3.getCreditSum()).multiply(new BigDecimal(100)));
+            yearDifferences.setCreditSum((incomeBO3.getCreditSum().subtract(incomeBO5.getCreditSum())).divide(incomeBO3.getCreditSum(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
         }
 
         //差异 用当月减去上月 除以上月
@@ -296,40 +297,56 @@ public class IncomeService {
      * @param hotelId 酒店id
      * */
     public void addIncome(Integer hotelId){
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=DateUtils.getYesTaday();
-        String dateStr=simpleDateFormat.format(date);
+
+        //获取今天凌晨四点
+        Calendar calendar=Calendar.getInstance();
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 04);
+        String endDateStr=simpleDateFormat.format(calendar.getTime());
+        calendar.setTime(date);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 04);
+        String dateStr=simpleDateFormat.format(calendar.getTime());
+        System.err.println(dateStr);
+
+        System.err.println(endDateStr);
         IncomeBO incomeBO=new IncomeBO();
         //房费
-        BigDecimal roomRate=incomeDAO.getCashierSummaryByProject(dateStr, Constants.ROOMRATE.getValue(),hotelId);
+        BigDecimal roomRate=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.ROOMRATE.getValue(),hotelId);
         if(roomRate==null){
             roomRate=new BigDecimal(0);
         }
+        System.err.println("=========");
+        System.err.println("=========roomRate"+roomRate);
         incomeBO.setRoomRate(roomRate);
+        System.err.println("=========setRoomRate"+incomeBO.getRoomRate());
         //超时费
-        BigDecimal timeoutRoomRate=incomeDAO.getCashierSummaryByProject(dateStr, Constants.TIMEOUTCOST.getValue(),hotelId);
+        BigDecimal timeoutRoomRate=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr,  Constants.TIMEOUTCOST.getValue(),hotelId);
         if(timeoutRoomRate==null){
             timeoutRoomRate=new BigDecimal(0);
         }
         incomeBO.setTimeoutRoomRate(timeoutRoomRate);
         //房费减免
-        BigDecimal roomRateRoom=incomeDAO.getCashierSummaryByProject(dateStr, Constants.ROOMRATEFREE.getValue(),hotelId);
+        BigDecimal roomRateRoom=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.ROOMRATEFREE.getValue(),hotelId);
         if(roomRateRoom==null){
             roomRateRoom=new BigDecimal(0);
         }
-        incomeBO.setRoomRate(roomRateRoom);
         //商品减免
-        BigDecimal commodityFerr=incomeDAO.getCashierSummaryByProject(dateStr, Constants.COMMODITYFREE.getValue(),hotelId);
+        BigDecimal commodityFerr=incomeDAO.getCashierSummaryByProject(dateStr, endDateStr,Constants.COMMODITYFREE.getValue(),hotelId);
         if(commodityFerr==null){
             commodityFerr=new BigDecimal(0);
         }
         //赔偿减免
-        BigDecimal compEnsatinonEecomp=incomeDAO.getCashierSummaryByProject(dateStr, Constants.COMPENSATIONFREE.getValue(),hotelId);
+        BigDecimal compEnsatinonEecomp=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMPENSATIONFREE.getValue(),hotelId);
         if(compEnsatinonEecomp==null){
             compEnsatinonEecomp=new BigDecimal(0);
         }
         //超时费减免
-        BigDecimal mitigate=incomeDAO.getCashierSummaryByProject(dateStr, Constants.MITIGATE.getValue(),hotelId);
+        BigDecimal mitigate=incomeDAO.getCashierSummaryByProject(dateStr, endDateStr,Constants.MITIGATE.getValue(),hotelId);
         if(mitigate==null){
             mitigate=new BigDecimal(0);
         }
@@ -340,19 +357,19 @@ public class IncomeService {
         }
         incomeBO.setRoomRateAdjustment(roomRateAdjustment);
         //商品
-        BigDecimal commodity=incomeDAO.getCashierSummaryByProject(dateStr, Constants.COMMODITY.getValue(),hotelId);
+        BigDecimal commodity=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMMODITY.getValue(),hotelId);
         if(commodity==null){
             commodity=new BigDecimal(0);
         }
         incomeBO.setCommodity(commodity);
         //赔偿
-        BigDecimal compensation=incomeDAO.getCashierSummaryByProject(dateStr, Constants.COMPENSATE.getValue(),hotelId);
+        BigDecimal compensation=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMPENSATE.getValue(),hotelId);
         if(compensation==null){
             compensation=new BigDecimal(0);
         }
         incomeBO.setCompensation(compensation);
         //会员卡收入
-        BigDecimal memberCardRate=incomeDAO.getCashierSummaryByProject(dateStr, Constants.APPLYCARD.getValue(),hotelId);
+        BigDecimal memberCardRate=incomeDAO.getCashierSummaryByProject(dateStr, endDateStr,Constants.APPLYCARD.getValue(),hotelId);
         if(memberCardRate==null){
             memberCardRate=new BigDecimal(0);
         }
@@ -364,37 +381,45 @@ public class IncomeService {
         }
         incomeBO.setOtherRate(otherRate);
         //借方总记
+        System.err.println("roomRate"+roomRate);
+        System.err.println("timeoutRoomRate"+timeoutRoomRate);
+        System.err.println("roomRateAdjustment"+roomRateAdjustment);
+        System.err.println("otherRate"+otherRate);
+        System.err.println("commodity"+commodity);
+        System.err.println("compensation"+compensation);
+        System.err.println("memberCardRate"+memberCardRate);
         BigDecimal debtSum=roomRate.add(timeoutRoomRate).add(roomRateAdjustment).add(otherRate).add(commodity).add(compensation).add(memberCardRate);
+        System.err.println(debtSum+"debtSum");
         if(debtSum==null){
             debtSum=new BigDecimal(0);
         }
         incomeBO.setDebtSum(debtSum);
         //现金
-        BigDecimal cash=incomeDAO.getCashierSummaryByType(dateStr,Constants.CASH.getValue(),hotelId);
+        BigDecimal cash=incomeDAO.getCashierSummaryByType(dateStr,endDateStr,Constants.CASH.getValue(),hotelId);
         if(cash==null){
             cash=new BigDecimal(0);
         }
         incomeBO.setCash(cash);
         //银行卡
-        BigDecimal bankCard=incomeDAO.getCashierSummaryByType(dateStr,Constants.CART.getValue(),hotelId);
+        BigDecimal bankCard=incomeDAO.getCashierSummaryByType(dateStr,endDateStr,Constants.CART.getValue(),hotelId);
         if(bankCard==null){
             bankCard=new BigDecimal(0);
         }
         incomeBO.setBankCard(bankCard);
         //微信
-        BigDecimal wechat=incomeDAO.getCashierSummaryByType(dateStr,Constants.WECHAT.getValue(),hotelId);
+        BigDecimal wechat=incomeDAO.getCashierSummaryByType(dateStr,endDateStr,Constants.WECHAT.getValue(),hotelId);
         if(wechat==null){
             wechat=new BigDecimal(0);
         }
         incomeBO.setWechat(wechat);
         //支付宝
-        BigDecimal alipay=incomeDAO.getCashierSummaryByType(dateStr,Constants.ALIPAY.getValue(),hotelId);
+        BigDecimal alipay=incomeDAO.getCashierSummaryByType(dateStr,endDateStr,Constants.ALIPAY.getValue(),hotelId);
         if(alipay==null){
             alipay=new BigDecimal(0);
         }
         incomeBO.setAlipay(alipay);
         //储值支付
-        BigDecimal storedPay=incomeDAO.getCashierSummaryByType(dateStr,Constants.STORED.getValue(),hotelId);
+        BigDecimal storedPay=incomeDAO.getCashierSummaryByType(dateStr,endDateStr,Constants.STORED.getValue(),hotelId);
         if(storedPay==null){
             storedPay=new BigDecimal(0);
         }
@@ -410,6 +435,7 @@ public class IncomeService {
         incomeBO.setNightAuditorTime(nightAuditorTime);
         incomeBO.setHotelId(hotelId);
         //这得计算 每个字段的金额
+        System.err.println("=========setRoomRate"+incomeBO.getRoomRate());
         incomeDAO.addIncome(incomeBO);
     }
 }
