@@ -144,7 +144,7 @@ public class ManagementReportService {
         Calendar ct = Calendar.getInstance();
         ct.setTime(endTime);
         String firstDay1 = format.format(ct.getTime());
-        String endTime1 = firstDay1 + " 04:00:00";
+        String endTime1 = firstDay1 + " 05:00:00";
         Date endTime111 = dd.parse(endTime1);
 
         Map<String, Object> map1 = new HashMap<String, Object>();
