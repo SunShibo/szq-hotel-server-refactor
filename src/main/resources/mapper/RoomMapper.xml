@@ -625,7 +625,7 @@
     <select id="queryOrder" resultType="java.lang.Integer">
  SELECT COUNT(1) FROM hm_order_child,hm_order WHERE hm_order.id = hm_order_child.order_id
          AND hm_order.hotel_id = #{hotelId} AND hm_order_child.order_state = 'admissions'  AND hm_order.channel = '散客'
- )
+
     </select>
 
 
