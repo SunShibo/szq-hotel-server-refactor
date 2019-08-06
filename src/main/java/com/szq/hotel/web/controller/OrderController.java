@@ -481,7 +481,7 @@ public class OrderController extends BaseCotroller {
 
             //判断是否是会员卡储值支付
             if (payType.equals(Constants.STORED.getValue())) {
-                memberService.storedValuePay(certificateNumber, money, "入住支付", Constants.ROOMRATE.getValue(), null, userInfo.getId());
+                memberService.storedValuePay(certificateNumber, money, "入住支付", Constants.ROOMRATE.getValue(), new BigDecimal(0), userInfo.getId());
             }
 
             //获取主订单信息

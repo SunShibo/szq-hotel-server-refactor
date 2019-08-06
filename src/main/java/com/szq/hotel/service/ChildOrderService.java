@@ -323,7 +323,7 @@ public class ChildOrderService {
             buffer.append(id).append(",");
             //储值支付
             if (payType.equals(Constants.STORED.getValue())) {
-                memberService.storedValuePay(param.getCertificateNumber(), param.getMoney(), Constants.CONSUMPTIONITEM.getValue(), "储值支付",param.getMoney(), userId);
+                memberService.storedValuePay(param.getCertificateNumber(), param.getMoney(), Constants.CONSUMPTIONITEM.getValue(), "储值支付",new BigDecimal(0), userId);
             }
             //积分减免
             if (param.getIntegral() != null) {
@@ -388,7 +388,7 @@ public class ChildOrderService {
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             //储值支付
             if (payType.equals(Constants.STORED.getValue())) {
-                memberService.storedValuePay(param.getCertificateNumber(), param.getMoney(), Constants.CONSUMPTIONITEM.getValue(), "储值支付",param.getMoney(), userId);
+                memberService.storedValuePay(param.getCertificateNumber(), param.getMoney(), Constants.CONSUMPTIONITEM.getValue(), "储值支付",new BigDecimal(0), userId);
             }
 
             //积分减免
