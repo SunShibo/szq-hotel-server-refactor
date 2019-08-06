@@ -1318,28 +1318,30 @@ public class RoomService {
             list.add(roomTypeCountDTO);
         }
 
+        String dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
         List<XxDTO> ls = new ArrayList<XxDTO>();
         //查询全部会员级别
         List<MemberLevelBO> memberLevelBOS = roomDAO.queryMemberLevel();
-        //查询当前在住的订单
-        List<OrderBO> orderBOS = roomDAO.queryOrder(hotelId, date);
-        int j = 0;
+        //查询当前会员的订单
+        List<Integer> orderBOS = roomDAO.queryOrder2(hotelId, dt);
+        System.err.println(orderBOS);
+
         for (MemberLevelBO memberLevelBO : memberLevelBOS) {
             XxDTO xxDTO = new XxDTO();
             xxDTO.setName(memberLevelBO.getName());
             int i = 0;
-            for (OrderBO orderBO : orderBOS) {
-                if (memberLevelBO.getId().equals(orderBO.getMembersId())) {
+            for (Integer orderBO : orderBOS) {
+                if (memberLevelBO.getId().equals(orderBO)) {
                     i++;
                 }
             }
             xxDTO.setNumber(i);
             ls.add(xxDTO);
-            j = j + i;
+
         }
         XxDTO xx = new XxDTO();
-        xx.setNumber(orderBOS.size() - j);
+        xx.setNumber(roomDAO.queryOrder(hotelId, dt));
         xx.setName("散客");
         ls.add(xx);
 

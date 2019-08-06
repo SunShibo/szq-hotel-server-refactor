@@ -173,13 +173,20 @@ public interface RoomDAO {
     List<MemberLevelBO> queryMemberLevel();
 
     /**
-     * 查询当前在住的订单
+     * 查询当前在住的散客
      * @param hotelId
      * @param date
      * @return
      */
-    List<OrderBO>  queryOrder(@Param("hotelId")Integer hotelId,@Param("date")String date);
+    Integer  queryOrder(@Param("hotelId")Integer hotelId,@Param("date")String date);
 
+    /**
+     * 查询当前在住会员
+     * @param hotelId
+     * @param date
+     * @return
+     */
+    List<Integer>  queryOrder2(@Param("hotelId")Integer hotelId,@Param("date")String date);
     /**
      * 获取用户预约过的房间id
      * @param map

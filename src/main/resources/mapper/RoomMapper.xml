@@ -622,8 +622,17 @@
     </select>
 
 
-    <select id="queryOrder" resultType="com.szq.hotel.entity.bo.OrderBO">
-    SELECT * FROM hm_order WHERE hotel_id = #{hotelId} AND  check_out_time &lt;  #{date} and #{date} &gt;= check_time
+    <select id="queryOrder" resultType="java.lang.Integer">
+    SELECT count(1) FROM hm_order WHERE hotel_id = #{hotelId} AND channel = '散客' and
+        check_time &lt;= #{date} AND check_out_time &gt; #{date}
+    </select>
+
+    <select id="queryOrder2" resultType="java.lang.Integer">
+ SELECT member_level_id FROM  hm_member_card WHERE
+  id IN ( SELECT member_card_id FROM hm_member WHERE id IN
+  (SELECT members_id FROM hm_order WHERE hotel_id = #{hotelId} AND members_id
+   IS NOT NULL AND
+        check_time &lt;= #{date} AND check_out_time &gt; #{date}))
     </select>
 
     <!--获取用户预约过的房间id-->

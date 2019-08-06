@@ -1228,17 +1228,22 @@ public class ManagerDailyService {
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        System.err.println("date1"+date1);
+        System.err.println("date2"+dete2);
 
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId,new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        System.err.println(managerdailyBOS);
         BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
             return n;
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
+            System.err.println(managerdailyBO.getGrossrealIncome());
             n.add(managerdailyBO.getGrossrealIncome());
         }
+        System.err.println(n);
         return n;
     }
 
