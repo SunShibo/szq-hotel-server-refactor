@@ -53,7 +53,7 @@ public class ChildOrderService {
         ChildOrderBO order = childOrderDAO.queryOrderChildById(orderChildId);
         //报表
         cashierSummaryService.addCheck(money, payType, IDBuilder.getOrderNumber(), userId, order.getName(), order.getOTA(),
-                order.getChannel(), order.getPassengerSource(), order.getRoomName(), order.getRoomTypeName(), null, hotelId);
+                order.getPassengerSource(), order.getChannel(), order.getRoomName(), order.getRoomTypeName(), null, hotelId);
 
         if (payType.equals(Constants.STORED.getValue())) {
             memberService.storedValuePay(certificateNumber, money, "入住押金", "储值支付", new BigDecimal("0"), userId);
