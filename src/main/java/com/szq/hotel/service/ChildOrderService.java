@@ -91,8 +91,8 @@ public class ChildOrderService {
         }
 
         //报表
-        cashierSummaryService.addAccount(type, money, main.getOrderNumber(), userId, main.getName(), main.getOTA(), main.getChannel(),
-                main.getPassengerSource(), main.getRoomName(), main.getRoomTypeName(), designation, hotelId);
+        cashierSummaryService.addAccount(type, money, main.getOrderNumber(), userId, main.getName(), main.getOTA(),
+                main.getPassengerSource(), main.getChannel(), main.getRoomName(), main.getRoomTypeName(), designation, hotelId);
         log.info("end  recorded........................................");
 
     }
@@ -128,8 +128,8 @@ public class ChildOrderService {
 
         ChildOrderBO order = childOrderDAO.queryOrderChildById(orderChildId);
         //报表
-        cashierSummaryService.addFree(negation, order.getOrderNumber(), userId, order.getName(), order.getOTA(), order.getChannel(),
-                order.getPassengerSource(), order.getRoomName(), order.getRoomTypeName(), remark, hotelId,type);
+        cashierSummaryService.addFree(negation, order.getOrderNumber(), userId, order.getName(), order.getOTA(),order.getPassengerSource(),
+                order.getChannel(),order.getRoomName(), order.getRoomTypeName(), remark, hotelId,type);
         log.info("end  free..........................................");
     }
 
@@ -182,23 +182,23 @@ public class ChildOrderService {
                     || Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())) {
                 //房费 超时费  超时费减免
                 log.info("start transferAccounts....ROOMRATE.....................................................");
-                childOrderDAO.increaseRoomRate(shiftToId, orderRecoredBO.getMoney());
-                childOrderDAO.reduceRoomRate(rollOutId, orderRecoredBO.getMoney());
+                childOrderDAO.reduceRoomRate(shiftToId, orderRecoredBO.getMoney());
+                childOrderDAO.increaseRoomRate(rollOutId, orderRecoredBO.getMoney());
 
             } else if (Constants.COMMODITY.getValue().equals(orderRecoredBO.getProject()) || Constants.COMPENSATE.getValue().equals(orderRecoredBO.getProject())
                     ||Constants.APPLYCARD.getValue().equals(orderRecoredBO.getProject())) {
                 //商品 赔偿  办卡
                 log.info("start transferAccounts....OtherRate.....................................................");
-                childOrderDAO.increaseOtherRate(shiftToId, orderRecoredBO.getMoney());
-                childOrderDAO.reduceOtherRate(rollOutId, orderRecoredBO.getMoney());
+                childOrderDAO.reduceOtherRate(shiftToId, orderRecoredBO.getMoney());
+                childOrderDAO.increaseOtherRate(rollOutId, orderRecoredBO.getMoney());
 
             } else if (Constants.ROOMRATEFREE.getValue().equals(orderRecoredBO.getProject()) ||
                     Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())||Constants.COMMODITYFREE.getValue().equals(orderRecoredBO.getProject())
                     ||  Constants.COMPENSATIONFREE.getValue().equals(orderRecoredBO.getProject())) {
                 log.info("start transferAccounts....free.....................................................");
                 //免单 超时费减免
-                childOrderDAO.free(shiftToId, orderRecoredBO.getMoney());
-                childOrderDAO.reducefree(rollOutId, orderRecoredBO.getMoney());
+                childOrderDAO.reducefree(shiftToId, orderRecoredBO.getMoney());
+                childOrderDAO.free(rollOutId, orderRecoredBO.getMoney());
             }
 
             ChildOrderBO childOrderBO = childOrderDAO.queryOrderChildById(rollOutId);
@@ -318,7 +318,7 @@ public class ChildOrderService {
             //收款
             Integer id=orderRecordService.addOrderRecord(chilId, Constants.CONSUMPTIONITEM.getValue(), payType, param.getMoney(), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getMoney(), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), payType,
-                    childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                   childOrderBO.getPassengerSource(), childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             buffer.append(id).append(",");
             //储值支付
@@ -329,7 +329,7 @@ public class ChildOrderService {
             if (param.getIntegral() != null) {
                 memberService.integralBreaks(param.getCertificateNumber(), param.getIntegral(), Constants.CONSUMPTIONITEM.getValue(), "积分支付", userId);
                 cashierSummaryService.addAccounts(param.getIntegral(), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), Constants.INTEGRAL.getValue(),
-                        childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                        childOrderBO.getPassengerSource(),childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                         Constants.CONSUMPTIONITEM.getValue(), hotelId);
             }
         } else {
@@ -384,7 +384,7 @@ public class ChildOrderService {
             //收款
             orderRecordService.addOrderRecord(childMain, Constants.CONSUMPTIONITEM.getValue(), payType, param.getMoney(), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getMoney(), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), payType,
-                    childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    childOrderBO.getPassengerSource(), childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             //储值支付
             if (payType.equals(Constants.STORED.getValue())) {
@@ -395,7 +395,7 @@ public class ChildOrderService {
             if (param.getIntegral() != null) {
                 memberService.integralBreaks(param.getCertificateNumber(), param.getIntegral(), Constants.CONSUMPTIONITEM.getValue(), "积分支付", userId);
                 cashierSummaryService.addAccounts(param.getIntegral(), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), Constants.INTEGRAL.getValue(),
-                        childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                       childOrderBO.getPassengerSource(),  childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                         Constants.CONSUMPTIONITEM.getValue(), hotelId);
             }
         } else {
@@ -425,7 +425,7 @@ public class ChildOrderService {
             Integer id=orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.CASH.getValue(), param.getCash().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getCash().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
-                    Constants.CASH.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    Constants.CASH.getValue(),  childOrderBO.getPassengerSource(),childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             buffer.append(id).append(",");
         }
@@ -434,7 +434,7 @@ public class ChildOrderService {
             Integer id=orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.CART.getValue(), param.getCart().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getCart().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
-                    Constants.CART.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    Constants.CART.getValue(),  childOrderBO.getPassengerSource(),childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             buffer.append(id).append(",");
         }
@@ -443,7 +443,7 @@ public class ChildOrderService {
             Integer id=orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.WECHAT.getValue(), param.getWechat().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getWechat().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
-                    Constants.WECHAT.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    Constants.WECHAT.getValue(), childOrderBO.getPassengerSource(), childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             buffer.append(id).append(",");
         }
@@ -452,7 +452,7 @@ public class ChildOrderService {
             Integer id= orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getAlipay().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getAlipay().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
-                    Constants.ALIPAY.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    Constants.ALIPAY.getValue(), childOrderBO.getPassengerSource(), childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             buffer.append(id).append(",");
         }
@@ -461,7 +461,7 @@ public class ChildOrderService {
             Integer id= orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.ALIPAY.getValue(), param.getOther().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getOther().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
-                    Constants.OTHER.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    Constants.OTHER.getValue(),  childOrderBO.getPassengerSource(),childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             buffer.append(id).append(",");
         }
@@ -473,7 +473,7 @@ public class ChildOrderService {
             Integer id= orderRecordService.addOrderRecord(childId, Constants.CONSUMPTIONITEM.getValue(), Constants.STORED.getValue(), param.getStored().
                     multiply(new BigDecimal("-1")), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
             cashierSummaryService.addAccounts(param.getStored().multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(),
-                    Constants.STORED.getValue(), childOrderBO.getChannel(), childOrderBO.getPassengerSource(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    Constants.STORED.getValue(),  childOrderBO.getPassengerSource(),childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                     Constants.CONSUMPTIONITEM.getValue(), hotelId);
             buffer.append(id).append(",");
         }

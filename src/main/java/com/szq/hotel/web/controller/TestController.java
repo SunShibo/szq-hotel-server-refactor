@@ -98,7 +98,7 @@ public class TestController extends BaseCotroller {
                     log.info("start  make a repor.....................................................");
                     CommonBO commonBO = childOrderService.queryChildName(priceBO.getOrderChildId());
                     cashierSummaryService.addRoomRate(priceBO.getMoney(), roomRateBO.getOrderNumber(), 1, commonBO.getName(),
-                            roomRateBO.getOTA(), roomRateBO.getChannel(), roomRateBO.getPassengerSource(), roomRateBO.getRoomName(),
+                            roomRateBO.getOTA(),  roomRateBO.getPassengerSource(),roomRateBO.getChannel(), roomRateBO.getRoomName(),
                             roomRateBO.getRoomTypeName(), roomRateBO.getHotelId());
                 }
             }
