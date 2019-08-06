@@ -198,7 +198,7 @@ var api = {
     // , orderInfoHistory: 'OrderManage/orderInfoHistory'//消费明细  废弃
     , queryOrderByRoom: '/commodity/querySuspend'//商品交易挂账000
     , buying: '/commodity/suspend'//商品交易挂账生成订单信息 已修改
-    , FormAccountDetail: '/FormAccountDetailController/FormAccountDetail'//收银报表
+    , FormAccountDetail: '/statement/queryCashierSummary'//收银报表   已修改
     , FormManangeResponse: '/managementReport/getManagementReport'//管理层报表000
     // , stamOrder: '/OrderManage/stamOrder'//在住打印  废弃
     // , queryRoomPerson: 'roomDetailsController/queryRoomPerson'//查询同来人  废弃

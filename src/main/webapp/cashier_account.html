@@ -32,24 +32,31 @@
 <div style="height: 70px;"></div>
 <form class="layui-form" style="padding-top: 10px">
     <div class="layui-form-item">
-        <label class="layui-form-label">起止时间</label>
-        <div class="layui-input-inline" style="width: 165px;">
-            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
-                   class="layui-input inline-input"
-                   id="startTime1"
-                   placeholder="开始时间">
+        <div class="layui-inline">
+            <label class="layui-form-label">时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="startTime" class="layui-input" id="startTime"
+                       placeholder="开始时间" autocomplete="off">
+            </div>
+            <div class="layui-form-mid">至</div>
+            <div class="layui-input-inline">
+                <input type="text" name="endTime" class="layui-input" id="endTime"
+                       placeholder="结束时间" autocomplete="off">
+            </div>
+            <label class="layui-form-label">收银员</label>
+            <div class="layui-input-inline">
+                <input type="text" name="operator" placeholder="请输入收银员姓名" autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label">渠道</label>
+            <div class="layui-input-inline">
+                <select id="cnId" name="channel" lay-filter="cnId">
+                    <option value=""></option>
+                    <option value="散客">散客</option>
+                    <option value="会员">会员</option>
+                </select>
+            </div>
         </div>
-        <label class="layui-form-label">收银员</label>
-        <div class="layui-input-inline">
-            <input type="text" name="name" placeholder="请输入收银员姓名" autocomplete="off" class="layui-input">
-        </div>
-        <label class="layui-form-label">渠道</label>
-        <div class="layui-input-inline">
-            <select id="cnId" name="cnId" lay-filter="cnId" lay-search>
-                <option value=""></option>
-            </select>
-        </div>
-        <div class="layui-input-inline">
+        <div class="layui-inline">
             <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
         </div>
     </div>
@@ -65,22 +72,21 @@
             , startTime = 0, endTime = 0;
 
 
-
         $(function () {
             // new Date(.getTime() + (4 * 60 * 60 * 1000))
-            renderSelect("cnId", 'id', 'name', api.allChannel, form,function (str,rs) {});
+            renderSelect("cnId", 'value', 'value', api.allChannel, form, function (str, rs) {
+            });
             var obj = {
-                startTime: new Date(DateToLStr4(new Date()).concat('04:00:00')),
-                endTime: new Date(new Date(DateToLStr4(new Date()).concat('04:00:00')).getTime() + (24 * 60 * 60 * 1000))
+                startTime: DateToLStr4(new Date(new Date().getTime() - (24 * 60 * 60 * 1000))).concat('04:00:00'),
+                endTime: DateToLStr4(new Date()).concat('04:00:00')
             };
-            $('#startTime').val(DateToLStr3(new Date()));
             $.ajax({
                 url: api.FormAccountDetail,
                 type: 'POST',
                 dataType: 'json',
                 data: obj,
                 success: function (rs) {
-                    if(!rs.success){
+                    if (!rs.success) {
                         showMsg(rs.errMsg, 2, false);
                         return;
                     }
@@ -92,23 +98,23 @@
 
         //监听提交
         form.on('submit(formData)', function (data) {
-            if(!startTime){
-                startTime = new Date(DateToLStr4(new Date()).concat(' 04:00:00'))
+            if (!startTime) {
+                startTime = DateToLStr4(new Date(new Date().getTime() - (24 * 60 * 60 * 1000))).concat('04:00:00')
             }
-            if(!endTime){
-                endTime = new Date(new Date(DateToLStr4(new Date()).concat(' 04:00:00')).getTime() + (24 * 60 * 60 * 1000));
+            if (!endTime) {
+                endTime = DateToLStr4(new Date()).concat('04:00:00');
             }
             var obj = {
                 startTime: startTime,
-                endTime: new Date(endTime)
+                endTime: endTime
             };
 
-            if(data.field.name){
-                obj.name = data.field.name;
+            if (data.field.operator) {
+                obj.operator = data.field.operator;
             }
 
-            if(data.field.cnId){
-                obj.cnId = data.field.cnId;
+            if (data.field.channel) {
+                obj.channel = data.field.channel;
             }
             $.ajax({
                 url: api.FormAccountDetail,
@@ -116,7 +122,7 @@
                 dataType: 'json',
                 data: obj,
                 success: function (rs) {
-                    if(!rs.success){
+                    if (!rs.success) {
                         showMsg(rs.data.errMsg, 2, false);
                         return;
                     }
@@ -141,18 +147,18 @@
             }
             , toolbar: true
             , cols: [[ //标题栏
-                {field: 'operator', title: '收银员', sort: true, align: 'center'}
+                {field: 'operator', title: '收银员', sort: true, align: 'center'},
+                {field: 'orderNumber', title: '订单号', sort: true, align: 'center'}
                 , {field: 'project', title: '项目', align: 'center'}
-                , {field: 'channelName', title: '渠道', align: 'center'}
-                , {field: 'relationName', title: '客源', align: 'center'}
+                , {field: 'channel', title: '渠道', align: 'center'}
+                , {field: 'passengerSource', title: '客源', align: 'center'}
                 , {field: 'OTA', title: 'OTA', align: 'center'}
                 , {field: 'roomName', title: '房号', align: 'center'}
-                , {field: 'roomType', title: '房型', align: 'center'}
+                , {field: 'roomTypeName', title: '房型', align: 'center'}
                 , {field: 'name', title: '姓名', align: 'center'}
-                , {field: 'voucher', title: '原始凭证', align: 'center'}
                 , {
-                    field: 'pay', title: '消费', align: 'center', templet: function (data) {
-                        return data.pay ? parseNum(data.pay) : 0;
+                    field: 'consumption', title: '消费', align: 'center', templet: function (data) {
+                        return data.consumption ? parseNum(data.consumption) : 0;
                     }
                 }
                 , {
@@ -168,15 +174,20 @@
                 , {field: 'remark', title: '备注', align: 'center'}
             ]]
         });
-
-        var start = laydate.render({
+        laydate.render({
             elem: '#startTime',
-            type: 'date',
-            btns: ['confirm'],
-            done: function (value, date) {
-                startTime = new Date(value.concat(' 04:00:00').replace(/-/g, "/"));
-                endTime = new Date(value.concat(' 04:00:00').replace(/-/g, "/")).getTime() + (24 * 60 * 60 * 1000);
-            }
+            type: 'datetime',
+            value: DateToLStr4(new Date(new Date().getTime() - (24 * 60 * 60 * 1000))).concat('04:00:00'),
+            format: 'yyyy/MM/dd HH:mm:ss',
+            btns: ['confirm']
+        });
+
+        laydate.render({
+            elem: '#endTime',
+            type: 'datetime',
+            value: DateToLStr4(new Date()).concat('04:00:00'),
+            format: 'yyyy/MM/dd HH:mm:ss',
+            btns: ['confirm']
         });
     });
 </script>

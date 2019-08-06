@@ -10,14 +10,14 @@
     <div class="layui-form-item" style="padding-top: 5px;">
         <label class="layui-form-label">用户名</label>
         <div class="layui-input-inline">
-            <input type="text" name="name" required  lay-verify="required" placeholder="请输入角色名" autocomplete="off"
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入用户名" autocomplete="off"
                    class="layui-input">
         </div>
     </div>
     <div class="layui-form-item" style="padding-top: 5px;">
         <label class="layui-form-label">手机号</label>
         <div class="layui-input-inline">
-            <input type="text" name="mobile" required  lay-verify="required" placeholder="请输入角色名" autocomplete="off"
+            <input type="text" name="mobile" required lay-verify="required" placeholder="请输入手机号" autocomplete="off"
                    class="layui-input">
         </div>
     </div>
@@ -32,7 +32,7 @@
     <div class="layui-form-item" style="padding-top: 5px;">
         <label class="layui-form-label">角色</label>
         <div class="layui-input-inline">
-            <select id="roleId" name="roleId" required  lay-verify="required">
+            <select id="roleId" name="roleId" required lay-verify="required">
                 <option value="">全部</option>
             </select>
         </div>
@@ -74,8 +74,15 @@
 
         //监听确定按钮提交
         form.on('submit(formData)', function (data) {
-            if(s){//编辑
-                if(!data.field.password) delete data.field.password;
+            if (s) {//编辑
+                if (!data.field.password) {
+                    delete data.field.password;
+                } else {
+                    if (/^[\S]{6,12}$/.test(data.field.password)) {
+                        showMsg('密码必须6到12位，且不能出现空格', 2, false);
+                        return;
+                    }
+                }
                 data.field.id = adminData.id;
                 $.ajax({
                     url: api.updateAdmin,
@@ -83,23 +90,27 @@
                     dataType: 'json',
                     data: data.field,
                     success: function (res) {
-                        if(res.success){
+                        if (res.success) {
                             showMsg('修改成功', 1, false);
-                        }else {
+                        } else {
                             showMsg(res.errMsg, 2, false);
                         }
                     }
                 });
-            }else{//添加
+            } else {//添加
+                if (/^[\S]{6,12}$/.test(data.field.password)) {
+                    showMsg('密码必须6到12位，且不能出现空格', 2, false);
+                    return;
+                }
                 $.ajax({
                     url: api.addAdmin,
                     type: 'POST',
                     dataType: 'json',
                     data: data.field,
                     success: function (res) {
-                        if(res.success){
+                        if (res.success) {
                             showMsg('添加成功', 1, false);
-                        }else {
+                        } else {
                             showMsg(res.errMsg, 2, false);
                         }
                     }
