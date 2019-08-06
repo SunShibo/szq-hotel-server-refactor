@@ -33,7 +33,7 @@
         SUM(disable_room_sum) AS disableRoomSum,SUM(rental_income) AS rentalIncome,
         SUM(empty_room_sum) AS emptyRoomSum,SUM(hour_room_late_sum) AS hourRoomLateSum
         FROM `hm_management_report`
-        WHERE hotel_id=#{hotelId} AND  create_time &lt; #{endTime} AND  create_time &gt;= #{startTime}
+        WHERE hotel_id=#{hotelId} AND  create_time &lt;= #{endTime} AND  create_time &gt; #{startTime}
         </select>
 
 
