@@ -257,4 +257,22 @@ public interface RoomDAO {
      * @return
      */
     List<Integer> queryRoomTypeAndId(@Param("hotelId")Integer hotelId, @Param("phone")String phone);
+
+
+    /**
+     * 获取不同会员入住数量
+     * @param hotelId
+     * @param date
+     * @param memberLevelId
+     * @return
+     */
+    int queryMemRomId(@Param("hotelId")Integer hotelId,@Param("date")String date,@Param("memberLevelId")Integer memberLevelId);
+
+    /**
+     *
+     * @param hotelId
+     * @param date
+     * @return
+     */
+    int queryXy(@Param("hotelId")Integer hotelId, @Param("date")String date);
 }

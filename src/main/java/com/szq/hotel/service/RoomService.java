@@ -1295,7 +1295,8 @@ public class RoomService {
 
 
         //获取今天统计房价
-        Integer integer1 = roomDAO.queryEverydayRoomPrice(format);
+        log.info(format);
+        int integer1 = roomDAO.queryEverydayRoomPrice(format);
         log.info("integer1:{}",integer1);
         map.put("three", integer1);
         if(!CollectionUtils.isEmpty(rtBOS)){
@@ -1326,22 +1327,13 @@ public class RoomService {
         List<XxDTO> ls = new ArrayList<XxDTO>();
         //查询全部会员级别
         List<MemberLevelBO> memberLevelBOS = roomDAO.queryMemberLevel();
-        //查询当前会员的订单
-        List<Integer> orderBOS = roomDAO.queryOrder2(hotelId, dt);
-        System.err.println(orderBOS);
         if(!CollectionUtils.isEmpty(memberLevelBOS)){
             for (MemberLevelBO memberLevelBO : memberLevelBOS) {
                 XxDTO xxDTO = new XxDTO();
                 xxDTO.setName(memberLevelBO.getName());
-                int i = 0;
-                for (Integer orderBO : orderBOS) {
-                    if (memberLevelBO.getId().equals(orderBO)) {
-                        i++;
-                    }
-                }
-                xxDTO.setNumber(i);
-                ls.add(xxDTO);
 
+                xxDTO.setNumber(roomDAO.queryMemRomId(hotelId,dt,memberLevelBO.getId()));
+                ls.add(xxDTO);
             }
         }
 
@@ -1350,7 +1342,10 @@ public class RoomService {
         xx.setName("散客");
         ls.add(xx);
 
-
+        XxDTO xy = new XxDTO();
+        xy.setNumber(roomDAO.queryXy(hotelId, dt));
+        xy.setName("协议单位");
+        ls.add(xy);
         map.put("second", ls);
         map.put("first", list);
         return map;

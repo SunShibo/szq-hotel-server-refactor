@@ -116,6 +116,13 @@
         create_time &gt;= #{startTime} and create_time &lt; #{endTime}
     </select>
 
+    <select id="queryGoods2" resultType="com.szq.hotel.entity.bo.CashierSummary">
+        SELECT * FROM hm_cashier_summary
+        WHERE hotel_id = 1 AND  settlement &lt; 0
+        AND create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
+    </select>
+
+
     <select id="querymembers" resultType="com.szq.hotel.entity.bo.Order">
         SELECT *  FROM hm_order
         WHERE hotel_id = #{hotelId}

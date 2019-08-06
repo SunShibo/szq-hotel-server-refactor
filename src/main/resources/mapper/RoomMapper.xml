@@ -525,7 +525,7 @@
   end_time as endTime
   FROM
     hotel.hm_order_child
-   WHERE room_id = #{roomId}
+   WHERE room_id = #{roomId} and order_state =  'reservation'
   </select>
 
     <select id="queryRooms" resultType="com.szq.hotel.entity.bo.RoomBO">
@@ -613,7 +613,7 @@
 <!-- hm_order_child.start_time &gt;= #{checkTime} and hm_order_child.start_time &lt; #{endTime}-->
 
     <select id="queryEverydayRoomPrice" resultType="java.lang.Integer">
-    SELECT SUM(money) FROM hm_everyday_room_price WHERE  `time` = #{date} AND `status` = 'no'
+    SELECT IFNULL(SUM(money),0) FROM hm_everyday_room_price WHERE  `time` = #{date} AND `status` = 'no'
     </select>
 
 
@@ -623,9 +623,12 @@
 
 
     <select id="queryOrder" resultType="java.lang.Integer">
-    SELECT count(1) FROM hm_order WHERE hotel_id = #{hotelId} AND channel = '散客' and
+ SELECT COUNT(1) FROM hm_order_child WHERE order_id IN(
+   SELECT id FROM hm_order WHERE hotel_id = #{hotelId} AND channel = '散客' and
         check_time &lt;= #{date} AND check_out_time &gt; #{date}
+ )
     </select>
+
 
     <select id="queryOrder2" resultType="java.lang.Integer">
  SELECT member_level_id FROM  hm_member_card WHERE
@@ -740,5 +743,21 @@
     <select id="queryRoomTypeAndId" resultType="java.lang.Integer">
       SELECT hm_order_child.room_type_id  FROM hm_order, hm_order_child WHERE hm_order_child.order_id = hm_order.id
         AND hm_order.phone = #{phone} AND hm_order.hotel_id = #{hotelId} AND order_state = 'reservation'
+    </select>
+
+
+    <select id="queryMemRomId" resultType="int">
+        SELECT COUNT(1) FROM hm_member,hm_member_card,hm_member_level,hm_order,hm_order_child
+        WHERE hm_member_card.member_level_id = hm_member_level.id AND hm_member.member_card_id = hm_member_card.id
+        AND hm_member.id  =  hm_order.members_id AND hm_order_child.order_id = hm_order.id
+        AND hm_order.hotel_id = #{hotelId} AND hm_order.check_time &lt;= #{date} AND hm_order.check_out_time &gt; #{date} AND
+        hm_member_level.id = #{memberLevelId}
+    </select>
+
+    <select id="queryXy" resultType="int">
+        SELECT COUNT(1) FROM hm_order_child WHERE order_id IN ( SELECT id FROM hm_order WHERE hotel_id = #{hotelId}
+        AND memberId_or_organizationId IS NOT NULL
+        AND
+        check_time &lt;= #{date} AND check_out_time &gt; #{date})
     </select>
 </mapper>

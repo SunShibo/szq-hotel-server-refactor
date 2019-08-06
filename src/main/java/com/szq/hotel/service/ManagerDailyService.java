@@ -559,7 +559,7 @@ public class ManagerDailyService {
         nuclearnightRoomcharge.setLastMonthDay(yhffLastMonthDay(hotelId, date).intValue() != 0 ? df.format(yhffLastMonthDay(hotelId, date)) + "":"0.00");
         log.info("404");
         //夜核房费本年累计
-        nuclearnightRoomcharge.setYear(yhffYear(hotelId, date).intValue() != 0 ? df.format(yhffYear(hotelId, date)) +"" : "");
+        nuclearnightRoomcharge.setYear(yhffYear(hotelId, date).intValue() != 0 ? df.format(yhffYear(hotelId, date)) +"" : "0.00");
         log.info("407");
         //夜核房费上年同期
         nuclearnightRoomcharge.setLastYearDay(yhffLastYearDay(hotelId, date).intValue() != 0 ? df.format(yhffLastYearDay(hotelId, date))+"" : "0.00");
@@ -786,19 +786,19 @@ public class ManagerDailyService {
         log.info("632");
 
         //散客今日
-        individualTraveler4.setDay(df.format(managerdailyBO3.getIndividualTraveler())+"");
+        individualTraveler4.setDay(f.format(managerdailyBO3.getIndividualTraveler())+"");
         log.info("636");
         //散客本月累计
-        individualTraveler4.setMonth(df.format(sk2Month(hotelId, date))+"");
+        individualTraveler4.setMonth(f.format(sk2Month(hotelId, date))+"");
         log.info("639");
         //散客上月同期
-        individualTraveler4.setLastMonthDay(df.format(sk2LastMonthDay(hotelId, date))+"");
+        individualTraveler4.setLastMonthDay(f.format(sk2LastMonthDay(hotelId, date))+"");
         log.info("642");
         //散客本年累计
-        individualTraveler4.setYear(df.format(sk2Year(hotelId, date))+"");
+        individualTraveler4.setYear(f.format(sk2Year(hotelId, date))+"");
         log.info("645");
         //散客上年同期
-        individualTraveler4.setLastYearDay(df.format(sk2LastYearDay(hotelId, date))+"");
+        individualTraveler4.setLastYearDay(f.format(sk2LastYearDay(hotelId, date))+"");
         log.info("648");
         //散客年增长率
         individualTraveler4.setInsertRial(isIncrease(sk2Year(hotelId, yyyy),sk2Year(hotelId, year)));
@@ -806,19 +806,19 @@ public class ManagerDailyService {
 
 
         //协议单位今日
-        agreementUnit4.setDay(df.format(managerdailyBO3.getAgreementUnit())+"");
+        agreementUnit4.setDay(f.format(managerdailyBO3.getAgreementUnit())+"");
         log.info("656");
         //协议单位本月累计
-        agreementUnit4.setMonth(df.format(xydw2Month(hotelId, date))+"");
+        agreementUnit4.setMonth(f.format(xydw2Month(hotelId, date))+"");
         log.info("659");
         //协议单位上月同期
-        agreementUnit4.setLastMonthDay(df.format(xydw2LastMonthDay(hotelId, date))+"");
+        agreementUnit4.setLastMonthDay(f.format(xydw2LastMonthDay(hotelId, date))+"");
         log.info("662");
         //协议单位本年累计
-        agreementUnit4.setYear(df.format(xydw2Year(hotelId, date))+"");
+        agreementUnit4.setYear(f.format(xydw2Year(hotelId, date))+"");
         log.info("665");
         //协议单位上年同期
-        agreementUnit4.setLastYearDay(df.format(xydw2LastYearDay(hotelId, date))+"");
+        agreementUnit4.setLastYearDay(f.format(xydw2LastYearDay(hotelId, date))+"");
         log.info("668");
         //协议单位年增长率
         agreementUnit4.setInsertRial(isIncrease(xydw2Year(hotelId, yyyy),xydw2Year(hotelId, year)));
@@ -826,19 +826,19 @@ public class ManagerDailyService {
 
 
         //直接入住今日
-        enter4.setDay(df.format(managerdailyBO3.getEnter())+"");
+        enter4.setDay(f.format(managerdailyBO3.getEnter())+"");
         log.info("676");
         //直接入住本月累计
-        enter4.setMonth(df.format(zjrz2Month(hotelId, date))+"");
+        enter4.setMonth(f.format(zjrz2Month(hotelId, date))+"");
         log.info("679");
         //直接入住上月同期
-        enter4.setLastMonthDay(df.format(zjrz2LastMonthDay(hotelId, date))+"");
+        enter4.setLastMonthDay(f.format(zjrz2LastMonthDay(hotelId, date))+"");
         log.info("682");
         //直接入住本年累计
-        enter4.setYear(df.format(zjrz2Year(hotelId, date))+"");
+        enter4.setYear(f.format(zjrz2Year(hotelId, date))+"");
         log.info("685");
         //直接入住上年同期
-        enter4.setLastYearDay(df.format(zjrz2LastYearDay(hotelId, date))+"");
+        enter4.setLastYearDay(f.format(zjrz2LastYearDay(hotelId, date))+"");
         log.info("688");
         //直接入住年增长率
         enter4.setInsertRial(isIncrease(zjrz2Year(hotelId, yyyy),zjrz2Year(hotelId, year)));
@@ -846,19 +846,19 @@ public class ManagerDailyService {
 
 
         //房间预订今日
-        directBooking4.setDay(df.format(managerdailyBO3.getDirectBooking())+"");
+        directBooking4.setDay(f.format(managerdailyBO3.getDirectBooking())+"");
         log.info("696");
         //房间预订本月累计
-        directBooking4.setMonth(df.format(fjyd2Month(hotelId, date))+"");
+        directBooking4.setMonth(f.format(fjyd2Month(hotelId, date))+"");
         log.info("699");
         //房间预订上月同期
-        directBooking4.setLastMonthDay(df.format(fjyd2LastMonthDay(hotelId, date))+"");
+        directBooking4.setLastMonthDay(f.format(fjyd2LastMonthDay(hotelId, date))+"");
         log.info("702");
         //房间预订本年累计
-        directBooking4.setYear(df.format(fjyd2Year(hotelId, date))+"");
+        directBooking4.setYear(f.format(fjyd2Year(hotelId, date))+"");
         log.info("705");
         //房间预订上年同期
-        directBooking4.setLastYearDay(df.format(fjyd2LastYearDay(hotelId, date))+"");
+        directBooking4.setLastYearDay(f.format(fjyd2LastYearDay(hotelId, date))+"");
         log.info("708");
         //房间预订年增长率
         directBooking4.setInsertRial(isIncrease(fjyd2Year(hotelId, yyyy),fjyd2Year(hotelId, year)));
@@ -866,19 +866,19 @@ public class ManagerDailyService {
 
 
         //小计今日
-        subtotal4.setDay(df.format(managerdailyBO3.getSubtotal())+"");
+        subtotal4.setDay(f.format(managerdailyBO3.getSubtotal())+"");
         log.info("716");
         //小计本月累计
-        subtotal4.setMonth(df.format(xj3Month(hotelId, date))+"");
+        subtotal4.setMonth(f.format(xj3Month(hotelId, date))+"");
         log.info("719");
         //小计上月同期
-        subtotal4.setLastMonthDay(df.format(xj3LastMonthDay(hotelId, date))+"");
+        subtotal4.setLastMonthDay(f.format(xj3LastMonthDay(hotelId, date))+"");
         log.info("722");
         //小计本年累计
-        subtotal4.setYear(df.format(xj3Year(hotelId, date))+"");
+        subtotal4.setYear(f.format(xj3Year(hotelId, date))+"");
         log.info("725");
         //小计上年同期
-        subtotal4.setLastYearDay(df.format(xj3LastYearDay(hotelId, date))+"");
+        subtotal4.setLastYearDay(f.format(xj3LastYearDay(hotelId, date))+"");
         log.info("728");
         //小计年增长率
         subtotal4.setInsertRial(isIncrease(xj3Year(hotelId, yyyy),xj3Year(hotelId, year)));
@@ -888,19 +888,19 @@ public class ManagerDailyService {
 
         //平均房价分析
         //会员房价今日分析
-        members5.setDay(df.format(managerdailyBO4.getMembers())+"");
+        members5.setDay(managerdailyBO4.getMembers().intValue() != 0 ? df.format(managerdailyBO4.getMembers())+"" : "0.00");
         log.info("738");
         //会员本月累计
-        members5.setMonth(df.format(hyfj2Month(hotelId, date))+"");
+        members5.setMonth(hyfj2Month(hotelId, date).intValue() != 0 ? df.format(hyfj2Month(hotelId, date))+"" : "0.00");
         log.info("741");
         //会员上月同期
-        members5.setLastMonthDay(df.format(hyfj2LastMonthDay(hotelId, date))+"");
+        members5.setLastMonthDay(hyfj2LastMonthDay(hotelId, date).intValue() != 0 ?  df.format(hyfj2LastMonthDay(hotelId, date))+"" : "0.00");
         log.info("744");
         //会员本年年累计
-        members5.setYear(df.format(hyfj2Year(hotelId, date))+"");
+        members5.setYear(hyfj2Year(hotelId, date).intValue() != 0 ? df.format(hyfj2Year(hotelId, date))+"" : "0.00");
         log.info("747");
         //会员上年同期
-        members5.setLastYearDay(df.format(hyfj2LastYearDay(hotelId, date))+"");
+        members5.setLastYearDay(hyfj2LastYearDay(hotelId, date).intValue() != 0 ? df.format(hyfj2LastYearDay(hotelId, date))+"" : "0.00");
         log.info("750");
         //会员年增长率
         members5.setInsertRial(isIncrease(hyfj2Year(hotelId, yyyy),hyfj2Year(hotelId, year)));
@@ -908,19 +908,19 @@ public class ManagerDailyService {
 
 
         //散客今日
-        individualTraveler5.setDay(df.format(managerdailyBO4.getIndividualTraveler())+"");
+        individualTraveler5.setDay(managerdailyBO4.getIndividualTraveler().intValue() != 0 ? df.format(managerdailyBO4.getIndividualTraveler())+"" : "0.00");
         log.info("758");
         //散客本月累计
-        individualTraveler5.setMonth(df.format(sk3Month(hotelId, date))+"");
+        individualTraveler5.setMonth(sk3Month(hotelId, date).intValue() != 0 ? df.format(sk3Month(hotelId, date))+"" : "0.00");
         log.info("761");
         //散客上月同期
-        individualTraveler5.setLastMonthDay(df.format(sk3LastMonthDay(hotelId, date))+"");
+        individualTraveler5.setLastMonthDay(sk3LastMonthDay(hotelId, date).intValue() !=  0 ? df.format(sk3LastMonthDay(hotelId, date))+"" : "0.00");
         log.info("764");
         //散客本年年累计
-        individualTraveler5.setYear(df.format(sk3Year(hotelId, date))+"");
+        individualTraveler5.setYear(sk3Year(hotelId, date).intValue() != 0 ? df.format(sk3Year(hotelId, date))+"" : "0.00");
         log.info("767");
         //散客上年同期
-        individualTraveler5.setLastYearDay(df.format(sk3LastYearDay(hotelId, date))+"");
+        individualTraveler5.setLastYearDay(sk3LastYearDay(hotelId, date).intValue() != 0 ? df.format(sk3LastYearDay(hotelId, date))+"" : "0.00");
         log.info("770");
         //散客年增长率
         individualTraveler5.setInsertRial(isIncrease(sk3Year(hotelId, yyyy),sk3Year(hotelId, year)));
@@ -928,19 +928,19 @@ public class ManagerDailyService {
 
 
         //协议单位今日
-        agreementUnit5.setDay(df.format(managerdailyBO4.getAgreementUnit())+"");
+        agreementUnit5.setDay(managerdailyBO4.getAgreementUnit().intValue() != 0 ? df.format(managerdailyBO4.getAgreementUnit())+"":"0.00");
         log.info("778");
         //协议单位本月累计
-        agreementUnit5.setMonth(df.format(xydw3Month(hotelId, date))+"");
+        agreementUnit5.setMonth(xydw3Month(hotelId, date).intValue() != 0 ? df.format(xydw3Month(hotelId, date))+"":"0.00");
         log.info("781");
         //协议单位上月同期
-        agreementUnit5.setLastMonthDay(df.format(xydw3LastMonthDay(hotelId, date))+"");
+        agreementUnit5.setLastMonthDay(xydw3LastMonthDay(hotelId, date).intValue() != 0 ? df.format(xydw3LastMonthDay(hotelId, date))+"" : "0.00");
         log.info("784");
         //协议单位本年年累计
-        agreementUnit5.setYear(df.format(xydw3Year(hotelId, date))+"");
+        agreementUnit5.setYear(xydw3Year(hotelId, date).intValue() != 0 ? df.format(xydw3Year(hotelId, date))+"" : "0.00");
         log.info("787");
         //协议单位上年同期
-        agreementUnit5.setLastYearDay(df.format(xydw3LastYearDay(hotelId, date))+"");
+        agreementUnit5.setLastYearDay(xydw3LastYearDay(hotelId, date).intValue() != 0 ? df.format(xydw3LastYearDay(hotelId, date))+"" : "0.00");
         log.info("790");
         //协议单位年增长率
         agreementUnit5.setInsertRial(isIncrease(xydw3Year(hotelId, yyyy),xydw3Year(hotelId, year)));
@@ -949,38 +949,38 @@ public class ManagerDailyService {
 
 
         //直接入住今日
-        enter5.setDay(df.format(managerdailyBO4.getEnter())+"");
+        enter5.setDay(managerdailyBO4.getEnter().intValue() != 0 ? df.format(managerdailyBO4.getEnter())+"" : "0.00");
         log.info("799");
         //直接入住本月累计
-        enter5.setMonth(df.format(zjrz3Month(hotelId, date))+"");
+        enter5.setMonth(zjrz3Month(hotelId, date).intValue() != 0 ? df.format(zjrz3Month(hotelId, date))+"" : "0.00");
         log.info("802");
         //直接入住上月同期
-        enter5.setLastMonthDay(df.format(zjrz3LastMonthDay(hotelId, date))+"");
+        enter5.setLastMonthDay(zjrz3LastMonthDay(hotelId, date).intValue() != 0 ? df.format(zjrz3LastMonthDay(hotelId, date))+"" : "0.00");
         log.info("805");
         //直接入住本年年累计
-        enter5.setYear(df.format(zjrz3Year(hotelId, date))+"");
+        enter5.setYear(zjrz3Year(hotelId, date).intValue() != 0 ? df.format(zjrz3Year(hotelId, date))+"" : "0.00");
         log.info("808");
         //直接入住上年同期
-        enter5.setLastYearDay(df.format(zjrz3LastYearDay(hotelId, date))+"");
+        enter5.setLastYearDay(zjrz3LastYearDay(hotelId, date).intValue() != 0 ? df.format(zjrz3LastYearDay(hotelId, date))+"" : "0.00");
         log.info("811");
         //直接入住年增长率
         enter5.setInsertRial(isIncrease(zjrz3Year(hotelId, yyyy),zjrz3Year(hotelId, year)));
         log.info("814");
 
         //房间预订今日
-        directBooking5.setDay(df.format(managerdailyBO4.getDirectBooking())+"");
+        directBooking5.setDay(managerdailyBO4.getDirectBooking().intValue() != 0 ? df.format(managerdailyBO4.getDirectBooking())+"" : "0.00");
         log.info("818");
         //房间预订本月累计
-        directBooking5.setMonth(df.format(fjyd3Month(hotelId,date))+"");
+        directBooking5.setMonth(fjyd3Month(hotelId,date).intValue() != 0 ? df.format(fjyd3Month(hotelId,date))+"" : "0.00");
         log.info("821");
         //房间预订上月同期
-        directBooking5.setLastMonthDay(df.format(fjyd3LastMonthDay(hotelId, date))+"");
+        directBooking5.setLastMonthDay(fjyd3LastMonthDay(hotelId, date).intValue() != 0 ? df.format(fjyd3LastMonthDay(hotelId, date))+"" : "0.00");
         log.info("824");
         //房间预定本年年累计
-        directBooking5.setYear(df.format(fjyd3Year(hotelId, date))+"");
+        directBooking5.setYear(fjyd3Year(hotelId, date).intValue() != 0 ? df.format(fjyd3Year(hotelId, date))+"":"0.00");
         log.info("827");
         //房间预定上年同期
-        directBooking5.setLastYearDay(df.format(fjyd3LastYearDay(hotelId, date))+"");
+        directBooking5.setLastYearDay(fjyd3LastYearDay(hotelId, date).intValue() != 0 ? df.format(fjyd3LastYearDay(hotelId, date))+"" : "0.00");
         log.info("830");
         //房间预定年增长率
         directBooking5.setInsertRial(isIncrease(fjyd3Year(hotelId, yyyy),fjyd3Year(hotelId, year)));
@@ -988,19 +988,19 @@ public class ManagerDailyService {
 
 
         //小计今日
-        subtotal5.setDay(df.format(managerdailyBO4.getSubtotal())+"");
+        subtotal5.setDay(managerdailyBO4.getSubtotal().intValue() != 0 ? df.format(managerdailyBO4.getSubtotal())+"" : "0.00");
         log.info("838");
         //小计本月累计
-        subtotal5.setMonth(df.format(xj4Month(hotelId, date))+"");
+        subtotal5.setMonth(xj4Month(hotelId, date).intValue() != 0 ? df.format(xj4Month(hotelId, date))+"":"0.00");
         log.info("841");
         //小计上月同期
-        subtotal5.setLastMonthDay(df.format(xj4LastMonthDay(hotelId, date))+"");
+        subtotal5.setLastMonthDay(xj4LastMonthDay(hotelId, date).intValue() != 0 ? df.format(xj4LastMonthDay(hotelId, date))+"":"0.00");
         log.info("844");
         //小计本年年累计
-        subtotal5.setYear(df.format(xj4Year(hotelId, date))+"");
+        subtotal5.setYear(xj4Year(hotelId, date).intValue() != 0 ? df.format(xj4Year(hotelId, date))+"" : "0.00");
         log.info("847");
         //小计上年同期
-        subtotal5.setLastYearDay(df.format(xj4LastYearDay(hotelId, date))+"");
+        subtotal5.setLastYearDay(xj4LastYearDay(hotelId, date).intValue() != 0 ? df.format(xj4LastYearDay(hotelId, date))+"" : "0.00");
         log.info("850");
         //小计年增长率
         subtotal5.setInsertRial(isIncrease(xj4Year(hotelId, yyyy),xj4Year(hotelId, year)));
@@ -1008,45 +1008,41 @@ public class ManagerDailyService {
 
         //出租率分析
         //会员出租率本天
-        members6.setDay(df.format(managerdailyBO5.getMembers())+"");
+        members6.setDay(managerdailyBO5.getMembers().intValue() != 0 ? df.format(managerdailyBO5.getMembers())+"%" : "0.00%");
         log.info("858");
         //本月累计
         //本月会员房数除以本月小计
-        System.err.println("本月会员房数"+hy2Month(hotelId,date));
-        System.err.println(xj3Month(hotelId, date));
-        members6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? hy2Month(hotelId,date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"" : "0");
+        members6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? hy2Month(hotelId,date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("862");
         //获取上月同期
-        members6.setLastMonthDay(hyrzlLastMonthDay(hotelId,date) == null ? "0.0":hyrzlLastMonthDay(hotelId,date).getMembers()+"");
+        members6.setLastMonthDay(hyrzlLastMonthDay(hotelId,date) == null ? "0.00%":df.format(hyrzlLastMonthDay(hotelId,date).getMembers())+"%");
         log.info("865");
         //获取年会员出租率
         //年会员房数处于本年小计
-        members6.setLastYearDay( xj3Year(hotelId, date).intValue() != 0 ? (hy2Year(hotelId, date).divide(xj3Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP))+"" : "0");
+        members6.setYear( xj3Year(hotelId, date).intValue() != 0 ? (hy2Year(hotelId, date).divide(xj3Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")))+"%" : "0.00%");
         log.info("869");
         //获取上年同期出租率
-        members6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0%":hyrzLastYearDay(hotelId, date).getMembers()+"");
+        members6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0.00%":hyrzLastYearDay(hotelId, date).getMembers()+"%");
         log.info("872");
-        log.info("hotelId:{}", hotelId);
-        log.info("date:{}",date);
         //年增长率
         members6.setInsertRial(isRentalRate(hotelId, date, yyyy, year));
         log.info("875");
 
 
         //获取散客当天出租率
-        individualTraveler6.setDay(df.format(managerdailyBO5.getIndividualTraveler())+"");
+        individualTraveler6.setDay(managerdailyBO5.getIndividualTraveler().intValue() != 0 ? df.format(managerdailyBO5.getIndividualTraveler())+"%":"0.00%");
         log.info("880");
         //获取散客本月累计出租率
-        individualTraveler6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? sk2Month(hotelId, date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"" : "0");
+        individualTraveler6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? sk2Month(hotelId, date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("883");
         //获取上月同期
-        individualTraveler6.setMonth(hyrzlLastMonthDay(hotelId, date) == null ? "0.0":hyrzlLastMonthDay(hotelId, date).getIndividualTraveler()+"0" );
+        individualTraveler6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.00%":df.format(hyrzlLastMonthDay(hotelId, date).getIndividualTraveler())+"%" );
         log.info("886");
         //获取上年累计
-        individualTraveler6.setYear(xj3Year(hotelId, date).intValue() != 0 ? sk2Year(hotelId, date).divide(xj3Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"" : "0");
+        individualTraveler6.setYear(xj3Year(hotelId, date).intValue() != 0 ? sk2Year(hotelId, date).divide(xj3Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("889");
         //获取上年同期
-        individualTraveler6.setLastYearDay( hyrzLastYearDay(hotelId, date) == null ? "0%":hyrzLastYearDay(hotelId, date).getIndividualTraveler()+"100.00%");
+        individualTraveler6.setLastYearDay( hyrzLastYearDay(hotelId, date) == null ? "0.00%":hyrzLastYearDay(hotelId, date).getIndividualTraveler()+"%");
         log.info("892");
         //获取年增长路
         individualTraveler6.setInsertRial(isRenta(hotelId, date, yyyy, year));
@@ -1054,19 +1050,19 @@ public class ManagerDailyService {
 
 
         //获取协议单位当天出租率
-        agreementUnit6.setDay(df.format(managerdailyBO5.getAgreementUnit())+"");
+        agreementUnit6.setDay(managerdailyBO5.getAgreementUnit().intValue() != 0 ? df.format(managerdailyBO5.getAgreementUnit())+"%" : "0.00%");
         log.info("900");
         //获取协议单位本月出租率
-        agreementUnit6.setMonth(xj3Month(hotelId, date).intValue() !=0 ? xydw2Month(hotelId, date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"%" : "100.00%%");
+        agreementUnit6.setMonth(xj3Month(hotelId, date).intValue() !=0 ? xydw2Month(hotelId, date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("903");
         //获取协议单位上月同期
-        agreementUnit6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0":hyrzlLastMonthDay(hotelId, date).getAgreementUnit()+"");
+        agreementUnit6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.00%":df.format(hyrzlLastMonthDay(hotelId, date).getAgreementUnit())+"%");
         log.info("906");
         //获取上年累计
-        agreementUnit6.setYear(xj3Year(hotelId, date).intValue() != 0 ?xydw2Year(hotelId, date).divide(xj3Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"%" : "100.00%%");
+        agreementUnit6.setYear(xj3Year(hotelId, date).intValue() != 0 ?xydw2Year(hotelId, date).divide(xj3Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("909");
         //获取上年同期
-        agreementUnit6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0":hyrzLastYearDay(hotelId, date).getAgreementUnit()+"");
+        agreementUnit6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0.00%":hyrzLastYearDay(hotelId, date).getAgreementUnit()+"%");
         log.info("912");
         //年增长率
         agreementUnit6.setInsertRial(isRentaXy(hotelId, date, yyyy, year));
@@ -1074,19 +1070,19 @@ public class ManagerDailyService {
 
 
         //获取直接入住当天出租率
-        enter6.setDay(df.format(managerdailyBO5.getEnter())+"");
+        enter6.setDay(managerdailyBO5.getEnter().intValue() != 0 ? df.format(managerdailyBO5.getEnter())+"%" : "0.00%");
         log.info("920");
         //获取本月直接入住出租率
-        enter6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? zjrz2Month(hotelId, date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"%" : "100.00%%");
+        enter6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? zjrz2Month(hotelId, date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"%" : "0.00%");
         log.info("923");
         //获取直接入住上月同期
-        enter6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0" :  hyrzlLastMonthDay(hotelId, date).getEnter()+"");
+        enter6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.00%" :  df.format(hyrzlLastMonthDay(hotelId, date).getEnter())+"%");
         log.info("926");
         //获取上年累计
-        enter6.setYear(xj4Year(hotelId, date).intValue() != 0 ? xydw3Year(hotelId, date).divide(xj4Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"" : "0");
+        enter6.setYear(xj4Year(hotelId, date).intValue() != 0 ? xydw3Year(hotelId, date).divide(xj4Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("929");
         //获取上年同期
-        enter6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0" : hyrzLastYearDay(hotelId, date).getEnter()+"");
+        enter6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0.00%" : hyrzLastYearDay(hotelId, date).getEnter()+"%");
         log.info("932");
         //获取年增长率
         enter6.setInsertRial(isRentaZj(hotelId, date, yyyy, year));
@@ -1094,19 +1090,19 @@ public class ManagerDailyService {
 
 
         //获取预约入住当天出租率
-        directBooking6.setDay(df.format(managerdailyBO5.getDirectBooking())+"");
+        directBooking6.setDay(managerdailyBO5.getDirectBooking().intValue() != 0 ? df.format(managerdailyBO5.getDirectBooking())+"%" : "0.00%");
         log.info("940");
         //获取预约入住本月出租率
-        directBooking6.setMonth(xj4Month(hotelId, date).intValue() != 0 ? fjyd3Month(hotelId,date).divide(xj4Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"%":"100.00%");
+        directBooking6.setMonth(xj4Month(hotelId, date).intValue() != 0 ? fjyd3Month(hotelId,date).divide(xj4Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%":"0.00%");
         log.info("943");
         //获取预约入住上月同期
-        directBooking6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.0" : hyrzlLastMonthDay(hotelId, date).getDirectBooking()+"100.00%");
+        directBooking6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.00%" : df.format(hyrzlLastMonthDay(hotelId, date).getDirectBooking()) +"%");
         log.info("946");
         //获取预约入住上年累计
-        directBooking6.setYear(xj4Year(hotelId, date).intValue() != 0 ? fjyd3Year(hotelId, date).divide(xj4Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"%" : "100.00%");
+        directBooking6.setYear(xj4Year(hotelId, date).intValue() != 0 ? fjyd3Year(hotelId, date).divide(xj4Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("949");
         //获取上年同期
-        directBooking6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0": hyrzLastYearDay(hotelId, date).getDirectBooking()+"100.00%");
+        directBooking6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0.00%": hyrzLastYearDay(hotelId, date).getDirectBooking()+"%");
         log.info("952");
         //获取年增长率
         directBooking6.setInsertRial(isRentayy(hotelId, date, yyyy, year));
@@ -1114,17 +1110,19 @@ public class ManagerDailyService {
 
         //小计
         //获取今日
-        subtotal6.setDay(df.format(managerdailyBO5.getSubtotal())+"");
+        subtotal6.setDay(managerdailyBO5.getSubtotal().intValue() != 0 ? df.format(managerdailyBO5.getSubtotal())+"%" : "0.00%");
         log.info("960");
         //获取本月累计
-        subtotal6.setMonth( xj3Month(hotelId, date).intValue() != 0 ? xj3Month(hotelId, date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"" : "0.00");
+        subtotal6.setMonth( xj3Month(hotelId, date).intValue() != 0 ? xj3Month(hotelId, date).divide(xj3Month(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("963");
         //获取上月同期
-        subtotal6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0" : hyrzlLastMonthDay(hotelId, date).getSubtotal()+"");
+        subtotal6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.00%" : df.format(hyrzlLastMonthDay(hotelId, date).getSubtotal())+"%");
         log.info("966");
-        //获取上年累计
-        subtotal6.setYear(xj3Year(hotelId, date).intValue() != 0 ? xj3Year(hotelId, date).divide(xj3Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP)+"" : "0.00");
+        //获取今年年累计
+        subtotal6.setYear(xj3Year(hotelId, date).intValue() != 0 ? xj3Year(hotelId, date).divide(xj3Year(hotelId, date),2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"))+"%" : "0.00%");
         log.info("969");
+        //获取上年同期
+        subtotal6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0.00%": hyrzLastYearDay(hotelId, date).getSubtotal()+"%" );
 
 
 
@@ -3395,6 +3393,7 @@ public class ManagerDailyService {
     private BigDecimal sk3LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
+        log.info("上个月的今天是:{}", date1);
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 5);
         BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
@@ -3710,7 +3709,7 @@ public class ManagerDailyService {
     private ManagerdailyBO hyrzlLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
-        ManagerdailyBO managerdailyBO = managerdailyBOMapper.queryHy(hotelId, date, 6);
+        ManagerdailyBO managerdailyBO = managerdailyBOMapper.queryHy(hotelId, date1, 6);
 
         return managerdailyBO;
     }
@@ -3777,7 +3776,7 @@ public class ManagerDailyService {
         managerdailyBO.setNumberlockedStores(BigDecimal.valueOf(numberlockedStores(hotelId, startTime, endTime)));//计算锁房数
         managerdailyBO.setNumberroomsAvailablerent(BigDecimal.valueOf(numberroomsAvailablerent(hotelId, startTime, endTime)));//计算可租房数
         managerdailyBO.setTotalnumberGuestrooms(BigDecimal.valueOf(totalnumberGuestrooms(hotelId)));//计算客房总数
-        managerdailyBO.setCashDisbursements(cashDisbursements());//计算现金支出
+        managerdailyBO.setCashDisbursements(cashDisbursements(hotelId,startTime,endTime).abs());//计算现金支出
         managerdailyBO.setCash(cash(hotelId, startTime, endTime));//计算现金收入
         managerdailyBO.setDailyType(1);
         managerdailyBO.setHotelId(hotelId);
@@ -3993,11 +3992,16 @@ public class ManagerDailyService {
     }
 
     /**
-     * 计算现金支出  todo
+     * 计算现金支出
      * @return
      */
-    private BigDecimal cashDisbursements(){
-        return new BigDecimal("0");
+    private BigDecimal cashDisbursements(Integer hotelId, String startTime, String endTime){
+        List<CashierSummary> cashierSummaries = managerDailyDAO.queryGoods2(hotelId, startTime, endTime);
+        BigDecimal n = new BigDecimal("0");
+        for (CashierSummary cashierSummary : cashierSummaries) {
+            n = n.add(cashierSummary.getSettlement());
+        }
+        return n;
     }
 
     /**
@@ -4007,9 +4011,8 @@ public class ManagerDailyService {
     private BigDecimal cash(Integer hotelId, String startTime, String endTime){
         List<CommodityTransactionBO> commodityTransactionBOS = managerDailyDAO.queryCash(hotelId, startTime, endTime);
         BigDecimal n = new BigDecimal("0");
-        System.err.println("计算现金收入:"+commodityTransactionBOS);
         for (CommodityTransactionBO commodityTransactionBO : commodityTransactionBOS) {
-            n.add(commodityTransactionBO.getMoney()) ;
+            n = n.add(commodityTransactionBO.getMoney()) ;
         }
        return n;
     }

@@ -253,4 +253,13 @@ public interface ManagerDailyDAO {
      */
     List<OrderReBO> queryOrderRe(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
+
+    /**
+     *
+     * @param hotelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<CashierSummary> queryGoods2(@Param("hotelId")Integer hotelId,@Param("startTime")String startTime,@Param("endTime")String endTime);
 }
