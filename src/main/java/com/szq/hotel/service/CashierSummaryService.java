@@ -40,10 +40,14 @@ public class CashierSummaryService {
         cashierSummaryBO.setProject(type);
         cashierSummaryBO.setType(payType);
         cashierSummaryBO.setRemark(info);
-        cashierSummaryBO.setSettlement(money);
+        cashierSummaryBO.setSettlement(new BigDecimal("0"));
+        cashierSummaryBO.setConsumption(money);
         cashierSummaryBO.setOrderNumber(orderNumber);
         cashierSummaryBO.setUserId(userId);
         cashierSummaryBO.setHotelId(hotelId);
+        cashierSummaryDAO.addData(cashierSummaryBO);
+        cashierSummaryBO.setConsumption(new BigDecimal("0"));
+        cashierSummaryBO.setSettlement(money);
         cashierSummaryDAO.addData(cashierSummaryBO);
         log.info("end  addCommodity...........................................");
     }
