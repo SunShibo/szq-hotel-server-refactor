@@ -3747,12 +3747,6 @@ public class ManagerDailyService {
 
 
 
-
-
-
-
-
-
     /**
      * 插入经理日报
      * @param hotelId
@@ -4159,7 +4153,7 @@ public class ManagerDailyService {
     private BigDecimal members(Integer hotelId, String startTime, String endTime){
         BigDecimal querymembers = managerDailyDAO.querymembers(hotelId, startTime, endTime);
 
-        return querymembers ;
+        return querymembers.abs() ;
     }
 
     /**
@@ -4172,8 +4166,7 @@ public class ManagerDailyService {
      */
     private BigDecimal agreementUnit(Integer hotelId, String startTime, String endTime){
         BigDecimal bigDecimal = managerDailyDAO.qyeryagreementUnit(hotelId, startTime, endTime);
-
-        return bigDecimal ;
+        return bigDecimal.abs();
     }
 
     /**
@@ -4186,8 +4179,7 @@ public class ManagerDailyService {
      */
     private BigDecimal individualTraveler(Integer hotelId, String startTime, String endTime){
         BigDecimal bigDecimal = managerDailyDAO.queryindividualTraveler(hotelId, startTime, endTime);
-
-        return bigDecimal;
+        return  bigDecimal.abs();
     }
 
 
@@ -4201,7 +4193,7 @@ public class ManagerDailyService {
     private BigDecimal enter(Integer hotelId, String startTime, String endTime){
         BigDecimal bigDecimal = managerDailyDAO.queryEnter(hotelId, startTime, endTime);
 
-        return bigDecimal;
+        return bigDecimal.abs();
     }
 
     /**
@@ -4214,7 +4206,7 @@ public class ManagerDailyService {
     private BigDecimal directBooking(Integer hotelId, String startTime, String endTime){
         BigDecimal bigDecimal = managerDailyDAO.queryDirectBooking(hotelId, startTime, endTime);
 
-        return bigDecimal;
+        return bigDecimal.abs();
     }
 
 
@@ -4239,7 +4231,7 @@ public class ManagerDailyService {
      */
     private BigDecimal FwAgreementUnit(Integer hotelId, String startTime, String endTime){
         Integer integer = managerDailyDAO.queryFwAgreementUnit(hotelId, startTime, endTime);
-        return BigDecimal.valueOf((int)integer);
+        return BigDecimal.valueOf((int)integer).abs();
     }
 
     /**

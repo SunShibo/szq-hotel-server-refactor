@@ -155,7 +155,7 @@
         AND hm_order_record.project IN ('房费','房费冲减')
         AND
         hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
-        AND  hm_order.order_type = 'directly'
+        AND  hm_order.order_type = 'directly' AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
     </select>
 
 
@@ -183,13 +183,13 @@
         WHERE  hm_order_child.order_id = hm_order.id   AND   hotel_id = #{hotelId}
         AND
         hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.channel  = '散客'
-        AND  hm_order.order_type = 'directly' AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+        AND  hm_order.order_type = 'directly'
     </select>
 
     <select id="queryFwEnter" resultType="java.lang.Integer">
     SELECT COUNT(1) FROM hm_order_child WHERE order_Id IN
     (SELECT id FROM hm_order WHERE  order_type = 'directly' AND hotel_id = #{hotelId} and
-     check_time &gt;= #{startTime} and check_time &lt; #{endTime}
+     check_time &gt;= #{startTime} and check_time &lt; #{endTime} AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
     )
     </select>
 
@@ -197,7 +197,7 @@
     <select id="queryFwDirectBooking" resultType="java.lang.Integer">
     SELECT COUNT(1) FROM hm_order_child WHERE order_Id IN
     (SELECT id FROM hm_order WHERE  order_type = 'subscribe' AND hotel_id = #{hotelId} and
-    check_time &gt;= #{startTime} and check_time &lt; #{endTime}
+    check_time &gt;= #{startTime} and check_time &lt; #{endTime} AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
     )
     </select>
 
