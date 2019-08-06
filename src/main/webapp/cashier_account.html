@@ -151,6 +151,28 @@
                 {field: 'operator', title: '收银员', sort: true, align: 'center'},
                 {field: 'orderNumber', title: '订单号', sort: true, align: 'center'}
                 , {field: 'project', title: '项目', align: 'center'}
+                ,{
+                    field: 'type', title: '支付方式', align: 'center', templet: function (data) {
+                        switch (data.type) {
+                            case 'cash':
+                                return '现金';
+                            case 'cart':
+                                return '银行卡';
+                            case 'wechat':
+                                return '微信';
+                            case 'alipay':
+                                return '支付宝';
+                            case 'other':
+                                return '其他支付';
+                            case 'stored':
+                                return '储值';
+                            case 'integral':
+                                return '积分';
+                            case '':
+                                return '';
+                        }
+                    }
+                }
                 , {
                     field: 'channel', title: '渠道', align: 'center', templet: function (data) {
                         switch (data.channel) {
