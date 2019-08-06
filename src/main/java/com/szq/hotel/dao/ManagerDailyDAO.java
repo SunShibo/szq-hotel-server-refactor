@@ -4,6 +4,7 @@ package com.szq.hotel.dao;
 import com.szq.hotel.entity.bo.*;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ManagerDailyDAO {
@@ -53,7 +54,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<CommodityTransactionBO> queryCash(@Param("hotelId")Integer hotelId,
+    BigDecimal queryCash(@Param("hotelId")Integer hotelId,
                                            @Param("startTime")String startTime,
                                            @Param("endTime")String endTime);
 
@@ -83,7 +84,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<CashierSummary> queryRateAdjustment(@Param("startTime")String startTime,@Param("endTime")String endTime);
+    List<CashierSummary> queryRateAdjustment(@Param("hotelId")Integer hotelId,@Param("startTime")String startTime,@Param("endTime")String endTime);
 
 
     /**
@@ -102,7 +103,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<CashierSummary> querytimeoutRate(@Param("startTime")String startTime,@Param("endTime")String endTime);
+    BigDecimal querytimeoutRate(@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("hotelId")Integer hotelId);
 
 
     /**
@@ -127,7 +128,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<CashierSummary> querycompensation(@Param("startTime")String startTime,@Param("endTime")String endTime);
+    List<CashierSummary> querycompensation(@Param("hotelId")Integer hotelId,@Param("startTime")String startTime,@Param("endTime")String endTime);
 
 
     /**
@@ -136,7 +137,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<CashierSummary> querymembershipFee(@Param("startTime")String startTime,@Param("endTime")String endTime);
+    BigDecimal querymembershipFee(@Param("hotelId")Integer hotelId,@Param("startTime")String startTime,@Param("endTime")String endTime);
 
     /**
      * 商品
@@ -144,7 +145,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<CashierSummary> querygoods(@Param("startTime")String startTime,@Param("endTime")String endTime);
+    List<CashierSummary> querygoods(@Param("hotelId")Integer hotelId,@Param("startTime")String startTime,@Param("endTime")String endTime);
 
 
     /**
@@ -155,7 +156,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<Order> querymembers(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    BigDecimal querymembers(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
 
     /**
@@ -166,7 +167,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<Order> qyeryagreementUnit(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    BigDecimal qyeryagreementUnit(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
 
     /** 房费收入分析
@@ -176,7 +177,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<Order> queryindividualTraveler(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    BigDecimal queryindividualTraveler(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
     /**
      * 房费收入分析
@@ -186,7 +187,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<Order> queryEnter(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    BigDecimal queryEnter(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
 
     /**
@@ -197,7 +198,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<Order> queryDirectBooking(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    BigDecimal queryDirectBooking(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
 
     /**
@@ -261,5 +262,5 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<CashierSummary> queryGoods2(@Param("hotelId")Integer hotelId,@Param("startTime")String startTime,@Param("endTime")String endTime);
+    BigDecimal queryGoods2(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 }

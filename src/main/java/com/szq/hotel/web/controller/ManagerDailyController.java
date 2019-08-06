@@ -188,7 +188,9 @@ public class ManagerDailyController extends BaseCotroller {
 
     @RequestMapping("/insertTest")
     public void insertTest(HttpServletRequest request, HttpServletResponse response, Integer hotelId){
-
         managerDailyService.insertManagerDaliy(hotelId);
     }
+
+
+
 }

@@ -378,7 +378,7 @@
   </update>
 
   <select id="queryManagerdaily" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
-    select * from hm_managerdaily where hotel_id = #{hotelId} and date_time = #{dateTime} and daily_type = ${dailyType};
+    select * from hm_managerdaily where hotel_id = #{hotelId} and date_time = #{dateTime} and daily_type = #{dailyType};
   </select>
 
   <select id="queryManagerdailyList" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
@@ -408,41 +408,15 @@
   AND daily_type = #{dailyType}
   </select>
 
-  <select id="queryOrderTotalPrice" resultType="com.szq.hotel.entity.bo.TotalPriceBO">
-      SELECT
-    id,
-    order_placer,
-    order_number,
-    check_type,
-    check_time,
-    check_out_time,
-    day_count,
-    phone,
-    ID_number,
-    ID_number_type,
-    order_type,
-    clerk_ordering_name,
-    clerk_ordering_id,
-    members_id,
-    memberId_or_organizationId,
-    total_price,
-    hotel_id,
-    create_time,
-    update_time,
-    OTA,
-    channel,
-    subscribe_remark
-  FROM
-  hotel.hm_order
-    WHERE
-     create_time &gt;= #{startTime} and create_time &lt; #{endTime}
+  <select id="queryOrderTotalPrice" resultType="java.math.BigDecimal">
+   SELECT IFNULL(SUM(settlement),0)  FROM hm_cashier_summary
+    WHERE create_time &gt;= #{startTime} and create_time &lt; #{endTime}
     AND hotel_id = #{hotelId}
   </select>
 
-  <select id="queryConsumption" resultType="com.szq.hotel.entity.bo.CashierSummary">
-    SELECT * FROM hm_cashier_summary
-    WHERE hotel_id = #{hotelId}
-    AND
-     create_time &gt;= #{startTime} and create_time &lt; #{endTime}
+  <select id="queryConsumption" resultType="java.math.BigDecimal">
+   SELECT IFNULL(SUM(consumption),0)  FROM hm_cashier_summary
+    WHERE create_time &gt;= #{startTime} and create_time &lt; #{endTime}
+    AND hotel_id = #{hotelId}
   </select>
 </mapper>

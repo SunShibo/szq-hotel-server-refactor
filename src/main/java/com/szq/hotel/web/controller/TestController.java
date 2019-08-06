@@ -48,20 +48,28 @@ public class TestController extends BaseCotroller {
     ManagementReportService managementReportService;
 
     @RequestMapping("/start")
-    public void queryVersion(){
+    public void nightAuditor2() {
+        log.info("start  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         List<RoomRateBO> roomRateBOS = childOrderService.queryOrderChild();
+        log.info("roomRateBOS:{}",roomRateBOS);
         for(int i=0;i<roomRateBOS.size();i++){
             RoomRateBO roomRateBO = roomRateBOS.get(i);
-            List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(),DateUtils.getFourPointsStr());
+            log.info("roomRateBO:{} , i:{}",roomRateBO,i);
+            List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(), DateUtils.getNow());
+            log.info("everydayRoomPriceBOS:{}",everydayRoomPriceBOS);
             if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
                 for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){
-                    //生成房费
-                    childOrderService.increaseRoomRate(priceBO.getOrderChildId(),priceBO.getMoney());
+                    log.info("start  room price  ...............................................");
+                    //生成房费     //生成在主账房里
+                    Integer integer = childOrderService.queryOrderChildMain(roomRateBO.getAlRoomCode());
+                    childOrderService.increaseRoomRate(integer,priceBO.getMoney());
                     orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime())+"房费",
-                            null,priceBO.getMoney(),Constants.ROOMRATE.getValue(),1,"1天", Constants.NO.getValue());
+                            null,priceBO.getMoney().multiply(new BigDecimal("-1")), Constants.ROOMRATE.getValue(),1,"1天", Constants.NO.getValue());
                     //把夜审状态修改回去
+                    log.info("update  room price  status................................................");
                     childOrderService.updateRoomPrice(priceBO.getId());
                     //生成报表
+                    log.info("start  make a repor.....................................................");
                     CommonBO commonBO = childOrderService.queryChildName(priceBO.getOrderChildId());
                     cashierSummaryService.addRoomRate(priceBO.getMoney(),roomRateBO.getOrderNumber(),1,commonBO.getName(),
                             roomRateBO.getOTA(),roomRateBO.getChannel(),roomRateBO.getPassengerSource(),roomRateBO.getRoomName(),

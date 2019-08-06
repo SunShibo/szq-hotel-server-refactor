@@ -240,7 +240,10 @@ public class ManagerDailyService {
         HotelTableBO subtotal6 = new HotelTableBO();//小计
 
         //当天营业状况统计
+        System.err.println(hotelId);
+        System.err.println(date);
         ManagerdailyBO managerdailyBO = managerdailyBOMapper.queryManagerdaily(hotelId, 1, date);
+        System.err.println(managerdailyBO);
         if (managerdailyBO == null){
             return queryMdC();
         }
@@ -3174,10 +3177,6 @@ public class ManagerDailyService {
     }
 
 
-
-
-
-
     //房间预订本月累计
     private BigDecimal fjyd2Month(Integer hotelId, String date){
     //当月第一天
@@ -3194,7 +3193,9 @@ public class ManagerDailyService {
        n =  n.add(managerdailyBO.getDirectBooking()) ;
     }
     return n;
-}
+  }
+
+
     //房间预订上月同期
     private BigDecimal fjyd2LastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
@@ -3785,23 +3786,26 @@ public class ManagerDailyService {
 
 
 
+
         //添加营业收入明细
         ManagerdailyBO managerdailyBO2 = new ManagerdailyBO();
+
+
         BigDecimal v8 = throughoutDayrent(hotelId, startTime, endTime);
         managerdailyBO2.setThroughoutDayrent(v8);//全天日租
-        BigDecimal v9 = rateAdjustment(startTime, endTime);
+        BigDecimal v9 = rateAdjustment(hotelId,startTime, endTime);
         managerdailyBO2.setRateAdjustment(v9);//计算房费调整
         BigDecimal v10 = hourRate(hotelId, startTime, endTime);
         managerdailyBO2.setHourRate(v10);//计算钟点房费
-        BigDecimal v11 = timeoutRate(startTime, endTime);
+        BigDecimal v11 = timeoutRate(hotelId,startTime, endTime);
         managerdailyBO2.setTimeoutRate(v11);//计算超时房费
-        BigDecimal v12 = nuclearnightRoomcharge(startTime, endTime);
+        BigDecimal v12 = v8.add(v10).subtract(v9);
         managerdailyBO2.setNuclearnightRoomcharge(v12);//计算夜核房费
-        BigDecimal v13 = compensation(startTime, endTime);
+        BigDecimal v13 = compensation(hotelId,startTime, endTime);
         managerdailyBO2.setCompensation(v13);//赔偿
-        BigDecimal v14 = membershipFee(startTime, endTime);
+        BigDecimal v14 = membershipFee(hotelId,startTime, endTime);
         managerdailyBO2.setMembershipFee(v14);//计算会员卡费
-        BigDecimal v15 = goods(startTime, endTime);
+        BigDecimal v15 = goods(hotelId,startTime, endTime);
         managerdailyBO2.setGoods(v15);//计算商品
         managerdailyBO2.setSubtotal(v8.add(v9).add(v10).add(v11).add(v12).add(v13).add(v14).add(v15));//小计
         managerdailyBO2.setDailyType(2);
@@ -3859,11 +3863,7 @@ public class ManagerDailyService {
         BigDecimal e = FwDirectBooking(hotelId, startTime, endTime);
         managerdailyBO4.setDirectBooking(e);
         //小计
-        f.add(a);
-        f.add(b);
-        f.add(c);
-        f.add(d);
-        f.add(e);
+         f = f.add(a).add(b).add(c).add(d).add(e);
         managerdailyBO4.setSubtotal(f );
         managerdailyBO4.setDailyType(4);
         managerdailyBO4.setHotelId(hotelId);
@@ -3876,29 +3876,34 @@ public class ManagerDailyService {
         //平均房价分析
         ManagerdailyBO managerdailyBO5 = new ManagerdailyBO();
         //会员平均房价分析
-        BigDecimal v3 = PjMembers(hotelId, startTime, endTime);
-        log.info("v3:{}",v3);
+
+        BigDecimal v3 = new BigDecimal("0");
+        if(managerdailyBO4.getMembers().intValue() != 0 ){
+             v3 =managerdailyBO3.getMembers().divide(managerdailyBO4.getMembers(),2, BigDecimal.ROUND_HALF_UP);
+        }
+
         managerdailyBO5.setMembers(v3);
         //协议单位平均房价
-        BigDecimal v4 = PjAgreementUnit(hotelId, startTime, endTime);
+        BigDecimal v4 = b.intValue() == 0 ? new BigDecimal("0") : v.divide(b,2, BigDecimal.ROUND_HALF_UP);
         managerdailyBO5.setAgreementUnit(v4);
         log.info("v4:{}",v4);
         //散客平均房价
-        BigDecimal v5 = PjIndividualTraveler(hotelId, startTime, endTime);
+        BigDecimal v5 = c.intValue() ==0 ? new BigDecimal("0") : v1.divide(c,2, BigDecimal.ROUND_HALF_UP);
         log.info("v5:{}",v5);
         managerdailyBO5.setIndividualTraveler(v5);
         //直接入住平均房价
-        BigDecimal v6 = PjEnter(hotelId, startTime, endTime);
+        BigDecimal v6 = d.intValue() == 0 ? new BigDecimal("0") : enter.divide(d, 2, BigDecimal.ROUND_HALF_UP);
         log.info("v6:{}",v6);
         managerdailyBO5.setEnter(v6);
         //预约入住平均房价
-        BigDecimal v7 = PjDirectBooking(hotelId, startTime, endTime);
+        BigDecimal v7 = e.intValue() == 0 ? new BigDecimal("0") : v2.divide(e,2, BigDecimal.ROUND_HALF_UP);
         log.info("v7:{}",v7);
         managerdailyBO5.setDirectBooking(v7);
 
         log.info("v3+v4+v5+v6+v7:{}",v3.add(v4).add(v5).add(v6).add(v7));
         //小计
-        managerdailyBO5.setSubtotal(v3.add(v4).add(v5).add(v6).add(v7));
+        BigDecimal add1 = v3.add(v4).add(v5).add(v6).add(v7);
+        managerdailyBO5.setSubtotal(add1.intValue() == 0 ? new BigDecimal("0") : f.divide(add1,2, BigDecimal.ROUND_HALF_UP));
         managerdailyBO5.setDailyType(5);
         managerdailyBO5.setHotelId(hotelId);
         managerdailyBO5.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
@@ -3911,19 +3916,19 @@ public class ManagerDailyService {
         //出租率分析
         ManagerdailyBO managerdailyBO6 = new ManagerdailyBO();
         //会员出租率
-        managerdailyBO6.setMembers(f.intValue() != 0 ? a.divide(f) : new BigDecimal("0"));
+        managerdailyBO6.setMembers( managerdailyBO.getTotalnumberGuestrooms().intValue() == 0 ? new BigDecimal("0") : a.divide(managerdailyBO.getTotalnumberGuestrooms(),2, BigDecimal.ROUND_HALF_UP) );
         //协议单位出租率
-        managerdailyBO6.setAgreementUnit(f.intValue() != 0 ? b.divide(f)  : new BigDecimal("0"));
+        managerdailyBO6.setAgreementUnit(  managerdailyBO.getTotalnumberGuestrooms().intValue() == 0 ? new BigDecimal("0") :b.divide(managerdailyBO.getTotalnumberGuestrooms(),2, BigDecimal.ROUND_HALF_UP)  );
         //散客出租率
-        managerdailyBO6.setIndividualTraveler( f.intValue() != 0 ? c.divide(f) : new BigDecimal("0"));
+        managerdailyBO6.setIndividualTraveler(   managerdailyBO.getTotalnumberGuestrooms().intValue() == 0 ? new BigDecimal("0") :c.divide(managerdailyBO.getTotalnumberGuestrooms(),2, BigDecimal.ROUND_HALF_UP) );
 
         //直接入住出租率
-        managerdailyBO6.setEnter( f.intValue() != 0 ?  d.divide(f) : new BigDecimal("0"));
+        managerdailyBO6.setEnter(  managerdailyBO.getTotalnumberGuestrooms().intValue() == 0 ? new BigDecimal("0") : d.divide(managerdailyBO.getTotalnumberGuestrooms(),2, BigDecimal.ROUND_HALF_UP) );
 
         //预约入住出租率
-        managerdailyBO6.setDirectBooking( f.intValue() != 0 ? e.divide(f) : new BigDecimal("0"));
+        managerdailyBO6.setDirectBooking( managerdailyBO.getTotalnumberGuestrooms().intValue() == 0 ? new BigDecimal("0") :e.divide(managerdailyBO.getTotalnumberGuestrooms(),2, BigDecimal.ROUND_HALF_UP) );
         //小计
-        managerdailyBO6.setSubtotal( f.intValue() != 0 ? f.divide(f) : new BigDecimal("0") );
+        managerdailyBO6.setSubtotal( f.intValue() != 0 ? f.divide(managerdailyBO.getTotalnumberGuestrooms(),2, BigDecimal.ROUND_HALF_UP) : new BigDecimal("0") );
         managerdailyBO6.setDailyType(6);
         managerdailyBO6.setHotelId(hotelId);
         managerdailyBO6.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
@@ -3970,16 +3975,9 @@ public class ManagerDailyService {
      * @return
      */
     private int numberroomsAvailablerent(Integer hotelId, String startTime, String endTime){
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("hotelId", hotelId);
-        map.put("checkTime", startTime);
-        map.put("endTime", endTime);
-        List<String> ll = new ArrayList<String>();
-        ll.add("reservation");
-        ll.add("notpay");
-        ll.add("admissions");
-        List<RmBO> rmBOS = roomService.publicQuery(map, ll);
-        return rmBOS.size();
+      //客房总数 减去 锁房数
+
+        return totalnumberGuestrooms(hotelId) - numberlockedStores(hotelId, startTime, endTime);
     }
 
     /**
@@ -3996,12 +3994,9 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal cashDisbursements(Integer hotelId, String startTime, String endTime){
-        List<CashierSummary> cashierSummaries = managerDailyDAO.queryGoods2(hotelId, startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (CashierSummary cashierSummary : cashierSummaries) {
-            n = n.add(cashierSummary.getSettlement());
-        }
-        return n;
+        BigDecimal bigDecimal = managerDailyDAO.queryGoods2(hotelId, startTime, endTime);
+
+        return bigDecimal.abs();
     }
 
     /**
@@ -4009,12 +4004,9 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal cash(Integer hotelId, String startTime, String endTime){
-        List<CommodityTransactionBO> commodityTransactionBOS = managerDailyDAO.queryCash(hotelId, startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (CommodityTransactionBO commodityTransactionBO : commodityTransactionBOS) {
-            n = n.add(commodityTransactionBO.getMoney()) ;
-        }
-       return n;
+        BigDecimal bigDecimal = managerDailyDAO.queryCash(hotelId, startTime, endTime);
+
+       return bigDecimal;
     }
 
 
@@ -4041,11 +4033,14 @@ public class ManagerDailyService {
      * 房费调整
      * @return
      */
-    private BigDecimal rateAdjustment(String startTime, String endTime){
-        List<CashierSummary> cashierSummaries = managerDailyDAO.queryRateAdjustment(startTime, endTime);
+    private BigDecimal rateAdjustment(Integer hotelId,String startTime, String endTime){
+        List<CashierSummary> cashierSummaries = managerDailyDAO.queryRateAdjustment(hotelId,startTime, endTime);
         BigDecimal n = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries) {
-            n.add(cashierSummary.getConsumption()) ;
+            if(cashierSummary != null){
+                n = n.add(cashierSummary.getConsumption()) ;
+            }
+
         }
         return n;
     }
@@ -4061,7 +4056,10 @@ public class ManagerDailyService {
         List<Order> orders = managerDailyDAO.queryhourRate(hotelId, startTime, endTime);
         BigDecimal n = new BigDecimal("0");
         for (Order order : orders) {
-             n.add(order.getTotalPrice()) ;
+            if(order != null){
+                n = n.add(order.getTotalPrice()) ;
+            }
+
         }
         return n;
     }
@@ -4073,35 +4071,33 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private BigDecimal timeoutRate(String startTime, String endTime){
-        List<CashierSummary> cashierSummaries = managerDailyDAO.querytimeoutRate(startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (CashierSummary cashierSummary : cashierSummaries) {
-            n.add(cashierSummary.getConsumption()) ;
-        }
-        return n ;
+    private BigDecimal timeoutRate(Integer hotelId,String startTime, String endTime){
+        BigDecimal bigDecimal = managerDailyDAO.querytimeoutRate(startTime, endTime, hotelId);
+
+        return bigDecimal.abs() ;
     }
 
 
     /**
-     * 计算夜核房费
+     *
      * @param startTime
      * @param endTime
      * @return
      */
-    private BigDecimal nuclearnightRoomcharge(String startTime, String endTime){
-        List<CashierSummary> cashierSummaries = managerDailyDAO.querynuclearnightRoomcharge1(startTime, endTime);
+    private BigDecimal nuclearnightRoomcharge(Integer hotelId,String startTime, String endTime){
+        /*List<CashierSummary> cashierSummaries = managerDailyDAO.querynuclearnightRoomcharge1(startTime, endTime);
         BigDecimal n1 = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries) {
-            n1.add(cashierSummary.getConsumption()) ;
+            n1 = n1.add(cashierSummary.getConsumption()) ;
         }
 
         List<CashierSummary> cashierSummaries2 = managerDailyDAO.querynuclearnightRoomcharge2(startTime, endTime);
         BigDecimal n2 = new BigDecimal("0");
         for (CashierSummary cashierSummary : cashierSummaries2) {
-            n2.add(cashierSummary.getConsumption()) ;
-        }
-        return n1.subtract(n2);
+           n2 =  n2.add(cashierSummary.getConsumption()) ;
+        }*/
+
+        return null ;
     }
 
 
@@ -4111,11 +4107,14 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private BigDecimal compensation(String startTime, String endTime){
-        List<CashierSummary> querycompensation = managerDailyDAO.querycompensation(startTime, endTime);
+    private BigDecimal compensation(Integer hotelId,String startTime, String endTime){
+        List<CashierSummary> querycompensation = managerDailyDAO.querycompensation(hotelId,startTime, endTime);
         BigDecimal n = new BigDecimal("0");
         for (CashierSummary cashierSummary : querycompensation) {
-             n.add(cashierSummary.getConsumption()) ;
+            if(cashierSummary != null){
+              n =   n.add(cashierSummary.getConsumption()) ;
+            }
+
         }
         return n;
     }
@@ -4126,26 +4125,25 @@ public class ManagerDailyService {
      * @param endTime
      * @return
      */
-    private BigDecimal membershipFee(String startTime, String endTime){
-        List<CashierSummary> cashierSummaries = managerDailyDAO.querymembershipFee(startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (CashierSummary cashierSummary : cashierSummaries) {
-             n.add(cashierSummary.getConsumption()) ;
-        }
-        return n ;
+    private BigDecimal membershipFee(Integer hotelId,String startTime, String endTime){
+        BigDecimal bigDecimal = managerDailyDAO.querymembershipFee(hotelId, startTime, endTime);
+        return bigDecimal ;
     }
 
     /**
      * 商品
-     * @param startTime
+     * @param
      * @param endTime
      * @return
      */
-    private BigDecimal goods(String startTime, String endTime){
-        List<CashierSummary> querygoods = managerDailyDAO.querygoods(startTime, endTime);
+    private BigDecimal goods(Integer hotelId, String startTime, String endTime){
+        List<CashierSummary> querygoods = managerDailyDAO.querygoods(hotelId, startTime, endTime);
         BigDecimal n = new BigDecimal("0");
         for (CashierSummary querygood : querygoods) {
-            n.add(querygood.getConsumption()) ;
+            if(querygood != null){
+                n =  n.add(querygood.getConsumption()) ;
+            }
+
         }
        return n ;
     }
@@ -4159,12 +4157,9 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal members(Integer hotelId, String startTime, String endTime){
-        List<Order> querymembers = managerDailyDAO.querymembers(hotelId, startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (Order querymember : querymembers) {
-            n.add(querymember.getTotalPrice()) ;
-        }
-        return n ;
+        BigDecimal querymembers = managerDailyDAO.querymembers(hotelId, startTime, endTime);
+
+        return querymembers ;
     }
 
     /**
@@ -4176,12 +4171,9 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal agreementUnit(Integer hotelId, String startTime, String endTime){
-        List<Order> orders = managerDailyDAO.qyeryagreementUnit(hotelId, startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (Order querymember : orders) {
-             n.add(querymember.getTotalPrice());
-        }
-        return n ;
+        BigDecimal bigDecimal = managerDailyDAO.qyeryagreementUnit(hotelId, startTime, endTime);
+
+        return bigDecimal ;
     }
 
     /**
@@ -4193,12 +4185,9 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal individualTraveler(Integer hotelId, String startTime, String endTime){
-        List<Order> orders = managerDailyDAO.queryindividualTraveler(hotelId, startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (Order order : orders) {
-            n.add(order.getTotalPrice()) ;
-        }
-        return n;
+        BigDecimal bigDecimal = managerDailyDAO.queryindividualTraveler(hotelId, startTime, endTime);
+
+        return bigDecimal;
     }
 
 
@@ -4210,12 +4199,9 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal enter(Integer hotelId, String startTime, String endTime){
-        List<Order> orders = managerDailyDAO.queryEnter(hotelId, startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (Order order : orders) {
-             n.add(order.getTotalPrice()) ;
-        }
-        return n;
+        BigDecimal bigDecimal = managerDailyDAO.queryEnter(hotelId, startTime, endTime);
+
+        return bigDecimal;
     }
 
     /**
@@ -4226,12 +4212,9 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal directBooking(Integer hotelId, String startTime, String endTime){
-        List<Order> orders = managerDailyDAO.queryDirectBooking(hotelId, startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (Order order : orders) {
-             n.add(order.getTotalPrice()) ;
-        }
-        return n;
+        BigDecimal bigDecimal = managerDailyDAO.queryDirectBooking(hotelId, startTime, endTime);
+
+        return bigDecimal;
     }
 
 
@@ -4280,7 +4263,7 @@ public class ManagerDailyService {
      */
     private BigDecimal FwEnter(Integer hotelId, String startTime, String endTime ){
         Integer integer = managerDailyDAO.queryFwEnter(hotelId, startTime, endTime);
-        return BigDecimal.valueOf((int)integer);
+        return BigDecimal.valueOf(integer);
     }
 
     /**
@@ -4409,13 +4392,11 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal orderTotalPrice(Integer hotelId, String startTime, String endTime){
-        List<TotalPriceBO> totalPriceBOS = managerdailyBOMapper.queryOrderTotalPrice(hotelId, startTime, endTime);
-        log.info("totalPriceBOS:{}",totalPriceBOS);
+        BigDecimal bigDecimal = managerdailyBOMapper.queryOrderTotalPrice(hotelId, startTime, endTime);
+        log.info("totalPriceBOS:{}",bigDecimal);
         BigDecimal n = new BigDecimal("0");
-        for (TotalPriceBO totalPriceBO : totalPriceBOS) {
-            n = n.add(totalPriceBO.getTotalPrice());
-        }
-        return n;
+
+        return bigDecimal;
     }
 
     /**
@@ -4426,12 +4407,8 @@ public class ManagerDailyService {
      * @return
      */
     private BigDecimal queryConsumption(Integer hotelId, String startTime, String endTime){
-        List<CashierSummary> cashierSummaries = managerdailyBOMapper.queryConsumption(hotelId, startTime, endTime);
-        BigDecimal n = new BigDecimal("0");
-        for (CashierSummary cashierSummary : cashierSummaries) {
-            n = n.add(cashierSummary.getConsumption()) ;
-        }
-        return n;
+        BigDecimal bigDecimal = managerdailyBOMapper.queryConsumption(hotelId, startTime, endTime);
+        return bigDecimal;
     }
 
 

@@ -6,6 +6,7 @@ import com.szq.hotel.entity.bo.OrderBO;
 import com.szq.hotel.entity.bo.TotalPriceBO;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ManagerdailyBOMapper {
@@ -70,7 +71,7 @@ public interface ManagerdailyBOMapper {
      * @param hotelId
      * @return
      */
-    List<TotalPriceBO> queryOrderTotalPrice(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    BigDecimal queryOrderTotalPrice(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
     /**
      * 获取当天总收入
@@ -79,5 +80,5 @@ public interface ManagerdailyBOMapper {
      * @param endTime
      * @return
      */
-    List<CashierSummary> queryConsumption(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    BigDecimal queryConsumption(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 }
