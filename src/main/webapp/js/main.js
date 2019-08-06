@@ -320,7 +320,7 @@ function clearIDForm(form, formName) {
 
 function IDCardReaderInfo(dom) {
     var arr = [
-        '<object classid="classid:10946843-7507-44FE-ACE8-2B3483D179B7" codebase="IDCardReader.ocx" id="CVR_IDCard" name="CVR_IDCard" width="0" height="0">',
+        '<object classid="clsid:10946843-7507-44FE-ACE8-2B3483D179B7" codebase="IDCardReader.ocx" id="CVR_IDCard" name="CVR_IDCard" width="0" height="0">',
         '</object>'
     ].join(' ');
     dom.append(arr);

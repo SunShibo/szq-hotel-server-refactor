@@ -266,6 +266,9 @@
             table = layui.table;
 
 
+        $(function () {
+            IDCardReaderInfo($(document.body));
+        });
         form.on('submit(checksubmit)', function (data) {
             var d = data.field;
             d.type = "directly";

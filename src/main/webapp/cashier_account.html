@@ -93,21 +93,22 @@
                     tab.reload({data: JSON.parse(JSON.stringify(rs.data))})
                 }
             });
-        })
+        });
 
 
         //监听提交
         form.on('submit(formData)', function (data) {
-            if (!startTime) {
-                startTime = DateToLStr4(new Date(new Date().getTime() - (24 * 60 * 60 * 1000))).concat('04:00:00')
-            }
-            if (!endTime) {
-                endTime = DateToLStr4(new Date()).concat('04:00:00');
-            }
             var obj = {
-                startTime: startTime,
-                endTime: endTime
+                startTime: data.field.startTime,
+                endTime: data.field.endTime
             };
+
+            if (!obj.startTime) {
+                obj.startTime = DateToLStr4(new Date(new Date().getTime() - (24 * 60 * 60 * 1000))).concat('04:00:00')
+            }
+            if (!obj.endTime) {
+                obj.endTime = DateToLStr4(new Date()).concat('04:00:00');
+            }
 
             if (data.field.operator) {
                 obj.operator = data.field.operator;
