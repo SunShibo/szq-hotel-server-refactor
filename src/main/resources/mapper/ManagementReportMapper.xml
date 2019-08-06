@@ -49,6 +49,12 @@
             WHERE  create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
                 AND hotel_id = #{hotelId} AND project = '房费'
         </select>
+        <!--房费冲减-->
+        <select id="getRoomRateOffset" resultType="java.math.BigDecimal"  parameterType="java.util.Map">
+          SELECT SUM(consumption) FROM hm_cashier_summary
+          WHERE  create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
+                AND hotel_id = #{hotelId} AND project = '房费冲减'
+        </select>
         <!--房间总数-->
         <select id="getRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
           SELECT COUNT(id) FROM `hm_room` WHERE `show`='yes' AND hotel_id = #{hotelId}
@@ -88,10 +94,10 @@
         </select>
         <!--免费入住房数-->
         <select id="getFreeRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
-            SELECT COUNT(ro.id) FROM hm_order `or` LEFT JOIN hm_order_child ch ON ch.order_id = `or`.id
-            LEFT JOIN hm_room ro ON ch.room_id = ro.id
-            WHERE `or`.check_type = 'free' AND ch.order_state = 'admissions' AND `or`.hotel_id = #{hotelId}
-            AND ch.start_time &gt;= #{starTime} AND ch.end_time &lt; #{endTime}
+            SELECT COUNT(child.id) FROM hm_order_child child LEFT JOIN  hm_order oder  ON oder.id=child.order_id
+          WHERE oder.hotel_id=#{hotelId} AND start_time &lt; #{endTime}  AND end_time &gt;= #{startTime}
+          AND ( order_state='admissions'  OR  order_state='notpaid'  OR    order_state='accomplish' )
+          AND oder.check_type='free'
         </select>
         <!--维修房数-->
         <select id="getMaintainSum" resultType="java.lang.Integer" parameterType="java.util.Map">
@@ -99,11 +105,10 @@
         </select>
         <!--会员房数-->
         <select id="getMemberRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
-            SELECT COUNT(ro.id) FROM hm_order `or` LEFT JOIN hm_order_child ch ON ch.order_id = `or`.id
-            LEFT JOIN hm_room ro ON ch.room_id = ro.id
-            WHERE  ch.order_state = 'admissions' AND `or`.members_id IS NOT NULL
-            AND `or`.hotel_id = #{hotelId}
-            AND ch.start_time &gt;= #{starTime} AND ch.end_time &lt; #{endTime}
+            SELECT COUNT(child.id) FROM hm_order_child child LEFT JOIN  hm_order oder  ON oder.id=child.order_id
+            WHERE oder.hotel_id=#{hotelId} AND start_time &lt; #{endTime}  AND end_time &gt;= #{startTime}
+            AND ( order_state='admissions'  OR  order_state='notpaid'  OR    order_state='accomplish' )
+            AND members_id IS NOT NULL
         </select>
         <!--商品收入-->
         <select id="getCommodity" resultType="java.math.BigDecimal" parameterType="java.util.Map">
@@ -111,11 +116,17 @@
             WHERE create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
                 AND hotel_id = #{hotelId} AND project = '商品'
         </select>
+        <!--商品冲减-->
+        <select id="getCommodityOffset" resultType="java.math.BigDecimal" parameterType="java.util.Map">
+          SELECT SUM(consumption) FROM hm_cashier_summary
+          WHERE create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
+          AND hotel_id = #{hotelId} AND project = '商品冲减'
+        </select>
         <!--房费调整-->
         <select id="getRoomRateAdjustment" resultType="java.math.BigDecimal" parameterType="java.util.Map">
-            SELECT SUM(consumption) FROM hm_cashier_summary
+            SELECT -SUM(consumption) FROM hm_cashier_summary
             WHERE create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
-                AND hotel_id = #{hotelId} AND project = '房费调整'
+                AND hotel_id = #{hotelId}  AND project = '超时费冲减' OR project = '房费冲减'
         </select>
         <!--锁房数-->
         <select id="getLockRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
@@ -127,10 +138,9 @@
         </select>
         <!--钟点房晚数-->
         <select id="getHourRoomSum" parameterType="java.util.Map" resultType="java.lang.Integer">
-            SELECT COUNT(ro.id) FROM hm_order `or` LEFT JOIN hm_order_child ch ON ch.order_id = `or`.id
-            LEFT JOIN hm_room ro ON ch.room_id = ro.id
-            WHERE  `or`.check_type = 'hour' AND `or`.hotel_id = #{hotelId}
-            AND ch.start_time &gt;= #{starTime}
-            AND ch.end_time &lt; #{endTime}
+            SELECT COUNT(child.id) FROM hm_order_child child LEFT JOIN  hm_order oder  ON oder.id=child.order_id
+              WHERE oder.hotel_id=#{hotelId} AND start_time &lt; #{endTime}  AND end_time &gt;= #{startTime}
+              AND ( order_state='admissions'  OR  order_state='notpaid'  OR    order_state='accomplish' )
+              AND oder.check_type = 'hour'
         </select>
 </mapper>

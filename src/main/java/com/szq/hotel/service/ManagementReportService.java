@@ -35,9 +35,11 @@ public class ManagementReportService {
         log.info("hotelId:{}",hotelId);
         Map<String,Object> map = new HashMap<String, Object>();
         String endTime = DateUtils.getStringData(new Date(),"yyyy-MM-dd");
+        String endTime1 = endTime+" 04:00:00";
         String startTime = DateUtils.getLastDay(endTime);
-        map.put("startTime",startTime+" 04:00:00");
-        map.put("endTime",endTime+" 04:01:00");//推迟1分钟防止网络延迟
+        String startTime1 = startTime+" 04:00:00";
+        map.put("startTime",startTime1);
+        map.put("endTime",endTime1);//推迟1分钟防止网络延迟
         map.put("hotelId",hotelId);
 
         ManagementReportBO managementReportBO = new ManagementReportBO();
@@ -86,7 +88,7 @@ public class ManagementReportService {
         FormUtilBO roomLateSum = new FormUtilBO();//房晚数
         FormUtilBO personLateSum = new FormUtilBO();//人晚数
         FormUtilBO commodityRevenues = new FormUtilBO();//商品收入
-        FormUtilBO roomRateAdjustment = new FormUtilBO();//房费调整 //todo
+        FormUtilBO roomRateAdjustment = new FormUtilBO();//房费调整 //
         FormUtilBO occupancyRate = new FormUtilBO();//出租率
         FormUtilBO REVPAR = new FormUtilBO();//REVPAR = 应收合计 / (总房间数 - 维修房数)
         FormUtilBO disableRoomSum = new FormUtilBO();//停用房间数
@@ -385,45 +387,59 @@ public class ManagementReportService {
         }
         return receivableSum;
     }
-    //平均房价=房费收入/房间总数
+    //平均房价=房费收入/房晚数
     public BigDecimal avgRoomRate(Map<String,Object> map){
         //房费收入
         BigDecimal roomRate = this.getRoomRate(map);
-        //房间总数
-        Integer roomSum = this.getRoomSum(map);
-        if (roomSum==0){
+        //房晚数
+        Integer roomLateSum = this.getRoomLateSum(map);
+        if (roomLateSum==0||roomRate==null||roomRate.intValue()==0){
             return new BigDecimal(0.00);
         }
         //平均房价
-        BigDecimal avgRoomRate = roomRate.divide(new BigDecimal(roomSum),2,BigDecimal.ROUND_HALF_UP);
+        BigDecimal avgRoomRate = roomRate.divide(new BigDecimal(roomLateSum),2,BigDecimal.ROUND_HALF_UP);
         return  avgRoomRate;
     }
     //房费收入
     public BigDecimal getRoomRate(Map<String,Object> map){
         BigDecimal roomRate = managementReportDAO.getRoomRate(map);
         if (roomRate==null){
-            return new BigDecimal(0.00);
+            roomRate = new BigDecimal(0.00);
         }
-        return roomRate;
+        //房费冲减
+        BigDecimal roomRateOffset = managementReportDAO.getRoomRateOffset(map);
+        if (roomRateOffset==null){
+            roomRateOffset = new BigDecimal(0.00);
+        }
+
+        BigDecimal roomRate1 = roomRate.add(roomRateOffset);
+
+        return roomRate1;
     }
     //房间总数
     public Integer getRoomSum(Map<String,Object> map){
         return managementReportDAO.getRoomSum(map);
     }
-    //房平均消费=房间所有总消费（所有收入-会员卡收入）/房间总数
+    //房平均消费=房间所有总消费（所有收入-会员卡收入）/房晚数
     public BigDecimal getAvgConsumptionOfRoom(Map<String,Object> map){
         //所有收入
         BigDecimal receivableSum = this.getReceivableSum(map);
+        if (receivableSum==null){
+            receivableSum = new BigDecimal(0);
+        }
         //会员卡收入
         BigDecimal memberCardRate = this.getMemberCardRate(map);
-        //房间总数
-        Integer roomSum = this.getRoomSum(map);
+        if (memberCardRate==null){
+            memberCardRate = new BigDecimal(0);
+        }
+        //房晚数
+        Integer roomLateSum = this.getRoomLateSum(map);
 
-        if (roomSum == 0||receivableSum.intValue()==0||receivableSum.subtract(memberCardRate).intValue()==0){
+        if (roomLateSum == 0||receivableSum.intValue()==0||receivableSum.subtract(memberCardRate).intValue()==0){
             return new BigDecimal(0.00);
         }
         //房平均消费
-        BigDecimal avgConsumptionOfRoom = (receivableSum.subtract(memberCardRate)).divide(new BigDecimal(roomSum),2,BigDecimal.ROUND_HALF_UP);
+        BigDecimal avgConsumptionOfRoom = (receivableSum.subtract(memberCardRate)).divide(new BigDecimal(roomLateSum),2,BigDecimal.ROUND_HALF_UP);
 
         return avgConsumptionOfRoom;
     }
@@ -454,23 +470,24 @@ public class ManagementReportService {
         if (roomSum.subtract(maintainSum).intValue()==0){
             return new BigDecimal(0);
         }
-        BigDecimal occupancyRate = roomLateSum.divide(roomSum.subtract(maintainSum),2,BigDecimal.ROUND_HALF_UP);//TODO
+        BigDecimal occupancyRate = roomLateSum.divide(roomSum.subtract(maintainSum),4,BigDecimal.ROUND_HALF_UP);//TODO
         return occupancyRate;
     }
 
-    //人均消费 = 总消费/入住人数
+    //人均消费 = 应收合计/人晚数
     public BigDecimal getAvgConsumptionOfPerson(Map<String,Object> map){
-        //所有收入
+        //应收合计
         BigDecimal receivableSum = this.getReceivableSum(map);
-        //会员卡收入
-        BigDecimal memberCardRate = this.getMemberCardRate(map);
-        //入住人数
-        Integer checkInPerson = this.getCheckInPerson(map);
-        if (checkInPerson ==0){
+        if (receivableSum==null){
+            receivableSum = new BigDecimal(0);
+        }
+        //人晚数
+        Integer personLateSum = this.getPersonLateSum(map);
+        if (personLateSum ==0){
             return new BigDecimal(0.00);
         }
         //人均消费
-        BigDecimal avgConsumptionOfPerson = (receivableSum.subtract(memberCardRate)).divide(new BigDecimal(checkInPerson),2,BigDecimal.ROUND_HALF_UP);
+        BigDecimal avgConsumptionOfPerson = receivableSum.divide(new BigDecimal(personLateSum),2,BigDecimal.ROUND_HALF_UP);
         return avgConsumptionOfPerson;
     }
     //入住人数
@@ -501,9 +518,14 @@ public class ManagementReportService {
     public BigDecimal getCommodity(Map<String,Object> map){
         BigDecimal commidity = managementReportDAO.getCommodity(map);
         if (commidity==null){
-            return new BigDecimal(0.00);
+            commidity = new BigDecimal(0.00);
         }
-        return commidity;
+        BigDecimal commidityOffset = managementReportDAO.getCommodityOffset(map);
+        if (commidityOffset==null){
+            commidityOffset = new BigDecimal(0.00);
+        }
+        BigDecimal commidity1 = commidity.add(commidityOffset);
+        return commidity1;
     }
     //房费调整
     public BigDecimal getRoomRateAdjustment(Map<String,Object> map){

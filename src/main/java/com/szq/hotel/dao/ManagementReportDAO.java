@@ -22,6 +22,9 @@ public interface ManagementReportDAO {
     BigDecimal getReceivableSum(Map<String,Object> map);
     //房费收入
     BigDecimal getRoomRate(Map<String,Object> map);
+    //房费冲减
+    BigDecimal getRoomRateOffset(Map<String,Object> map);
+
     //房间总数
     Integer getRoomSum(Map<String,Object> map);
     //会员卡收入
@@ -42,6 +45,9 @@ public interface ManagementReportDAO {
     Integer getMemberRoomSum(Map<String,Object> map);
     //商品收入
     BigDecimal getCommodity(Map<String,Object> map);
+    //商品冲减
+    BigDecimal getCommodityOffset(Map<String,Object> map);
+
     //房费调整
     BigDecimal getRoomRateAdjustment(Map<String,Object> map);
     //锁房数
