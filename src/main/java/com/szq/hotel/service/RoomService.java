@@ -1298,25 +1298,28 @@ public class RoomService {
         Integer integer1 = roomDAO.queryEverydayRoomPrice(format);
         log.info("integer1:{}",integer1);
         map.put("three", integer1);
-        for (RtBO rtBO : rtBOS) {
-            mp.put("roomTypeId", rtBO.getId());
-            RoomTypeCountDTO roomTypeCountDTO = new RoomTypeCountDTO();
-            //查询可用房间
-            List<RmBO> rmBOS = publicQuery(mp, ll);
-            roomTypeCountDTO.setName(rtBO.getRoomTypeName());
-            roomTypeCountDTO.setCount(rmBOS.size());
-            //查询当前正在入住的
-            List<RmBO> rmBOS1 = roomDAO.queryInthe(rtBO.getId(), hotelId, "inthe", "timeout");
-            roomTypeCountDTO.setCountChinkRoom(rmBOS1.size());
-            //获取预约中的
-            List<OrderChildBO> orderChildBOS = roomDAO.querySubscribe(rtBO.getId(), hotelId, date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));
-            roomTypeCountDTO.setCountOrderRoom(orderChildBOS.size());
-            int integer = roomDAO.querRoomTypeCount(rtBO.getId(), hotelId);
-            roomTypeCountDTO.setRotio(baifenbi(rmBOS1.size(), integer));
-            roomTypeCountDTO.setHotelId(rtBO.getHotelId());
-            roomTypeCountDTO.setTypePrice(rtBO.getBasicPrice());
-            list.add(roomTypeCountDTO);
+        if(!CollectionUtils.isEmpty(rtBOS)){
+            for (RtBO rtBO : rtBOS) {
+                mp.put("roomTypeId", rtBO.getId());
+                RoomTypeCountDTO roomTypeCountDTO = new RoomTypeCountDTO();
+                //查询可用房间
+                List<RmBO> rmBOS = publicQuery(mp, ll);
+                roomTypeCountDTO.setName(rtBO.getRoomTypeName());
+                roomTypeCountDTO.setCount(rmBOS.size());
+                //查询当前正在入住的
+                List<RmBO> rmBOS1 = roomDAO.queryInthe(rtBO.getId(), hotelId, "inthe", "timeout");
+                roomTypeCountDTO.setCountChinkRoom(rmBOS1.size());
+                //获取预约中的
+                List<OrderChildBO> orderChildBOS = roomDAO.querySubscribe(rtBO.getId(), hotelId, date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));
+                roomTypeCountDTO.setCountOrderRoom(orderChildBOS.size());
+                int integer = roomDAO.querRoomTypeCount(rtBO.getId(), hotelId);
+                roomTypeCountDTO.setRotio(baifenbi(rmBOS1.size(), integer));
+                roomTypeCountDTO.setHotelId(rtBO.getHotelId());
+                roomTypeCountDTO.setTypePrice(rtBO.getBasicPrice());
+                list.add(roomTypeCountDTO);
+            }
         }
+
 
         String dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
@@ -1326,20 +1329,22 @@ public class RoomService {
         //查询当前会员的订单
         List<Integer> orderBOS = roomDAO.queryOrder2(hotelId, dt);
         System.err.println(orderBOS);
-
-        for (MemberLevelBO memberLevelBO : memberLevelBOS) {
-            XxDTO xxDTO = new XxDTO();
-            xxDTO.setName(memberLevelBO.getName());
-            int i = 0;
-            for (Integer orderBO : orderBOS) {
-                if (memberLevelBO.getId().equals(orderBO)) {
-                    i++;
+        if(!CollectionUtils.isEmpty(memberLevelBOS)){
+            for (MemberLevelBO memberLevelBO : memberLevelBOS) {
+                XxDTO xxDTO = new XxDTO();
+                xxDTO.setName(memberLevelBO.getName());
+                int i = 0;
+                for (Integer orderBO : orderBOS) {
+                    if (memberLevelBO.getId().equals(orderBO)) {
+                        i++;
+                    }
                 }
-            }
-            xxDTO.setNumber(i);
-            ls.add(xxDTO);
+                xxDTO.setNumber(i);
+                ls.add(xxDTO);
 
+            }
         }
+
         XxDTO xx = new XxDTO();
         xx.setNumber(roomDAO.queryOrder(hotelId, dt));
         xx.setName("散客");

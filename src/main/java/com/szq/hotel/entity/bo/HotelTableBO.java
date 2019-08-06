@@ -6,12 +6,12 @@ package com.szq.hotel.entity.bo;
  */
 public class HotelTableBO {
 
-    private  String day = "0.0";//今天
-    private  String month = "0.0";//本月
-    private  String lastMonthDay = "0.0";//上月同期
-    private  String year = "0.0";//本年累计
-    private  String LastYearDay = "0.0";//去年同期
-    private  String insertRial = "0.0";//增长率
+    private  String day = "0";//今天
+    private  String month = "0";//本月
+    private  String lastMonthDay = "0";//上月同期
+    private  String year = "0";//本年累计
+    private  String LastYearDay = "0";//去年同期
+    private  String insertRial = "0";//增长率
 
     public String getDay() {
         return day;
