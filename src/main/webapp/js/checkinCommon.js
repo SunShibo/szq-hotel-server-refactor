@@ -3,6 +3,7 @@
 //清除房间信息------用户修改身份证或者电话号码之后执行方法
 function clearRoomInfo() {
     sRooms = [];
+    sRooms1 = [];
     customs = [];
     calcPrice();
     localStorage.modifyPrice = '';
