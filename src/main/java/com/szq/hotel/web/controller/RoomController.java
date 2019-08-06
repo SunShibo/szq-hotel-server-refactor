@@ -694,10 +694,7 @@ public class RoomController extends BaseCotroller {
     public void updatelockRoomState(HttpServletRequest request, HttpServletResponse response,
                                     String startTime, String endTime,
                                     String roomId, String state, String remark) {
-        if(!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)){
-            startTime = startTime.replaceAll("/","-");
-            endTime = endTime.replaceAll("/","-");
-        }
+
 
         log.info("updatelockRoomState*************************************");
         log.info("startTime:{}", startTime);

@@ -10,15 +10,15 @@ public class ManagerdailyBO {
 
     private BigDecimal totalTurnover;
 
-    private Integer numberOrder;
+    private BigDecimal numberOrder;
 
-    private Integer maintenanceroomNumber;
+    private BigDecimal maintenanceroomNumber;
 
-    private Integer numberlockedStores;
+    private BigDecimal numberlockedStores;
 
-    private Integer numberroomsAvailablerent;
+    private BigDecimal numberroomsAvailablerent;
 
-    private Integer totalnumberGuestrooms;
+    private BigDecimal totalnumberGuestrooms;
 
     private BigDecimal cashDisbursements;
 
@@ -86,43 +86,43 @@ public class ManagerdailyBO {
         this.totalTurnover = totalTurnover;
     }
 
-    public Integer getNumberOrder() {
+    public BigDecimal getNumberOrder() {
         return numberOrder;
     }
 
-    public void setNumberOrder(Integer numberOrder) {
+    public void setNumberOrder(BigDecimal numberOrder) {
         this.numberOrder = numberOrder;
     }
 
-    public Integer getMaintenanceroomNumber() {
+    public BigDecimal getMaintenanceroomNumber() {
         return maintenanceroomNumber;
     }
 
-    public void setMaintenanceroomNumber(Integer maintenanceroomNumber) {
+    public void setMaintenanceroomNumber(BigDecimal maintenanceroomNumber) {
         this.maintenanceroomNumber = maintenanceroomNumber;
     }
 
-    public Integer getNumberlockedStores() {
+    public BigDecimal getNumberlockedStores() {
         return numberlockedStores;
     }
 
-    public void setNumberlockedStores(Integer numberlockedStores) {
+    public void setNumberlockedStores(BigDecimal numberlockedStores) {
         this.numberlockedStores = numberlockedStores;
     }
 
-    public Integer getNumberroomsAvailablerent() {
+    public BigDecimal getNumberroomsAvailablerent() {
         return numberroomsAvailablerent;
     }
 
-    public void setNumberroomsAvailablerent(Integer numberroomsAvailablerent) {
+    public void setNumberroomsAvailablerent(BigDecimal numberroomsAvailablerent) {
         this.numberroomsAvailablerent = numberroomsAvailablerent;
     }
 
-    public Integer getTotalnumberGuestrooms() {
+    public BigDecimal getTotalnumberGuestrooms() {
         return totalnumberGuestrooms;
     }
 
-    public void setTotalnumberGuestrooms(Integer totalnumberGuestrooms) {
+    public void setTotalnumberGuestrooms(BigDecimal totalnumberGuestrooms) {
         this.totalnumberGuestrooms = totalnumberGuestrooms;
     }
 
@@ -293,6 +293,7 @@ public class ManagerdailyBO {
     public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
+
 
     @Override
     public String toString() {

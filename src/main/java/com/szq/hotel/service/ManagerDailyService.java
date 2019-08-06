@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.net.SocketTimeoutException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,6 +33,8 @@ public class ManagerDailyService {
     @Resource
     private ManagerdailyBOMapper managerdailyBOMapper;
 
+    java.text.DecimalFormat   df   =   new   java.text.DecimalFormat("#.00");
+    java.text.DecimalFormat   f   =   new   java.text.DecimalFormat("#");
 
     /**
      * 经理日报查询
@@ -141,6 +144,10 @@ public class ManagerDailyService {
             managerdailyBO5 = new ManagerdailyBO();
         }
 
+        log.info("145");
+
+
+
         log.info("获取今年日期");
         //获取今年日期
         String yyyy = date.substring(0,4);
@@ -158,19 +165,19 @@ public class ManagerDailyService {
         log.info("managerdailyBO4:{}",managerdailyBO4);
         log.info("managerdailyBO5:{}",managerdailyBO5);
         //当天营业收入
-        grossrealIncome.setDay(managerdailyBO.getGrossrealIncome()+"");
+        grossrealIncome.setDay(managerdailyBO.getGrossrealIncome().intValue() != 0 ? df.format(managerdailyBO.getGrossrealIncome())+"" : "0.00");
         log.info("当天营业收入");
         //本月营业收入
-        grossrealIncome.setMonth(month(hotelId, date)+"");
+        grossrealIncome.setMonth(month(hotelId, date).intValue() != 0 ? df.format(month(hotelId, date))+"" : "0.00");
         log.info("本月营业收入");
         //上月同期
-        grossrealIncome.setLastMonthDay(lastMonthDay(hotelId, date) + "");
+        grossrealIncome.setLastMonthDay(lastMonthDay(hotelId, date).intValue() != 0 ? df.format(lastMonthDay(hotelId, date))+"" : "0.00");
         log.info("上月同期");
         //本年累计
-        grossrealIncome.setYear(year(hotelId, date)+"");
+        grossrealIncome.setYear(year(hotelId, date).intValue() != 0 ? df.format(year(hotelId, date))+"" : "0.00");
         log.info("本年累计");
         //上年同期
-        grossrealIncome.setLastYearDay(lastYearDay(hotelId, date)+"");
+        grossrealIncome.setLastYearDay(lastYearDay(hotelId, date).intValue() != 0 ? df.format(lastYearDay(hotelId, date))+"" : "0.00");
         log.info("上年同期");
         //计算年增长率
         grossrealIncome.setInsertRial(isIncrease(year(hotelId, yyyy),year(hotelId, year)));
@@ -179,19 +186,19 @@ public class ManagerDailyService {
 
 
         //获取当天营业额
-        totalTurnover.setDay(managerdailyBO.getTotalTurnover()+"");
+        totalTurnover.setDay(managerdailyBO.getTotalTurnover().intValue() != 0 ? df.format(managerdailyBO.getTotalTurnover())+"" : "0.00");
         log.info("获取当天营业额");
         //计算本月累计营业额
-        totalTurnover.setMonth(queryMonth(hotelId, date)+"");
+        totalTurnover.setMonth(queryMonth(hotelId, date).intValue() != 0 ? df.format(queryMonth(hotelId, date))+"" : "0.00");
         log.info("计算本月积累营业额");
         //计算上月同期营业额
-        totalTurnover.setLastMonthDay(queryLastMonthDay(hotelId, date)+"");
+        totalTurnover.setLastMonthDay(queryLastMonthDay(hotelId, date).intValue() != 0 ? df.format(queryLastMonthDay(hotelId, date))+"" : "0.00");
         log.info("计算上月同期营业额");
         //计算本年累计营业额
-        totalTurnover.setYear(queryYear(hotelId, date)+"");
+        totalTurnover.setYear(queryYear(hotelId, date).intValue() != 0 ? df.format(queryYear(hotelId, date))+"" : "0.00");
         log.info("计算本年累计营业额");
         //计算上年同期营业额
-        totalTurnover.setLastYearDay( queryLastYearDay(hotelId, date) + "");
+        totalTurnover.setLastYearDay(queryLastYearDay(hotelId, date).intValue() != 0 ? queryLastYearDay(hotelId, date)+"" : "0.00");
         log.info("计算上年同期营业额");
         //计算营业额年增长率
         totalTurnover.setInsertRial(isIncrease(queryYear(hotelId, yyyy),queryYear(hotelId, year)));
@@ -199,38 +206,38 @@ public class ManagerDailyService {
 
 
         //获取当天预订未到房数
-        numberOrder.setDay(managerdailyBO.getNumberOrder()+"");
+        numberOrder.setDay(managerdailyBO.getNumberOrder().intValue() != 0 ? f.format(managerdailyBO.getNumberOrder())+"" : "0");
         log.info("获取当天预订未到房数");
         //计算本月累计预订未到房数
-        numberOrder.setMonth(ydDay(hotelId, date) + "");
+        numberOrder.setMonth(ydDay(hotelId, date).intValue() != 0 ? f.format(ydDay(hotelId, date))+"" : "0");
         log.info("计算本月累计预订未到房数");
         //计算上月同期预订未到房数
-        numberOrder.setLastMonthDay(ydLastMonthDay(hotelId, date) + "");
+        numberOrder.setLastMonthDay(ydLastMonthDay(hotelId, date).intValue() != 0 ? f.format(ydLastMonthDay(hotelId, date))+"" : "0" );
         log.info("计算上月同期预订未到房数");
         //计算本年累计预订未到房数
-        numberOrder.setYear(ydYear(hotelId,date)+"");
+        numberOrder.setYear(ydYear(hotelId,date).intValue() != 0 ? f.format(ydYear(hotelId,date))+"" : "0");
         log.info("计算本年累计预订未到房数");
         //计算上年同期预订未到房数
-        numberOrder.setLastYearDay(ydLastYearDay(hotelId, date)+"");
+        numberOrder.setLastYearDay(ydLastYearDay(hotelId, date).intValue() != 0 ? f.format(ydLastYearDay(hotelId, date))+"" : "0");
         log.info("计算上年同期预定未到房数");
         //计算预订未到房数年增长率
         numberOrder.setInsertRial(isIncrease(ydYear(hotelId,yyyy),ydYear(hotelId,year)));
         log.info("计算预订未到房数年增长率");
 
         //获取当天维修房数
-        maintenanceroomNumber.setDay(managerdailyBO.getMaintenanceroomNumber()+"");
+        maintenanceroomNumber.setDay(managerdailyBO.getMaintenanceroomNumber().intValue() != 0 ? f.format(managerdailyBO.getMaintenanceroomNumber())+"" : "0");
         log.info("获取当天维修房数");
         //计算本月累计维修房数
-        maintenanceroomNumber.setMonth(wxMonth(hotelId, date) + "");
+        maintenanceroomNumber.setMonth(wxMonth(hotelId, date).intValue() != 0 ? f.format(wxMonth(hotelId, date))+"" : "0");
         log.info("计算本月累计维修房数");
         //计算上月同期维修房数
-        maintenanceroomNumber.setLastMonthDay(wxLastMonthDay(hotelId, date) + "");
+        maintenanceroomNumber.setLastMonthDay(wxLastMonthDay(hotelId, date).intValue() != 0 ? f.format(wxLastMonthDay(hotelId, date))+"" : "0");
         log.info("计算上月同期维修房数");
         //计算本年累计维修房数
-        maintenanceroomNumber.setYear(wxYear(hotelId, date)+ "");
+        maintenanceroomNumber.setYear(wxYear(hotelId, date).intValue() != 0 ? f.format(wxYear(hotelId, date))+"" : "0");
         log.info("计算本年累计维修房数");
         //计算上年同期维修房数
-        maintenanceroomNumber.setLastYearDay(wxLastYearDay(hotelId, date) + "");
+        maintenanceroomNumber.setLastYearDay(wxLastYearDay(hotelId, date).intValue() != 0 ? f.format(wxLastYearDay(hotelId, date))+"" : "0");
         log.info("计算上年同期维修房数");
         //计算预订维修房数年增长率
         maintenanceroomNumber.setInsertRial(isIncrease(wxYear(hotelId, yyyy),wxYear(hotelId, year)));
@@ -238,95 +245,97 @@ public class ManagerDailyService {
 
 
         //获取当天门店锁房数
-        numberlockedStores.setDay(managerdailyBO.getNumberlockedStores()+"");
+        numberlockedStores.setDay(managerdailyBO.getNumberlockedStores().intValue() !=0 ? f.format(managerdailyBO.getNumberlockedStores())+"" : "0");
         log.info("获取当天门店锁房数");
         //计算本月累计门店锁房数
-        numberlockedStores.setMonth(sfMonth(hotelId,date)+ "");
+        numberlockedStores.setMonth(sfMonth(hotelId,date).intValue() != 0  ? f.format(sfMonth(hotelId,date))+"" : "0");
         log.info("计算本月累计门店锁房数");
         //计算上月同期门店锁房数
-        numberlockedStores.setLastMonthDay(sfLastMonthDay(hotelId, date) + "");
+        numberlockedStores.setLastMonthDay(sfLastMonthDay(hotelId, date).intValue() != 0 ? f.format(sfLastMonthDay(hotelId, date))+"" : "0");
         log.info("计算上月同期门店锁房数");
         //计算本年累计门店锁房数
-        numberlockedStores.setYear(sfYear(hotelId, date) + "");
+        numberlockedStores.setYear(sfYear(hotelId, date).intValue() != 0 ? f.format(sfYear(hotelId, date))+"" : "0");
         log.info("计算本年累计门店锁房数");
         //计算上年同期门店锁房数
-        numberlockedStores.setLastYearDay(sfLastYearDay(hotelId, date) + "");
+        numberlockedStores.setLastYearDay(sfLastYearDay(hotelId, date).intValue() != 0 ? f.format(sfLastYearDay(hotelId, date))+"" : "0");
         log.info("计算上年同期门店锁房数");
         //计算门店锁房数年增长率
-        maintenanceroomNumber.setInsertRial(isIncrease(sfYear(hotelId, yyyy),sfYear(hotelId, year)));
+        numberlockedStores.setInsertRial(isIncrease(sfYear(hotelId, yyyy),sfYear(hotelId, year)));
         log.info("计算门店锁房数年增长率");
 
+
+
         //获取当天可出租房数
-        numberroomsAvailablerent.setDay(managerdailyBO.getNumberroomsAvailablerent() + "");
+        numberroomsAvailablerent.setDay(managerdailyBO.getNumberroomsAvailablerent().intValue() != 0 ? f.format(managerdailyBO.getNumberroomsAvailablerent())+"" : "0");
         log.info("获取当天可出租房数");
         //获取本月可出租房数
-        numberroomsAvailablerent.setMonth(zfMonth(hotelId, date) + "");
+        numberroomsAvailablerent.setMonth(zfMonth(hotelId, date).intValue() != 0 ? f.format(zfMonth(hotelId, date))+"":"0");
         log.info("获取本月可出租房数");
         //获取上月同期可出租房数
-        numberroomsAvailablerent.setLastMonthDay(zfLastMonthDay(hotelId, date) + "");
+        numberroomsAvailablerent.setLastMonthDay(zfLastMonthDay(hotelId, date).intValue() != 0 ? f.format(zfLastMonthDay(hotelId, date))+"" : "0");
         log.info("获取上月同期可出租房数");
         //获取本年累计可出租房数
-        numberroomsAvailablerent.setYear(zfYear(hotelId, date) + "");
+        numberroomsAvailablerent.setYear(zfYear(hotelId, date).intValue() != 0 ? f.format(zfYear(hotelId, date))+"": "0");
         log.info("获取本年累计可出租房数");
         //获取上年同期可出租房数
-        numberroomsAvailablerent.setLastYearDay(zfLastYearDay(hotelId, date) + "");
+        numberroomsAvailablerent.setLastYearDay(zfLastYearDay(hotelId, date).intValue() != 0 ? f.format(zfLastYearDay(hotelId, date))+"" : "0");
         log.info("获取上年同期可出租房数");
         //获取可出租房数年增长率
         numberroomsAvailablerent.setInsertRial(isIncrease(zfYear(hotelId, yyyy),zfYear(hotelId, year)));
         log.info("获取可出租房数年增长率");
 
         //获取当天客房房数
-        totalnumberGuestrooms.setDay(managerdailyBO.getTotalnumberGuestrooms() + "");
+        totalnumberGuestrooms.setDay(managerdailyBO.getTotalnumberGuestrooms().intValue() != 0 ? f.format(managerdailyBO.getTotalnumberGuestrooms())+"" : "0");
         log.info("获取当天客房房数");
         //获取本月累计客房总数
-        totalnumberGuestrooms.setMonth(kfMonth(hotelId, date) + "");
+        totalnumberGuestrooms.setMonth(kfMonth(hotelId, date).intValue() != 0 ? f.format(kfMonth(hotelId, date))+"" : "0");
         log.info("获取本月累计客房总数");
         //获取上月同期客房总数
-        totalnumberGuestrooms.setLastMonthDay(kfLastMonthDay(hotelId, date) + "");
+        totalnumberGuestrooms.setLastMonthDay(kfLastMonthDay(hotelId, date).intValue() != 0 ? f.format(kfLastMonthDay(hotelId, date))+"" : "0");
         log.info("获取上月同期客房总数");
         //获取本年累计客房总数
-        totalnumberGuestrooms.setYear(kfYear(hotelId, date) + "");
+        totalnumberGuestrooms.setYear(kfYear(hotelId, date).intValue() != 0 ? f.format(kfYear(hotelId, date))+"" : "0");
         log.info("获取本年累计客房总数");
         //获取上年同期客房总数
-        totalnumberGuestrooms.setLastYearDay(kfLastYearDay(hotelId, date) + "");
+        totalnumberGuestrooms.setLastYearDay(kfLastYearDay(hotelId, date).intValue() != 0 ?  f.format(kfLastYearDay(hotelId, date)) + "" : "0");
         log.info("获取上年同期客房总数");
         //获取客房总数年增长率
-        numberroomsAvailablerent.setInsertRial(isIncrease(kfYear(hotelId, yyyy),kfYear(hotelId, year)));
+        totalnumberGuestrooms.setInsertRial(isIncrease(kfYear(hotelId, yyyy),kfYear(hotelId, year)));
         log.info("获取客房总数年增长率");
 
         //获取当天现金支出
-        cashDisbursements.setDay(managerdailyBO.getCashDisbursements() + "");
+        cashDisbursements.setDay(managerdailyBO.getCashDisbursements().intValue() != 0 ? df.format(managerdailyBO.getCashDisbursements())+"" : "0.00");
         log.info("获取当天现金支出");
         //获取本月累计现金支出
-        cashDisbursements.setMonth(zcMonth(hotelId, date) + "");
+        cashDisbursements.setMonth(zcMonth(hotelId, date).intValue() != 0 ? df.format(zcMonth(hotelId, date))+"" : "0.00");
         log.info("获取本月累计现金支出");
         //获取上月同期现金支出
-        cashDisbursements.setLastMonthDay(zcLastMonthDay(hotelId, date) + "");
+        cashDisbursements.setLastMonthDay(zcLastMonthDay(hotelId, date).intValue() != 0 ? df.format(zcLastMonthDay(hotelId, date))+"" : "0.00");
         log.info("获取上月同期现金支出");
         //获取本年累计现金支出
-        cashDisbursements.setYear(zcYear(hotelId, date) + "");
+        cashDisbursements.setYear(zcYear(hotelId, date).intValue() != 0 ? df.format(zcYear(hotelId, date)) + "" : "0.00");
         log.info("获取本年累计现金支出");
         //获取上年同期现金支出
-        cashDisbursements.setLastYearDay(zcLastYearDay(hotelId,  date) + "");
+        cashDisbursements.setLastYearDay(zcLastYearDay(hotelId, date).intValue() != 0 ? df.format(zcLastYearDay(hotelId, date))+"" : "0.00");
         log.info("获取上年同期现金支出");
         //获取现金支出年增长率
         cashDisbursements.setInsertRial(isIncrease(zcYear(hotelId, yyyy),zcYear(hotelId, year)));
         log.info("获取现金支出年增长率");
 
         //获取当天现金收入
-        cash.setDay(managerdailyBO.getCash() + "");
+        cash.setDay(managerdailyBO.getCash().intValue() != 0 ? df.format(managerdailyBO.getCash())+"" : "0.00");
         log.info("获取当天现金收入");
         //获取本月累计现金收入
-        cash.setMonth(srMonth(hotelId, date) + "");
+        cash.setMonth(srMonth(hotelId, date).intValue() != 0 ? df.format(srMonth(hotelId, date))+"" : "0.00");
         log.info("获取本月累计现金收入");
         //获取上月同期现金收入
-        cash.setLastMonthDay(srLastMonthDay(hotelId, date) + "");
+        cash.setLastMonthDay(srLastMonthDay(hotelId, date).intValue() != 0 ? df.format(srLastMonthDay(hotelId, date))+"" : "0.00");
         log.info("虎丘上月同期现金收入");
         //获取本年累计现金收入
-        cash.setYear(srYear(hotelId, date) + "");
+        cash.setYear(srYear(hotelId, date).intValue() != 0 ? df.format(srYear(hotelId, date))+"" : "0.00");
         log.info("获取本年累计现金收入");
         //获取上年同期现金收入
-        cash.setLastYearDay(srLastYearDay(hotelId, date) + "");
+        cash.setLastYearDay(srLastYearDay(hotelId, date).intValue() != 0 ? df.format(srLastYearDay(hotelId, date))+"" : "0.00");
         log.info("获取上年同期现金收入");
         //获取现金收入年增长率
         cash.setInsertRial(isIncrease(srYear(hotelId, yyyy),srYear(hotelId, year)));
@@ -335,20 +344,20 @@ public class ManagerDailyService {
 
         //营业收入明细
         //获取全天日租今日发生
-        throughoutDayrent.setDay(managerdailyBO1.getThroughoutDayrent()+"");
+        throughoutDayrent.setDay(managerdailyBO1.getThroughoutDayrent().intValue() != 0 ? df.format(managerdailyBO1.getThroughoutDayrent())+"" : "0.00");
         log.info("营业收入明细");
         log.info("获取全天日租今日发生");
         //获取全天日租本月累计
-        throughoutDayrent.setMonth(qtrzMonth(hotelId, date) + "");
+        throughoutDayrent.setMonth(qtrzMonth(hotelId, date).intValue() != 0 ? df.format(qtrzMonth(hotelId, date))+"" : "0.00");
         log.info("获取全天日租本月累计");
         //获取全天日租上月同期
-        throughoutDayrent.setLastMonthDay(qtrzLastMonthDay(hotelId, date) + "");
+        throughoutDayrent.setLastMonthDay(qtrzLastMonthDay(hotelId, date).intValue() != 0 ? df.format(qtrzLastMonthDay(hotelId, date))+ "":"0.00");
         log.info("获取全天日租上月同期");
         //获取全天日租本年积累
-        throughoutDayrent.setYear(qtrzYear(hotelId, date)+"");
+        throughoutDayrent.setYear(qtrzYear(hotelId, date).intValue() != 0 ? df.format(qtrzYear(hotelId, date))+"" : "0.00");
         log.info("获取全天日租本年积累");
         //获取全天日租上年同期
-        throughoutDayrent.setLastYearDay(qtrzLastYearDay(hotelId, date) + "");
+        throughoutDayrent.setLastYearDay(qtrzLastYearDay(hotelId, date).intValue() != 0 ? df.format(qtrzLastYearDay(hotelId, date))+"" : "0.00");
         log.info("获取全天日租上年同期");
         //获取全天日租年增率
         throughoutDayrent.setInsertRial(isIncrease(qtrzYear(hotelId, yyyy),qtrzYear(hotelId, year)));
@@ -356,38 +365,38 @@ public class ManagerDailyService {
 
 
         //房费调整今日发生
-        rateAdjustment.setDay(managerdailyBO1.getRateAdjustment() + "");
+        rateAdjustment.setDay(managerdailyBO1.getRateAdjustment().intValue() != 0 ? df.format(managerdailyBO1.getRateAdjustment())+"" : "0.00");
         log.info("房费调整今日发生");
         //房费调整本月累计
-        rateAdjustment.setMonth(fftzMonth(hotelId, date) + "");
+        rateAdjustment.setMonth(fftzMonth(hotelId, date).intValue() != 0 ? df.format(fftzMonth(hotelId, date)) + "" : "0.00");
         log.info("房费调整本月累计");
         //房费调整上月同期
-        rateAdjustment.setLastMonthDay(fftzLastMonthDay(hotelId, date) + "");
+        rateAdjustment.setLastMonthDay(fftzLastMonthDay(hotelId, date).intValue() != 0 ? df.format(fftzLastMonthDay(hotelId, date))+"" : "0.00");
         log.info("房费调整上月同期");
         //房费调整本年累计
-        rateAdjustment.setYear(fftzYear(hotelId, date) +"");
+        rateAdjustment.setYear(fftzYear(hotelId, date).intValue() != 0 ? df.format(fftzYear(hotelId, date)) +"" : "0.00");
         log.info("房费调整本年累计");
         //房费调整上年同期
-        rateAdjustment.setLastYearDay(fftzLastYearDay(hotelId, date) + "");
+        rateAdjustment.setLastYearDay(fftzLastYearDay(hotelId, date).intValue() != 0 ? df.format(fftzLastYearDay(hotelId, date))+ "" :"0.00");
         log.info("房费调整上年同期351");
         //房费调整年增长率
         rateAdjustment.setInsertRial(isIncrease(fftzYear(hotelId, yyyy),fftzYear(hotelId, year)));
         log.info("房费调整年增长率354");
 
         //钟点房费今日发生
-        hourRate.setDay(managerdailyBO1.getHourRate()+"");
+        hourRate.setDay(managerdailyBO1.getHourRate().intValue() != 0 ? df.format(managerdailyBO1.getHourRate())+"" : "0.00");
         log.info("钟点房费今日发生");
         //钟点房费本月累计
-        hourRate.setMonth(zdffMonth(hotelId, date) + "");
+        hourRate.setMonth(zdffMonth(hotelId, date).intValue() != 0 ? df.format(zdffMonth(hotelId, date)) + "":"0.00");
         log.info("钟点房费本月累计");
         //钟点房费上月同期
-        hourRate.setLastMonthDay(zdffLastMonthDay(hotelId, date) +"");
+        hourRate.setLastMonthDay(zdffLastMonthDay(hotelId, date).intValue() != 0 ? df.format(zdffLastMonthDay(hotelId, date)) +"":"0.00");
         log.info("钟点房费上月同期");
         //钟点房费本年累计
-        hourRate.setYear(zdffYear(hotelId, date) + "");
+        hourRate.setYear(zdffYear(hotelId, date).intValue() != 0 ? df.format(zdffYear(hotelId, date)) + "" : "0.00");
         log.info("钟点房费本年累计");
         //钟点房费上年同期
-        hourRate.setLastYearDay(zdffLastYearDay(hotelId, date)+"") ;
+        hourRate.setLastYearDay(zdffLastYearDay(hotelId, date).intValue() != 0 ? df.format(zdffLastYearDay(hotelId, date))+"" :"0.00") ;
         log.info("钟点房费上年同期");
         //钟点房费年增长率
         hourRate.setInsertRial(isIncrease(zdffYear(hotelId, yyyy),zdffYear(hotelId, year)));
@@ -395,19 +404,19 @@ public class ManagerDailyService {
 
 
         //超时房费今日发生
-        timeoutRate.setDay(managerdailyBO1.getTimeoutRate() + "");
+        timeoutRate.setDay(managerdailyBO1.getTimeoutRate().intValue() != 0 ? df.format(managerdailyBO1.getTimeoutRate())+"":"0.00");
         log.info("超时房费今日发生");
         //超时房费本月累计
-        timeoutRate.setMonth(csffMonth(hotelId, date)+ "");
+        timeoutRate.setMonth(csffMonth(hotelId, date).intValue()!=0 ?  df.format(csffMonth(hotelId, date))+ "" : "0.00");
         log.info("超时房费本月累计");
         //超时房费上月同期
-        timeoutRate.setLastMonthDay(csffLastMonthDay(hotelId, date) + "");
+        timeoutRate.setLastMonthDay(csffLastMonthDay(hotelId, date).intValue() != 0  ? df.format(csffLastMonthDay(hotelId, date))+"" : "0.00");
         log.info("超时房费上月同期");
         //超时房费本年累计
-        timeoutRate.setYear(csffYear(hotelId, date) + "");
+        timeoutRate.setYear(csffYear(hotelId, date).intValue() !=0 ? df.format(csffYear(hotelId, date))+"":"0.00");
         log.info("超时房费本年累计");
         //超时房费上年同期
-        timeoutRate.setLastYearDay(csffLastYearDay(hotelId, date) + "");
+        timeoutRate.setLastYearDay(csffLastYearDay(hotelId, date).intValue() != 0 ? df.format(csffLastYearDay(hotelId, date))+"":"0.00");
         log.info("超时房费上年同期");
         //超时房费年增长率
         timeoutRate.setInsertRial(isIncrease(csffYear(hotelId, yyyy),csffYear(hotelId, year)));
@@ -415,19 +424,19 @@ public class ManagerDailyService {
 
 
         //夜核房费今日发生
-        nuclearnightRoomcharge.setDay(managerdailyBO1.getNuclearnightRoomcharge()+"");
+        nuclearnightRoomcharge.setDay(managerdailyBO1.getNuclearnightRoomcharge().intValue()!= 0 ? df.format(managerdailyBO1.getNuclearnightRoomcharge())+"" : "0.00");
         log.info("398");
         //夜核房费本月累计
-        nuclearnightRoomcharge.setMonth(yhffMonth(hotelId, date) + "");
+        nuclearnightRoomcharge.setMonth(yhffMonth(hotelId, date).intValue() !=0 ? df.format(yhffMonth(hotelId, date)) + "" : "0.00");
         log.info("401");
         //夜核房费上月同期
-        nuclearnightRoomcharge.setLastMonthDay(yhffLastMonthDay(hotelId, date) + "");
+        nuclearnightRoomcharge.setLastMonthDay(yhffLastMonthDay(hotelId, date).intValue() != 0 ? df.format(yhffLastMonthDay(hotelId, date)) + "":"0.00");
         log.info("404");
         //夜核房费本年累计
-        nuclearnightRoomcharge.setYear(yhffYear(hotelId, date) +"");
+        nuclearnightRoomcharge.setYear(yhffYear(hotelId, date).intValue() != 0 ? df.format(yhffYear(hotelId, date)) +"" : "");
         log.info("407");
         //夜核房费上年同期
-        nuclearnightRoomcharge.setLastYearDay(yhffLastYearDay(hotelId, date)+"");
+        nuclearnightRoomcharge.setLastYearDay(df.format(yhffLastYearDay(hotelId, date))+"");
         log.info("410");
         //夜核房费年增长率
         nuclearnightRoomcharge.setInsertRial(isIncrease(yhffYear(hotelId, yyyy),yhffYear(hotelId, year)));
@@ -435,19 +444,19 @@ public class ManagerDailyService {
 
 
         //赔偿今日发生
-        compensation.setDay(managerdailyBO1.getCompensation()+"");
+        compensation.setDay(df.format(managerdailyBO1.getCompensation())+"");
         log.info("418");
         //赔偿本月累计
-        compensation.setMonth(pcMonth(hotelId, date)+"");
+        compensation.setMonth(df.format(pcMonth(hotelId, date))+"");
         log.info("421");
         //赔偿上月同期
-        compensation.setLastMonthDay(pcLastMonthDay(hotelId, date) + "");
+        compensation.setLastMonthDay(df.format(pcLastMonthDay(hotelId, date)) + "");
         log.info("424");
         //赔偿本年累计
-        compensation.setYear(pcYear(hotelId, date)+"");
+        compensation.setYear(df.format(pcYear(hotelId, date))+"");
         log.info("427");
         //赔偿上年同期
-        compensation.setLastYearDay(pcLastYearDay(hotelId, date) +"");
+        compensation.setLastYearDay(df.format(pcLastYearDay(hotelId, date)) +"");
         log.info("430");
         //赔偿年增长率
         compensation.setInsertRial(isIncrease(pcYear(hotelId, yyyy),pcYear(hotelId, year)));
@@ -455,38 +464,38 @@ public class ManagerDailyService {
 
 
         //会员卡费今日发生
-        membershipFee.setDay(managerdailyBO1.getMembershipFee()+"");
+        membershipFee.setDay(df.format(managerdailyBO1.getMembershipFee())+"");
         log.info("438");
         //会员卡费本月累计
-        membershipFee.setMonth(hykfMonth(hotelId, date)+"");
+        membershipFee.setMonth(df.format(hykfMonth(hotelId, date))+"");
         log.info("441");
         //会员卡费上月同期
-        membershipFee.setLastMonthDay(hykfLastMonthDay(hotelId, date)+"");
+        membershipFee.setLastMonthDay(df.format(hykfLastMonthDay(hotelId, date))+"");
         log.info("444");
         //会员卡费本年累计
-        membershipFee.setYear(hykfYear(hotelId, date)+"");
+        membershipFee.setYear(df.format(hykfYear(hotelId, date))+"");
         log.info("447");
         //会员卡费上年同期
-        membershipFee.setLastYearDay(hykfLastYearDay(hotelId, date)+"");
+        membershipFee.setLastYearDay(df.format(hykfLastYearDay(hotelId, date))+"");
         log.info("450");
         //会员卡费年增长率
         membershipFee.setInsertRial(isIncrease(hykfYear(hotelId, yyyy),hykfYear(hotelId, year)));
         log.info("453");
 
         //商品今日发生
-        goods.setDay(managerdailyBO1.getGoods()+"");
+        goods.setDay(df.format(managerdailyBO1.getGoods())+"");
         log.info("457");
         //商品本月累计
-        goods.setMonth(spMonth(hotelId, date)+"");
+        goods.setMonth(df.format(spMonth(hotelId, date))+"");
         log.info("460");
         //商品上月同期
-        goods.setLastMonthDay(spLastMonthDay(hotelId, date)+"");
+        goods.setLastMonthDay(df.format(spLastMonthDay(hotelId, date))+"");
         log.info("463");
         //商品本年累计
-        goods.setYear(spYear(hotelId, date)+"");
+        goods.setYear(df.format(spYear(hotelId, date))+"");
         log.info("466");
         //商品上年同期
-        goods.setLastYearDay(spLastYearDay(hotelId, date)+"");
+        goods.setLastYearDay(df.format(spLastYearDay(hotelId, date))+"");
         log.info("469");
         //商品年增长率
         goods.setInsertRial(isIncrease(spYear(hotelId, yyyy),spYear(hotelId, year)));
@@ -494,19 +503,19 @@ public class ManagerDailyService {
 
 
         //当天小计
-        subtotal2.setDay(managerdailyBO1.getSubtotal()+"");
+        subtotal2.setDay(df.format(managerdailyBO1.getSubtotal())+"");
         log.info("477");
         //小计本月累计
-        subtotal2.setMonth(xjMonth(hotelId, date)+"");
+        subtotal2.setMonth(df.format(xjMonth(hotelId, date))+"");
         log.info("480");
         //小计上月同期
-        subtotal2.setLastMonthDay(xjLastMonthDay(hotelId, date)+"");
+        subtotal2.setLastMonthDay(df.format(xjLastMonthDay(hotelId, date))+"");
         log.info("483");
         //小计本年累计
-        subtotal2.setYear(xjYear(hotelId, date)+"");
+        subtotal2.setYear(df.format(xjYear(hotelId, date))+"");
         log.info("486");
         //小计上年同期
-        subtotal2.setLastYearDay(xjLastYearDay(hotelId, date)+"");
+        subtotal2.setLastYearDay(df.format(xjLastYearDay(hotelId, date))+"");
         log.info("489");
         //小计年增长率
         subtotal2.setInsertRial(isIncrease(xjYear(hotelId, yyyy),xjYear(hotelId, year)));
@@ -514,19 +523,19 @@ public class ManagerDailyService {
 
         //房费收入分析
         //会员今日
-        members3.setDay(managerdailyBO2.getMembers()+"");
+        members3.setDay(df.format(managerdailyBO2.getMembers())+"");
         log.info("497");
         //会员本月累计
-        members3.setMonth(hyMonth(hotelId,date)+"");
+        members3.setMonth(df.format(hyMonth(hotelId,date))+"");
         log.info("500");
         //会员上月同期
-        members3.setLastMonthDay(hyLastMonthDay(hotelId, date)+"");
+        members3.setLastMonthDay(df.format(hyLastMonthDay(hotelId, date))+"");
         log.info("503");
         //会员本年累计
-        members3.setYear(hyYear(hotelId, date)+"");
+        members3.setYear(df.format(hyYear(hotelId, date))+"");
         log.info("506");
         //会员上年同期
-        members3.setLastYearDay(hyLastYearDay(hotelId, date)+"");
+        members3.setLastYearDay(df.format(hyLastYearDay(hotelId, date))+"");
         log.info("509");
         //会员年增长率
         members3.setInsertRial(isIncrease(hyYear(hotelId, yyyy),hyYear(hotelId, year)));
@@ -534,38 +543,38 @@ public class ManagerDailyService {
 
 
         //散客今日
-        individualTraveler3.setDay(managerdailyBO2.getIndividualTraveler()+"");
+        individualTraveler3.setDay(df.format(managerdailyBO2.getIndividualTraveler())+"");
         log.info("517");
         //散客本月累计
-        individualTraveler3.setMonth(skMonth(hotelId, date)+"");
+        individualTraveler3.setMonth(df.format(skMonth(hotelId, date))+"");
         log.info("520");
         //散客上月同期
-        individualTraveler3.setLastMonthDay(skLastMonthDay(hotelId, date)+"");
+        individualTraveler3.setLastMonthDay(df.format(skLastMonthDay(hotelId, date))+"");
         log.info("523");
         //散客本年累计
-        individualTraveler3.setYear(skYear(hotelId, date)+"");
+        individualTraveler3.setYear(df.format(skYear(hotelId, date))+"");
         log.info("526");
         //散客上年同期
-        individualTraveler3.setLastYearDay(skLastYearDay(hotelId, date)+"");
+        individualTraveler3.setLastYearDay(df.format(skLastYearDay(hotelId, date))+"");
         log.info("529");
         //散客年增长率
         individualTraveler3.setInsertRial(isIncrease(skYear(hotelId, yyyy),skYear(hotelId, year)));
         log.info("532");
 
         //协议单位今日
-        agreementUnit3.setDay(managerdailyBO2.getAgreementUnit()+"");
+        agreementUnit3.setDay(df.format(managerdailyBO2.getAgreementUnit())+"");
         log.info("536");
         //协议单位本月累计
-        agreementUnit3.setMonth(xydwMonth(hotelId, date)+"");
+        agreementUnit3.setMonth(df.format(xydwMonth(hotelId, date))+"");
         log.info("539");
         //协议单位上月同期
-        agreementUnit3.setLastMonthDay(xydwLastMonthDay(hotelId, date)+"");
+        agreementUnit3.setLastMonthDay(df.format(xydwLastMonthDay(hotelId, date))+"");
         log.info("542");
         //协议单位本年累计
-        agreementUnit3.setYear(xydwYear(hotelId,date)+"");
+        agreementUnit3.setYear(df.format(xydwYear(hotelId,date))+"");
         log.info("545");
         //协议单位上年同期
-        agreementUnit3.setLastYearDay(xydwLastYearDay(hotelId, date)+"");
+        agreementUnit3.setLastYearDay(df.format(xydwLastYearDay(hotelId, date))+"");
         log.info("548");
         //协议单位年增长率
         agreementUnit3.setInsertRial(isIncrease(xydwYear(hotelId,yyyy),xydwYear(hotelId,year)));
@@ -573,19 +582,19 @@ public class ManagerDailyService {
 
 
         //直接入住今日
-        enter3.setDay(managerdailyBO2.getEnter()+"");
+        enter3.setDay(df.format(managerdailyBO2.getEnter())+"");
         log.info("556");
         //直接入住本月累计
-        enter3.setMonth(zjrzMonth(hotelId, date)+"");
+        enter3.setMonth(df.format(zjrzMonth(hotelId, date))+"");
         log.info("559");
         //直接入住上月同期
-        enter3.setLastMonthDay(zjrzLastMonthDay(hotelId, date)+"");
+        enter3.setLastMonthDay(df.format(zjrzLastMonthDay(hotelId, date))+"");
         log.info("562");
         //直接入住本年累计
-        enter3.setYear(zjrzYear(hotelId, date)+"");
+        enter3.setYear(df.format(zjrzYear(hotelId, date))+"");
         log.info("565");
         //直接入住上年同期
-        enter3.setLastYearDay(zjrzLastYearDay(hotelId, date)+"");
+        enter3.setLastYearDay(df.format(zjrzLastYearDay(hotelId, date))+"");
         log.info("569");
         //直接入住年增长率
         enter3.setInsertRial(isIncrease(zjrzYear(hotelId, yyyy),zjrzYear(hotelId, year)));
@@ -593,19 +602,19 @@ public class ManagerDailyService {
 
 
         //预约入住今日
-        directBooking3.setDay(managerdailyBO2.getDirectBooking()+"");
+        directBooking3.setDay(df.format(managerdailyBO2.getDirectBooking())+"");
         log.info("576");
         //预约入住本月累计
-        directBooking3.setMonth(yyrzMonth(hotelId, date)+"");
+        directBooking3.setMonth(df.format(yyrzMonth(hotelId, date))+"");
         log.info("579");
         //预约入住上月同期
-        directBooking3.setLastMonthDay(yyrzLastMonthDay(hotelId, date)+"");
+        directBooking3.setLastMonthDay(df.format(yyrzLastMonthDay(hotelId, date))+"");
         log.info("583");
         //预约入住本年累计
-        directBooking3.setYear(yyrzYear(hotelId, date)+"");
+        directBooking3.setYear(df.format(yyrzYear(hotelId, date))+"");
         log.info("585");
         //预约入住上年同期
-        directBooking3.setLastYearDay(yyrzLastYearDay(hotelId, date)+"");
+        directBooking3.setLastYearDay(df.format(yyrzLastYearDay(hotelId, date))+"");
         log.info("588");
         //预约入住年增长率
         directBooking3.setInsertRial(isIncrease(yyrzYear(hotelId, yyyy),yyrzYear(hotelId, year)));
@@ -613,59 +622,57 @@ public class ManagerDailyService {
 
 
         //小计今日
-        subtotal3.setDay(managerdailyBO2.getSubtotal()+"");
+        subtotal3.setDay(df.format(managerdailyBO2.getSubtotal())+"");
         log.info("596");
         //小计本月累计
-        subtotal3.setMonth(xj2Month(hotelId, date)+"");
+        subtotal3.setMonth(df.format(xj2Month(hotelId, date))+"");
         log.info("599");
         //小计上月同期
-        subtotal3.setLastMonthDay(xj2LastMonthDay(hotelId, date)+"");
+        subtotal3.setLastMonthDay(df.format(xj2LastMonthDay(hotelId, date))+"");
         log.info("602");
         //小计本年累计
-        subtotal3.setYear(xj2Year(hotelId, date)+"");
+        subtotal3.setYear(df.format(xj2Year(hotelId, date))+"");
         log.info("605");
         //小计上年同期
-        subtotal3.setLastYearDay(xj2LastYearDay(hotelId, date)+"");
+        subtotal3.setLastYearDay(df.format(xj2LastYearDay(hotelId, date))+"");
         log.info("608");
         //小计年增长率
-        System.err.println("小计年增长率本年"+xj2Year(hotelId, yyyy));
-        System.err.println("小计年增长率去年"+xj2Year(hotelId, year));
         subtotal3.setInsertRial(isIncrease(xj2Year(hotelId, yyyy),xj2Year(hotelId, year)));
 
         //房晚数分析
         //会员今日
-        members4.setDay(managerdailyBO3.getMembers()+"");
+        members4.setDay(df.format(managerdailyBO3.getMembers())+"");
         log.info("617");
         //会员本月累计
-        members4.setMonth(hy2Month(hotelId, date)+"");
+        members4.setMonth(df.format(hy2Month(hotelId, date))+"");
         log.info("620");
         //会员上月同期
-        members4.setLastMonthDay(hy2LastMonthDay(hotelId, date)+"");
+        members4.setLastMonthDay(df.format(hy2LastMonthDay(hotelId, date))+"");
         log.info("623");
         //会员本年累计
-        members4.setYear(hy2Year(hotelId, date)+"");
+        members4.setYear(df.format(hy2Year(hotelId, date))+"");
         log.info("626");
         //会员上年同期
-        members4.setLastYearDay(hy2LastYearDay(hotelId, date)+"");
+        members4.setLastYearDay(df.format(hy2LastYearDay(hotelId, date))+"");
         log.info("629");
         //会员年增长率
         members4.setInsertRial(isIncrease(hy2Year(hotelId, yyyy),hy2Year(hotelId, year)));
         log.info("632");
 
         //散客今日
-        individualTraveler4.setDay(managerdailyBO3.getIndividualTraveler()+"");
+        individualTraveler4.setDay(df.format(managerdailyBO3.getIndividualTraveler())+"");
         log.info("636");
         //散客本月累计
-        individualTraveler4.setMonth(sk2Month(hotelId, date)+"");
+        individualTraveler4.setMonth(df.format(sk2Month(hotelId, date))+"");
         log.info("639");
         //散客上月同期
-        individualTraveler4.setLastMonthDay(sk2LastMonthDay(hotelId, date)+"");
+        individualTraveler4.setLastMonthDay(df.format(sk2LastMonthDay(hotelId, date))+"");
         log.info("642");
         //散客本年累计
-        individualTraveler4.setYear(sk2Year(hotelId, date)+"");
+        individualTraveler4.setYear(df.format(sk2Year(hotelId, date))+"");
         log.info("645");
         //散客上年同期
-        individualTraveler4.setLastYearDay(sk2LastYearDay(hotelId, date)+"");
+        individualTraveler4.setLastYearDay(df.format(sk2LastYearDay(hotelId, date))+"");
         log.info("648");
         //散客年增长率
         individualTraveler4.setInsertRial(isIncrease(sk2Year(hotelId, yyyy),sk2Year(hotelId, year)));
@@ -673,19 +680,19 @@ public class ManagerDailyService {
 
 
         //协议单位今日
-        agreementUnit4.setDay(managerdailyBO3.getAgreementUnit()+"");
+        agreementUnit4.setDay(df.format(managerdailyBO3.getAgreementUnit())+"");
         log.info("656");
         //协议单位本月累计
-        agreementUnit4.setMonth(xydw2Month(hotelId, date)+"");
+        agreementUnit4.setMonth(df.format(xydw2Month(hotelId, date))+"");
         log.info("659");
         //协议单位上月同期
-        agreementUnit4.setLastMonthDay(xydw2LastMonthDay(hotelId, date)+"");
+        agreementUnit4.setLastMonthDay(df.format(xydw2LastMonthDay(hotelId, date))+"");
         log.info("662");
         //协议单位本年累计
-        agreementUnit4.setYear(xydw2Year(hotelId, date)+"");
+        agreementUnit4.setYear(df.format(xydw2Year(hotelId, date))+"");
         log.info("665");
         //协议单位上年同期
-        agreementUnit4.setLastYearDay(xydw2LastYearDay(hotelId, date)+"");
+        agreementUnit4.setLastYearDay(df.format(xydw2LastYearDay(hotelId, date))+"");
         log.info("668");
         //协议单位年增长率
         agreementUnit4.setInsertRial(isIncrease(xydw2Year(hotelId, yyyy),xydw2Year(hotelId, year)));
@@ -693,19 +700,19 @@ public class ManagerDailyService {
 
 
         //直接入住今日
-        enter4.setDay(managerdailyBO3.getEnter()+"");
+        enter4.setDay(df.format(managerdailyBO3.getEnter())+"");
         log.info("676");
         //直接入住本月累计
-        enter4.setMonth(zjrz2Month(hotelId, date)+"");
+        enter4.setMonth(df.format(zjrz2Month(hotelId, date))+"");
         log.info("679");
         //直接入住上月同期
-        enter4.setLastMonthDay(zjrz2LastMonthDay(hotelId, date)+"");
+        enter4.setLastMonthDay(df.format(zjrz2LastMonthDay(hotelId, date))+"");
         log.info("682");
         //直接入住本年累计
-        enter4.setYear(zjrz2Year(hotelId, date)+"");
+        enter4.setYear(df.format(zjrz2Year(hotelId, date))+"");
         log.info("685");
         //直接入住上年同期
-        enter4.setLastYearDay(zjrz2LastYearDay(hotelId, date)+"");
+        enter4.setLastYearDay(df.format(zjrz2LastYearDay(hotelId, date))+"");
         log.info("688");
         //直接入住年增长率
         enter4.setInsertRial(isIncrease(zjrz2Year(hotelId, yyyy),zjrz2Year(hotelId, year)));
@@ -713,19 +720,19 @@ public class ManagerDailyService {
 
 
         //房间预订今日
-        directBooking4.setDay(managerdailyBO3.getDirectBooking()+"");
+        directBooking4.setDay(df.format(managerdailyBO3.getDirectBooking())+"");
         log.info("696");
         //房间预订本月累计
-        directBooking4.setMonth(fjyd2Month(hotelId, date)+"");
+        directBooking4.setMonth(df.format(fjyd2Month(hotelId, date))+"");
         log.info("699");
         //房间预订上月同期
-        directBooking4.setLastMonthDay(fjyd2LastMonthDay(hotelId, date)+"");
+        directBooking4.setLastMonthDay(df.format(fjyd2LastMonthDay(hotelId, date))+"");
         log.info("702");
         //房间预订本年累计
-        directBooking4.setYear(fjyd2Year(hotelId, date)+"");
+        directBooking4.setYear(df.format(fjyd2Year(hotelId, date))+"");
         log.info("705");
         //房间预订上年同期
-        directBooking4.setLastYearDay(fjyd2LastYearDay(hotelId, date)+"");
+        directBooking4.setLastYearDay(df.format(fjyd2LastYearDay(hotelId, date))+"");
         log.info("708");
         //房间预订年增长率
         directBooking4.setInsertRial(isIncrease(fjyd2Year(hotelId, yyyy),fjyd2Year(hotelId, year)));
@@ -733,19 +740,19 @@ public class ManagerDailyService {
 
 
         //小计今日
-        subtotal4.setDay(managerdailyBO3.getSubtotal()+"");
+        subtotal4.setDay(df.format(managerdailyBO3.getSubtotal())+"");
         log.info("716");
         //小计本月累计
-        subtotal4.setMonth(xj3Month(hotelId, date)+"");
+        subtotal4.setMonth(df.format(xj3Month(hotelId, date))+"");
         log.info("719");
         //小计上月同期
-        subtotal4.setLastMonthDay(xj3LastMonthDay(hotelId, date)+"");
+        subtotal4.setLastMonthDay(df.format(xj3LastMonthDay(hotelId, date))+"");
         log.info("722");
         //小计本年累计
-        subtotal4.setYear(xj3Year(hotelId, date)+"");
+        subtotal4.setYear(df.format(xj3Year(hotelId, date))+"");
         log.info("725");
         //小计上年同期
-        subtotal4.setLastYearDay(xj3LastYearDay(hotelId, date)+"");
+        subtotal4.setLastYearDay(df.format(xj3LastYearDay(hotelId, date))+"");
         log.info("728");
         //小计年增长率
         subtotal4.setInsertRial(isIncrease(xj3Year(hotelId, yyyy),xj3Year(hotelId, year)));
@@ -755,19 +762,19 @@ public class ManagerDailyService {
 
         //平均房价分析
         //会员房价今日分析
-        members5.setDay(managerdailyBO4.getMembers()+"");
+        members5.setDay(df.format(managerdailyBO4.getMembers())+"");
         log.info("738");
         //会员本月累计
-        members5.setMonth(hyfj2Month(hotelId, date)+"");
+        members5.setMonth(df.format(hyfj2Month(hotelId, date))+"");
         log.info("741");
         //会员上月同期
-        members5.setLastMonthDay(hyfj2LastMonthDay(hotelId, date)+"");
+        members5.setLastMonthDay(df.format(hyfj2LastMonthDay(hotelId, date))+"");
         log.info("744");
         //会员本年年累计
-        members5.setYear(hyfj2Year(hotelId, date)+"");
+        members5.setYear(df.format(hyfj2Year(hotelId, date))+"");
         log.info("747");
         //会员上年同期
-        members5.setLastYearDay(hyfj2LastYearDay(hotelId, date)+"");
+        members5.setLastYearDay(df.format(hyfj2LastYearDay(hotelId, date))+"");
         log.info("750");
         //会员年增长率
         members5.setInsertRial(isIncrease(hyfj2Year(hotelId, yyyy),hyfj2Year(hotelId, year)));
@@ -775,19 +782,19 @@ public class ManagerDailyService {
 
 
         //散客今日
-        individualTraveler5.setDay(managerdailyBO4.getIndividualTraveler()+"");
+        individualTraveler5.setDay(df.format(managerdailyBO4.getIndividualTraveler())+"");
         log.info("758");
         //散客本月累计
-        individualTraveler5.setMonth(sk3Month(hotelId, date)+"");
+        individualTraveler5.setMonth(df.format(sk3Month(hotelId, date))+"");
         log.info("761");
         //散客上月同期
-        individualTraveler5.setLastMonthDay(sk3LastMonthDay(hotelId, date)+"");
+        individualTraveler5.setLastMonthDay(df.format(sk3LastMonthDay(hotelId, date))+"");
         log.info("764");
         //散客本年年累计
-        individualTraveler5.setYear(sk3Year(hotelId, date)+"");
+        individualTraveler5.setYear(df.format(sk3Year(hotelId, date))+"");
         log.info("767");
         //散客上年同期
-        individualTraveler5.setLastYearDay(sk3LastYearDay(hotelId, date)+"");
+        individualTraveler5.setLastYearDay(df.format(sk3LastYearDay(hotelId, date))+"");
         log.info("770");
         //散客年增长率
         individualTraveler5.setInsertRial(isIncrease(sk3Year(hotelId, yyyy),sk3Year(hotelId, year)));
@@ -795,19 +802,19 @@ public class ManagerDailyService {
 
 
         //协议单位今日
-        agreementUnit5.setDay(managerdailyBO4.getAgreementUnit()+"");
+        agreementUnit5.setDay(df.format(managerdailyBO4.getAgreementUnit())+"");
         log.info("778");
         //协议单位本月累计
-        agreementUnit5.setMonth(xydw3Month(hotelId, date)+"");
+        agreementUnit5.setMonth(df.format(xydw3Month(hotelId, date))+"");
         log.info("781");
         //协议单位上月同期
-        agreementUnit5.setLastMonthDay(xydw3LastMonthDay(hotelId, date)+"");
+        agreementUnit5.setLastMonthDay(df.format(xydw3LastMonthDay(hotelId, date))+"");
         log.info("784");
         //协议单位本年年累计
-        agreementUnit5.setYear(xydw3Year(hotelId, date)+"");
+        agreementUnit5.setYear(df.format(xydw3Year(hotelId, date))+"");
         log.info("787");
         //协议单位上年同期
-        agreementUnit5.setLastYearDay(xydw3LastYearDay(hotelId, date)+"");
+        agreementUnit5.setLastYearDay(df.format(xydw3LastYearDay(hotelId, date))+"");
         log.info("790");
         //协议单位年增长率
         agreementUnit5.setInsertRial(isIncrease(xydw3Year(hotelId, yyyy),xydw3Year(hotelId, year)));
@@ -816,38 +823,38 @@ public class ManagerDailyService {
 
 
         //直接入住今日
-        enter5.setDay(managerdailyBO4.getEnter()+"");
+        enter5.setDay(df.format(managerdailyBO4.getEnter())+"");
         log.info("799");
         //直接入住本月累计
-        enter5.setMonth(zjrz3Month(hotelId, date)+"");
+        enter5.setMonth(df.format(zjrz3Month(hotelId, date))+"");
         log.info("802");
         //直接入住上月同期
-        enter5.setLastMonthDay(zjrz3LastMonthDay(hotelId, date)+"");
+        enter5.setLastMonthDay(df.format(zjrz3LastMonthDay(hotelId, date))+"");
         log.info("805");
         //直接入住本年年累计
-        enter5.setYear(zjrz3Year(hotelId, date)+"");
+        enter5.setYear(df.format(zjrz3Year(hotelId, date))+"");
         log.info("808");
         //直接入住上年同期
-        enter5.setLastYearDay(zjrz3LastYearDay(hotelId, date)+"");
+        enter5.setLastYearDay(df.format(zjrz3LastYearDay(hotelId, date))+"");
         log.info("811");
         //直接入住年增长率
         enter5.setInsertRial(isIncrease(zjrz3Year(hotelId, yyyy),zjrz3Year(hotelId, year)));
         log.info("814");
 
         //房间预订今日
-        directBooking5.setDay(managerdailyBO4.getDirectBooking()+"");
+        directBooking5.setDay(df.format(managerdailyBO4.getDirectBooking())+"");
         log.info("818");
         //房间预订本月累计
-        directBooking5.setMonth(fjyd3Month(hotelId,date)+"");
+        directBooking5.setMonth(df.format(fjyd3Month(hotelId,date))+"");
         log.info("821");
         //房间预订上月同期
-        directBooking5.setLastMonthDay(fjyd3LastMonthDay(hotelId, date)+"");
+        directBooking5.setLastMonthDay(df.format(fjyd3LastMonthDay(hotelId, date))+"");
         log.info("824");
         //房间预定本年年累计
-        directBooking5.setYear(fjyd3Year(hotelId, date)+"");
+        directBooking5.setYear(df.format(fjyd3Year(hotelId, date))+"");
         log.info("827");
         //房间预定上年同期
-        directBooking5.setLastYearDay(fjyd3LastYearDay(hotelId, date)+"");
+        directBooking5.setLastYearDay(df.format(fjyd3LastYearDay(hotelId, date))+"");
         log.info("830");
         //房间预定年增长率
         directBooking5.setInsertRial(isIncrease(fjyd3Year(hotelId, yyyy),fjyd3Year(hotelId, year)));
@@ -855,19 +862,19 @@ public class ManagerDailyService {
 
 
         //小计今日
-        subtotal5.setDay(managerdailyBO4.getSubtotal()+"");
+        subtotal5.setDay(df.format(managerdailyBO4.getSubtotal())+"");
         log.info("838");
         //小计本月累计
-        subtotal5.setMonth(xj4Month(hotelId, date)+"");
+        subtotal5.setMonth(df.format(xj4Month(hotelId, date))+"");
         log.info("841");
         //小计上月同期
-        subtotal5.setLastMonthDay(xj4LastMonthDay(hotelId, date)+"");
+        subtotal5.setLastMonthDay(df.format(xj4LastMonthDay(hotelId, date))+"");
         log.info("844");
         //小计本年年累计
-        subtotal5.setYear(xj4Year(hotelId, date)+"");
+        subtotal5.setYear(df.format(xj4Year(hotelId, date))+"");
         log.info("847");
         //小计上年同期
-        subtotal5.setLastYearDay(xj4LastYearDay(hotelId, date)+"");
+        subtotal5.setLastYearDay(df.format(xj4LastYearDay(hotelId, date))+"");
         log.info("850");
         //小计年增长率
         subtotal5.setInsertRial(isIncrease(xj4Year(hotelId, yyyy),xj4Year(hotelId, year)));
@@ -875,7 +882,7 @@ public class ManagerDailyService {
 
         //出租率分析
         //会员出租率本天
-        members6.setDay(managerdailyBO5.getMembers()+"");
+        members6.setDay(df.format(managerdailyBO5.getMembers())+"");
         log.info("858");
         //本月累计
         //本月会员房数除以本月小计
@@ -899,7 +906,7 @@ public class ManagerDailyService {
 
 
         //获取散客当天出租率
-        individualTraveler6.setDay(managerdailyBO5.getIndividualTraveler()+"");
+        individualTraveler6.setDay(df.format(managerdailyBO5.getIndividualTraveler())+"");
         log.info("880");
         //获取散客本月累计出租率
         individualTraveler6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? sk2Month(hotelId, date).divide(xj3Month(hotelId, date))+"" : "0");
@@ -911,7 +918,7 @@ public class ManagerDailyService {
         individualTraveler6.setYear(xj3Year(hotelId, date).intValue() != 0 ? sk2Year(hotelId, date).divide(xj3Year(hotelId, date))+"" : "0");
         log.info("889");
         //获取上年同期
-        individualTraveler6.setLastYearDay( hyrzLastYearDay(hotelId, date) == null ? "0%":hyrzLastYearDay(hotelId, date).getIndividualTraveler()+"%");
+        individualTraveler6.setLastYearDay( hyrzLastYearDay(hotelId, date) == null ? "0%":hyrzLastYearDay(hotelId, date).getIndividualTraveler()+"100.00%");
         log.info("892");
         //获取年增长路
         individualTraveler6.setInsertRial(isRenta(hotelId, date, yyyy, year));
@@ -919,16 +926,16 @@ public class ManagerDailyService {
 
 
         //获取协议单位当天出租率
-        agreementUnit6.setDay(managerdailyBO5.getAgreementUnit()+"");
+        agreementUnit6.setDay(df.format(managerdailyBO5.getAgreementUnit())+"");
         log.info("900");
         //获取协议单位本月出租率
-        agreementUnit6.setMonth(xj3Month(hotelId, date).intValue() !=0 ? xydw2Month(hotelId, date).divide(xj3Month(hotelId, date))+"%" : "0.00%");
+        agreementUnit6.setMonth(xj3Month(hotelId, date).intValue() !=0 ? xydw2Month(hotelId, date).divide(xj3Month(hotelId, date))+"%" : "100.00%%");
         log.info("903");
         //获取协议单位上月同期
         agreementUnit6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0":hyrzlLastMonthDay(hotelId, date).getAgreementUnit()+"");
         log.info("906");
         //获取上年累计
-        agreementUnit6.setYear(xj3Year(hotelId, date).intValue() != 0 ?xydw2Year(hotelId, date).divide(xj3Year(hotelId, date))+"%" : "0.00%");
+        agreementUnit6.setYear(xj3Year(hotelId, date).intValue() != 0 ?xydw2Year(hotelId, date).divide(xj3Year(hotelId, date))+"%" : "100.00%%");
         log.info("909");
         //获取上年同期
         agreementUnit6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0":hyrzLastYearDay(hotelId, date).getAgreementUnit()+"");
@@ -939,10 +946,10 @@ public class ManagerDailyService {
 
 
         //获取直接入住当天出租率
-        enter6.setDay(managerdailyBO5.getEnter()+"");
+        enter6.setDay(df.format(managerdailyBO5.getEnter())+"");
         log.info("920");
         //获取本月直接入住出租率
-        enter6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? zjrz2Month(hotelId, date).divide(xj3Month(hotelId, date))+"%" : "0.00%");
+        enter6.setMonth(xj3Month(hotelId, date).intValue() != 0 ? zjrz2Month(hotelId, date).divide(xj3Month(hotelId, date))+"%" : "100.00%%");
         log.info("923");
         //获取直接入住上月同期
         enter6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0" :  hyrzlLastMonthDay(hotelId, date).getEnter()+"");
@@ -959,19 +966,19 @@ public class ManagerDailyService {
 
 
         //获取预约入住当天出租率
-        directBooking6.setDay(managerdailyBO5.getDirectBooking()+"");
+        directBooking6.setDay(df.format(managerdailyBO5.getDirectBooking())+"");
         log.info("940");
         //获取预约入住本月出租率
-        directBooking6.setMonth(xj4Month(hotelId, date).intValue() != 0 ? fjyd3Month(hotelId,date).divide(xj4Month(hotelId, date))+"%":"0.00%");
+        directBooking6.setMonth(xj4Month(hotelId, date).intValue() != 0 ? fjyd3Month(hotelId,date).divide(xj4Month(hotelId, date))+"%":"100.00%");
         log.info("943");
         //获取预约入住上月同期
-        directBooking6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.0" : hyrzlLastMonthDay(hotelId, date).getDirectBooking()+"");
+        directBooking6.setLastMonthDay(hyrzlLastMonthDay(hotelId, date) == null ? "0.0" : hyrzlLastMonthDay(hotelId, date).getDirectBooking()+"100.00%");
         log.info("946");
         //获取预约入住上年累计
-        directBooking6.setYear(xj4Year(hotelId, date).intValue() != 0 ? fjyd3Year(hotelId, date).divide(xj4Year(hotelId, date))+"%" : "0.00%");
+        directBooking6.setYear(xj4Year(hotelId, date).intValue() != 0 ? fjyd3Year(hotelId, date).divide(xj4Year(hotelId, date))+"%" : "100.00%");
         log.info("949");
         //获取上年同期
-        directBooking6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0": hyrzLastYearDay(hotelId, date).getDirectBooking()+"");
+        directBooking6.setLastYearDay(hyrzLastYearDay(hotelId, date) == null ? "0": hyrzLastYearDay(hotelId, date).getDirectBooking()+"100.00%");
         log.info("952");
         //获取年增长率
         directBooking6.setInsertRial(isRentayy(hotelId, date, yyyy, year));
@@ -979,7 +986,7 @@ public class ManagerDailyService {
 
         //小计
         //获取今日
-        subtotal6.setDay(managerdailyBO5.getSubtotal()+"");
+        subtotal6.setDay(df.format(managerdailyBO5.getSubtotal())+"");
         log.info("960");
         //获取本月累计
         subtotal6.setMonth( xj3Month(hotelId, date).intValue() != 0 ? xj3Month(hotelId, date).divide(xj3Month(hotelId, date))+"" : "0.00");
@@ -1241,7 +1248,7 @@ public class ManagerDailyService {
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
             System.err.println(managerdailyBO.getGrossrealIncome());
-            n.add(managerdailyBO.getGrossrealIncome());
+             n= n.add(managerdailyBO.getGrossrealIncome());
         }
         System.err.println(n);
         return n;
@@ -1261,7 +1268,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getGrossrealIncome()) ;
+            n = n.add(managerdailyBO.getGrossrealIncome()) ;
         }
         return n;
     }
@@ -1281,7 +1288,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getGrossrealIncome());
+           n = n.add(managerdailyBO.getGrossrealIncome());
         }
         return n;
     }
@@ -1312,7 +1319,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n.add(managerdailyBO.getGrossrealIncome());
+           n = n.add(managerdailyBO.getGrossrealIncome());
         }
         return n;
     }
@@ -1334,7 +1341,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getTotalTurnover());
+            n = n.add( managerdailyBO.getTotalTurnover());
         }
         return n;
     }
@@ -1355,7 +1362,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n.add(managerdailyBO.getTotalTurnover());
+          n =  n.add(managerdailyBO.getTotalTurnover());
         }
         return n ;
     }
@@ -1374,7 +1381,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getTotalTurnover());
+           n =  n.add(managerdailyBO.getTotalTurnover());
         }
         return n;
     }
@@ -1394,7 +1401,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n.add(managerdailyBO.getGrossrealIncome()) ;
+          n =  n.add(managerdailyBO.getGrossrealIncome()) ;
         }
         return n;
     }
@@ -1405,34 +1412,34 @@ public class ManagerDailyService {
      * @param date
      * @return
      */
-    private int ydDay(Integer hotelId, String date){
+    private BigDecimal ydDay(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberOrder();
+             n.add(managerdailyBO.getNumberOrder()) ;
         }
         return n;
     }
 
     //获取上月同期 预订未到房数
-    private int ydLastMonthDay(Integer hotelId, String date){
+    private BigDecimal ydLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = n + managerdailyBO.getNumberOrder();
+            n = n.add( managerdailyBO.getNumberOrder());
         }
         return n ;
     }
@@ -1440,62 +1447,63 @@ public class ManagerDailyService {
     //获取本年累计 预订未到房数
     private BigDecimal ydYear(Integer hotelId, String yyyy){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, yyyy, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return new BigDecimal("0");
+            return n;
         }
-        int n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n  = n + managerdailyBO.getNumberOrder();
+            n  = n.add(managerdailyBO.getNumberOrder()) ;
         }
-        return BigDecimal.valueOf((int)n);
+        return n;
     }
 
 
     //获取上年同期 预订未到房数
-    private double ydLastYearDay(Integer hotelId, String date){
+    private BigDecimal ydLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n  = n + managerdailyBO.getNumberOrder();
+            n  = n.add( managerdailyBO.getNumberOrder());
         }
         return n;
     }
 
 
     //计算本月累计维修房数
-    private int wxMonth(Integer hotelId, String date){
+    private BigDecimal wxMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMaintenanceroomNumber();
+            n = n.add(managerdailyBO.getMaintenanceroomNumber());
         }
         return n;
     }
 
     //计算上月同期维修房数
-    private int wxLastMonthDay(Integer hotelId, String date){
+    private BigDecimal wxLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMaintenanceroomNumber();
+            n = n.add(managerdailyBO.getMaintenanceroomNumber());
         }
         return n ;
     }
@@ -1503,118 +1511,128 @@ public class ManagerDailyService {
     //计算本年累计维修房数
     private BigDecimal wxYear(Integer hotelId, String yyyy){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, yyyy, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return new BigDecimal("0");
+            return n;
         }
-        int n = 0;
+
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMaintenanceroomNumber();
+            n = n.add(managerdailyBO.getMaintenanceroomNumber());
         }
-        return BigDecimal.valueOf((int)n);
+        return n;
     }
 
     //上年同期维修房数
-    private int wxLastYearDay(Integer hotelId, String date){
+    private BigDecimal wxLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getMaintenanceroomNumber();
+            n = n.add(managerdailyBO.getMaintenanceroomNumber());
         }
         return n;
     }
 
     //获取本月累计门店锁房数
-    private int sfMonth(Integer hotelId, String date){
+    private BigDecimal sfMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberlockedStores();
+            n = n.add(managerdailyBO.getNumberlockedStores());
         }
         return n;
     }
+
+
     //获取上月同期门店锁房数
-    private int sfLastMonthDay(Integer hotelId, String date){
+    private BigDecimal sfLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberlockedStores();
+            n = n.add(managerdailyBO.getNumberlockedStores());
         }
         return n ;
     }
+
+
     //获取本年累计门店锁房数
     private BigDecimal sfYear(Integer hotelId, String date){
+        System.err.println(date);
 
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return new BigDecimal("0");
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberlockedStores();
+            System.err.println(managerdailyBO.getNumberlockedStores());
+            n = n.add(managerdailyBO.getNumberlockedStores());
         }
-        return BigDecimal.valueOf((int)n);
+        System.err.println("本年累计门店锁房数"+n);
+        return n;
     }
+
     //获取上年同期门店锁房数
-    private int sfLastYearDay(Integer hotelId, String date){
+    private BigDecimal sfLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberlockedStores();
+            n = n.add(managerdailyBO.getNumberlockedStores());
         }
         return n;
     }
 
     //获取本月可出租房数
-    private int zfMonth(Integer hotelId, String date){
+    private BigDecimal zfMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberroomsAvailablerent();
+            n = n.add(managerdailyBO.getNumberroomsAvailablerent());
         }
         return n;
     }
+
     //获取上月同期可出租房数
-    private int zfLastMonthDay(Integer hotelId, String date){
+    private BigDecimal zfLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberroomsAvailablerent();
+            n = n.add(managerdailyBO.getNumberroomsAvailablerent());
         }
         return n ;
     }
@@ -1622,60 +1640,61 @@ public class ManagerDailyService {
     //获取本年累计可出租房数
     private BigDecimal zfYear(Integer hotelId, String date){
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return new BigDecimal("0");
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberroomsAvailablerent();
+            n = n.add(managerdailyBO.getNumberroomsAvailablerent());
         }
-        return BigDecimal.valueOf((int)n);
+        return n;
     }
+
     //获取上年同期可出租房数
-    private int zfLastYearDay(Integer hotelId, String date){
+    private BigDecimal zfLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getNumberroomsAvailablerent();
+            n = n.add(managerdailyBO.getNumberroomsAvailablerent());
         }
         return n;
     }
 
 
     //获取本月累计客房总数
-    private int kfMonth(Integer hotelId, String date){
+    private BigDecimal kfMonth(Integer hotelId, String date){
         //当月第一天
         Date date1 = getFirstDayDateOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         //当月最后一天
         Date dete2 = getLastDayOfMonth(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList(hotelId, new SimpleDateFormat("yyyy-MM-dd").format(date1),
                 new SimpleDateFormat("yyyy-MM-dd").format(dete2), 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTotalnumberGuestrooms();
+            n = n.add(managerdailyBO.getTotalnumberGuestrooms());
         }
         return n;
     }
 
     //获取上月同期客房总数
-    private int kfLastMonthDay(Integer hotelId, String date){
+    private BigDecimal kfLastMonthDay(Integer hotelId, String date){
         //获取上个月的今天
         String date1 = isDate(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, date1, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTotalnumberGuestrooms();
+            n = n.add(managerdailyBO.getTotalnumberGuestrooms());
         }
         return n ;
     }
@@ -1684,27 +1703,27 @@ public class ManagerDailyService {
     private BigDecimal kfYear(Integer hotelId, String date){
 
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryYear(hotelId, date, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return new BigDecimal("0");
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTotalnumberGuestrooms();
+            n = n.add(managerdailyBO.getTotalnumberGuestrooms());
         }
-        return BigDecimal.valueOf((int)n);
+        return n;
     }
 
     //获取上年同期客房总数
-    private int kfLastYearDay(Integer hotelId, String date){
+    private BigDecimal kfLastYearDay(Integer hotelId, String date){
         //获取上一年的今日
         String year = isYear(DateUtils.parseDate(date, "yyyy-MM-dd"));
         List<ManagerdailyBO> managerdailyBOS = managerdailyBOMapper.queryManagerdailyList2(hotelId, year, 1);
+        BigDecimal n = new BigDecimal("0");
         if(CollectionUtils.isEmpty(managerdailyBOS)){
-            return 0;
+            return n;
         }
-        int n = 0;
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = managerdailyBO.getTotalnumberGuestrooms();
+            n = n.add(managerdailyBO.getTotalnumberGuestrooms());
         }
         return n;
     }
@@ -1722,7 +1741,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCashDisbursements()) ;
+           n =  n.add(managerdailyBO.getCashDisbursements()) ;
         }
         return n;
     }
@@ -1737,7 +1756,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getCashDisbursements());
+            n = n.add( managerdailyBO.getCashDisbursements());
         }
         return n ;
     }
@@ -1750,7 +1769,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCashDisbursements()) ;
+            n = n.add(managerdailyBO.getCashDisbursements()) ;
         }
         return n;
     }
@@ -1765,7 +1784,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCashDisbursements()) ;
+           n =  n.add(managerdailyBO.getCashDisbursements()) ;
         }
         return n;
     }
@@ -1783,7 +1802,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getCash());
+           n =  n.add( managerdailyBO.getCash());
         }
         return n;
     }
@@ -1798,7 +1817,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCash()) ;
+           n =  n.add(managerdailyBO.getCash()) ;
         }
         return n ;
     }
@@ -1811,7 +1830,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCash()) ;
+           n =  n.add(managerdailyBO.getCash()) ;
         }
         return n;
     }
@@ -1826,7 +1845,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCash()) ;
+            n = n.add(managerdailyBO.getCash()) ;
         }
         return n;
     }
@@ -1846,7 +1865,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getThroughoutDayrent());
+           n =  n.add( managerdailyBO.getThroughoutDayrent());
         }
         return n;
     }
@@ -1861,7 +1880,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getThroughoutDayrent()) ;
+            n = n.add(managerdailyBO.getThroughoutDayrent()) ;
         }
         return n ;
     }
@@ -1874,7 +1893,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getThroughoutDayrent()) ;
+           n =  n.add(managerdailyBO.getThroughoutDayrent()) ;
         }
         return n;
     }
@@ -1890,7 +1909,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getThroughoutDayrent()) ;
+            n = n.add(managerdailyBO.getThroughoutDayrent()) ;
         }
         return n;
     }
@@ -1909,7 +1928,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getRateAdjustment()) ;
+           n =  n.add(managerdailyBO.getRateAdjustment()) ;
         }
         return n;
     }
@@ -1925,7 +1944,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getRateAdjustment()) ;
+           n =  n.add(managerdailyBO.getRateAdjustment()) ;
         }
         return n ;
     }
@@ -1938,7 +1957,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getRateAdjustment()) ;
+           n =  n.add(managerdailyBO.getRateAdjustment()) ;
         }
         return n;
     }
@@ -1953,7 +1972,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getRateAdjustment()) ;
+            n = n.add(managerdailyBO.getRateAdjustment()) ;
         }
         return n;
     }
@@ -1972,7 +1991,7 @@ public class ManagerDailyService {
              return n;
          }
          for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-             n.add(managerdailyBO.getHourRate()) ;
+             n = n.add(managerdailyBO.getHourRate()) ;
          }
          return n;
      }
@@ -1987,7 +2006,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getHourRate()) ;
+            n = n.add(managerdailyBO.getHourRate()) ;
         }
         return n ;
     }
@@ -2000,7 +2019,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getHourRate());
+           n =  n.add( managerdailyBO.getHourRate());
         }
         return n;
     }
@@ -2015,7 +2034,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getHourRate());
+           n =  n.add( managerdailyBO.getHourRate());
         }
         return n;
     }
@@ -2034,7 +2053,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getTimeoutRate()) ;
+            n = n.add(managerdailyBO.getTimeoutRate()) ;
         }
         return n;
     }
@@ -2049,7 +2068,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getTimeoutRate()) ;
+            n = n.add(managerdailyBO.getTimeoutRate()) ;
         }
         return n ;
     }
@@ -2062,7 +2081,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getTimeoutRate());
+           n =  n.add( managerdailyBO.getTimeoutRate());
         }
         return n;
     }
@@ -2077,7 +2096,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getTimeoutRate()) ;
+            n = n.add(managerdailyBO.getTimeoutRate()) ;
         }
         return n;
     }
@@ -2098,7 +2117,7 @@ public class ManagerDailyService {
             return n;
         }
     for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-        n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
+        n = n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
     }
     return n;
   }
@@ -2112,7 +2131,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
+           n =  n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
         }
         return n ;
     }
@@ -2125,7 +2144,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
+           n =  n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
         }
         return n;
     }
@@ -2140,7 +2159,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
+           n =  n.add(managerdailyBO.getNuclearnightRoomcharge()) ;
         }
         return n;
     }
@@ -2160,7 +2179,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCompensation()) ;
+          n =  n.add(managerdailyBO.getCompensation()) ;
         }
         return n;
     }
@@ -2175,7 +2194,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCompensation()) ;
+          n =   n.add(managerdailyBO.getCompensation()) ;
         }
         return n ;
     }
@@ -2188,7 +2207,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getCompensation()) ;
+           n =  n.add(managerdailyBO.getCompensation()) ;
         }
         return n;
     }
@@ -2222,7 +2241,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembershipFee()) ;
+            n = n.add(managerdailyBO.getMembershipFee()) ;
         }
         return n;
     }
@@ -2237,7 +2256,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembershipFee()) ;
+            n = n.add(managerdailyBO.getMembershipFee()) ;
         }
         return n ;
     }
@@ -2251,7 +2270,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembershipFee()) ;
+            n = n.add(managerdailyBO.getMembershipFee()) ;
         }
         return n;
     }
@@ -2266,7 +2285,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembershipFee()) ;
+            n = n.add(managerdailyBO.getMembershipFee()) ;
         }
         return n;
     }
@@ -2285,7 +2304,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getGoods()) ;
+            n  = n.add(managerdailyBO.getGoods()) ;
         }
         return n;
     }
@@ -2301,7 +2320,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getGoods()) ;
+            n = n.add(managerdailyBO.getGoods()) ;
         }
         return n ;
     }
@@ -2314,7 +2333,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getGoods()) ;
+            n = n.add(managerdailyBO.getGoods()) ;
         }
         return n;
     }
@@ -2329,7 +2348,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getGoods()) ;
+            n = n.add(managerdailyBO.getGoods()) ;
         }
         return n;
     }
@@ -2352,7 +2371,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -2367,7 +2386,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal());
+            n = n.add(managerdailyBO.getSubtotal());
         }
         return n ;
     }
@@ -2380,7 +2399,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -2395,7 +2414,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -2414,7 +2433,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+            n = n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -2429,7 +2448,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+            n = n.add(managerdailyBO.getMembers()) ;
         }
         return n ;
     }
@@ -2442,7 +2461,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+            n = n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -2458,7 +2477,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+            n = n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -2478,7 +2497,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+            n = n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -2493,7 +2512,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+            n = n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n ;
     }
@@ -2506,7 +2525,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+            n = n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -2521,7 +2540,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+            n = n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -2540,7 +2559,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getAgreementUnit()) ;
+            n = n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
@@ -2555,7 +2574,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getAgreementUnit()) ;
+           n =  n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n ;
     }
@@ -2568,7 +2587,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getAgreementUnit()) ;
+            n = n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
@@ -2583,7 +2602,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getAgreementUnit());
+            n = n.add( managerdailyBO.getAgreementUnit());
         }
         return n;
     }
@@ -2605,7 +2624,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+            n = n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -2620,7 +2639,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getEnter());
+            n = n.add( managerdailyBO.getEnter());
         }
         return n ;
     }
@@ -2633,7 +2652,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+            n = n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -2648,7 +2667,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+            n = n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -2667,7 +2686,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -2682,7 +2701,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+           n=  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n ;
     }
@@ -2695,7 +2714,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+           n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -2710,7 +2729,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -2728,7 +2747,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+           n =  n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -2743,7 +2762,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getDirectBooking());
+           n =  n.add( managerdailyBO.getDirectBooking());
         }
         return n ;
     }
@@ -2756,7 +2775,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+           n =  n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -2771,7 +2790,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+            n = n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -2790,7 +2809,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+            n = n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -2805,7 +2824,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getMembers());
+            n = n.add( managerdailyBO.getMembers());
         }
         return n ;
     }
@@ -2818,7 +2837,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+           n =  n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -2833,7 +2852,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+           n =  n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -2852,7 +2871,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+           n = n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -2867,7 +2886,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+          n =   n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n ;
     }
@@ -2880,7 +2899,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getIndividualTraveler());
+           n =  n.add( managerdailyBO.getIndividualTraveler());
         }
         return n;
     }
@@ -2895,7 +2914,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+           n =  n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -2916,7 +2935,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+           n =  n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -2931,7 +2950,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getIndividualTraveler());
+          n =   n.add( managerdailyBO.getIndividualTraveler());
         }
         return n ;
     }
@@ -2944,7 +2963,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+           n =  n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -2960,7 +2979,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+           n =  n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -2979,7 +2998,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getEnter());
+           n =  n.add( managerdailyBO.getEnter());
         }
         return n;
     }
@@ -2994,7 +3013,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+           n =  n.add(managerdailyBO.getEnter()) ;
         }
         return n ;
     }
@@ -3007,7 +3026,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+           n =  n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -3023,7 +3042,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+          n =   n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -3046,7 +3065,7 @@ public class ManagerDailyService {
             return n;
         }
     for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-        n.add(managerdailyBO.getDirectBooking()) ;
+       n =  n.add(managerdailyBO.getDirectBooking()) ;
     }
     return n;
 }
@@ -3061,7 +3080,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+         n =    n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n ;
     }
@@ -3074,7 +3093,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+           n =  n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -3089,7 +3108,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+           n =  n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -3113,7 +3132,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+           n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -3129,7 +3148,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+           n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n ;
     }
@@ -3142,7 +3161,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+          n =   n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -3157,7 +3176,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+           n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -3176,7 +3195,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+           n =  n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -3191,7 +3210,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+            n = n.add(managerdailyBO.getMembers()) ;
         }
         return n ;
     }
@@ -3204,7 +3223,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+            n = n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -3219,7 +3238,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getMembers()) ;
+            n = n.add(managerdailyBO.getMembers()) ;
         }
         return n;
     }
@@ -3239,7 +3258,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getIndividualTraveler());
+            n = n.add( managerdailyBO.getIndividualTraveler());
         }
         return n;
     }
@@ -3254,7 +3273,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+           n =  n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n ;
     }
@@ -3267,7 +3286,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+            n = n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -3282,7 +3301,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getIndividualTraveler()) ;
+            n = n.add(managerdailyBO.getIndividualTraveler()) ;
         }
         return n;
     }
@@ -3305,7 +3324,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getAgreementUnit()) ;
+           n =  n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
@@ -3320,7 +3339,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getAgreementUnit()) ;
+           n =  n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n ;
     }
@@ -3333,7 +3352,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add( managerdailyBO.getAgreementUnit());
+            n = n.add( managerdailyBO.getAgreementUnit());
         }
         return n;
     }
@@ -3348,7 +3367,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getAgreementUnit()) ;
+            n = n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
@@ -3373,7 +3392,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+           n =  n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -3389,7 +3408,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter());
+           n =  n.add(managerdailyBO.getEnter());
         }
         return n ;
     }
@@ -3402,7 +3421,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+           n =  n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -3417,7 +3436,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getEnter()) ;
+           n =  n.add(managerdailyBO.getEnter()) ;
         }
         return n;
     }
@@ -3442,7 +3461,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+            n = n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -3457,7 +3476,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+           n =  n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n ;
     }
@@ -3470,7 +3489,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+           n =  n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -3485,7 +3504,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getDirectBooking()) ;
+            n = n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -3509,7 +3528,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -3525,7 +3544,7 @@ public class ManagerDailyService {
         }
 
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getSubtotal()) ;
         }
         return n ;
     }
@@ -3539,7 +3558,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+           n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -3553,7 +3572,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n.add(managerdailyBO.getSubtotal()) ;
+           n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -3587,8 +3606,11 @@ public class ManagerDailyService {
      * @return
      */
     public String isIncrease(BigDecimal year1, BigDecimal year2){
-        if(year2.intValue() == 0){
-            return "0%";
+        System.err.println(year1);
+        System.err.println(year2);
+        if(year2.intValue() ==  0){
+            System.err.println("返100.00%");
+            return "100.00%";
         }
         BigDecimal n = (year1.subtract(year2)).divide(year2).multiply(new BigDecimal("100"));
 
@@ -3622,11 +3644,11 @@ public class ManagerDailyService {
         //添加营业状况统计
         managerdailyBO.setGrossrealIncome(orderTotalPrice(hotelId, startTime, endTime));//总实际收入
         managerdailyBO.setTotalTurnover(queryConsumption(hotelId, startTime, endTime));//总营业额
-        managerdailyBO.setNumberOrder(numberOrder(hotelId, startTime, endTime));//预定未到房数
-        managerdailyBO.setMaintenanceroomNumber(maintenanceroomNumber(hotelId));//计算维修房数
-        managerdailyBO.setNumberlockedStores(numberlockedStores(hotelId, startTime, endTime));//计算锁房数
-        managerdailyBO.setNumberroomsAvailablerent(numberroomsAvailablerent(hotelId, startTime, endTime));//计算可租房数
-        managerdailyBO.setTotalnumberGuestrooms(totalnumberGuestrooms(hotelId));//计算客房总数
+        managerdailyBO.setNumberOrder(BigDecimal.valueOf(numberOrder(hotelId, startTime, endTime)));//预定未到房数
+        managerdailyBO.setMaintenanceroomNumber(BigDecimal.valueOf(maintenanceroomNumber(hotelId)));//计算维修房数
+        managerdailyBO.setNumberlockedStores(BigDecimal.valueOf(numberlockedStores(hotelId, startTime, endTime)));//计算锁房数
+        managerdailyBO.setNumberroomsAvailablerent(BigDecimal.valueOf(numberroomsAvailablerent(hotelId, startTime, endTime)));//计算可租房数
+        managerdailyBO.setTotalnumberGuestrooms(BigDecimal.valueOf(totalnumberGuestrooms(hotelId)));//计算客房总数
         managerdailyBO.setCashDisbursements(cashDisbursements());//计算现金支出
         managerdailyBO.setCash(cash(hotelId, startTime, endTime));//计算现金收入
         managerdailyBO.setDailyType(1);
