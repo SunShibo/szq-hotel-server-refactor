@@ -150,7 +150,16 @@
                 {field: 'operator', title: '收银员', sort: true, align: 'center'},
                 {field: 'orderNumber', title: '订单号', sort: true, align: 'center'}
                 , {field: 'project', title: '项目', align: 'center'}
-                , {field: 'channel', title: '渠道', align: 'center'}
+                , {
+                    field: 'channel', title: '渠道', align: 'center', templet: function (data) {
+                        switch (data.channel) {
+                            case 'subscribe':
+                                return '预约订单';
+                            case 'directly':
+                                return '直接入住';
+                        }
+                    }
+                }
                 , {field: 'passengerSource', title: '客源', align: 'center'}
                 , {field: 'OTA', title: 'OTA', align: 'center'}
                 , {field: 'roomName', title: '房号', align: 'center'}
