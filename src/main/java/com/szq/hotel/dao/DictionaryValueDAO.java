@@ -17,4 +17,6 @@ public interface DictionaryValueDAO {
     Integer updDic(DictionaryValueBO dictionaryBO);
     //查
     List<DictionaryValueBO> getDIcs(@Param("kid") Integer kid);
+
+    Integer getIdByValue(String value);
 }

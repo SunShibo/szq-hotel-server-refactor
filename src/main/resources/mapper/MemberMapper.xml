@@ -229,7 +229,7 @@ WHERE id = #{id}
     <select id="getValueId" resultType="java.lang.Integer" parameterType="java.lang.String">
         SELECT va.`id` FROM `hm_dictionaries_value` va
         LEFT JOIN hm_dictionaries_key ke ON va.kid = ke.id
-        WHERE ke.id = 1 AND va.`value` = #{value}
+        WHERE ke.`name`='证件类型' AND va.`value` = #{value}
     </select>
 
     <!--查询会员消费明细-->

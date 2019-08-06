@@ -38,6 +38,8 @@ public class MemberService {
     private IntegralRecordService integralRecordService;
     @Resource
     private HotelService hotelService;
+    @Resource
+    private DictionaryValueService dictionaryValueService;
 
     /*
         新增会员
@@ -301,13 +303,11 @@ public class MemberService {
             //查询会员级别是否
             memberLevelBO = memberLevelService.selectMemberLevelByName(member.get("memberLevelName").toString());
             if (memberLevelBO==null){
-                 result = "会员级别不存在";
-                break;
+                return  "会员级别不存在";
             }
             Integer i = memberDAO.getValueId(member.get("certificateType").toString());
             if (i==null){
-                result = "证件类型不存在";
-                break;
+                return  "证件类型不存在";
             }
 
         }
@@ -331,7 +331,11 @@ public class MemberService {
                 memberBO.setPhone(member.get("phone").toString());
                 memberBO.setName(member.get("name").toString());
                 memberBO.setBirthday(member.get("birthday").toString());
-                memberBO.setCertificateType(member.get("certificateType").toString());//证件类型//todo
+                String certificateType= member.get("certificateType").toString();//证件类型//todo
+                //查询证件类型id
+                Integer valueId = dictionaryValueService.getIdByValue(certificateType);
+                memberBO.setCertificateType(valueId.toString());
+
                 memberBO.setCertificateNumber(member.get("certificateNumber").toString());
                 String gender = member.get("gender").toString();
                 if ("男".equals(gender)){

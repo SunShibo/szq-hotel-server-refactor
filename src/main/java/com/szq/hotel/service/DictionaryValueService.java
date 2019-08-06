@@ -32,4 +32,7 @@ public class DictionaryValueService {
     public List<DictionaryValueBO> getDIcs(Integer kid){
         return dictionaryValueDAO.getDIcs(kid);
     }
+    public Integer getIdByValue(String value){
+        return dictionaryValueDAO.getIdByValue(value);
+    }
 }
