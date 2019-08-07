@@ -248,7 +248,7 @@ public class MemberController extends BaseCotroller {
      * @param response
      */
     @RequestMapping("/updateGetMemberCardNumber")
-    public void updateGetMemberCardNumber(Integer memberCardLevelId,String certificateNumber,HttpServletRequest request,HttpServletResponse response){
+    public void updateGetMemberCardNumber(Integer memberCardLevelId,Integer memberId,HttpServletRequest request,HttpServletResponse response){
 
         try {
 
@@ -264,7 +264,7 @@ public class MemberController extends BaseCotroller {
                 return ;
             }
             //参数验证
-            if (memberCardLevelId == null||StringUtils.isEmpty(certificateNumber)){
+            if (memberCardLevelId == null||memberId==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
@@ -272,16 +272,7 @@ public class MemberController extends BaseCotroller {
             }
 
 
-
-            MemberBO memberBO2 = memberService.selectMemberByCerNumber(certificateNumber);
-
-            if (memberBO2==null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000204"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
-            MemberCardBO memberCardBO = memberCardService.getCardByMemberId(memberBO2.getId());
+            MemberCardBO memberCardBO = memberCardService.getCardByMemberId(memberId);
             if (memberCardBO!=null){
                 if (memberCardLevelId==memberCardBO.getMemberLevelId()){
                     Map<String,Object> map = new HashMap<String, Object>();
