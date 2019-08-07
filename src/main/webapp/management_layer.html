@@ -118,17 +118,18 @@
         }
 
         function formatObj(data, dataName) {
-            data[dataName].day = data[dataName].day ? toDecimal(parseInt(data[dataName].day)) : '0.00';
-            data[dataName].month = data[dataName].month ? toDecimal(parseInt(data[dataName].month)) : '0.00';
-            data[dataName].year = data[dataName].year ? toDecimal(parseInt(data[dataName].year)) : '0.00';
-            data[dataName].lastYear = data[dataName].lastYear ? toDecimal(parseInt(data[dataName].lastYear)) : '0.00';
-            data[dataName].lastYearMonth = data[dataName].lastYearMonth ? toDecimal(parseInt(data[dataName].lastYearMonth)) : '0.00';
-            data[dataName].lastYearDay = data[dataName].lastYearDay ? toDecimal(parseInt(data[dataName].lastYearDay == '' ? 0 : data[dataName].lastYearDay)) : '0.00';
+            data[dataName].day = data[dataName].day ? data[dataName].day : '0.00';
+            data[dataName].month = data[dataName].month ? data[dataName].month : '0.00';
+            data[dataName].year = data[dataName].year ? data[dataName].year : '0.00';
+            data[dataName].lastYear = data[dataName].lastYear ? data[dataName].lastYear : '0.00';
+            data[dataName].lastYearMonth = data[dataName].lastYearMonth ? data[dataName].lastYearMonth : '0.00';
+            data[dataName].lastYearDay = data[dataName].lastYearDay ? data[dataName].lastYearDay : '0.00';
             return data[dataName];
         }
 
 
         function formatDataInfo(data) {
+            debugger
             data['roomSum'].name = '客房总数';
             data['roomLateSum'].name = '房晚数';
             data['personLateSum'].name = '人晚数';
