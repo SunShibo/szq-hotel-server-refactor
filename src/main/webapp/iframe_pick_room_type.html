@@ -103,7 +103,6 @@
             var _ids = [];
 			for(var i=0;i<t.length;i++){
 			    if(t[i].value!=0){
-			        //debugger;
 			        var _typeid=t[i].name.split("_")[1];
                     var _value =Number(t[i].value);
 					if(_value==0){continue}
@@ -195,7 +194,6 @@
                     }
                 });
             })(jQuery)
-			// debugger;
 			if(!pickRoomTypeData) return ;
 			var _d = {};
 			for(var i=0;i<pickRoomTypeData.length;i++){

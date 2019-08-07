@@ -235,7 +235,6 @@
         if(flag){
             if(checkTypeByReShow(d)){
                 $("#houseType"+d.houseTypeId).append( '<span class="pick-fj pick-selected" id="roomId'+d.roomId+'">房间</span>');
-                // debugger;
                 $("#selNum"+d.houseTypeId).text($("#houseType"+d.houseTypeId).find("span").length)
             }else{
                 $("#selList").append([ '<div class="prc-row" id="houseWP',
@@ -263,7 +262,6 @@
 
             if(checkType(d)){
                 $("#houseType"+d.houseTypeId).append( '<span class="pick-fj pick-selected" id="roomId'+d.roomId+'">房间</span>');
-                // debugger;
                 $("#selNum"+d.houseTypeId).text($("#houseType"+d.houseTypeId).find("span").length)
             }else{
                 $("#selList").append([ '<div class="prc-row" id="houseWP',
@@ -417,7 +415,6 @@
                 }
             });
         })(jQuery)
-        // debugger;
         var _d = {};
         if(!pickRoomTypeData){
 			var o = {};

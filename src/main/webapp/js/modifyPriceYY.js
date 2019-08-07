@@ -1,7 +1,6 @@
 //预约房间修改价格
 clearModifyPrice();
 function modifyPrice() {
-    // debugger;
     var price = '';
     if(sRooms.length==0){
         return;
@@ -127,7 +126,6 @@ function parModifyPrice() {
         }else{
             $("#totalPrice").text(_total+"/"+_v.split('/')[1]);
         }
-// debugger;
         tableObj.reload({data:JSON.parse(JSON.stringify(sRooms))})
         state.selRow=[];
     }

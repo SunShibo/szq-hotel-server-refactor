@@ -61,7 +61,6 @@
                     id: id
                 },
                 success: function (data) {
-                    // debugger;
                     $("#time").html(DateToLStr(new Date()));
                     $("#addr").text(data.data.site);
                     $("#phone").text(data.data.phone);
