@@ -81,6 +81,7 @@
                 $(this).siblings('select[name="certificateId"]').val(1);
                 $(this).siblings('input[name="credentialNo"]').val(CVR_IDCard.CardNo);
                 $(this).siblings('input[name="address"]').val(CVR_IDCard.Address);
+                $(this).siblings('select[name="gender"]').val(CVR_IDCard.Sex);
                 layui.form.render();
             }
         });
@@ -110,7 +111,7 @@
                 '<input  name="address" />',
                 '<input  name="phoneNumber"  />',
                 '<input  name="remark"  type="text" value="" />',
-                '<select name="gender" lay-ignore>',
+                '<select name="gender"  lay-ignore>',
                 '<option value="2" ></option>',
                 '<option value="男" >男</option>',
                 '<option value="女">女</option>',

@@ -20,7 +20,7 @@
 
         $(function () {
             tallyInfo = JSON.parse(sessionStorage.getItem('orderTallyInfo'));
-            console.log(tallyInfo)
+            // console.log(tallyInfo)
             setTimeout(function () {
                 tab.reload({data: tallyInfo});
             }, 200)

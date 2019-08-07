@@ -353,8 +353,8 @@
                         }
 
                         d.OrderChildJSON = JSON.stringify(checkinData);
-                        console.log("以下是直接入住参数")
-                        console.info(d)
+                        // console.log("以下是直接入住参数")
+                        // console.info(d)
                         var index = layer.load(1,{time:10*1000});
                         $.ajax({
                             data: d,
@@ -559,8 +559,8 @@
             state:'yes'//直接入住
         }
         localStorage.zjrzxf = JSON.stringify(selectRoomData);
-        console.log('下面是预约入住选房的数据')
-        console.log(selectRoomData	)
+        // console.log('下面是预约入住选房的数据')
+        // console.log(selectRoomData	)
         layer.open({
             area: ['820px', '520px'],
             type: 2,

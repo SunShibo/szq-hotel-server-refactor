@@ -90,6 +90,9 @@
             , priceRevisionData = [], channelData = [];
 
         $(function () {
+            //绑定Activex标签
+            IDCardReaderInfo($(document.body));
+
             orderId = getUrl('id');
             orderChildId = getUrl('orderChildId');
             checkIn = JSON.parse(sessionStorage.getItem('checkIn'));
@@ -106,6 +109,22 @@
             setTimeout(function () {
                 getData();
             }, 500);
+        });
+
+        //扫描身份证
+        $(document).on('click', '.IDCardReader', function () {
+            var IDCardReaderData = IDCardReader();
+            if(!!IDCardReaderData){
+                //获取下标
+                var num = $(this).data('num');
+                //赋值
+                $('#name' + num).val(IDCardReaderData.Name);
+                $('#certificateType' + num).val(1);
+                $('#certificateNumber' + num).val(IDCardReaderData.CardNo);
+                $('#gender' + num).val(IDCardReaderData.Sex);
+                //重新渲染
+                layui.form.render();
+            }
         });
 
         //离店时间
@@ -236,19 +255,19 @@
             num++;
             $b.append(
                 ['<tr data-num="' + num + '">',
-                    '<td><input class="layui-input" required lay-verify="required" autocomplete="off" name="name' + num + '"  /></td>',
-                    '<td><select name="certificateType' + num + '">',
+                    '<td><input class="layui-input" required lay-verify="required" autocomplete="off" id="name' + num + '" name="name' + num + '"  /></td>',
+                    '<td><select name="certificateType' + num + '" id="certificateType' + num + '">',
                     selectDom,
                     '</select></td>',
-                    '<td><input class="layui-input" required lay-verify="required" autocomplete="off" name="certificateNumber' + num + '"/></td>',
-                    '<td><input class="layui-input" required lay-verify="required" autocomplete="off"  name="phone' + num + '"/></td>',
-                    '<td><input class="layui-input" autocomplete="off"  name="remark' + num + '"  type="text" value="" /></td>',
-                    '<td><select class="gender" name="gender' + num + '">',
+                    '<td><input class="layui-input" required lay-verify="required" autocomplete="off" id="certificateNumber' + num + '" name="certificateNumber' + num + '"/></td>',
+                    '<td><input class="layui-input" required lay-verify="required" autocomplete="off" name="phone' + num + '"/></td>',
+                    '<td><input class="layui-input" autocomplete="off" name="remark' + num + '"  type="text" value="" /></td>',
+                    '<td><select class="gender" id="gender' + num + '" name="gender' + num + '">',
                     '<option value=""></option>',
                     '<option value="男" selected>男</option>',
                     '<option value="女">女</option>',
                     '</select></td>',
-                    '<td><a class="layui-btn layui-btn-xs IDCardReader">识别证件</a>',
+                    '<td><a class="layui-btn layui-btn-xs IDCardReader" data-num="' + num + '">识别证件</a>',
                     '<button class="layui-btn layui-btn-danger layui-btn-xs del-btn">删除</button></td>',
                     '</tr>'].join("")
             );
@@ -264,11 +283,11 @@
             for (var i = 1; i <= num; i++) {
                 $b.append(
                     ['<tr data-num="' + i + '">',
-                        '<td><input class="layui-input" required lay-verify="required" autocomplete="off" name="name' + i + '"  value="' + d[i - 1].name + '" /></td>',
-                        '<td><select name="certificateType' + i + '">',
+                        '<td><input class="layui-input" required lay-verify="required" autocomplete="off" id="name' + num + '"  name="name' + i + '"  value="' + d[i - 1].name + '" /></td>',
+                        '<td><select name="certificateType' + i + '" id="certificateType' + num + '">',
                         dealSelect(d[i - 1].certificateType),
                         '</select></td>',
-                        '<td><input class="layui-input" required lay-verify="required" autocomplete="off" name="certificateNumber' + i + '" value="' + d[i - 1].certificateNumber + '"/></td>',
+                        '<td><input class="layui-input" required lay-verify="required" autocomplete="off" id="certificateNumber' + num + '" name="certificateNumber' + i + '" value="' + d[i - 1].certificateNumber + '"/></td>',
                         '<td><input class="layui-input" required lay-verify="required" autocomplete="off" name="phone' + i + '" value="' + d[i - 1].phone + '"/></td>',
                         '<td><input class="layui-input" autocomplete="off" name="remark' + i + '" value="' + d[i - 1].remark.trim() + '"/></td>',
                         '<td><select id="gender' + i + '" name="gender' + i + '">',
@@ -276,8 +295,7 @@
                         '<option value="男">男</option>',
                         '<option value="女">女</option>',
                         '</select></td>',
-                        '<td><a class="layui-btn layui-btn-xs IDCardReader">识别证件</a>',
-                        // '<button class="layui-btn layui-btn-normal layui-btn-xs update-btn" data-id="' + d[i-1].id + '">修改</button>',
+                        '<td><a class="layui-btn layui-btn-xs IDCardReader" data-num="' + i + '">识别证件</a>',
                         '<a class="layui-btn layui-btn-danger layui-btn-xs del-btn" data-id="' + i + '">删除</a></td>',
                         '</tr>'].join("")
                 );
@@ -305,31 +323,6 @@
             return str;
         }
 
-        //清空表单
-        function clearForm1() {
-            $(this).siblings('input[name="name"]').val('');
-            $(this).siblings('input[class="gender"]').val(1);
-            $(this).siblings('select[name="certificateType"]').val(1);
-            $(this).siblings('input[name="credentialNo"]').val('');
-            $(this).siblings('input[name="phoneNumber"]').val('');
-            $(this).siblings('input[name="remark"]').val('');
-            layui.form.render();
-        }
-
-        //扫描身份证
-        $(document).on('click', '.IDCardReader', function () {
-            var CVR_IDCard = IDCardReader();
-            if (!!CVR_IDCard) {
-                clearForm1(this);
-                $(this).siblings('input[name="name"]').val(CVR_IDCard.Name);
-                $(this).siblings('input[class="gender"]').val(CVR_IDCard.sex);
-                $(this).siblings('select[name="certificateType"]').val(1);
-                $(this).siblings('input[name="credentialNo"]').val(CVR_IDCard.CardNo);
-                $(this).siblings('input[name="address"]').val(CVR_IDCard.Address);
-                layui.form.render();
-            }
-        });
-
 
         form.on('submit(formSubmit)', function (data) {
             // console.info(data);
@@ -338,8 +331,8 @@
             //获取修改后的同来人信息
             obj.checkInPersonJson = JSON.stringify(formSubmit(data.field));
             obj.everyDayRoomPrice = JSON.stringify(formPrice(data.field));
-            console.log('↓↓↓↓↓↓');
-            console.log(obj);
+            // console.log('↓↓↓↓↓↓');
+            // console.log(obj);
 
             $.ajax({
                 url: api.updateCheckInData,

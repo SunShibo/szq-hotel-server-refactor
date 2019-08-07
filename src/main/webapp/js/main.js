@@ -226,9 +226,10 @@ layui.config({
 }).extend({
     formSelects: 'formSelects-v4.min'
 });
-layui.use(['jquery', 'element'], function () {
+layui.use(['jquery', 'element', 'form'], function () {
     $ = layui.$;
     element = layui.element;
+    form = layui.form;
     $(document).on("click", '.outLogin', function () {
         $.ajax({
             url: api.logout,
@@ -276,11 +277,16 @@ layui.use(['jquery', 'element'], function () {
                 certificateNumber: CVR_IDCard.CardNo
             });
             //设置会员详情
-            setUserInfo(CVR_IDCard.CardNo, function (res) {
-                $('.integral').text(res.integralMoney);
-                $('.prepaidCard').text(res.storeValue);
-                //显示会员详情
-                $('.optional_1').show();
+            setUserInfo(CVR_IDCard.CardNo, function (res, success) {
+                debugger
+                if(success){
+                    $('.integral').text(res.integralMoney);
+                    $('.prepaidCard').text(res.storeValue);
+                    //显示会员详情
+                    $('.optional_1').show();
+                }else {
+                    layui.layer.alert(res, {title: '提示信息', icon: 5});
+                }
             });
         }
     });
@@ -904,7 +910,6 @@ function setUserInfo(ID, callback) {
                 callback(res.data, res.success);
             } else {
                 callback(res.errMsg, res.success);
-                return;
             }
         }
     })
@@ -1013,10 +1018,10 @@ function visibilityChange() {
     var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
     var onVisibilityChange = function () {
         if (!document[hiddenProperty]) {
-            console.log('页面激活');
+            // console.log('页面激活');
             location.reload();
         } else {
-            console.log('页面非激活');
+            // console.log('页面非激活');
         }
     };
     document.addEventListener(visibilityChangeEvent, onVisibilityChange);

@@ -456,8 +456,8 @@
                         }
 
                         d.OrderChildJSON = JSON.stringify(checkinData);
-                        console.log("以下是预约入住参数")
-                        console.info(d)
+                        // console.log("以下是预约入住参数")
+                        // console.info(d)
                         var index = layer.load(1,{time:10*1000});
                         $.ajax({
                             data: d,
@@ -610,8 +610,8 @@
             orderId:yuyueData.id
         }
         localStorage.yyrzxf = JSON.stringify(selectRoomData);
-        console.log('下面是预约入住选房的数据')
-        console.log(selectRoomData	)
+        // console.log('下面是预约入住选房的数据')
+        // console.log(selectRoomData	)
         layer.open({
             area: ['820px', '520px'],
             type: 2,
@@ -629,7 +629,7 @@
         }
         var arr = state.selRow;
         layer.confirm('确定稍后入住？', function (index) {
-            console.info(state.selRow)
+            // console.info(state.selRow)
             // return;
             for(var j=0;j<arr.length;j++){
                 var obj = arr[j];
@@ -1105,7 +1105,7 @@
     //处理选房条件发生变化的逻辑
     function dealChange() {
         return;
-        console.log(currSel.inWay)
+        // console.log(currSel.inWay)
         currSel.inWay = state.roomType;
         if(!currSel.cnId)delete currSel.cnId
         if(!currSel.memberRankId)delete currSel.memberRankId
@@ -1131,7 +1131,7 @@
             ids.push(sRooms[i].roomId)
         }
         currSel.roomIds = ids.join(",")
-        console.info(currSel)
+        // console.info(currSel)
         // return;
         var index = layer.load(1,{time:10*1000});
         $.ajax({
@@ -1219,7 +1219,7 @@
                     } else {
                         document.getElementById("source").value = '协议单位';
                     }
-                    console.log(d[i]);
+                    // console.log(d[i]);
                     document.getElementById("channel").value = d[i].name;
                     break;
                 }

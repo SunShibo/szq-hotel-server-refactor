@@ -134,7 +134,7 @@
             var tr = obj.tr; //获得当前行 tr 的DOM对象
 
             if (layEvent === 'detail') { //查看
-                console.log(JSON.stringify(data));
+                // console.log(JSON.stringify(data));
                 localStorage.setItem('member' + data.id, JSON.stringify(data));
                 window.open('member_info.html?id=' + data.id+ '&date=' + Date.now());
             }

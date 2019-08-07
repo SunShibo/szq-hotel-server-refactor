@@ -160,7 +160,7 @@
                 if (!allck) {
                     $(".o-reight .layui-table-header").find("input[name='layTableCheckbox'][lay-filter='layTableAllChoose']").each(
                         function () {
-                            console.log($(this).attr("disabled", 'disabled').next())
+                            // console.log($(this).attr("disabled", 'disabled').next())
                             $(this).attr("disabled", 'disabled').next().removeClass("layui-form-checked layui-unselect");
                             form.render('checkbox');
                         });
@@ -238,7 +238,7 @@
                 dataType: 'json',
                 data: {orderChildId: id},
                 success: function (res) {
-                    console.log(res);
+                    // console.log(res);
                     var data = res.data;
                     //计算合计及显示收款、消费项   和显示房态、订单状态
                     priceInfo({

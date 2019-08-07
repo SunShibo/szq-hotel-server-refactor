@@ -128,7 +128,7 @@
                 clearForm();
                 $('#name').val(CVR_IDCard.Name);
                 $('#birthday').val(formatDate(CVR_IDCard.Born));
-                $('#gender').val(CVR_IDCard.Sex === '男'? 'man' : 'woman');
+                $('#gender').val(CVR_IDCard.Sex === '男' ? 'man' : 'woman');
                 $('#certificateType').val(1);
                 $('#certificateNumber').val(CVR_IDCard.CardNo);
                 $('#address').val(CVR_IDCard.Address);
@@ -166,7 +166,7 @@
             if (flag) {
                 // delete formData.birthday;
                 // sessionStorage.addMemberInfo = JSON.stringify(formData);
-                $.getJSON(api.getCardNoByLeaveId + $("#memberLevelId").val() + "&memberId=" + getUrl('id'), function (rs) {
+                $.getJSON(api.getCardNoByLeaveId + $("#memberLevelId").val() + "&phone=" + data.field.phone + '&certificateNumber=' + data.field.certificateNumber, function (rs) {
                     if (!rs.success) {
                         layer.alert(rs.errMsg);
                         return false;
@@ -190,8 +190,7 @@
                             success: function (res) {
                                 if (res.success) {
                                     showMsg('添加成功', 1, false);
-                                    no();
-                                }else {
+                                } else {
                                     showMsg(res.errMsg, 2, false);
                                 }
                             }
@@ -204,7 +203,7 @@
                         layer.alert(rs.errMsg);
                         return false;
                     }
-                    console.log(rs);
+                    // console.log(rs);
                     if (rs.data.money !== 0) {
                         parent.layer.open({
                             area: ['520px', '320px'],
@@ -217,7 +216,7 @@
                         formData.money = rs.data.monye;
                         formData.payType = 'cash';
                         formData.id = getUrl('id');
-                        console.log(formData);
+                        // console.log(formData);
                         $.ajax({
                             url: api.updateMember,
                             type: 'POST',
@@ -226,7 +225,7 @@
                             success: function (res) {
                                 if (res.success) {
                                     showMsg(res.data, 1, false);
-                                    no();
+                                    closeWin();
                                 } else {
                                     showMsg(res.errMsg, 2, false);
                                 }
@@ -244,7 +243,7 @@
             var d = JSON.parse(localStorage.getItem('member' + getUrl('id')));
             var obj = {};
             for (var i in d) {
-                if (d[i] == null||i==='certificateType') continue;
+                if (d[i] == null || i === 'certificateType') continue;
 
                 if (i == 'birthday') {
                     if (!d[i]) ;
@@ -252,13 +251,13 @@
                         elem: '#' + i
                         , value: d[i]
                     });
-                }else if(i === 'certificateTypeId'){
+                } else if (i === 'certificateTypeId') {
                     obj['certificateType'] = d.certificateTypeId;
                 } else {
                     obj[i] = d[i];
                 }
             }
-            console.log(obj);
+            // console.log(obj);
             form.val('form', obj);
             form.render();
         }

@@ -45,7 +45,7 @@
                     roomName: data.field.roomNum
                 },
                 success: function (rs) {
-                    console.log(rs);
+                    // console.log(rs);
                     if (rs.success) {
                         sessionStorage.setItem('tallyInfo', JSON.stringify(rs.data));
                         parent.layer.open({

@@ -138,9 +138,9 @@
 
         //监听提交
         form.on('submit(formData)', function (data) {
-            console.log(data.field);
+            // console.log(data.field);
             var roomInfo = formatData(data.field);
-            console.log(roomInfo);
+            // console.log(roomInfo);
             $.ajax({
                 url: api.updatePriceAll,
                 type: 'POST',
@@ -181,7 +181,7 @@
                     roomIds: roomId
                 },
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     if (data.success) {
                         showMsg('修改成功', 1, true);
                     } else {
@@ -265,7 +265,7 @@
             if (index !== -1) {
                 numArr.splice(index, 1);//删除当前下标的num
             }
-            console.log(numArr);
+            // console.log(numArr);
             if (start) {
                 startTime.splice(checkArrayId(startTime, start), 1);
             }

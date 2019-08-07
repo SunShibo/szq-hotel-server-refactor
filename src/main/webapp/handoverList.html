@@ -121,7 +121,7 @@
         //监听表格复选框选择
         table.on('checkbox(handoverList)', function (obj) {
             var checkStatus = table.checkStatus('handoverList'), data = checkStatus.data;
-            console.log(data);
+            // console.log(data);
             mathArr = data;
         });
 
@@ -138,7 +138,7 @@
             }
             sessionStorage.setItem('handover', JSON.stringify(obj));
             parent.location.href = 'handover.html?s=2';
-            console.log(obj);
+            // console.log(obj);
         });
 
         //表格操作按钮

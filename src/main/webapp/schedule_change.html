@@ -489,7 +489,7 @@
 
             }
             d.OrderChildJSON =  JSON.stringify(sRooms);
-            console.info(d)
+            // console.info(d)
 
             var index = layer.load(1,{time:10*1000});
 
@@ -585,8 +585,8 @@
             orderId:yuyueData.id
         }
         localStorage.yyxf = JSON.stringify(selectRoomData);
-        console.log('下面是预约选房查询条件的数据')
-        console.log(selectRoomData	)
+        // console.log('下面是预约选房查询条件的数据')
+        // console.log(selectRoomData	)
         //询问框
         layer.confirm('选房型还是选房间？', {
             btn: ['房型','房间'] //按钮
@@ -646,8 +646,8 @@
     function parSelectRoomType(v,t) {
         pickRoomTypeData = t;
         sRooms = [].concat.apply([],v)
-        console.info("选房型获取了如下数据↓")
-        console.info(sRooms)
+        // console.info("选房型获取了如下数据↓")
+        // console.info(sRooms)
         calcPrice();
     }
 
@@ -655,8 +655,8 @@
         pickRoomTypeData = t;
         sRooms1 = JSON.parse(JSON.stringify(v));
         sRooms = productRoomS(v);//处理房间数据，改成和房型数据统一
-        console.info("选房间后获取了如下数据↓")
-        console.info(sRooms)
+        // console.info("选房间后获取了如下数据↓")
+        // console.info(sRooms)
         calcPrice();
 
     }

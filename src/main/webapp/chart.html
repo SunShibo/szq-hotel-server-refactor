@@ -352,7 +352,7 @@
         }
     });
     var dom = document.getElementById("container111");
-    console.log(document.body.clientHeight);
+    // console.log(document.body.clientHeight);
     // if(document.body.clientHeight)
     dom.style.height = document.body.clientHeight * 0.75 + 'px';
     var myChart = echarts.init(dom);
@@ -366,7 +366,7 @@
             show: true,
             showDelay: 100,
             formatter: function (p, t, callback) {
-                console.log(p);
+                // console.log(p);
                 var str = ['<h3>' + p[0].axisValue + '</h3>'];
                 for (var i = 0; i < p.length; i++) {
                     if (p[i].seriesName.indexOf("总数") > -1) {

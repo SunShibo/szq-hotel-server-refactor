@@ -82,7 +82,7 @@
                 aBool = strReadResult.getItem(0);
                 aStr = strReadResult.getItem(1);
                 if (aBool == 1) {
-                    console.log("物理写卡成功,卡号是：" + aStr);
+                    // console.log("物理写卡成功,卡号是：" + aStr);
                     $.getJSON('/roomInformationController/gaicardinperson?r=' + Date.now() + '&idNumber=' + cn + '&roomId=' + ri + "&cardstatusAttribute=1", function (rs) {
 
                         if (!rs.success) {

@@ -272,7 +272,7 @@
     function Send(orgstr) {
         try {
             MSComm1.Output = orgstr;
-            console.info("发送数据到pos机：" + orgstr);
+            // console.info("发送数据到pos机：" + orgstr);
         } catch (ex) {
             alert(ex.message);
         }
@@ -306,8 +306,8 @@
             cid: __allForm.cid
         }
         pd = $.extend({}, pd, _data);
-        console.log("最终提交数据如下")
-        console.info(pd);
+        // console.log("最终提交数据如下")
+        // console.info(pd);
 
         var index = layer.load(1,{time:10*1000});
         $.ajax({

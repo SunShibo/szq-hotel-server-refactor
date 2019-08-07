@@ -71,7 +71,7 @@
                 dataType: "JSON",
                 url: '/order/getPayInfo',
                 success: function (rs) {
-                    console.log(rs.data)
+                    // console.log(rs.data)
                     $("#deposit").val(getUrl('totalPrice'))
                     payer = rs.data;
                     setSelectData(rs.data)
@@ -123,7 +123,7 @@
                     break;
                 }
             }
-            console.log(data.field)
+            // console.log(data.field)
                 var index = layer.load(1, {time: 10 * 1000});
                 $.ajax({
                     data: data.field,
