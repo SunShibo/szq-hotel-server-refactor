@@ -63,7 +63,7 @@ public class CheckOrderState {
     /**
      * 每天4点滚房费
      */
-    @Scheduled(cron= "0 0 4 * * ?")
+    @Scheduled(cron= "30 59 3 * * ?")
     public void nightAuditor() {
             log.info("start  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             List<RoomRateBO> roomRateBOS = childOrderService.queryOrderChild();
