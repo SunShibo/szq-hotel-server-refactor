@@ -183,7 +183,6 @@
             var price = [];
             var _str = '';
             for(var i in r){
-                // debugger;
                 if(i.split('/').length>2&&i.indexOf('y')==-1){
                     price.push({
                         time:new Date(i).getTime(),
@@ -238,7 +237,6 @@
         rsd.map(function (c,i) {
             var _o={roomTypeId:c['roomTypeId'],roomTypeName:c['roomTypeName']};
             $(".rti"+c['roomTypeId']).each(function () {
-                // debugger;
                 _o[this.dataset['date']]=this.value;
                 _o['y'+this.dataset['date']] = this.dataset['price'];
             })

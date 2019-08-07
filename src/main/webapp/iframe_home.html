@@ -174,7 +174,6 @@
 
         $(function () {
             id = parseInt(getUrl('id'));
-            // debugger
             state = getUrl('state');
             status = getUrl('status');
             maintain = getUrl('maintain');
@@ -399,7 +398,6 @@
             /*
              * 天数 每循环一次为一天
              */
-            // debugger
             for (var i = 0; i < 15; i++) {
                 var timestamp = new Date(data[i].startDate.replace(/-/g, "/"));
                 var month = timestamp.getMonth() + 1 < 10 ? "0" + (timestamp.getMonth() + 1) : timestamp.getMonth() + 1;

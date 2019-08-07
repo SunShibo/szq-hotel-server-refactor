@@ -607,11 +607,17 @@ public class OrderService {
         if (orderChildBO == null) {
             return null;
         }
+        //全天房 离店时间在凌晨6点前还应该-1
         Date endTime = orderChildBO.getPracticalDepartureTime() == null ? orderChildBO.getEndTime() : orderChildBO.getPracticalDepartureTime();
-
         Long minute = DateUtils.getQuotMinute(endTime, orderChildBO.getStartTime());
-        //全天房 离店时间在凌晨5点还应该-1
-        if (minute > 4 * 60 && simp.format(endTime).equals(simp.format(currDate))) {
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTime(endTime);
+        int hourEnd = calendarEnd.get(calendarEnd.HOUR_OF_DAY);
+        if(minute > 4 * 60 &&hourEnd<6){
+            calendarEnd.add(Calendar.DATE, -1);
+        }
+        //全天房最后一天查看
+        if (minute > 4 * 60 && simp.format(calendarEnd.getTime()).equals(simp.format(currDate))) {
             currDate = DateUtils.getAppointDate(currDate, -1);
         }
         Calendar calendar = Calendar.getInstance();
@@ -672,8 +678,15 @@ public class OrderService {
         }
         //如果子订单传过来 修改离店时间 修改房间备注
         if (orderChildId != null && !orderChildId.equals("")) {
+            //修改每日房价
+            if (everyDayRoomPrice != null && !everyDayRoomPrice.equals("")) {
+                List<EverydayRoomPriceBO> list = JsonUtils.getJSONtoList(everyDayRoomPrice, EverydayRoomPriceBO.class);
+                for (EverydayRoomPriceBO everydayRoomPriceBO : list) {
+                    everydayRoomPriceDAO.updEverydayRoomPrice(everydayRoomPriceBO);
+                }
+            }
+
             //续租时间 天数
-            System.out.println("orderChildId" + orderChildId);
             OrderChildBO oldOrderChild = orderDAO.getOrderChildById(orderChildId);
             if (oldOrderChild == null) {
                 return;
@@ -693,8 +706,6 @@ public class OrderService {
 
             Date oldEndTime = this.getHotelDate(endTime);
 
-            System.err.println("看这个" + simpleDateFormat.format(newEndTime));
-            System.err.println("看这个" + simpleDateFormat.format(oldEndTime));
             Long day = DateUtils.getQuot(simpleDateFormat.parse(simpleDateFormat.format(newEndTime)), simpleDateFormat.parse(simpleDateFormat.format(oldEndTime)));
 
             //全天房续住
@@ -716,9 +727,8 @@ public class OrderService {
                     everydayRoomPriceDAO.addEverydayRoomPrice(everydayRoomPriceBO);
                 }
             } else {
-                //小时房续住
-                //没多住就直接改价
-                if (day > 0) {
+                //小时房续住 如果续住不超过一天直接手动改价去吧
+                if (day > 1) {
                     //计算这天的房价
                     //获取预约人 获取预约人会员折扣 计算房价
                     OrderBO orderBO = orderDAO.getOrderById(oldOrderChild.getOrderId());
@@ -735,7 +745,7 @@ public class OrderService {
                     BigDecimal roomMoney = new BigDecimal(roomTypeBO.getBasicPrice());
 
                     //计算多住几天
-                    for (int i = 1; i <= day; i++) {
+                    for (int i = 2; i <= day; i++) {
                         EverydayRoomPriceBO everydayRoomPriceBO = new EverydayRoomPriceBO();
                         everydayRoomPriceBO.setOrderChildId(orderChildId);
                         everydayRoomPriceBO.setMoney(roomMoney.multiply(discount));
@@ -752,21 +762,19 @@ public class OrderService {
             orderChildBO.setId(orderChildId);
             orderChildBO.setRemark(remark);
             //修改实际离店时间
+            System.err.println("entTime"+simpleDateFormat.format(entTime));
             orderChildBO.setPracticalDepartureTime(entTime);
             //判断 是否续租超过一天
             //获取离店时间是哪号 获取续住的离店时间是哪号
             Calendar calendar2 = Calendar.getInstance();
-            calendar2.setTime(oldOrderChild.getEndTime());
-            int hour2 = calendar2.get(Calendar.HOUR_OF_DAY);
-            if (hour2 <= 6) {
-                calendar2.add(Calendar.DATE, -1);
-            }
+            calendar2.setTime(oldEndTime);
             int oldCheckOutDay = calendar2.get(Calendar.DATE);
             int newCheckOutDay = calendar.get(Calendar.DATE);
 
             if (newCheckOutDay - oldCheckOutDay > 0) {
                 orderChildBO.setEndTime(entTime);
             }
+            System.err.println("======orderChildBO"+orderChildBO.getPracticalDepartureTime());
             orderDAO.updOrderChild(orderChildBO);
 
             //修改房态
@@ -793,13 +801,7 @@ public class OrderService {
                 }
             }
 
-            //修改每日房价
-            if (everyDayRoomPrice != null && !everyDayRoomPrice.equals("")) {
-                List<EverydayRoomPriceBO> list = JsonUtils.getJSONtoList(everyDayRoomPrice, EverydayRoomPriceBO.class);
-                for (EverydayRoomPriceBO everydayRoomPriceBO : list) {
-                    everydayRoomPriceDAO.updEverydayRoomPrice(everydayRoomPriceBO);
-                }
-            }
+
         }
 
     }
@@ -921,7 +923,7 @@ public class OrderService {
         map.put("id", orderChildBO.getRoomId());
         map.put("state", Constants.INTHE.getValue());
         RoomBO oldRoomBO = roomService.selectByPrimaryKey(orderChildOld.getRoomId());
-        map.put("remark", "由" + oldRoomBO + "房换入");
+        map.put("remark", "由" + oldRoomBO.getRoomName() + "房换入");
         map.put("userId", userId);
         roomService.updateroomMajorState(map);
         //修改房间 房型
@@ -1485,7 +1487,6 @@ public class OrderService {
 
     /**
      * 验证这个房间或者房型  是否可以续租或者入住 是否会与预约中的房间房型发生冲突
-     *
      * @param roomId               房间id 没选房间可以传null
      * @param roomType             房型id
      * @param endTime              离店时间

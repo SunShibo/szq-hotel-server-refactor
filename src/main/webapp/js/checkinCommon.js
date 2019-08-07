@@ -83,7 +83,6 @@ function getModifyPriceData(days) {
     if(!time){
         time = DateToLStr(new Date())
     }
-    // debugger;
     if(new Date(time).getHours()<6){
         //如果6点之前，时间取前一天
         time = addDate(new Date(time),-1)

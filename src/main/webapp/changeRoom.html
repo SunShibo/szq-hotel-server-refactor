@@ -121,7 +121,6 @@
 			var arr = [];
             var rs = JSON.parse(localStorage.modifyPriceChangeRoom)[0];
             var sendData = JSON.parse(JSON.stringify(rrr));
-            // debugger;
             if(rs['basicPrice']){
                 //表示没有修改过价格
 				for(var i=0;i<sendData.length;i++){
@@ -133,7 +132,6 @@
                 }
             }else{
                 //修改过价格
-                // debugger;
                 for(var i=0;i<sendData.length;i++) {
                     var arr = [];
                     for (var b in rs) {

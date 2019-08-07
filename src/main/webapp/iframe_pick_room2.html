@@ -127,7 +127,6 @@
     });
     function yes(){
         for(var i=0;i<seleted.length;i++){
-            // debugger;
             if(!seleted[i]['roomId']){
                 seleted[i]['roomId'] = seleted[i]['id']+"";
             }
@@ -318,10 +317,8 @@
 
     }
     function checkSel(d) {
-        // debugger;
         var dd = [].concat.apply([],seleted);
         for(var i=0;i<dd.length;i++){
-            // debugger;
             if(dd[i].id == d.id||dd[i].roomName == d.roomName) {
                 return "pick-jf-selected";
                 break;
@@ -331,7 +328,6 @@
     function dealReShow() {//处理已经选择房间回写
         var d  = [].concat.apply([],seleted);
 
-        // debugger;
         $("#selList").empty();
         tempSel = [];
         if(!d.length)return;

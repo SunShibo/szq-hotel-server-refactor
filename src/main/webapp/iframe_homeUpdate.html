@@ -114,7 +114,7 @@
             , type: 'datetime'
             , format: 'yyyy/MM/dd HH:mm:ss'
             , value: checkIn.endTime ? new Date(checkIn.endTime.time) : ''
-            , min: DateToLStr5(new Date()) + '14:00:00'
+            , min: checkIn.endTime.time
         });
 
         //初始化表单数据

@@ -276,7 +276,6 @@
 
         //参数是某间房---everydayRoomPriceBOS---得到每间房屋每天的价格
         function getRoomPriceData(v) {
-            // debugger;
             var o = JSON.parse(JSON.stringify(yuyueData.orderChildBOS));
             var sr  = sRooms;
             var n = [];
@@ -359,11 +358,6 @@
                         flag = false;
                     }
                 }
-
-            //预定信息中没有对应的数据
-            if(flag){
-                debugger;
-            }
             return n;
         }
         function getPersonData(v) {
@@ -439,7 +433,6 @@
                     if (!rs.success) {
                         layer.alert(rs.errMsg)
                     }else{
-                        // debugger;
                         var checkinData = getCheckinData();
                         for(var i=0;i<checkinData.length;i++){
                             for(var j=0;j<rs.data.length;j++){
@@ -743,7 +736,6 @@
                 if (!rs.success) {
                     layer.alert(rs.errMsg)
                 }else{
-                    // debugger;
                     for(var i=0;i<sRooms.length;i++){
                         for(var j=0;j<rs.data.length;j++){
                             if(sRooms[i]['roomTypeId']== rs.data[j]['roomTypeId']){
