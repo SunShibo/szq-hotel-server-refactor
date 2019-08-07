@@ -273,17 +273,16 @@ layui.use(['jquery', 'element'], function () {
         if (!!CVR_IDCard) {
             clearIDForm(form, 'formData');
             form.val('formData', {
-                IDCard: CVR_IDCard.CardNo
+                certificateNumber: CVR_IDCard.CardNo
             });
             //设置会员详情
             setUserInfo(CVR_IDCard.CardNo, function (res) {
                 $('.integral').text(res.integralMoney);
                 $('.prepaidCard').text(res.storeValue);
+                //显示会员详情
                 $('.optional_1').show();
             });
         }
-        //显示会员详情
-        $('.optional_1').show();
     });
 
     renderMenu($, element);

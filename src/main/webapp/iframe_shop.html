@@ -109,13 +109,13 @@
             }
         });
 
-        form.verify({
-            IDcard: function (value, item) { //value：表单的值、item：表单的DOM对象
-                if (flag && !new RegExp(IDREG).test(value)) {
-                    return '请输入正确的身份证号码';
-                }
-            }
-        });
+        // form.verify({
+        //     IDcard: function (value, item) { //value：表单的值、item：表单的DOM对象
+        //         if (flag && !new RegExp(IDREG).test(value)) {
+        //             return '请输入正确的身份证号码';
+        //         }
+        //     }
+        // });
 
         //监听挂账按钮提交
         form.on('submit(tally)', function (data) {
@@ -146,7 +146,7 @@
         });
 
 
-    })
+    });
 
 
     function Receive1(dataInfo) {
