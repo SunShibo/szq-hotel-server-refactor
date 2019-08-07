@@ -497,46 +497,15 @@
             var CVR_IDCard = IDCardReader();
             if(!!CVR_IDCard){
                 clearForm();
-                var birthday = formatDate(CVR_IDCard.Born);
-                form.val('data', {
-                    name: CVR_IDCard.Name,
-                    certificateId: 1,
-                    credentialNo: CVR_IDCard.CardNo,
-                    gender: CVR_IDCard.Sex,
-                    birthday: birthday,
-                    nation: CVR_IDCard.Nation,
-                    address: CVR_IDCard.Address,
-                });
+                $("#orderPlacer").val(CVR_IDCard.Name);
+                $("#IDNumber").val(CVR_IDCard.CardNo);
                 $("#image").prop('src', 'data:image/jpeg;base64,' + CVR_IDCard.Picture);
-                // var _i = layer.load();
-                var url1 = api.yueCheckIn;//预约
-                // 查询
-                var credentialNo = document.getElementById("credentialNo").value;
-                // querySaleInfo(credentialNo)
+                var credentialNo = CVR_IDCard.CardNo;
                 if (credentialNo == '') {
                     layer.msg('证件号码不能为空', {icon: 2, shift: 6});
                     return;
-                } else {
-                    //网络入住
-                    url1 += "&certificateNumber=" + credentialNo
                 }
-                $.getJSON(url1+"&random="+Date.now(), function (rs) {
-
-                    if(rs.data.memberId){
-                        $("#source").val(rs.data.memberName);
-                        userInfo.meLeval = rs.data.memberId;
-                    }
-                    if (!rs.success) {
-                        layer.alert('没有查到预定信息', {icon: 2, shift: 6});
-                        return;
-                    }
-                    roomTypeFlag = rs.data.subscribes;
-                    renderSchedule(rs.data.subscribes)
-                    try{
-                        $("#phoneNumber").val(rs.data.phoneNumber);
-                        $("#credentialNo").val(rs.data.certificateNumber);
-                    }catch (e){}
-                })
+                idFlag(1)
             }
 
         })
