@@ -83,7 +83,6 @@ public class OrderService {
         String alRoomCode = UUID.randomUUID().toString();
         //总房价
         BigDecimal totalPrice = new BigDecimal(0);
-        System.err.println("orderChildBOList======" + orderChildBOList.size());
         for (OrderChildBO orderChild : orderChildBOList) {
             //添加子订单
             orderChild.setOrderId(orderBO.getId());//主订单id
@@ -128,14 +127,6 @@ public class OrderService {
                 map.put("userId", userId);
                 roomService.updateroomMajorState(map);
             }
-//            else {
-//                if (orderChild.getRoomId() != null) {
-//                    Map<String, Object> map = new HashMap<String, Object>();
-//                    map.put("id", orderChild.getRoomId());
-//                    map.put("remark", "房间预约");
-//                    roomService.updateroomMajorState(map);
-//                }
-//            }
 
         }
         //修改总房价
