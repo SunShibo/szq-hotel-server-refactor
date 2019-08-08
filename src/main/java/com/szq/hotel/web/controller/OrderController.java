@@ -1020,6 +1020,16 @@ public class OrderController extends BaseCotroller {
                 return;
             }
             //判断日期冲突 bug
+//            Date startTime=orderChildBO.getPracticalDepartureTime()==null?orderChildBO.getEndTime():orderChildBO.getPracticalDepartureTime();
+//            boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
+//                    endTime, startTime, 1,null,userInfo.getHotelId());
+//
+//            if (!bool) {
+//                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "换房日期冲突"));
+//                super.safeJsonPrint(response, result);
+//                log.info("result{}", result);
+//                return;
+//            }
 
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = JsonUtils.getJSONtoList(everydayRoomPrice, EverydayRoomPriceBO.class);
             orderService.changeRoom(orderChildBO, everydayRoomPriceBOList,userInfo.getId());

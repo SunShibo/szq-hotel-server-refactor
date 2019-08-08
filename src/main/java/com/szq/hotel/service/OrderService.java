@@ -543,7 +543,6 @@ public class OrderService {
         List<OrderChildBO> orderChildBOS = orderDAO.getPayInfo(orderId);
         for (OrderChildBO orderChildBO : orderChildBOS) {
             MemberBO memberBO = memberService.selectMemberByCerNumber(orderChildBO.getCertificateNumber());
-            System.err.println(memberBO.getId());
             if (memberBO != null) {
                 MemberResultBO memberResultBO = memberService.getMemberCardNumber(memberBO.getId());
                 System.err.println(memberResultBO.getType());
