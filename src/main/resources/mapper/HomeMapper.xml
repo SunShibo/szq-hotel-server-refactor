@@ -88,9 +88,9 @@
 
     <!--查询房型数量-->
     <select id="queryRoomTypeNum"  parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.HomeRoomTypeBO">
-            SELECT  type.id,type.room_type_name roomType ,COUNT(room.id) count  FROM
-                      hm_room_type type  LEFT JOIN  hm_room room   ON type.id=room.room_type_id
-                      AND  room.hotel_id=#{hotelId}   AND  room.show='yes'
+            SELECT  `type`.id,`type`.room_type_name roomType ,COUNT(room.id) `count`  FROM
+                      hm_room_type `type`  LEFT JOIN  hm_room room   ON type.id=room.room_type_id
+                      AND  room.hotel_id=#{hotelId}   AND  room.show='yes'   AND  `type`.show='yes'
              GROUP BY type.id
     </select>
 
