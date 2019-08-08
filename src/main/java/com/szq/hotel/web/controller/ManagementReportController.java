@@ -83,8 +83,9 @@ public class ManagementReportController extends BaseCotroller {
             }
 
             String today = DateUtils.getStringData(time,"yyyy-MM-dd");
-            String startTime = today+" 03:00:00";
-            String endTime = today+" 05:00:00";
+            String lastDay =DateUtils.getLastDay(today);
+            String startTime = lastDay+" 03:00:00";
+            String endTime = lastDay+" 05:00:00";
             Date startDate = DateUtils.parseDate(startTime,"yyyy-MM-dd HH:mm:ss");
             Date endDate =  DateUtils.parseDate(endTime,"yyyy-MM-dd HH:mm:ss");
             ManagementReportResponseBO managementReportResponseBO =
