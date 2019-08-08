@@ -203,7 +203,7 @@
         left join hm_order_record as `or` on  c.id=`or`.order_child_id
         where (order_state !='reservation' and order_state !='cancel')
         and o.hotel_id=#{hotelId}
-        and #{startTime}&lt;=start_time and #{endTime}>=end_time
+        and #{startTime}&lt;=end_time and #{endTime}&gt;=start_time
         group by c.id
     </select>
 
