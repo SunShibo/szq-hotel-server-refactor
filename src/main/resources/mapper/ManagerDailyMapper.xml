@@ -166,8 +166,6 @@
         AND
         hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.members_id IS NOT NULL
         AND  hm_order.order_type = 'directly' AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
-
-
     </select>
 
     <select id="queryFwAgreementUnit" resultType="java.lang.Integer">

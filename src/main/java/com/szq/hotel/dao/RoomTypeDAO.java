@@ -1,5 +1,6 @@
 package com.szq.hotel.dao;
 
+import com.szq.hotel.entity.bo.RoomBO;
 import com.szq.hotel.entity.bo.RoomTypeBO;
 import com.szq.hotel.entity.bo.RtBO;
 import org.apache.ibatis.annotations.Param;
@@ -28,4 +29,7 @@ public interface RoomTypeDAO {
 
     //根据房型id 查询房间信息
     RoomTypeBO getRoomType(Integer id);
+
+
+    List<RoomBO> selectRoomState(@Param("id")Integer id);
 }

@@ -1,6 +1,7 @@
 package com.szq.hotel.service;
 
 import com.szq.hotel.dao.RoomTypeDAO;
+import com.szq.hotel.entity.bo.RoomBO;
 import com.szq.hotel.entity.bo.RoomTypeBO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,11 @@ public class RoomTypeService {
 
     public void  deleteRoomType(Integer id){
         roomTypeDAO.updateShow(id);
+    }
+
+    public List<RoomBO>  selectRoomState(Integer id){
+        List<RoomBO> roomBOS = roomTypeDAO.selectRoomState(id);
+        return roomBOS;
     }
 
 

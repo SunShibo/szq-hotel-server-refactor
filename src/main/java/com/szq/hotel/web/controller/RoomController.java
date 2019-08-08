@@ -149,6 +149,13 @@ public class RoomController extends BaseCotroller {
             return;
         }
         Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
+        List<RoomBO> roomBOS = roomService.selecrState(idArr);
+        if(roomBOS != null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000300"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        }
         roomService.deleteByPrimaryKey(idArr);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("删除成功"));
         super.safeJsonPrint(response, result);

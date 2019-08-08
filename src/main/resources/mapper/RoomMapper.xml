@@ -333,6 +333,14 @@
         </foreach>
     </update>
 
+    <select id="selectState" resultType="com.szq.hotel.entity.bo.RoomBO" parameterType="Integer[]">
+        SELECT * FROM hm_room WHERE id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and room_major_state != 'vacant' ;
+    </select>
+
     <update id="updatelockRoomState" parameterType="java.util.Map">
         update hm_room
         set
@@ -757,5 +765,10 @@
 
         SELECT COUNT(1) FROM hm_order_child,hm_order WHERE hm_order.id = hm_order_child.order_id
          AND hm_order.hotel_id = #{hotelId} AND hm_order_child.order_state = 'admissions'  AND hm_order.memberId_or_organizationId IS NOT NULL
+    </select>
+
+
+    <select id="selectRoomState" resultType="com.szq.hotel.entity.bo.RoomBO">
+        SELECT * FROM hm_room WHERE room_type_id = #{id}  and show = 'yes'
     </select>
 </mapper>
