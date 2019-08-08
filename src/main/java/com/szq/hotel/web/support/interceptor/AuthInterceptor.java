@@ -53,7 +53,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-      /*  String uri = this.getInvokeMethod(request);
+        String uri = this.getInvokeMethod(request);
         if(unCheckSet.contains(uri) || uri.indexOf(".")!=-1 ){
             return true;
         }
@@ -72,8 +72,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000000")) ;
             baseCotroller.safeJsonPrint(response,result);
             return false;
-        }*/
-      return true;
+        }
 
     }
 
