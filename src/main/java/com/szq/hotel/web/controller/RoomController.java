@@ -12,6 +12,7 @@ import com.szq.hotel.util.*;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import io.netty.handler.codec.http.HttpObject;
 import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
+import org.apache.commons.collections4.CollectionUtils;
 import org.omg.PortableServer.AdapterActivator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,6 +150,13 @@ public class RoomController extends BaseCotroller {
             return;
         }
         Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
+        List<RoomBO> roomBOS = roomService.selecrState(idArr);
+        if(!CollectionUtils.isEmpty(roomBOS)){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000300","房间状态不可删除"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        }
         roomService.deleteByPrimaryKey(idArr);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("删除成功"));
         super.safeJsonPrint(response, result);
@@ -687,9 +695,6 @@ public class RoomController extends BaseCotroller {
     }
 
 
-
-
-
     @RequestMapping("/updatelockRoomState")
     public void updatelockRoomState(HttpServletRequest request, HttpServletResponse response,
                                     String startTime, String endTime,
@@ -752,8 +757,6 @@ public class RoomController extends BaseCotroller {
                 log.info("return:{}", result);
                 return;
             }
-
-
             roomService.closeRoom(startTime, endTime, arrList, remark);
 
         }

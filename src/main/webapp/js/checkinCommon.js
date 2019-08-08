@@ -150,7 +150,6 @@ setTimeout(function () {
         min:0,
         format:'yyyy/MM/dd HH:mm:ss',
         done: function(value, date, endDate){
-
             if($("#startTime").val()==''){
                 clearTimeInfo();
                 layer.msg('请先选择入住时间', {icon: 2,shift:6});
@@ -158,6 +157,10 @@ setTimeout(function () {
             }
             if(new Date($("#startTime").val()).getTime()>(new Date(value.split(" ")[0]).getTime()+21600000)){
                 clearTimeInfo();
+                setTimeout(function () {
+                    $("#leaveDate1").val("");
+                },100)
+
                 layer.msg('入住和离店时间选择有误', {icon: 2,shift:6});
                 return;
             }

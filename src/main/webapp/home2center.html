@@ -270,6 +270,7 @@
         for(var i=0;i<sRooms.length;i++){
             roomIds.push(sRooms[i]['roomId'])
         }
+
         $.ajax({
             data: {
                 roomIds:roomIds.join(","),
@@ -293,6 +294,7 @@
 
     //处理条件发生变化
     function dealCondition() {
+        if(sRooms.length==0)return;
         checkRoomAvailable();
         var typeids = [];
         var checktype = $("input[name='checkType']:checked").val();
@@ -372,6 +374,9 @@
         document.getElementById("leaveDate").value =
             DateToLStr(new Date(Date.now()+3600*1000*24)).split(" ")[0] + LEAVETIME
         localStorage.modifyPrice = '';
+        $(function () {
+            IDCardReaderInfo($(document.body));
+        });
         if (getUrl("id")) {
 
             $.getJSON('room/selectRoom?id=' + getUrl("id") +"&random="+Date.now(), function (rs) {

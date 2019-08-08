@@ -178,16 +178,16 @@ public class ChildOrderService {
                     childOrderDAO.reduceOtherCashPledge(rollOutId, orderRecoredBO.getMoney());
                 }
 
-            } else if (Constants.ROOMRATE.getValue().equals(orderRecoredBO.getProject()) || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())
-                    || Constants.MITIGATE.getValue().equals(orderRecoredBO.getProject())) {
-                //房费 超时费  超时费减免
+            } else if (Constants.ROOMRATE.getValue().equals(orderRecoredBO.getProject())) {
+                //房费
                 log.info("start transferAccounts....ROOMRATE.....................................................");
                 childOrderDAO.reduceRoomRate(shiftToId, orderRecoredBO.getMoney());
                 childOrderDAO.increaseRoomRate(rollOutId, orderRecoredBO.getMoney());
 
             } else if (Constants.COMMODITY.getValue().equals(orderRecoredBO.getProject()) || Constants.COMPENSATE.getValue().equals(orderRecoredBO.getProject())
-                    ||Constants.APPLYCARD.getValue().equals(orderRecoredBO.getProject())) {
-                //商品 赔偿  办卡
+                    ||Constants.APPLYCARD.getValue().equals(orderRecoredBO.getProject())  || Constants.TIMEOUTCOST.getValue().equals(orderRecoredBO.getProject())
+                 ) {
+                //商品 赔偿  办卡 超时费
                 log.info("start transferAccounts....OtherRate.....................................................");
                 childOrderDAO.reduceOtherRate(shiftToId, orderRecoredBO.getMoney());
                 childOrderDAO.increaseOtherRate(rollOutId, orderRecoredBO.getMoney());
@@ -342,7 +342,10 @@ public class ChildOrderService {
         orderRecordService.closedAccount(StringUtils.strToList(ids));
         // 是会员应增加相对应积分
         if (childOrderBO.getMembersId() != null) {
-            memberService.accountIntegral(childOrderBO.getMembersId(), new BigDecimal(orderRecordService.consumption(StringUtils.strToList(ids))).multiply(new BigDecimal("-1")), "结账", userId);
+            BigDecimal bigDecimal = memberService.accountIntegral(childOrderBO.getMembersId(), new BigDecimal(orderRecordService.consumption(StringUtils.strToList(ids))).multiply(new BigDecimal("-1")), "结账", userId);
+            cashierSummaryService.addAccounts(bigDecimal.multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), Constants.INTEGRAL.getValue(),
+                    childOrderBO.getPassengerSource(),  childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    Constants.CONSUMPTIONITEM.getValue(), hotelId);
         }
 
         return buffer.toString();
@@ -399,6 +402,24 @@ public class ChildOrderService {
                         Constants.CONSUMPTIONITEM.getValue(), hotelId);
             }
         } else {
+            if(param.getCash()!=null){
+                childOrderDAO.reduceCashCashPledge(childMain, param.getMoney());
+            }
+            if(param.getCart()!=null){
+                childOrderDAO.reduceOtherCashPledge(childMain, param.getCart());
+            }
+            if(param.getWechat()!=null){
+                childOrderDAO.reduceOtherCashPledge(childMain, param.getWechat());
+            }
+            if(param.getAlipay()!=null){
+                childOrderDAO.reduceOtherCashPledge(childMain, param.getAlipay());
+            }
+            if(param.getStored()!=null){
+                childOrderDAO.reduceOtherCashPledge(childMain, param.getStored());
+            }
+            if(param.getOther()!=null){
+                childOrderDAO.reduceOtherCashPledge(childMain, param.getOther());
+            }
             this.outMoney(childMain, param, userId, childOrderBO, hotelId);
         }
 
@@ -407,7 +428,10 @@ public class ChildOrderService {
         // 是会员应增加相对应积分
         if (childOrderBO.getMembersId() != null) {
             ChildOrderBO newChild = childOrderDAO.queryOrderChildById(childMain);
-            memberService.accountIntegral(childOrderBO.getMembersId(), newChild.getPayCashNum().add(newChild.getOtherPayNum()), "结账", userId);
+            BigDecimal bigDecimal = memberService.accountIntegral(childOrderBO.getMembersId(), newChild.getPayCashNum().add(newChild.getOtherPayNum()), "结账", userId);
+            cashierSummaryService.addAccounts(bigDecimal.multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), Constants.INTEGRAL.getValue(),
+                    childOrderBO.getPassengerSource(),  childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
+                    Constants.CONSUMPTIONITEM.getValue(), hotelId);
         }
         log.info("end accounts........................................................");
     }

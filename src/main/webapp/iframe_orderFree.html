@@ -55,7 +55,7 @@
         form.on('submit(formData)', function (data) {//订单免单备注
             requestData = data.field;
             if(index!=null)clearTimeout(index);
-            index = setTimeout(pay, 1000);
+            index = setTimeout(pay, 500);
             return false;
         });
 

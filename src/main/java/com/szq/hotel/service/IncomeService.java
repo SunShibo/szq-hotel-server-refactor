@@ -315,59 +315,65 @@ public class IncomeService {
 
         System.err.println(endDateStr);
         IncomeBO incomeBO=new IncomeBO();
-        //房费
-        BigDecimal roomRate=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.ROOMRATE.getValue(),hotelId);
-        if(roomRate==null){
-            roomRate=new BigDecimal(0);
-        }
-        System.err.println("=========");
-        System.err.println("=========roomRate"+roomRate);
-        incomeBO.setRoomRate(roomRate);
-        System.err.println("=========setRoomRate"+incomeBO.getRoomRate());
-        //超时费
-        BigDecimal timeoutRoomRate=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr,  Constants.TIMEOUTCOST.getValue(),hotelId);
-        if(timeoutRoomRate==null){
-            timeoutRoomRate=new BigDecimal(0);
-        }
-        incomeBO.setTimeoutRoomRate(timeoutRoomRate);
         //房费减免
         BigDecimal roomRateRoom=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.ROOMRATEFREE.getValue(),hotelId);
         if(roomRateRoom==null){
             roomRateRoom=new BigDecimal(0);
         }
-        //商品减免bug 目前无用
-        BigDecimal commodityFerr=incomeDAO.getCashierSummaryByProject(dateStr, endDateStr,Constants.COMMODITYFREE.getValue(),hotelId);
-        if(commodityFerr==null){
-            commodityFerr=new BigDecimal(0);
+
+        //房费
+        BigDecimal roomRate=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.ROOMRATE.getValue(),hotelId);
+        if(roomRate==null){
+            roomRate=new BigDecimal(0);
         }
-        //赔偿减免bug 目前无用
-        BigDecimal compEnsatinonEecomp=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMPENSATIONFREE.getValue(),hotelId);
-        if(compEnsatinonEecomp==null){
-            compEnsatinonEecomp=new BigDecimal(0);
-        }
+        incomeBO.setRoomRate(roomRate.add(roomRateRoom));
+
         //超时费减免
         BigDecimal mitigate=incomeDAO.getCashierSummaryByProject(dateStr, endDateStr,Constants.MITIGATE.getValue(),hotelId);
         if(mitigate==null){
             mitigate=new BigDecimal(0);
         }
+
+        //超时费
+        BigDecimal timeoutRoomRate=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr,  Constants.TIMEOUTCOST.getValue(),hotelId);
+        if(timeoutRoomRate==null){
+            timeoutRoomRate=new BigDecimal(0);
+        }
+        incomeBO.setTimeoutRoomRate(timeoutRoomRate.add(mitigate));
+
+        //商品减免
+        BigDecimal commodityFerr=incomeDAO.getCashierSummaryByProject(dateStr, endDateStr,Constants.COMMODITYFREE.getValue(),hotelId);
+        if(commodityFerr==null){
+            commodityFerr=new BigDecimal(0);
+        }
+
+        //赔偿减免
+        BigDecimal compEnsatinonEecomp=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMPENSATIONFREE.getValue(),hotelId);
+        if(compEnsatinonEecomp==null){
+            compEnsatinonEecomp=new BigDecimal(0);
+        }
+
         //房费调整
         BigDecimal roomRateAdjustment=roomRateRoom.add(mitigate);
         if(roomRateAdjustment==null){
             roomRateAdjustment=new BigDecimal(0);
         }
         incomeBO.setRoomRateAdjustment(roomRateAdjustment.negate());
+
         //商品
         BigDecimal commodity=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMMODITY.getValue(),hotelId);
         if(commodity==null){
             commodity=new BigDecimal(0);
         }
-        incomeBO.setCommodity(commodity);
+        incomeBO.setCommodity(commodity.add(commodityFerr));
+
         //赔偿
         BigDecimal compensation=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.COMPENSATE.getValue(),hotelId);
         if(compensation==null){
             compensation=new BigDecimal(0);
         }
-        incomeBO.setCompensation(compensation);
+        incomeBO.setCompensation(compensation.add(compEnsatinonEecomp));
+
         //会员卡收入
         BigDecimal memberCardRate=incomeDAO.getCashierSummaryByProject(dateStr, endDateStr,Constants.APPLYCARD.getValue(),hotelId);
         if(memberCardRate==null){
@@ -380,15 +386,13 @@ public class IncomeService {
             otherRate=new BigDecimal(0);
         }
         incomeBO.setOtherRate(otherRate);
+
         //借方总记
-        System.err.println("roomRate"+roomRate);
-        System.err.println("timeoutRoomRate"+timeoutRoomRate);
-        System.err.println("roomRateAdjustment"+roomRateAdjustment);
-        System.err.println("otherRate"+otherRate);
-        System.err.println("commodity"+commodity);
-        System.err.println("compensation"+compensation);
-        System.err.println("memberCardRate"+memberCardRate);
-        BigDecimal debtSum=roomRate.add(timeoutRoomRate).add(roomRateAdjustment).add(otherRate).add(commodity).add(compensation).add(memberCardRate);
+        BigDecimal debtSum=roomRateRoom.add(roomRate).add(mitigate).add(timeoutRoomRate)
+                        .add(commodityFerr).add(compEnsatinonEecomp).add(commodity)
+                        .add(compensation).add(memberCardRate).add(otherRate);
+
+
         System.err.println(debtSum+"debtSum");
         if(debtSum==null){
             debtSum=new BigDecimal(0);
@@ -435,7 +439,6 @@ public class IncomeService {
         incomeBO.setNightAuditorTime(nightAuditorTime);
         incomeBO.setHotelId(hotelId);
         //这得计算 每个字段的金额
-        System.err.println("=========setRoomRate"+incomeBO.getRoomRate());
         incomeDAO.addIncome(incomeBO);
     }
 }

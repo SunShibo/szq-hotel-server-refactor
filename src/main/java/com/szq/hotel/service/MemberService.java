@@ -126,7 +126,7 @@ public class MemberService {
      * @param remark 备注
      * @param userId 操作人id
      */
-    public void accountIntegral(Integer memberId,BigDecimal money,String remark,Integer userId){
+    public BigDecimal accountIntegral(Integer memberId,BigDecimal money,String remark,Integer userId){
         //通过id查询会员信息
         MemberBO memberBO = memberDAO.queryMemberById(memberId);
         Integer memberCardId = memberBO.getMemberCardId();
@@ -142,7 +142,7 @@ public class MemberService {
         MemberBO memberBO1 = memberDAO.queryMemberById(memberId);
         String type = "结账增加";
         integralRecordService.addIntegralRecord(memberId,integral,remark,type,memberBO1.getIntegral(),userId);
-
+        return  integral;
     }
 
     /**

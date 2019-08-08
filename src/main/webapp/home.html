@@ -208,19 +208,6 @@
             renderRooms(r[0].data.room);
         });
 
-        // //第一次进入页面获取数据
-        // $.post(api.homeRoomType, {}, function (r) {
-        //     // var r = JSON.parse(r);
-        //     console.log(r)
-        //     if (r.success) {
-        //         renderRoomType(r.data.roomType);
-        //         renderCheckBox(r.data.state);
-        //         renderRooms(r.data.room);
-        //     } else {
-        //         layer.alert("获取房型失败：" + r.errMsg);
-        //     }
-        // });
-
         //房态
         function renderCheckBox(r) {
             // return;
@@ -384,7 +371,7 @@
                 });
                 o.types = b.join(",");
             }
-            console.info(o);
+            // console.info(o);
             // var index = layer.load(1);
             $.when(
                 $.post(api.homeRoom, o),

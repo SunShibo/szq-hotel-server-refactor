@@ -573,7 +573,7 @@
                     url: api.cancelSubUpdate,
                     type: 'POST',
                     dataType: 'json',
-                    data: {orderChildIdS: reservationOrderId},
+                    data: {orderChildId: reservationOrderId},
                     success: function (data) {
                         if (!data.success) {
                             showMsg(data.errMsg, 2, false);

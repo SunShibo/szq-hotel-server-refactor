@@ -33,6 +33,9 @@ public interface RoomDAO {
 
     void updatelockRoom(Integer[] idArr);
 
+
+    List<RoomBO> selectState(Integer[] idArr);
+
     /**
      * 查询当前酒店下的房型数量 id 名称
      * @param id

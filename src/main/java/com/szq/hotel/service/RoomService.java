@@ -93,6 +93,11 @@ public class RoomService {
         roomDAO.updateroomMajorState(map);
     }
 
+    public List<RoomBO> selecrState(Integer[] idArr){
+        List<RoomBO> roomBOS = roomDAO.selectState(idArr);
+        return roomBOS;
+    }
+
     /**
      * 抽取公共方法
      *

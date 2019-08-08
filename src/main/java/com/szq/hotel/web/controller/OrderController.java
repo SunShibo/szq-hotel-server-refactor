@@ -770,7 +770,7 @@ public class OrderController extends BaseCotroller {
      * @param checkInPersonJson 入住人信息
      */
     @RequestMapping("/updCheckInInfo")
-    public void updCheckInInfo(Integer orderId, String channel, String OTA,
+    public void updCheckInInfo(Integer orderId, String channel, String OTA,Integer memberIdOrOrganizationId,
                                Integer orderChildId, @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss") Date endTime, String remark,
                                String checkInPersonJson, HttpServletResponse response,
                                String everyDayRoomPrice, HttpServletRequest request) {
@@ -813,7 +813,7 @@ public class OrderController extends BaseCotroller {
                 return;
             }
 
-            orderService.updCheckInInfo(orderId, channel, OTA, orderChildId, endTime, remark, checkInPersonJson, everyDayRoomPrice,userInfo.getId());
+            orderService.updCheckInInfo(orderId, channel, OTA, memberIdOrOrganizationId,orderChildId, endTime, remark, checkInPersonJson, everyDayRoomPrice,userInfo.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改成功"));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);

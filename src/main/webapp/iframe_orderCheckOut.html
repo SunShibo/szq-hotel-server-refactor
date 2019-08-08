@@ -60,7 +60,7 @@
     <div class="layui-form-item" id="timeOutRadio" style="display: none">
         <label class="layui-form-label">超时减免</label>
         <div class="layui-input-inline height-block">
-            <input type="number" name="money" id="money" class="layui-input" lay-skin="primary" title="减免金额">
+            <input type="number" name="money" id="money" value="0" class="layui-input" lay-skin="primary" title="减免金额">
         </div>
     </div>
     <div class="layui-form-item">
@@ -110,7 +110,7 @@
             requestData = data.field;
             //防止重复点击
             if (index != null) clearTimeout(index);
-            index = setTimeout(checkOut, 1000);
+            index = setTimeout(checkOut, 500);
             return false;
         });
 
