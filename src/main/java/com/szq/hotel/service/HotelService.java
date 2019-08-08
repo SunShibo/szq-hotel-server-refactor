@@ -36,11 +36,10 @@ public class HotelService {
         hotelDAO.addRoleHotel(hotelBO.getId());
         //添加一个默认班次
         ClassesBO classesBO=new ClassesBO();
-        classesBO.setHotelId(hotelBO.getId());
         classesBO.setClassesName("默认班次");
         classesBO.setStartTime("12:00:00");
         classesBO.setEndTime("00:00:00");
-        classesService.addClasses(classesBO,userId);
+        classesService.addClasses(classesBO,userId,hotelBO.getId());
         log.info("end===================addHotel");
     }
 

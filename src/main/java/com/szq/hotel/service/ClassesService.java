@@ -29,9 +29,10 @@ public class ClassesService {
     /**
      * 添加班次
      */
-    public void addClasses(ClassesBO classesBO,Integer userId){
+    public void addClasses(ClassesBO classesBO,Integer userId,Integer hotelId){
         log.info("start addClasses..........................");
         classesBO.setCreateUserId(userId);
+        classesBO.setHotelId(hotelId);
         log.info("param{}",classesBO);
         classesDAO.addClasses(classesBO);
         log.info("end addClasses..........................");
