@@ -75,7 +75,7 @@ public class HomeController extends BaseCotroller {
      * 房态数量
      */
     @RequestMapping("/homeCount")
-    public void homeCount(HttpServletRequest request, HttpServletResponse response,HomeParam param){
+    public void homeCount(HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
