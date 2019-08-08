@@ -189,8 +189,7 @@
     </update>
 
     <!--在住报表-->
-    <select id="getCheckInReport"
-            resultType="com.szq.hotel.entity.result.OrderResult">
+    <select id="getCheckInReport" resultType="com.szq.hotel.entity.result.OrderResult">
         select o.order_number,p.name,v.value,p.certificate_number,r.room_name,
         t.room_type_name,e.money,c.start_time,c.end_time,c.pay_cash_num,c.other_pay_num,
         c.room_rate,other_rate,c.free_rate_num
@@ -204,7 +203,7 @@
         left join hm_order_record as `or` on  c.id=`or`.order_child_id
         where (order_state !='reservation' and order_state !='cancel')
         and o.hotel_id=#{hotelId}
-        and #{startTime}>=start_time and #{endTime}&lt;=end_time
+        and #{startTime}&lt;=start_time and #{endTime}>=end_time
         group by c.id
     </select>
 
