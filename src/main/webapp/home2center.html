@@ -374,6 +374,9 @@
         document.getElementById("leaveDate").value =
             DateToLStr(new Date(Date.now()+3600*1000*24)).split(" ")[0] + LEAVETIME
         localStorage.modifyPrice = '';
+        $(function () {
+            IDCardReaderInfo($(document.body));
+        });
         if (getUrl("id")) {
 
             $.getJSON('room/selectRoom?id=' + getUrl("id") +"&random="+Date.now(), function (rs) {

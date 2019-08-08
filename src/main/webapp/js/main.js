@@ -278,7 +278,6 @@ layui.use(['jquery', 'element', 'form'], function () {
             });
             //设置会员详情
             setUserInfo(CVR_IDCard.CardNo, function (res, success) {
-                debugger
                 if(success){
                     $('.integral').text(res.integralMoney);
                     $('.prepaidCard').text(res.storeValue);
