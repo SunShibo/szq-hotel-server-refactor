@@ -3898,7 +3898,7 @@ public class ManagerDailyService {
         log.info("v3+v4+v5+v6+v7:{}",v3.add(v4).add(v5));
         //小计
         BigDecimal add1 = v3.add(v4).add(v5);
-        managerdailyBO5.setSubtotal(f.intValue() == 0 ? new BigDecimal("0") : add.divide(f,2, BigDecimal.ROUND_HALF_UP));
+        managerdailyBO5.setSubtotal(add1);
         managerdailyBO5.setDailyType(5);
         managerdailyBO5.setHotelId(hotelId);
         managerdailyBO5.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
