@@ -543,8 +543,10 @@ public class OrderService {
         List<OrderChildBO> orderChildBOS = orderDAO.getPayInfo(orderId);
         for (OrderChildBO orderChildBO : orderChildBOS) {
             MemberBO memberBO = memberService.selectMemberByCerNumber(orderChildBO.getCertificateNumber());
+            System.err.println(memberBO.getId());
             if (memberBO != null) {
                 MemberResultBO memberResultBO = memberService.getMemberCardNumber(memberBO.getId());
+                System.err.println(memberResultBO.getType());
                 if (memberResultBO.getType().equals("yes")) {
                     orderChildBO.setNameStatus("yes");
                 } else {
@@ -858,10 +860,9 @@ public class OrderService {
             //修改旧联房码
             OrderChildBO orderChildBO = orderDAO.getOrderChildById(new Integer(orderChildIdArr[i]));
             List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBO.getAlRoomCode(), null);
-            System.err.println("getAlRoomCode" + orderChildBO.getAlRoomCode());
-            System.err.println("orderChildBOList：" + orderChildBOList);
             for (OrderChildBO child : orderChildBOList) {
-                System.err.println("旧主账房id" + child.getId());
+                child.setPayCashNum(new BigDecimal(0));
+                child.setOtherPayNum(new BigDecimal(0));
                 child.setAlRoomCode(orderChildBONew.getAlRoomCode());
                 child.setMain("no");
                 orderDAO.updOrderChild(child);
@@ -871,7 +872,8 @@ public class OrderService {
         OrderChildBO orderChildBo = orderDAO.getOrderChildById2(orderChildId);
         List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBo.getAlRoomCode(), null);
         for (OrderChildBO child : orderChildBOList) {
-            System.err.println("旧主账房id" + child.getId());
+            child.setPayCashNum(new BigDecimal(0));
+            child.setOtherPayNum(new BigDecimal(0));
             child.setAlRoomCode(orderChildBONew.getAlRoomCode());
             child.setMain("no");
             orderDAO.updOrderChild(child);
@@ -1019,10 +1021,11 @@ public class OrderService {
                 //剩余每日房价
                 List<EverydayRoomPriceBO> everydayRoomPriceBOList = this.getRemainingLease(orderChildId);
                 //提前退房
-                System.err.println("hotelDate"+ymdhms.format(hotelDate));
-                System.err.println("m2"+ymdhms.format(m2));
-                System.err.println("hotelDate.compareTo(m2) > 0"+(hotelDate.compareTo(m2) > 0));
-                if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() > 1) {
+                System.err.println(currentDate.compareTo(endDate) < 0);
+                System.err.println((hotelDate.compareTo(m2) > 0));
+                System.err.println(orderChildBO.getStartTime().compareTo(m6) < 0);
+                System.err.println(everydayRoomPriceBOList.size() > 1);
+                if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() >=1) {
                     //这天的房价信息
                     EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(hotelDate), orderChildBO.getId());
                     //超时时间超过4个小时 按这天房价的全天房价
@@ -1148,7 +1151,7 @@ public class OrderService {
             System.err.println("hotelDate"+ymdhms.format(hotelDate));
             System.err.println("m2"+ymdhms.format(m2));
             System.err.println("hotelDate.compareTo(m2) > 0"+(hotelDate.compareTo(m2) > 0));
-            if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() > 1) {
+            if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() >= 1) {
                 this.addOrderChildRecordAndRoomRate2(backup, hotelDate, orderChildBO, userId, money);
             }
             backup.setRoomMajorState(Constants.INTHE.getValue());

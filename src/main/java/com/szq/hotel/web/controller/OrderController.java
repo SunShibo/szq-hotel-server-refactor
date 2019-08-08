@@ -504,11 +504,6 @@ public class OrderController extends BaseCotroller {
             orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
             orderChildBO.setMain("yes");
             orderService.updOrderChild(orderChildBO);
-//            //把入住的房间修改为在住
-//            Map<String, Object> map = new HashMap<String, Object>();
-//            map.put("id", orderChildResult.getRoomId());
-//            map.put("state", Constants.INTHE.getValue());
-//            roomService.updateroomMajorState(map);
 
             //修改一起入住的订单信息
             orderService.updateOrderChildRoom(orderBO.getId(),userInfo.getId());
@@ -555,6 +550,7 @@ public class OrderController extends BaseCotroller {
             List<OrderChildBO> orderChildBOS = orderService.getPayInfo(orderId);
             //所有支付人
             for (OrderChildBO orderChild : orderChildBOS) {
+                System.err.println("入住人是否是会员"+orderChild.getNameStatus());
                 if ("yes".equals(orderChild.getMain())) {
                     List<OrderChildBO> oneOrderChild = new ArrayList<OrderChildBO>();
                     oneOrderChild.add(orderChild);
@@ -599,7 +595,6 @@ public class OrderController extends BaseCotroller {
                 return;
             }
             List<OrderChildBO> orderChildBOS = orderService.getPayInfo(orderId);
-            System.err.println(orderChildBOS.size() + "id" + orderId);
             List<OrderChildBO> oneOrderChild = new ArrayList<OrderChildBO>();
             BigDecimal totalPrice = new BigDecimal(0);
             //所有未支付的子订单
@@ -1024,6 +1019,8 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
+            //判断日期冲突 bug
+
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = JsonUtils.getJSONtoList(everydayRoomPrice, EverydayRoomPriceBO.class);
             orderService.changeRoom(orderChildBO, everydayRoomPriceBOList,userInfo.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));

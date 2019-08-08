@@ -10,6 +10,7 @@ public class CheckInInfoResult {
     private String orderPlacer;//下单人名称
     private String phone;//预约手机号
     private String subscribeRemark;//预约备注
+    private String subRemark;//预约备注
     private String orderType;//订单类型
     private Integer orderId;//主订单id
     private Integer orderChildId;//子订单id
@@ -27,6 +28,14 @@ public class CheckInInfoResult {
     private String checkType;//入住方式
     private String roomTypeName;//房型名称
 
+
+    public String getSubRemark() {
+        return subRemark;
+    }
+
+    public void setSubRemark(String subRemark) {
+        this.subRemark = subRemark;
+    }
 
     public String getMemberIdOrOrganizationId() {
         return memberIdOrOrganizationId;

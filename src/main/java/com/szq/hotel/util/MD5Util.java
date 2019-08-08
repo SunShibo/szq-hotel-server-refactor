@@ -69,7 +69,7 @@ public class MD5Util {
 
 
     public static void main(String[] args) throws Exception {
-        String str=md5Encode("quanquan");
+        String str=digest("123456");
         System.out.println(str);
         System.out.println(str.length());
         System.out.println(md5Encode(str));

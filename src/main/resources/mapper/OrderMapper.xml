@@ -546,7 +546,7 @@
         (room_rate+other_rate-free_rate_num) as totalConsumption,
         (pay_cash_num+other_pay_num) as sumPayment,channel,memberId_or_organizationId,
         remark as remake,al_room_code,OTA,money,hm_order.check_type,hm_order_child.id as orderChildId,
-        hm_room_type.room_type_name,phone
+        hm_room_type.room_type_name,phone,subscribe_remark as subRemark
         from  hm_order_child,hm_order,hm_everyday_room_price,hm_room_type
         where hm_order_child.order_id=hm_order.id
         and (order_state='admissions' or order_state='notpay')
