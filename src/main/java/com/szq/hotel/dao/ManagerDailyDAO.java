@@ -84,7 +84,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<CashierSummary> queryRateAdjustment(@Param("hotelId")Integer hotelId,@Param("startTime")String startTime,@Param("endTime")String endTime);
+    BigDecimal queryRateAdjustment(@Param("hotelId")Integer hotelId,@Param("startTime")String startTime,@Param("endTime")String endTime);
 
 
     /**
@@ -94,7 +94,7 @@ public interface ManagerDailyDAO {
      * @param endTime
      * @return
      */
-    List<Order> queryhourRate(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    BigDecimal queryhourRate(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
 
 
     /**

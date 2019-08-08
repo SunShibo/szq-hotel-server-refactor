@@ -56,18 +56,18 @@
         AND check_type = 'day'
     </select>
 
-    <select id="queryRateAdjustment" resultType="com.szq.hotel.entity.bo.CashierSummary">
+    <select id="queryRateAdjustment" resultType="java.math.BigDecimal">
         SELECT IFNULL(sum(consumption),0) FROM hm_cashier_summary
         WHERE project IN ('房费冲减','超时费冲减')
         AND
         create_time &gt;= #{startTime} and create_time &lt; #{endTime} and  hotel_id  = #{hotelId}
     </select>
 
-    <select id="queryhourRate" resultType="com.szq.hotel.entity.bo.Order">
-           SELECT hm_order_record.* FROM hm_order, hm_order_child, hm_order_record
-    WHERE hm_order.id = hm_order_child.order_id AND hm_order_child.order_id = hm_order_record.order_child_id AND  hm_order.check_type = 'hour'
+    <select id="queryhourRate" resultType="java.math.BigDecimal">
+           SELECT IFNULL(SUM(hm_order_record.money),0) FROM hm_order, hm_order_child, hm_order_record
+    WHERE hm_order.id = hm_order_child.order_id AND hm_order_child.id = hm_order_record.order_child_id AND  hm_order.check_type = 'hour'
     and  hm_order_record.project = '房费'
-    AND hm_order_record.money > 0 AND hm_order.hotel_id = #{hotelId}
+  AND hm_order.hotel_id = #{hotelId}
     AND hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
     </select>
 
@@ -210,7 +210,7 @@
 
     <select id="queryOrderRe" resultType="com.szq.hotel.entity.bo.OrderReBO">
         SELECT hm_order_record.* FROM hm_order, hm_order_child, hm_order_record
-    WHERE hm_order.id = hm_order_child.order_id AND hm_order_child.order_id = hm_order_record.order_child_id AND  hm_order.check_type = 'day'
+    WHERE hm_order.id = hm_order_child.order_id AND hm_order_child.id = hm_order_record.order_child_id AND  hm_order.check_type = 'day'
     and  hm_order_record.project = '房费'
     AND hm_order_record.money > 0 AND hm_order.hotel_id = #{hotelId}
     AND hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
