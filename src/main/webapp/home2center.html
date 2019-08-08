@@ -270,6 +270,7 @@
         for(var i=0;i<sRooms.length;i++){
             roomIds.push(sRooms[i]['roomId'])
         }
+
         $.ajax({
             data: {
                 roomIds:roomIds.join(","),
@@ -293,6 +294,7 @@
 
     //处理条件发生变化
     function dealCondition() {
+        if(sRooms.length==0)return;
         checkRoomAvailable();
         var typeids = [];
         var checktype = $("input[name='checkType']:checked").val();
