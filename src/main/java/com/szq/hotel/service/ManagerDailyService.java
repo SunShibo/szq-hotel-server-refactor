@@ -275,8 +275,6 @@ public class ManagerDailyService {
 
         log.info("145");
 
-
-
         log.info("获取今年日期");
         //获取今年日期
         String yyyy = date.substring(0,4);
@@ -4405,6 +4403,4 @@ public class ManagerDailyService {
         BigDecimal bigDecimal = managerdailyBOMapper.queryConsumption(hotelId, startTime, endTime);
         return bigDecimal;
     }
-
-
 }

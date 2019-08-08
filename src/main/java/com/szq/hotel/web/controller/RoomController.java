@@ -694,9 +694,6 @@ public class RoomController extends BaseCotroller {
     }
 
 
-
-
-
     @RequestMapping("/updatelockRoomState")
     public void updatelockRoomState(HttpServletRequest request, HttpServletResponse response,
                                     String startTime, String endTime,
@@ -759,8 +756,6 @@ public class RoomController extends BaseCotroller {
                 log.info("return:{}", result);
                 return;
             }
-
-
             roomService.closeRoom(startTime, endTime, arrList, remark);
 
         }
