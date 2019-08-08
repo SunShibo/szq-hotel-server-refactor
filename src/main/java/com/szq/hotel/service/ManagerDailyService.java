@@ -3835,7 +3835,7 @@ public class ManagerDailyService {
         BigDecimal v2 = directBooking(hotelId, startTime, endTime);
 
         managerdailyBO3.setDirectBooking(v2);
-        BigDecimal add = members.add(v).add(v1);
+        BigDecimal add = enter.add(v2);
         managerdailyBO3.setSubtotal(add);
         managerdailyBO3.setDailyType(3);
         managerdailyBO3.setHotelId(hotelId);
@@ -3862,8 +3862,8 @@ public class ManagerDailyService {
         BigDecimal e = FwDirectBooking(hotelId, startTime, endTime);
         managerdailyBO4.setDirectBooking(e);
         //小计
-         f = f.add(a).add(b).add(c);
-        managerdailyBO4.setSubtotal(f );
+         f = f.add(d).add(e);
+        managerdailyBO4.setSubtotal(f);
         managerdailyBO4.setDailyType(4);
         managerdailyBO4.setHotelId(hotelId);
         managerdailyBO4.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
@@ -3897,7 +3897,7 @@ public class ManagerDailyService {
 
         log.info("v3+v4+v5+v6+v7:{}",v3.add(v4).add(v5));
         //小计
-        BigDecimal add1 = v3.add(v4).add(v5);
+        BigDecimal add1 = v6.add(v7);
         managerdailyBO5.setSubtotal(add1);
         managerdailyBO5.setDailyType(5);
         managerdailyBO5.setHotelId(hotelId);
@@ -4019,7 +4019,7 @@ public class ManagerDailyService {
         }
 
         for (OrderReBO orderReBO : orderReBOS) {
-           n.add(orderReBO.getMoney()) ;
+           n = n.add(orderReBO.getMoney()) ;
         }
         return n;
     }

@@ -190,7 +190,4 @@ public class ManagerDailyController extends BaseCotroller {
     public void insertTest(HttpServletRequest request, HttpServletResponse response, Integer hotelId){
         managerDailyService.insertManagerDaliy(hotelId);
     }
-
-
-
 }
