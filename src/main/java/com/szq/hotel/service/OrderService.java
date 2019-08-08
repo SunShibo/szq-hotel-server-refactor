@@ -654,7 +654,7 @@ public class OrderService {
     }
 
     //修改在住信息
-    public void updCheckInInfo(Integer orderId, String channel, String OTA,
+    public void updCheckInInfo(Integer orderId, String channel, String OTA,Integer memberIdOrOrganizationId,
                                Integer orderChildId, Date entTime, String remark,
                                String checkInPersonJson, String everyDayRoomPrice, Integer userId) throws ParseException {
 
@@ -665,6 +665,7 @@ public class OrderService {
             orderBO.setId(orderId);
             orderBO.setChannel(channel);
             orderBO.setOTA(OTA);
+            orderBO.setMemberIdOrOrganizationId(memberIdOrOrganizationId);
             orderDAO.updOrder(orderBO);
         }
         //如果子订单传过来 修改离店时间 修改房间备注
