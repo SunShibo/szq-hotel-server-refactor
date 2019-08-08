@@ -188,7 +188,7 @@
   </select>
 
   <select id="selectRoomState" resultType="com.szq.hotel.entity.bo.RoomBO">
-        SELECT * FROM hm_room WHERE room_type_id = #{id}  and show = 'yes'
+        SELECT * FROM hm_room WHERE room_type_id = #{id}  and `show` = 'yes'
     </select>
 
 </mapper>
