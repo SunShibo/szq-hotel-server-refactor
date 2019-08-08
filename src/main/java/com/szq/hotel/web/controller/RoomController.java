@@ -12,6 +12,7 @@ import com.szq.hotel.util.*;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import io.netty.handler.codec.http.HttpObject;
 import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
+import org.apache.commons.collections4.CollectionUtils;
 import org.omg.PortableServer.AdapterActivator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,8 +151,8 @@ public class RoomController extends BaseCotroller {
         }
         Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
         List<RoomBO> roomBOS = roomService.selecrState(idArr);
-        if(roomBOS != null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000300"));
+        if(!CollectionUtils.isEmpty(roomBOS)){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000300","房间状态不可删除"));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
             return;

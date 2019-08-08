@@ -7,6 +7,7 @@ import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.service.RoomTypeService;
 import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.ibatis.executor.ReuseExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +67,9 @@ public class RoomTypeController extends BaseCotroller {
     @RequestMapping("/deleteRoomType")
     public void deleteRoomType(HttpServletRequest request, HttpServletResponse response, Integer id){
         List<RoomBO> roomBOS = roomTypeService.selectRoomState(id);
-        if(roomBOS != null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000301"));
+        log.info("roomBOS:{}",roomBOS);
+        if(!CollectionUtils.isEmpty(roomBOS)){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000301","请先删除此房型下的房间信息"));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
             return;
