@@ -181,7 +181,7 @@
         WHERE  hm_order_child.order_id = hm_order.id   AND   hotel_id = #{hotelId}
         AND
         hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.channel  = '散客'
-        AND  hm_order.order_type = 'directly'
+        AND  hm_order.order_type = 'directly' AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
     </select>
 
     <select id="queryFwEnter" resultType="java.lang.Integer">

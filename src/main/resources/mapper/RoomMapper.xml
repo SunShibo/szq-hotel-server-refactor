@@ -565,7 +565,7 @@
     </update>
 
     <select id="querRoomTypeCount" resultType="java.lang.Integer">
-    select count(1) from hm_room where hotel_id = #{hotelId} and room_type_id = #{roomTypeId};
+    select count(1) from hm_room where hotel_id = #{hotelId} and room_type_id = #{roomTypeId} and `show` ='yes';
   </select>
 
     <select id="queryRoomName" resultType="java.lang.String">

@@ -3778,7 +3778,6 @@ public class ManagerDailyService {
         log.info("hotelId:{}",hotelId);
         ManagerdailyBO managerdailyBO = new ManagerdailyBO();
 
-
         //添加营业状况统计
         managerdailyBO.setGrossrealIncome(orderTotalPrice(hotelId, startTime, endTime));//总实际收入
         managerdailyBO.setTotalTurnover(queryConsumption(hotelId, startTime, endTime));//总营业额
@@ -3794,12 +3793,8 @@ public class ManagerDailyService {
         managerdailyBO.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO);
 
-
-
-
         //添加营业收入明细
         ManagerdailyBO managerdailyBO2 = new ManagerdailyBO();
-
 
         BigDecimal v8 = throughoutDayrent(hotelId, startTime, endTime);
         managerdailyBO2.setThroughoutDayrent(v8);//全天日租
@@ -3823,10 +3818,6 @@ public class ManagerDailyService {
         managerdailyBO2.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO2);
 
-
-
-
-
         //房费收入分析
         ManagerdailyBO managerdailyBO3 = new ManagerdailyBO();
         //会员
@@ -3845,13 +3836,12 @@ public class ManagerDailyService {
         BigDecimal v2 = directBooking(hotelId, startTime, endTime);
 
         managerdailyBO3.setDirectBooking(v2);
-        managerdailyBO3.setSubtotal(members.add(v).add(v1).add(enter).add(v2));
+        BigDecimal add = members.add(v).add(v1).add(enter).add(v2);
+        managerdailyBO3.setSubtotal(add);
         managerdailyBO3.setDailyType(3);
         managerdailyBO3.setHotelId(hotelId);
         managerdailyBO3.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO3);
-
-
 
         BigDecimal f = new BigDecimal("0");
 
@@ -3879,9 +3869,6 @@ public class ManagerDailyService {
         managerdailyBO4.setHotelId(hotelId);
         managerdailyBO4.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO4);
-
-
-
 
         //平均房价分析
         ManagerdailyBO managerdailyBO5 = new ManagerdailyBO();
@@ -3913,7 +3900,7 @@ public class ManagerDailyService {
         log.info("v3+v4+v5+v6+v7:{}",v3.add(v4).add(v5).add(v6).add(v7));
         //小计
         BigDecimal add1 = v3.add(v4).add(v5).add(v6).add(v7);
-        managerdailyBO5.setSubtotal(f.intValue() == 0 ? new BigDecimal("0") : add1.divide(f,2, BigDecimal.ROUND_HALF_UP));
+        managerdailyBO5.setSubtotal(f.intValue() == 0 ? new BigDecimal("0") : add.divide(f,2, BigDecimal.ROUND_HALF_UP));
         managerdailyBO5.setDailyType(5);
         managerdailyBO5.setHotelId(hotelId);
         managerdailyBO5.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
