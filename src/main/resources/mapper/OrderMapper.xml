@@ -554,6 +554,7 @@
         and room_id=#{roomId}
         and `time` = #{date}
         and hm_order.hotel_id=#{hotelId}
+        limit 1
     </select>
     <select id="getOrderChildByRoomIdNoTime" resultType="com.szq.hotel.entity.bo.OrderChildBO">
         select hm_order_child.*

@@ -19,7 +19,7 @@
     </select>
     <!-- 根据子订单id查询未经过夜审的日期价格-->
     <select id="getRemainingEverydayRoomById" resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO" >
-       select * from hm_everyday_room_price where `time`>=#{time} and order_child_id=#{id}
+       select * from hm_everyday_room_price where `time`>=#{time} and order_child_id=#{id} order by `time`
     </select>
     <!-- 根据子订单id 日期查询价格-->
     <select id="getRemainingEverydayRoomByIdAndTime" resultType="com.szq.hotel.entity.bo.EverydayRoomPriceBO" >
