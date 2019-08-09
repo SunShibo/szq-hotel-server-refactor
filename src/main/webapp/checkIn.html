@@ -388,30 +388,15 @@
             var CVR_IDCard = IDCardReader();
             if(!!CVR_IDCard){
                 clearForm();
-                var birthday = formatDate(CVR_IDCard.Born);
-                form.val('data', {
-                    name: CVR_IDCard.Name,
-                    certificateId: 1,
-                    credentialNo: CVR_IDCard.CardNo,
-                    gender: CVR_IDCard.Sex,
-                    birthday: birthday,
-                    nation: CVR_IDCard.Nation,
-                    address: CVR_IDCard.Address,
-                });
+                $("#orderPlacer").val(CVR_IDCard.Name);
+                $("#IDNumber").val(CVR_IDCard.CardNo);
                 $("#image").prop('src', 'data:image/jpeg;base64,' + CVR_IDCard.Picture);
-                var urll = api.getMemberByCre;//直接入住查询会员信息
-                var credentialNo = document.getElementById("credentialNo").value;
+                var credentialNo = CVR_IDCard.CardNo;
                 if (credentialNo == '') {
                     layer.msg('证件号码不能为空', {icon: 2, shift: 6});
                     return;
                 }
-                urll += credentialNo;
-                $.getJSON(urll+"&random="+Date.now(), function (rs) {
-                        //根据证件号码查询是否是会员
-                        if (!rs.success) return;
-                        renderUserInfo(rs.data)
-                        form.render();
-                })
+                idFlag(1)
             }
         })
 

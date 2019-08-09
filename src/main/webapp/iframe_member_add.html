@@ -128,7 +128,7 @@
                 clearForm();
                 $('#name').val(CVR_IDCard.Name);
                 $('#birthday').val(formatDate(CVR_IDCard.Born));
-                $('#gender').val(CVR_IDCard.Sex);
+                $('#gender').val(CVR_IDCard.Sex === '男'? 'man' : 'woman');
                 $('#certificateType').val(1);
                 $('#certificateNumber').val(CVR_IDCard.CardNo);
                 $('#address').val(CVR_IDCard.Address);
@@ -166,7 +166,7 @@
             if (flag) {
                 // delete formData.birthday;
                 // sessionStorage.addMemberInfo = JSON.stringify(formData);
-                $.getJSON(api.getCardNoByLeaveId + $("#memberLevelId").val() + "&phone=" + data.field.phone + "&certificateNumber=" + data.field.certificateNumber, function (rs) {
+                $.getJSON(api.getCardNoByLeaveId + $("#memberLevelId").val() + "&memberId=" + getUrl('id'), function (rs) {
                     if (!rs.success) {
                         layer.alert(rs.errMsg);
                         return false;
@@ -189,14 +189,17 @@
                             data: formData,
                             success: function (res) {
                                 if (res.success) {
-                                    showMsg('添加成功', 1, false)
+                                    showMsg('添加成功', 1, false);
+                                    no();
+                                }else {
+                                    showMsg(res.errMsg, 2, false);
                                 }
                             }
                         })
                     }
                 })
             } else {
-                $.getJSON(api.getCardUpdate + "&phone=" + data.field.phone + "&certificateNumber=" + data.field.certificateNumber + "&memberCardLevelId=" + $("#memberLevelId").val() + "&random=" + Date.now(), function (rs) {
+                $.getJSON(api.getCardUpdate + "&memberId=" + getUrl('id') + "&memberCardLevelId=" + $("#memberLevelId").val() + "&random=" + Date.now(), function (rs) {
                     if (!rs.success) {
                         layer.alert(rs.errMsg);
                         return false;
@@ -223,6 +226,7 @@
                             success: function (res) {
                                 if (res.success) {
                                     showMsg(res.data, 1, false);
+                                    no();
                                 } else {
                                     showMsg(res.errMsg, 2, false);
                                 }
@@ -240,16 +244,21 @@
             var d = JSON.parse(localStorage.getItem('member' + getUrl('id')));
             var obj = {};
             for (var i in d) {
-                if (d[i] == null) continue;
-                obj[i] = d[i];
+                if (d[i] == null||i==='certificateType') continue;
+
                 if (i == 'birthday') {
                     if (!d[i]) ;
                     laydate.render({
                         elem: '#' + i
                         , value: d[i]
                     });
+                }else if(i === 'certificateTypeId'){
+                    obj['certificateType'] = d.certificateTypeId;
+                } else {
+                    obj[i] = d[i];
                 }
             }
+            console.log(obj);
             form.val('form', obj);
             form.render();
         }
