@@ -617,7 +617,7 @@
         where room_id=#{roomId}
         and #{endTime} &gt; check_time
         and #{startTime} &lt; check_out_time
-        and order_state='reservation'
+        and (order_state='reservation' or order_state='notpay' or order_state='admissions')
         and hm_order_child.order_id=hm_order.id
         and hm_order.hotel_id=#{hotelId}
         <if test="orderId!=null and orderId!=''">
