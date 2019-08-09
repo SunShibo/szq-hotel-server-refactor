@@ -8,7 +8,7 @@ import com.szq.hotel.common.base.BaseModel;
  */
 public class RoomTypeNumBO extends BaseModel  implements Comparable <RoomTypeNumBO>  {
 
-    private Integer count; //酒店数量
+    private Integer count = 0; //酒店数量
     private Integer hotelId;//酒店id
     private Integer id;//房型id
     private String name;//房型名称

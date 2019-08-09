@@ -65,14 +65,14 @@ public class ClassesController extends BaseCotroller {
      * 查询所有班次
      */
     @RequestMapping("/queryClasses")
-    public void queryClasses(HttpServletRequest request,HttpServletResponse response, Integer hotelId){
+    public void queryClasses(HttpServletRequest request,HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
             log.info("user{}",loginAdmin);
             //不是登录时不传hotelId  这时查询当前用户登录的酒店班次
-            List<ClassesBO> classesBOS = classesService.queryClasses(hotelId);
+            List<ClassesBO> classesBOS = classesService.queryClasses(loginAdmin.getHotelId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(classesBOS)) ;
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
@@ -111,7 +111,7 @@ public class ClassesController extends BaseCotroller {
                 return;
             }
 
-            classesService.addClasses(classesBO,loginAdmin.getId());
+            classesService.addClasses(classesBO,loginAdmin.getId(),loginAdmin.getHotelId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("")) ;
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
