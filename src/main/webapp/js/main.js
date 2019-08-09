@@ -863,18 +863,18 @@ function getReport($) {
 
 
     })
-    var _display = false;
+}
+
+setTimeout(function () {
     $(document).on("click", "#side", function () {
-        // alert(12)
         if ($("#side").hasClass("side-open")) {
             $("#side").removeClass("side-open")
         } else {
             $("#side").addClass("side-open")
         }
-        // _display = !_display;
-        // document.getElementById("side").style.width = _display? "400px": "0px"
     });
-}
+},1000)
+
 
 function showPosPort() {
     layer.prompt({
