@@ -1528,6 +1528,7 @@ public class OrderService {
                 Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, dateList.get(i + 1),
                         dateList.get(i), orderId, hotelId);
                 System.err.println("roomCount"+roomCount+":orderCount"+orderCount);
+                System.err.println(reservationRoomCount);
                 if (roomCount - orderCount < reservationRoomCount) {
                     return false;
                 }

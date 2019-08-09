@@ -625,7 +625,7 @@
         </if>
     </select>
 
-    <!--根据一个时间段 查询不可入住的房型数量-->
+    <!--根据一个时间段 查询订单数  也就是不可入住的房型数量-->
     <select id="getOrderChildCountByRoomTypeIdByTime" resultType="java.lang.Integer">
         select count(*) from hm_order_child,hm_order
         where room_type_id=#{roomTypeId}
