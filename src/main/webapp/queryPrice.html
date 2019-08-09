@@ -49,8 +49,8 @@
 </div>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    layui.use('table', function () {
-        var table = layui.table, $ = layui.$, childId = '';
+    layui.use(['table', 'layer'], function () {
+        var table = layui.table, $ = layui.$, childId = '', layer = layui.layer;
         $(function () {
             childId = getUrl('childId');
             getResultAll();
@@ -66,8 +66,11 @@
                     childId: childId
                 },
                 success: function (data) {
+                    if(!data.success){
+                        layer.alter(data.errMsg);
+                        return;
+                    }
                     var r = data.data;
-                    console.log(data);
                     topTable.reload({data: r.top});
                     bottomTable.reload({data: r.data});
 

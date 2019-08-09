@@ -114,6 +114,10 @@
                         type: 'POST',
                         dataType: 'json',
                         success: function (data) {
+                            if(!data.success){
+                                layer.alter(data.errMsg);
+                                return;
+                            }
                             tab.reload();//刷新表格
                         }
                     });

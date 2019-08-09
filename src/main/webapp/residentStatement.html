@@ -63,9 +63,9 @@
 </div>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    layui.use(['table', 'element', 'form', 'laydate'], function () {
+    layui.use(['table', 'element', 'form', 'laydate', 'layer'], function () {
         var table = layui.table, $ = layui.$, form = layui.form, state = 0, title = '', laydate = layui.laydate
-            ,startTime = '', endTime = '';
+            ,startTime = '', endTime = '', layer = layui.layer;
 
         $(function () {
             resultInfo()
@@ -82,6 +82,10 @@
                     endTime: DateToLStr3(new Date(Date.now())) + ' 06:00:00'
                 },
                 success: function (data) {
+                    if(!data.success){
+                        layer.alter(data.errMsg);
+                        return;
+                    }
                     formatData(data.data)
                 }
             })
@@ -104,6 +108,10 @@
                     endTime: data.field.endTime
                 },
                 success: function (data) {
+                    if(!data.success){
+                        layer.alter(data.errMsg);
+                        return;
+                    }
                     formatData(data.data)
                 }
             })
