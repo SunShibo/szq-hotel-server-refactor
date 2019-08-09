@@ -371,27 +371,20 @@
                 });
                 o.types = b.join(",");
             }
-            // console.info(o);
-            // var index = layer.load(1);
             $.when(
                 $.post(api.homeRoom, o),
                 $.post(api.homeRoomType, {})
-            ).then(function (r, rt) {
-                if (!r[0].success || !rt[0].success) {
-                    layui.alert(r[0].errMsg + '\n' + rt[0].errMsg);
+            ).done(function (rt, r) {
+                if (!rt[0].success || !r[0].success) {
+                    layui.alert(rt[0].errMsg + r[0].errMsg);
                     return;
                 }
-                renderRooms(r[0].data.room);
-                updateCheckBox(rt[0].data);
+                //更新 楼层 房间
+                renderRooms(rt[0].data.room);
+                //更新房态数  房型数
+                updateCheckBox(r[0].data);
             });
-            // $.post(api.homeRoom, o, function (r) {
-            //     if (r.success) {
-            //         renderRooms(r.data.room);
-            //         updateCheckBox(r.data);
-            //     } else {
-            //         layer.alert("1" + r.errMsg);
-            //     }
-            // })
+
         }
 
         //楼层 与 房间的动态加载
@@ -451,9 +444,18 @@
         function updateCheckBox(r) {
             var t = r.roomType;
             var s = r.state;
+            //获取房型总数
+            var roomTypeCount = 0;
+            //重新绑定房型数  计算总数
             for (var i = 0, len = t.length; i < len; i++) {
+                roomTypeCount += t[i].count;
                 $("#_" + t[i].id).text(t[i].count)
             }
+            //重新绑定房型总数
+            $('#_countAllType').text(roomTypeCount);
+            //添加房态总数
+            s.countAllRoom = roomTypeCount;
+            //绑定房态数
             for (var i in s) {
                 $("#_" + i).text(s[i])
             }

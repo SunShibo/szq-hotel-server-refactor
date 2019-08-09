@@ -470,10 +470,6 @@
                         //修改页面维修状态
                         maintain = maintain === 'true' ? 'false' : 'true';
                         dirty = maintain === 'false' ? 'true': 'false';
-                        //刷新弹出层房屋信息数据
-                        initRoomInfoData();
-                        //修改首页数据
-                        parent.getRoomsInfo();
                     } else {
                         showMsg(res.errMsg, 2, false);
                     }
@@ -495,7 +491,6 @@
                 end: function () {
                     sessionStorage.removeItem('selectArr');
                     initRoomInfoData();
-                    parent.getRoomsInfo();
                 }
             });
         });
@@ -515,7 +510,6 @@
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
                         parent.layer.msg('房屋状态变更完成');
-                        parent.getRoomsInfo();
                     } else {
                         showMsg(data.errMsg, 2, false);
                     }
@@ -583,7 +577,6 @@
                     }
                 });
                 parent.layer.closeAll();
-                parent.getRoomsInfo();
             });
         });
 
