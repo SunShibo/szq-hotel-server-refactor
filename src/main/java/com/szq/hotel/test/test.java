@@ -120,8 +120,8 @@ public class test {
 //        calendar.set(Calendar.HOUR_OF_DAY, 14);
 //        endTime = calendar.getTime();
 //        System.err.println("entaaa" + DateUtils.longDate(endTime));
-            Integer i=234;
-            Integer b=234;
-            System.err.println(i==b);
+            Integer i=1;
+            Integer b=1;
+            System.err.println(i.equals(b));
     }
 }

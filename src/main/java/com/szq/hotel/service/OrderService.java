@@ -1517,6 +1517,11 @@ public class OrderService {
                 }
             }
             //获取可用房间数
+            System.err.println(roomType);
+            System.err.println(DateUtils.longDate(endTime));
+            System.err.println(DateUtils.longDate(startTime));
+            System.err.println(hotelId);
+            System.err.println(roomId);
             Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId, roomId);
             for (int i = 0; i < dateList.size() - 1; i++) {
                 //获取订单数
