@@ -37,6 +37,8 @@ public interface ManagementReportDAO {
     Integer getCheckInPerson(Map<String,Object> map);
     //赔偿收入
     BigDecimal getCompensation(Map<String,Object> map);
+    //赔偿冲减
+    BigDecimal getCompensationOffset(Map<String,Object> map);
     //免费入住房数
     Integer getFreeRoomSum(Map<String,Object> map);
     //维修房数

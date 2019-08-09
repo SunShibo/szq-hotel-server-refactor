@@ -92,6 +92,12 @@
             WHERE create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
                 AND hotel_id = #{hotelId} AND project = '赔偿'
         </select>
+        <!--赔偿冲减-->
+        <select id="getCompensationOffset" resultType="java.math.BigDecimal" parameterType="java.util.Map" >
+            SELECT SUM(consumption) FROM hm_cashier_summary
+            WHERE create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
+            AND hotel_id = #{hotelId} AND project = '赔偿冲减'
+      </select>
         <!--免费入住房数-->
         <select id="getFreeRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
             SELECT COUNT(child.id) FROM hm_order_child child LEFT JOIN  hm_order oder  ON oder.id=child.order_id

@@ -494,13 +494,19 @@ public class ManagementReportService {
     public Integer getCheckInPerson(Map<String,Object> map){
         return managementReportDAO.getCheckInPerson(map);
     }
-    //赔偿收入
+    //赔偿收入-赔偿冲减
     public BigDecimal getCompensation(Map<String,Object> map){
         BigDecimal compensation = managementReportDAO.getCompensation(map);
         if (compensation==null){
-            return new BigDecimal(0.00);
+            compensation=new BigDecimal(0.00);
         }
-        return compensation;
+        //赔偿冲减
+        BigDecimal compensationOffset=managementReportDAO.getCompensationOffset(map);
+        if (compensationOffset==null){
+            compensationOffset=new BigDecimal(0.00);
+        }
+        BigDecimal compensation1 = compensation.add(compensationOffset);
+        return compensation1;
     }
     //免费入住房数
     public Integer getFreeRoomSum(Map<String,Object> map){
@@ -514,12 +520,13 @@ public class ManagementReportService {
     public Integer getMemberRoomSum(Map<String,Object> map){
         return managementReportDAO.getMemberRoomSum(map);
     }
-    //商品收入
+    //商品收入=商品收入-商品冲减
     public BigDecimal getCommodity(Map<String,Object> map){
         BigDecimal commidity = managementReportDAO.getCommodity(map);
         if (commidity==null){
             commidity = new BigDecimal(0.00);
         }
+        //商品冲减
         BigDecimal commidityOffset = managementReportDAO.getCommodityOffset(map);
         if (commidityOffset==null){
             commidityOffset = new BigDecimal(0.00);
