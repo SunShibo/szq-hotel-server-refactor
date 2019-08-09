@@ -55,8 +55,8 @@
 </div>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    layui.use('table', function () {
-        var table = layui.table, $ = layui.$, state = 0;
+    layui.use(['table', 'layer'], function () {
+        var table = layui.table, $ = layui.$, state = 0, layer = layui.layer;
         $(function () {
             state = getUrl('s');//state为1是子项结账打印   为0是订单列表实时打印
             getData();
@@ -69,7 +69,10 @@
                 dataType: 'json',
                 data: {ids: getUrl('id')},
                 success: function (res) {
-                    console.log(res);
+                    if(!res.success){
+                        layer.alter(res.errMsg);
+                        return;
+                    }
                     var r = res.data;
                     //渲染表格数据
                     tab.reload({data: r.data});

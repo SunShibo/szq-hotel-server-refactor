@@ -1503,6 +1503,19 @@ public class OrderService {
 
         //bug验证房型
         if (roomType != null) {
+            Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId, roomId);
+
+            Long minute=DateUtils.getQuotMinute(endTime,startTime);
+            if(minute<=4*60){
+                //获取订单数
+                Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime),
+                        DateUtils.longDate(startTime), orderId, hotelId);
+                System.err.println("roomCount"+roomCount+":orderCount"+orderCount);
+                System.err.println(reservationRoomCount);
+                if (roomCount - orderCount < reservationRoomCount) {
+                    return false;
+                }
+            }
             //拆分获取多段结束日期
             List<String> dateList = new ArrayList<String>();
             dateList.add(DateUtils.longDate(startTime));
@@ -1522,7 +1535,6 @@ public class OrderService {
             System.err.println(DateUtils.longDate(startTime));
             System.err.println(hotelId);
             System.err.println(roomId);
-            Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId, roomId);
             for (int i = 0; i < dateList.size() - 1; i++) {
                 //获取订单数
                 Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, dateList.get(i + 1),
