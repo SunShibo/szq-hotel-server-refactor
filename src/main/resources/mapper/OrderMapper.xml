@@ -625,13 +625,13 @@
         </if>
     </select>
 
-    <!--根据一个时间段 查询预约中的房型数量-->
+    <!--根据一个时间段 查询不可入住的房型数量-->
     <select id="getOrderChildCountByRoomTypeIdByTime" resultType="java.lang.Integer">
         select count(*) from hm_order_child,hm_order
         where room_type_id=#{roomTypeId}
         and #{endTime} &gt; check_time
         and #{startTime} &lt; check_out_time
-        and order_state='reservation'
+        and (order_state='reservation' or order_state='notpay' or order_state='admissions')
         and hm_order_child.order_id=hm_order.id
         and hm_order.hotel_id=#{hotelId}
         <if test="orderId!=null and orderId!=''">
@@ -639,18 +639,20 @@
         </if>
     </select>
 
-    <!--根据一个时间段 房型id 查询可入住的数量-->
-    <select id="getRoomCountByRoomTypeIdByTime" resultType="java.lang.Integer">
-        select count(*) from hm_room
-        where room_type_id=#{roomTypeId}
-        and `show`='yes'
-        and hotel_id=#{hotelId}
-        <if test="roomId!=null and roomId!=''">
+    <!--根据一个时间段 房型id 查询可入住的数量
+    <if test="roomId!=null and roomId!=''">
             and (room_major_state='vacant' or id=#{roomId})
         </if>
         <if test="roomId==null || roomId==''">
             and (room_major_state='vacant')
         </if>
+    -->
+    <select id="getRoomCountByRoomTypeIdByTime" resultType="java.lang.Integer">
+        select count(*) from hm_room
+        where room_type_id=#{roomTypeId}
+        and `show`='yes'
+        and hotel_id=#{hotelId}
+
         and
         (((lock_room_start_time is null or #{endTime}&lt;=lock_room_start_time ) and  (lock_room_end_time is null or #{startTime}>lock_room_end_time))
         or
