@@ -1502,6 +1502,11 @@ public class OrderService {
             if (roomCount > 0) {
                 return false;
             }
+            //bug 通过房间id查询锁房数量
+//            Integer resultCount=orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId, roomId);
+//            if(resultCount<=0){
+//                return false;
+//            }
         }
 
         //bug验证房型
@@ -1525,6 +1530,7 @@ public class OrderService {
                 //获取订单数
                 Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, dateList.get(i + 1),
                         dateList.get(i), orderId, hotelId);
+                System.err.println("roomCount"+roomCount+":orderCount"+orderCount);
                 if (roomCount - orderCount < reservationRoomCount) {
                     return false;
                 }
