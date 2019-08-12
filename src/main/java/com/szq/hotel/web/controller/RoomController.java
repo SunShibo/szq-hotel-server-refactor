@@ -7,6 +7,7 @@ import com.szq.hotel.entity.dto.DateRoomDTO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.entity.dto.RoomStateDTO;
 import com.szq.hotel.query.QueryInfo;
+import com.szq.hotel.service.RoomExcelService;
 import com.szq.hotel.service.RoomRecordService;
 import com.szq.hotel.service.RoomService;
 import com.szq.hotel.util.*;
@@ -24,9 +25,13 @@ import redis.clients.jedis.Builder;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.crypto.Data;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -48,7 +53,45 @@ public class RoomController extends BaseCotroller {
     private RoomDAO roomDao;
     @Resource
     private RoomRecordDAO roomRecordDAO;
+    @Resource
+    private RoomExcelService roomExcelService;
 
+    @RequestMapping("/roomExcel")
+    public void roomExcel(HttpServletRequest request, HttpServletResponse response){
+        AdminBO loginAdmin = super.getLoginAdmin(request);
+        log.info("user{}", loginAdmin);
+        if (loginAdmin == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+            return;
+        }
+        ServletOutputStream out = null;
+        try {
+             out=response.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            SimpleDateFormat formatter   =   new   SimpleDateFormat   ("yyyyMMddHHmmss");
+            Date curDate   =   new   Date(System.currentTimeMillis());//获取当前时间
+            String   str   =   formatter.format(curDate);
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("客房信息" +str+ ".xls", "UTF-8"));
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        String[] titles = { "序号","楼栋", "楼层", "房型","房态", "维修状态" ,"锁房状态","锁房开始时间","锁房结束时间","备注"};
+        try {
+            roomExcelService.export(titles,out,1);
+            String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("导出成功！"));
+            safeTextPrint(response, json);
+            return ;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @RequestMapping("/queryRoom")
     public void queryRoom(HttpServletRequest request, HttpServletResponse response, Integer pageNo,

@@ -783,6 +783,19 @@
          AND hm_order.hotel_id = #{hotelId} AND hm_order_child.order_state = 'admissions'  AND hm_order.memberId_or_organizationId IS NOT NULL
     </select>
 
-
+    <select id="roomExcel" resultType="com.szq.hotel.entity.bo.RoomExportBO" >
+        SELECT hm_room.room_name as roomName , hm_hotel.name as hotelName, hm_floor.name as floorName, hm_room_type.room_type_name as
+        roomTypeName,hm_room.room_major_state as roomMajorState, hm_room.room_state as roomState,
+        hm_room.lock_room_state as lockRoomState ,  hm_room.lock_room_start_time as lockRoomStartTime,
+        hm_room.lock_room_end_time as lockRoomEndTime, hm_room.remark as remark,
+        hm_room_type.basic_price as basicPrice, hm_room_type.hour_room_price as hourRoomPrice
+        FROM hm_floor, hm_hotel, hm_room_type, hm_room
+        WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
+        AND hm_room.hotel_id = hm_hotel.id
+        <if test="hotelId != null and hotelId != ''">
+            and hm_room.hotel_id = #{hotelId}
+        </if>
+        and hm_room.show = 'yes'
+    </select>
 
 </mapper>

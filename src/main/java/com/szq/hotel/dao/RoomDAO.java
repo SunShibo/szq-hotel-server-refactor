@@ -278,4 +278,12 @@ public interface RoomDAO {
      * @return
      */
     int queryXy(@Param("hotelId")Integer hotelId);
+
+
+    /**
+     *
+     * @param
+     * @return
+     */
+    List<RoomExportBO> roomExcel(@Param("hotelId") Integer hotelId);
 }
