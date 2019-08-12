@@ -805,7 +805,13 @@ public class OrderService {
     }
 
     //解除联房
-    public void updAlRoom(Integer[] idArr) {
+    public boolean updAlRoom(Integer[] idArr) {
+        for (int i = 0; i < idArr.length; i++) {
+            OrderChildBO orderChildBO=orderDAO.getOrderChildById2(idArr[i]);
+            if("yes".equals(orderChildBO.getMain())){
+                return false;
+            }
+        }
         for (int i = 0; i < idArr.length; i++) {
             //修改联房码 解除联房 设置为主账房
             OrderChildBO orderChildBO = new OrderChildBO();
@@ -814,7 +820,7 @@ public class OrderService {
             orderChildBO.setMain("yes");
             orderDAO.updOrderChild(orderChildBO);
         }
-
+        return true;
     }
 
     //联房
@@ -831,7 +837,12 @@ public class OrderService {
             List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(new Integer(orderChildIdArr[i]));
             System.err.println("orderRecoredBO.size" + orderRecoredBO.size());
             for (int y = 0; y < orderRecoredBO.size(); y++) {
-                ids = ids + orderRecoredBO.get(y).getId() + ",";
+                if(y==orderRecoredBO.size()-1){
+                    ids = ids + orderRecoredBO.get(y).getId();
+                }else{
+                    ids = ids + orderRecoredBO.get(y).getId() + ",";
+
+                }
             }
             System.err.println("ids" + ids);
             //房间消费转账到新的主账房 添加消费记录

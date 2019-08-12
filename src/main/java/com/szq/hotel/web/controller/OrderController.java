@@ -878,10 +878,19 @@ public class OrderController extends BaseCotroller {
                 return;
             }
             Integer[] idArr = JsonUtils.getIntegerArray4Json(orderChildIds);
-            orderService.updAlRoom(idArr);
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
-            super.safeJsonPrint(response, result);
-            log.info("result{}", result);
+            boolean bool=orderService.updAlRoom(idArr);
+            if(bool){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }else{
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "不能解除主账房"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+
         } catch (Exception e) {
             log.error("updAlRoom", e);
         }
