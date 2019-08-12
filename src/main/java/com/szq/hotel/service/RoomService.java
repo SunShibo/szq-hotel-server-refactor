@@ -385,52 +385,35 @@ public class RoomService {
         if (memberDiscountBO == null) {
             log.info("没有优惠");
             if ( !CollectionUtils.isEmpty(list)) {
-
-
-                    //roomTypeBO.setState(false);
                     roomTypeBO.setName(rtBO.getRoomTypeName());
                     roomTypeBO.setHotelId(rtBO.getHotelId());
                     roomTypeBO.setId(rtBO.getId());
                     roomTypeBO.setBasicPrice(rtBO.getBasicPrice());
                     roomTypeBO.setHourRoomPrice(rtBO.getHourRoomPrice());
-                    //roomTypeBO.setName(rtBO.getRoomType());
                     Integer i = 0;
                     for (RmBO rmBO : list) {
                         if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
-                            //roomTypeBO.setBasicPrice(rmBO.getBasicPrice());
-                            //roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice());
-                            //roomTypeBO.setHotelId(rmBO.getHotelId());
                             i++;
                         }
                         roomTypeBO.setCount(i);
                     }
-
-
             }
         } else {
             //有优惠
             if ( !CollectionUtils.isEmpty(list)) {
                 log.info("有优惠");
-                    //roomTypeBO.setState(true);
                     roomTypeBO.setName(rtBO.getRoomTypeName());
                     roomTypeBO.setId(rtBO.getId());
                     roomTypeBO.setHotelId(rtBO.getHotelId());
                     roomTypeBO.setBasicPrice(Math.ceil(rtBO.getBasicPrice() * memberDiscountBO.getDiscount()));
                     roomTypeBO.setHourRoomPrice(Math.ceil(rtBO.getHourRoomPrice() * memberDiscountBO.getDiscount()));
-                    //roomTypeBO.setName(rtBO.getRoomType());
                     Integer i = 0;
                     for (RmBO rmBO : list) {
                         if (rtBO.getId().equals(rmBO.getRoomTypeId())) {
-                            //roomTypeBO.setBasicPrice(rmBO.getBasicPrice() * memberDiscountBO.getDiscount());
-                            // roomTypeBO.setHourRoomPrice(rmBO.getHourRoomPrice() * memberDiscountBO.getDiscount());
-                            //roomTypeBO.setHotelId(rmBO.getHotelId());
-                            // roomTypeBO.setName(rmBO.getRoomType());
-                            //roomTypeBO.setId(rmBO.getId());
                             i++;
                         }
                         roomTypeBO.setCount(i);
                     }
-
             }
         }
 
@@ -438,8 +421,9 @@ public class RoomService {
 
 
         //获取被预约掉的房型以及数量
-        List<RmTypeIdBO> rmTypeIdBOS = roomDAO.queryOrderTypeRoom((String) map.get("checkTime"), (String) map.get("endTime"),
-                (Integer) map.get("hotelId"));
+        List<RmTypeIdBO> rmTypeIdBOS = roomDAO.queryOrderTypeRoom2((String) map.get("checkTime"), (String) map.get("endTime"),
+                (Integer) map.get("hotelId"),rtBO.getId());
+        System.err.println("获取被预约掉的房型以及数量:{}"+rmTypeIdBOS);
 
 
         //筛选掉被预约掉的房型数量
@@ -644,9 +628,11 @@ public class RoomService {
         for (int i = 0; i < num; i++) {
             Time time = new Time();
             time.setStartTime(lDate(da, i));
+            System.err.println( new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lDate(da, i)));
             //System.err.println(lDate(dd, i));
             //System.err.println(lDate(d, i+1));
-            time.setEndTime(lDate(dab, i + 1));
+            time.setEndTime(lDate(da, i + 1));
+            System.err.println( new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lDate(da, i + 1)));
             list.add(time);
         }
         return list;
