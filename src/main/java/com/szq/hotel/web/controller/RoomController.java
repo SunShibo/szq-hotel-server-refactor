@@ -83,7 +83,7 @@ public class RoomController extends BaseCotroller {
         }
         String[] titles = { "序号","楼栋", "楼层", "房型","房态", "维修状态" ,"锁房状态","锁房开始时间","锁房结束时间","备注"};
         try {
-            roomExcelService.export(titles,out,1);
+            roomExcelService.export(titles,out,loginAdmin.getHotelId());
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("导出成功！"));
             safeTextPrint(response, json);
             return ;
