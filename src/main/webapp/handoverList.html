@@ -30,9 +30,9 @@
     </ul>
 </nav>
 <div style="height: 70px;"></div>
-<div class="layui-btn-container" style="margin: 20px auto; width: 90%;">
-    <button class="layui-btn" id="printingAll">打印已选项</button>
-</div>
+<!--<div class="layui-btn-container" style="margin: 20px auto; width: 90%;">-->
+    <!--<button class="layui-btn" id="printingAll">打印已选项</button>-->
+<!--</div>-->
 <div class="tab-box">
     <table id="handoverList" lay-filter="handoverList"></table>
 </div>
@@ -78,7 +78,7 @@
             , loading: true // 是否显示加载条
             , page: true //开启分页
             , cols: [[ //表头
-                {field: 'checkbox', type: 'checkbox', fixed: 'id', align: 'center'},
+                // {field: 'checkbox', type: 'checkbox', fixed: 'id', align: 'center'},
                 {field: 'name', title: '交班操作员', width: 100, align: 'center'}
                 , {
                     field: 'attendanceTime', title: '上班时间', width: 170, align: 'center', templet: function (data) {
