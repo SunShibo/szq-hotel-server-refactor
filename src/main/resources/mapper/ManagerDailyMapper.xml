@@ -125,6 +125,7 @@
        SELECT IFNULL(SUM(hm_order_record.money),0)  FROM hm_order,hm_order_child,hm_order_record
         WHERE hotel_id = #{hotelId} AND hm_order_record.order_child_id = hm_order_child.id AND hm_order_child.order_id = hm_order.id
         AND hm_order_record.project IN ('房费','房费冲减')
+        AND  hm_order.memberId_or_organizationId IS NULL
         AND
         hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
         AND hm_order.members_id IS NOT NULL;
@@ -163,9 +164,10 @@
     <select id="queryFwMembers" resultType="java.lang.Integer">
         SELECT COUNT(hm_order_child.id)  FROM hm_order,hm_order_child
         WHERE  hm_order_child.order_id = hm_order.id   AND   hotel_id = #{hotelId}
+        AND  hm_order.memberId_or_organizationId IS NULL
         AND
         hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.members_id IS NOT NULL
-        AND  hm_order.order_type = 'directly' AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+         AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
     </select>
 
     <select id="queryFwAgreementUnit" resultType="java.lang.Integer">
@@ -173,7 +175,7 @@
         WHERE  hm_order_child.order_id = hm_order.id   AND   hotel_id = #{hotelId}
         AND
         hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.memberId_or_organizationId IS NOT NULL
-        AND  hm_order.order_type = 'directly' AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+         AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
     </select>
 
     <select id="queryFwIndividualTraveler" resultType="java.lang.Integer">
@@ -181,7 +183,7 @@
         WHERE  hm_order_child.order_id = hm_order.id   AND   hotel_id = #{hotelId}
         AND
         hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.channel  = '散客'
-        AND  hm_order.order_type = 'directly' AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+        AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
     </select>
 
     <select id="queryFwEnter" resultType="java.lang.Integer">

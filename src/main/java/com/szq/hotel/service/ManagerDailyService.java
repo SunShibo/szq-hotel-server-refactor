@@ -3106,7 +3106,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n =  n.add(managerdailyBO.getIndividualTraveler()) ;
+           n =  n.add(managerdailyBO.getAgreementUnit()) ;
         }
         return n;
     }
@@ -3793,7 +3793,6 @@ public class ManagerDailyService {
 
         //添加营业收入明细
         ManagerdailyBO managerdailyBO2 = new ManagerdailyBO();
-
         BigDecimal v8 = throughoutDayrent(hotelId, startTime, endTime);
         managerdailyBO2.setThroughoutDayrent(v8);//全天日租
         BigDecimal v9 = rateAdjustment(hotelId,startTime, endTime);
@@ -3869,11 +3868,13 @@ public class ManagerDailyService {
         managerdailyBO4.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO4);
 
+
+        System.err.println("段四");
         //平均房价分析
         ManagerdailyBO managerdailyBO5 = new ManagerdailyBO();
         //会员平均房价分析
         BigDecimal v3 = new BigDecimal("0");
-        if(add.intValue() != 0 ){
+        if(a.intValue() != 0 ){
              v3 =add.divide(a,2, BigDecimal.ROUND_HALF_UP);
         }
 
@@ -3883,7 +3884,7 @@ public class ManagerDailyService {
         managerdailyBO5.setAgreementUnit(v4);
         log.info("v4:{}",v4);
         //散客平均房价
-        BigDecimal v5 = c.intValue() ==0 ? new BigDecimal("0") : add.divide(c,2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal v5 = c.intValue() == 0 ? new BigDecimal("0") : add.divide(c,2, BigDecimal.ROUND_HALF_UP);
         log.info("v5:{}",v5);
         managerdailyBO5.setIndividualTraveler(v5);
         //直接入住平均房价
@@ -3903,6 +3904,8 @@ public class ManagerDailyService {
         managerdailyBO5.setHotelId(hotelId);
         managerdailyBO5.setDateTime(DateUtils.parseDate(date, "yyyy-MM-dd"));
         managerdailyBOMapper.insertSelective(managerdailyBO5);
+
+        System.err.println("段五");
 
         //百分比格式
         NumberFormat nf   =   NumberFormat.getPercentInstance();

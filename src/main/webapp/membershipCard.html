@@ -16,9 +16,9 @@
         <li class="layui-nav-item">
             <a href="javascript:;" id="hotelusername"></a>
             <dl class="layui-nav-child">
-                <dd>
-                    <a href="javascript:;" id="updateHotel">更换酒店</a>
-                </dd>
+                <!--<dd>-->
+                    <!--<a href="javascript:;" id="updateHotel">更换酒店</a>-->
+                <!--</dd>-->
                 <dd>
                     <a href="javascript:;" id="updatePass">修改密码</a>
                 </dd>
@@ -79,7 +79,10 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     {{# } }}
     {{# if(d.state != "freeze" && d.state != "use") { }}
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="freeze">冻结</a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="freeze">冻结</a>
+    {{# } }}
+    {{# if(d.state == "freeze") { }}
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="unsold">解冻</a>
     {{# } }}
 </script>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
@@ -217,6 +220,27 @@
                         data: {
                             id: data.id,
                             state: 'freeze'
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.success) {
+                                showMsg(data.data, 1, false);
+                            } else {
+                                showMsg(data.errMsg, 2, false);
+                            }
+                            tab.reload();//刷新表格
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if(layEvent === 'unsold') {
+                layer.confirm('真的解冻吗', function (index) {
+                    $.ajax({
+                        url: api.cartUpdate,
+                        data: {
+                            id: data.id,
+                            state: 'unsold'
                         },
                         type: 'POST',
                         dataType: 'json',

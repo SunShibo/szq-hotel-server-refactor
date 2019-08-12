@@ -25,9 +25,9 @@
         <li class="layui-nav-item">
             <a href="javascript:;" id="hotelusername"></a>
             <dl class="layui-nav-child">
-                <dd>
-                    <a href="javascript:;" id="updateHotel">更换酒店</a>
-                </dd>
+                <!--<dd>-->
+                    <!--<a href="javascript:;" id="updateHotel">更换酒店</a>-->
+                <!--</dd>-->
                 <dd>
                     <a href="javascript:;" id="updatePass">修改密码</a>
                 </dd>
@@ -64,8 +64,8 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['table', 'element', 'form', 'laydate', 'layer'], function () {
-        var table = layui.table, $ = layui.$, form = layui.form, state = 0, title = '', laydate = layui.laydate
-            ,startTime = '', endTime = '', layer = layui.layer;
+        var table = layui.table, $ = layui.$, form = layui.form, laydate = layui.laydate
+            , layer = layui.layer;
 
         $(function () {
             resultInfo()
@@ -141,9 +141,9 @@
             }
             , even: true
             , loading: true // 是否显示加载条
-            , title: title + '报表'
+            , title: '在住报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="text-align: center">' + title + '报表</p>');
+                $(".layui-table-tool-temp").html('<p style="text-align: center">在住报表</p>');
             }
             , toolbar: true
             , limit: 10000

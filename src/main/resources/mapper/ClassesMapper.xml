@@ -13,7 +13,7 @@
     </insert>
     <!--修改班次-->
     <update id="updateClasses"  parameterType="com.szq.hotel.entity.bo.ClassesBO">
-        UPDATE .`hm_classes` SET  `classes_name`=#{classesName}, `start_time`=#{startTime}, `end_time`=#{endTime},
+        UPDATE `hm_classes` SET  `classes_name`=#{classesName}, `start_time`=#{startTime}, `end_time`=#{endTime},
                  `update_user_id`=#{updateUserId}, `update_time`=NOW()
          WHERE  id =#{id}
     </update>

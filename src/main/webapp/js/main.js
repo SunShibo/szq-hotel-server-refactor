@@ -254,20 +254,20 @@ layui.use(['jquery', 'element', 'form'], function () {
             }
         });
     });
-    $(document).on('click', '#updateHotel', function () {
-        layer.open({
-            type: 2,
-            skin: 'demo-class',
-            area: ['500px', '300px'],
-            title: '更换酒店',
-            shade: 0.6,
-            shadeClose: true,
-            content: 'iframe_updateHotel.html',
-            end: function (index, layero) {
-                location.reload();
-            }
-        });
-    });
+    // $(document).on('click', '#updateHotel', function () {
+    //     layer.open({
+    //         type: 2,
+    //         skin: 'demo-class',
+    //         area: ['500px', '300px'],
+    //         title: '更换酒店',
+    //         shade: 0.6,
+    //         shadeClose: true,
+    //         content: 'iframe_updateHotel.html',
+    //         end: function (index, layero) {
+    //             location.reload();
+    //         }
+    //     });
+    // });
     //点击扫描证件事件
     $(document).on('click', '#IDCard', function () {
         var CVR_IDCard = IDCardReader();
