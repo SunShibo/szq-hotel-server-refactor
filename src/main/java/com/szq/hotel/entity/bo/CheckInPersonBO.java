@@ -16,7 +16,7 @@ public class CheckInPersonBO {
     private Date createTime;//入住时间
     private Date startTime;//房间的入住时间
     private Integer roomId;//房间id
-    private Integer roomName;//房间号
+    private String roomName;//房间号
 
     public Date getCreateTime() {
         return createTime;
@@ -42,11 +42,11 @@ public class CheckInPersonBO {
         this.roomId = roomId;
     }
 
-    public Integer getRoomName() {
+    public String getRoomName() {
         return roomName;
     }
 
-    public void setRoomName(Integer roomName) {
+    public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
 

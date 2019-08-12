@@ -903,6 +903,15 @@ public class OrderService {
         //修改房间状态
         OrderChildBO orderChildOld = orderDAO.getOrderChildById(orderChildBO.getId());
         Map<String, Object> map = new HashMap<String, Object>();
+
+        //新住的修改旧房间信息
+        map.put("id", orderChildBO.getRoomId());
+        RoomBO oldRoomBO = roomService.selectByPrimaryKey(orderChildOld.getRoomId());
+        map.put("state", oldRoomBO.getRoomMajorState());
+        map.put("remark", "由" + oldRoomBO.getRoomName() + "房换入");
+        map.put("userId", userId);
+        roomService.updateroomMajorState(map);
+
         //之前的房间修改为脏房
         map.put("id", orderChildOld.getRoomId());
         map.put("state", Constants.DIRTY.getValue());
@@ -911,13 +920,7 @@ public class OrderService {
         map.put("userId", userId);
         roomService.updateroomMajorState(map);
 
-        //新住的修改为在住
-        map.put("id", orderChildBO.getRoomId());
-        map.put("state", Constants.INTHE.getValue());
-        RoomBO oldRoomBO = roomService.selectByPrimaryKey(orderChildOld.getRoomId());
-        map.put("remark", "由" + oldRoomBO.getRoomName() + "房换入");
-        map.put("userId", userId);
-        roomService.updateroomMajorState(map);
+
         //修改房间 房型
         orderDAO.updOrderChild(orderChildBO);
     }
@@ -1530,11 +1533,6 @@ public class OrderService {
                 }
             }
             //获取可用房间数
-            System.err.println(roomType);
-            System.err.println(DateUtils.longDate(endTime));
-            System.err.println(DateUtils.longDate(startTime));
-            System.err.println(hotelId);
-            System.err.println(roomId);
             for (int i = 0; i < dateList.size() - 1; i++) {
                 //获取订单数
                 Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, dateList.get(i + 1),
