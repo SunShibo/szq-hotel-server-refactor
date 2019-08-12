@@ -1,6 +1,7 @@
 package com.szq.hotel.web.controller;
 
 import com.szq.hotel.dao.RoomDAO;
+import com.szq.hotel.dao.RoomRecordDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.entity.dto.DateRoomDTO;
 import com.szq.hotel.entity.dto.ResultDTOBuilder;
@@ -45,6 +46,9 @@ public class RoomController extends BaseCotroller {
     private RoomService roomService;
     @Resource
     private RoomDAO roomDao;
+    @Resource
+    private RoomRecordDAO roomRecordDAO;
+
 
     @RequestMapping("/queryRoom")
     public void queryRoom(HttpServletRequest request, HttpServletResponse response, Integer pageNo,
@@ -67,12 +71,6 @@ public class RoomController extends BaseCotroller {
             condition.put("pageNo", queryInfo.getPageOffset());
             condition.put("pageSize", queryInfo.getPageSize());
         }
-        log.info("参数floorid:{}", floorId);
-        log.info("参数roomName:{}", roomName);
-        log.info("roomTypeId:{}", roomTypeId);
-        log.info("hotelId:{}", loginAdmin.getHotelId());
-        log.info("roomId:{}", roomId);
-
 
         condition.put("floorId", floorId);
         condition.put("roomName", roomName);
@@ -178,14 +176,18 @@ public class RoomController extends BaseCotroller {
             return;
         }
         Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("state", state);
-        map.put("startTime", startTime);
-        map.put("endTime", endTime);
-        map.put("remark", remark);
-        map.put("ids", idArr);
 
-        roomService.updatelockRoomClose(map);
+        for (int i = 0 ; i < idArr.length; i++){
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("state", state);
+            map.put("startTime", startTime);
+            map.put("endTime", endTime);
+            map.put("remark", remark);
+            map.put("ids", idArr[i]);
+            map.put("userId", loginAdmin.getId());
+            roomService.updatelockRoomClose(map);
+        }
+
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("锁房成功"));
         log.info("result:{}", result);
         super.safeJsonPrint(response, result);
@@ -205,12 +207,17 @@ public class RoomController extends BaseCotroller {
             return;
         }
 
-        Map map = new HashMap<String, Object>();
-        Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
-        map.put("state", state);
-        map.put("ids", idArr);
 
-        roomService.updatelockRoomOpen(map);
+        Integer[] idArr = JsonUtils.getIntegerArray4Json(byId);
+
+        for (int i = 0 ; i < idArr.length; i++){
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("state", state);
+            map.put("ids", idArr[i]);
+            map.put("userId", loginAdmin.getId());
+            roomService.updatelockRoomOpen(map);
+        }
+
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("解锁成功"));
         log.info("result:{}", result);
         super.safeJsonPrint(response, result);
@@ -746,11 +753,10 @@ public class RoomController extends BaseCotroller {
             return;
         }
         Integer[] idArr = JsonUtils.getIntegerArray4Json(roomId);
-        log.info("adArr:{}", idArr);
+
         List<Integer> list = Arrays.asList(idArr);
-        log.info("list:{}", list);
         List<Integer> arrList = new ArrayList(list);
-        log.info("arrList:{}", arrList);
+
         Jedis jedis = RedisConnectFactory.getJedis();
         UUID requestId = UUID.randomUUID();
         System.err.println(requestId);
@@ -764,24 +770,44 @@ public class RoomController extends BaseCotroller {
             if (startTime == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                log.info("return:{}", result);
                 return;
             }
             if (endTime == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                log.info("return:{}", result);
                 return;
             }
-            roomService.closeRoom(startTime, endTime, arrList, remark);
+            for (Integer integer : arrList) {
+                RoomBO roomBO = roomDao.selectByPrimaryKey(integer);
+                Map<String, Object> mp = new HashMap<String, Object>();
+                mp.put("createTime", new Date());
+                mp.put("createUserId",loginAdmin.getId());
+                mp.put("roomId", roomBO.getId());
+                mp.put("virginState", roomBO.getLockRoomState());
+                mp.put("newState",  state);
+                mp.put("remark", remark);
+                roomRecordDAO.insertRoomState(mp);
+                roomService.closeRoom(startTime, endTime, integer, remark);
+            }
+
+
 
         }
 
         //开锁
         if ("ope".equals(state)) {
-            roomService.opeRoom(arrList, remark);
+            for (Integer integer : arrList) {
+                RoomBO roomBO = roomDao.selectByPrimaryKey(integer);
+                Map<String, Object> mp = new HashMap<String, Object>();
+                mp.put("createTime", new Date());
+                mp.put("createUserId",loginAdmin.getId());
+                mp.put("roomId", roomBO.getId());
+                mp.put("virginState", roomBO.getLockRoomState());
+                mp.put("newState",  state);
+                mp.put("remark", remark);
+                roomRecordDAO.insertRoomState(mp);
+                roomService.opeRoom(arrList, remark);
+            }
         }
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("操作成功"));
         super.safeJsonPrint(response, result);

@@ -64,10 +64,31 @@ public class RoomService {
     }
 
     public void updatelockRoomClose(Map<String, Object> map) {
+        //查询房间原状态
+        RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
+        //插入
+        Map<String, Object> mp = new HashMap<String, Object>();
+        mp.put("createTime", new Date());
+        mp.put("createUserId", map.get("userId"));
+        mp.put("roomId", roomBO.getId());
+        mp.put("virginState", roomBO.getLockRoomState());
+        mp.put("newState",  map.get("state"));
+        mp.put("remark", map.get("remark"));
+        roomRecordDAO.insertRoomState(mp);
         roomDAO.updatelockRoomState(map);
     }
 
     public void updatelockRoomOpen(Map<String, Object> map) {
+        //查询房间原状态
+        RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
+        Map<String, Object> mp = new HashMap<String, Object>();
+        mp.put("createTime", new Date());
+        mp.put("createUserId", map.get("userId"));
+        mp.put("roomId", roomBO.getId());
+        mp.put("virginState", roomBO.getLockRoomState());
+        mp.put("newState",  map.get("state"));
+        mp.put("remark", map.get("remark"));
+        roomRecordDAO.insertRoomState(mp);
         roomDAO.updatelockRoomState2(map);
     }
 
@@ -111,7 +132,6 @@ public class RoomService {
 
         String et = (String) map.get("endTime");
 
-
         //获取符合条件的房间集合
         List<RmBO> list = roomDAO.queryRm(map);
 
@@ -138,8 +158,6 @@ public class RoomService {
             }
         }
 
-
-
         //去重
         for (int i = 0; i < reId.size() - 1; i++) {
             for (int j = reId.size() - 1; j > i; j--) {
@@ -148,8 +166,6 @@ public class RoomService {
                 }
             }
         }
-
-
 
         //去掉不能预约入住的房间的房间
         Iterator<RmBO> iterator = list.iterator();
@@ -163,7 +179,6 @@ public class RoomService {
                 }
             }
         }
-
 
         return list;
     }
@@ -1116,16 +1131,10 @@ public class RoomService {
         return ls;
     }
 
-    public void closeRoom(String startTime, String endTime, List<Integer> list, String remark) {
-        log.info("startTime:{}",startTime);
-        log.info("endTime:{}",endTime);
+    public void closeRoom(String startTime, String endTime, Integer list, String remark) {
         Date date = DateUtils.parseDate(startTime, "yyyy/MM/dd HH:mm:ss");
-        log.info("date:{}",date);
         Date date1 = DateUtils.parseDate(endTime, "yyyy/MM/dd HH:mm:ss");
-        log.info("date1:{}",date1);
-
         boolean b = belongCalendar(new Date(),date ,date1);
-
         if(b){
             roomDAO.closeRoom(startTime, endTime, list, remark, "yes");
         } else {

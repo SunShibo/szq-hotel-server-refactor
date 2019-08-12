@@ -125,7 +125,7 @@ public interface RoomDAO {
     RoomBO queryRooms(@Param("name")String name, @Param("hotelId")Integer hotelId);
 
     void closeRoom(@Param("startTime")String startTime, @Param("endTime")String endTime,
-                   @Param("list")List<Integer> list,@Param("remark")String remark,@Param("state")String state);
+                   @Param("list")Integer list,@Param("remark")String remark,@Param("state")String state);
 
     void opeRoom( @Param("list")List<Integer> list,@Param("remark")String remark);
 
@@ -206,7 +206,7 @@ public interface RoomDAO {
 
     RmBO selectRoomId(@Param("id") Integer id, @Param("hotelId") Integer hotelId);
 
-
+    RmBO selectRoomId2(@Param("id") Integer id);
     /**
      * 查询符合按条件的被预约的房型数量
      * @param startTime
