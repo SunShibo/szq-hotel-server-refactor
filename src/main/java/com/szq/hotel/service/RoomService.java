@@ -98,9 +98,8 @@ public class RoomService {
 
     public void updateroomMajorState(Map<String, Object> map) {
 
-        log.info("map:{}", map);
         RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
-        log.info("roomBO:{}", roomBO);
+
         Map<String, Object> mp = new HashMap<String, Object>();
         mp.put("createTime", new Date());
         mp.put("createUserId", map.get("userId"));
@@ -108,9 +107,8 @@ public class RoomService {
         mp.put("roomId", roomBO.getId());
         mp.put("virginState", roomBO.getRoomMajorState());
         mp.put("remark", map.get("remark"));
-        log.info("mp:{}", mp);
+
         int i = roomRecordDAO.insertRoomState(mp);
-        log.info("i:{}", i);
         roomDAO.updateroomMajorState(map);
     }
 
@@ -388,14 +386,13 @@ public class RoomService {
         String phone = (String) map.get("phone");
 
 
-
-
-
         RoomTypeNumBO roomTypeBO = new RoomTypeNumBO();
 
         //判断用户是否是会员
         MemberDiscountBO memberDiscountBO = queryMember(phone);
         log.info("是否是会员:{}", memberDiscountBO);
+
+
         //没有优惠
         if (memberDiscountBO == null) {
             log.info("没有优惠");
@@ -412,6 +409,7 @@ public class RoomService {
                         }
                         roomTypeBO.setCount(i);
                     }
+
             }
         } else {
             //有优惠
@@ -429,6 +427,7 @@ public class RoomService {
                         }
                         roomTypeBO.setCount(i);
                     }
+
             }
         }
 
@@ -1269,7 +1268,7 @@ public class RoomService {
 
         //获取当前时间
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        log.info("format:{}",format);
+
         String date = format + " 06:00:00" ;
 
         //获取明天早上六点的时间
@@ -1295,9 +1294,9 @@ public class RoomService {
 
 
         //获取今天统计房价
-        log.info(format);
+
         int integer1 = roomDAO.queryEverydayRoomPrice(format);
-        log.info("integer1:{}",integer1);
+
         map.put("three", integer1);
         if(!CollectionUtils.isEmpty(rtBOS)){
             for (RtBO rtBO : rtBOS) {
@@ -1331,9 +1330,7 @@ public class RoomService {
             for (MemberLevelBO memberLevelBO : memberLevelBOS) {
                 XxDTO xxDTO = new XxDTO();
                 xxDTO.setName(memberLevelBO.getName());
-                log.info("hotelId:{}", hotelId);
-                log.info("dt:{}", dt);
-                log.info("memberLevelBO.getId():{}",memberLevelBO.getId());
+
                 xxDTO.setNumber(roomDAO.queryMemRomId(hotelId,memberLevelBO.getId()));
                 ls.add(xxDTO);
             }

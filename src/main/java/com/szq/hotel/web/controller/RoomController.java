@@ -537,21 +537,23 @@ public class RoomController extends BaseCotroller {
                 log.info("同一时间段内同一房型的可用数量:{}",roomTypeNumBO);
                 list.add(roomTypeNumBO);
             }
+            System.err.println(list);
             RoomTypeNumBO min = Collections.min(list);
-            log.info("最小值是:{}",min);
+            System.err.println("最小值是:{}"+min);
             l.add(min);
         }
+        System.err.println(rtBOS);
 
 
-        List<Integer> integers = roomService.queryRoomTypeAndId(loginUser.getHotelId(), phone);
-
+       /* List<Integer> integers = roomService.queryRoomTypeAndId(loginUser.getHotelId(), phone);
+        System.out.println();
         for (RoomTypeNumBO roomTypeNumBO : l) {
             for (Integer integer : integers) {
                 if(roomTypeNumBO.getId().equals(integer)){
                     roomTypeNumBO.setCount(roomTypeNumBO.getCount()+1);
                 }
             }
-        }
+        }*/
 
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(l));
@@ -914,11 +916,11 @@ public class RoomController extends BaseCotroller {
     public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
         log.info("todayPictureView*****************************************************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        log.info("loginUser:{}", loginAdmin);
+
         Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
         super.safeJsonPrint(response, result);
-        log.info("return:{}", result);
+
         return;
     }
 

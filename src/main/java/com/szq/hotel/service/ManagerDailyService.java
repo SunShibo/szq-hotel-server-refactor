@@ -11,12 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.net.SocketTimeoutException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static java.lang.Float.NaN;
 
 
 @Service
@@ -4084,7 +4082,6 @@ public class ManagerDailyService {
             if(cashierSummary != null){
               n =   n.add(cashierSummary.getConsumption()) ;
             }
-
         }
         return n;
     }
@@ -4113,7 +4110,6 @@ public class ManagerDailyService {
             if(querygood != null){
                 n =  n.add(querygood.getConsumption()) ;
             }
-
         }
        return n ;
     }
