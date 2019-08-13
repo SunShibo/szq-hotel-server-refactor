@@ -889,6 +889,12 @@ public class OrderService {
         //取消旧主账房
         orderDAO.updateMainRoom(code);
 
+        //设置新主账房
+        OrderChildBO mainOrderChild = new OrderChildBO();
+        mainOrderChild.setId(orderChildId);
+        mainOrderChild.setMain("yes");
+        orderDAO.updOrderChild(mainOrderChild);
+
         //转账
         List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(mainId);
         String ids="";
@@ -909,11 +915,7 @@ public class OrderService {
         }
 
 
-        //设置新主账房
-        OrderChildBO mainOrderChild = new OrderChildBO();
-        mainOrderChild.setId(orderChildId);
-        mainOrderChild.setMain("yes");
-        orderDAO.updOrderChild(mainOrderChild);
+
     }
 
     //获取子订单剩余租期价格
