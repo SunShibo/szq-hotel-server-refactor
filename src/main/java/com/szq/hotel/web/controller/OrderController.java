@@ -1002,7 +1002,7 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}", result);
                 return;
             }
-            orderService.changeMainRoom(orderChildId);
+            orderService.changeMainRoom(orderChildId,userInfo.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
