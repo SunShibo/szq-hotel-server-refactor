@@ -364,31 +364,6 @@ public class MemberController extends BaseCotroller {
                 return;
             }
 
-            //通过id查询会员
-            MemberBO memberBOId = memberService.queryMemberById(memberBO.getId());
-            if (memberBOId!=null) {
-                //通过手机号查询会员
-                MemberBO memberBO1 = memberService.selectMemberByPhoneNum(memberBOId.getPhone());
-                if (!memberBOId.getPhone().equals(memberBO1.getPhone())) {
-                    if (memberBO1 != null) {
-                        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000210"));
-                        super.safeJsonPrint(response, result);
-                        log.info("result{}", result);
-                        return;
-                    }
-                }
-                //通过证件号查询会员
-                MemberBO memberBO2 = memberService.selectMemberByCertificateNumber(memberBOId.getCertificateNumber());
-                if (!memberBOId.getCertificateNumber().equals(memberBO2.getCertificateNumber())) {
-                    if (memberBO2 != null) {
-                        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000211"));
-                        super.safeJsonPrint(response, result);
-                        log.info("result{}", result);
-                        return;
-                    }
-                }
-            }
-
             MemberCardBO memberCardBO1 = memberCardService.getCardByMemberId(memberBO.getId());
             if (memberCardBO1!=null) {
                 //传的卡号和之前的不一样
