@@ -567,7 +567,7 @@
                     url: api.cancelSubUpdate,
                     type: 'POST',
                     dataType: 'json',
-                    data: {orderChildId: reservationOrderId},
+                    data: {orderChildId: JSON.stringify([reservationOrderId])},
                     success: function (data) {
                         if (!data.success) {
                             showMsg(data.errMsg, 2, false);
@@ -614,22 +614,6 @@
             });
         });
 
-        // //预约备注
-        // $('#reservationsRemarks').on('click', function () {
-        //     parent.layer.open({
-        //         type: 2,
-        //         skin: 'demo-class',
-        //         area: ['500px', '300px'],
-        //         title: '房屋备注',
-        //         shade: 0.6,
-        //         shadeClose: true,
-        //         content: 'iframe_exemption.html?s=4&o=' + subId + '&id=' + id + "&remark=" + encodeURI(subMessageRemark),
-        //         end: function () {
-        //             tab.reload();
-        //             getResult();
-        //         }
-        //     });
-        // });
     });
 </script>
 </body>

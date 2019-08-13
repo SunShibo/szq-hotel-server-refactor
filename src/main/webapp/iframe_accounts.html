@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>联房结账</title>
+    <title>联房</title>
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
     <style>
         #LAY_app, body, html {
@@ -35,6 +35,7 @@
 </div>
 <div style="height: 50px;"></div>
 <div class="layui-input-block" style="position: fixed; right: 20px; bottom: 20px;">
+    <button class="layui-btn" lay-submit="" lay-filter="setAccounts">设置主账房</button>
     <button class="layui-btn" lay-submit="" lay-filter="addAccounts">加入联房</button>
     <button class="layui-btn" lay-submit="" lay-filter="delAccounts">解散联房</button>
     <button type="button" class="layui-btn layui-btn-primary" id="back">取消</button>
@@ -117,6 +118,33 @@
             });
         }
 
+        //设置主账房
+        form.on('submit(setAccounts)', function (data) {
+            if (!selectDelArr.length) {
+                showMsg('请选择要设置的主账房', 2, false);
+                return false;
+            }
+            if (selectDelArr.length > 1) {
+                showMsg('主账房只能设置一间', 2, false);
+                return false;
+            }
+            $.ajax({
+                url: api.changeMainRoom,
+                typeL: 'POST',
+                dataType: 'json',
+                data: {orderChildId: selectDelArr[0]},
+                success: function (rs) {
+                    if (rs.success) {
+                        showMsg('加入成功', 1, false);
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    } else {
+                        showMsg(rs.errMsg, 2, false);
+                    }
+                }
+            })
+            return false;
+        });
 
         //添加
         form.on('submit(addAccounts)', function (data) {
@@ -134,7 +162,8 @@
                         showMsg(rs.errMsg, 2, false);
                     }
                 }
-            })
+            });
+            return false;
         });
 
         //解散
@@ -153,7 +182,8 @@
                         showMsg(rs.errMsg, 2, false);
                     }
                 }
-            })
+            });
+            return false;
         });
     });
 </script>

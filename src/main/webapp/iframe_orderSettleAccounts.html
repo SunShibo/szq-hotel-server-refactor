@@ -191,7 +191,10 @@
         //支付方法
         function pay() {
             //判断收款时是否填写减免金额
-            if (sessionData.status === 'yes' && ((requestData.integralReduction && !requestData.integral) || ((requestData.integralReduction || requestData.payType === 'stored') && !requestData.certificateNumber))) return false;
+            if (sessionData.status === 'yes' && ((requestData.integralReduction && !requestData.integral) || ((requestData.integralReduction || requestData.payType === 'stored') && !requestData.certificateNumber))) {
+                showMsg('请输入减免金额和身份证号！');
+                return false;
+            }
             if (sessionData.status === 'yes' && (requestData.integral > Math.abs(sessionData.money))) {
                 showMsg('减免金额不能大于应付金额', 2, false);
                 return false;
@@ -219,7 +222,7 @@
             requestData.status = sessionData.status;
 
             //删除不用的数据
-            if (!requestData.integralReduction || requestData.payType === 'stored') {
+            if (!requestData.integralReduction || !requestData.payType === 'stored') {
                 delete requestData.integral;
                 delete requestData.certificateNumber;
             }

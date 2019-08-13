@@ -60,12 +60,13 @@
         var element = layui.element;
         var table = layui.table;
         var $ = layui.$;
-        renderReport($)
+        renderReport($);
         $(function () {
             setInterval(function () {
                 getReport($)
-            }, 60000)
-        })
+            }, 60000);
+            visibilityChange();
+        });
         document.onkeydown = function (e) { // 回车提交表单
             var theEvent = window.event || e;
             var code = theEvent.keyCode || theEvent.which;

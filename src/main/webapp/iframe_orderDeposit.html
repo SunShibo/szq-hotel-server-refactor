@@ -106,7 +106,7 @@
             if (!requestData.money) return false;
             //押金金额不能小于0
             if (requestData.money <= 0) {
-                showMsg('押金金额不能小于0');
+                showMsg('押金金额不能小于0', 2, false);
                 return false;
             }
             //支付方式
