@@ -339,6 +339,26 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
+            MemberBO memberBOId = memberService.queryMemberById(memberBO.getId());
+            MemberBO memberBO1 = memberService.selectMemberByPhoneNum(memberBO.getPhone());
+            if (!memberBOId.getPhone().equals(memberBO.getPhone())){
+                if (memberBO1!=null){
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000210"));
+                    super.safeJsonPrint(response, result);
+                    log.info("result{}",result);
+                    return;
+                }
+            }
+
+            MemberBO memberBO2 = memberService.selectMemberByCertificateNumber(memberBO.getCertificateNumber());
+            if (!memberBOId.getCertificateNumber().equals(memberBO.getCertificateNumber())){
+                if (memberBO2!=null){
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000211"));
+                    super.safeJsonPrint(response, result);
+                    log.info("result{}",result);
+                    return;
+                }
+            }
             MemberCardBO memberCardBO1 = memberCardService.getCardByMemberId(memberBO.getId());
             if (memberCardBO1!=null) {
                 //传的卡号和之前的不一样
@@ -364,19 +384,21 @@ public class MemberController extends BaseCotroller {
                         //挂账
                         childOrderService.recorded(childId,money,"办卡",Constants.APPLYCARD.getValue(),loginAdmin.getId(),loginAdmin.getHotelId());
                     }
-                    //修改会员卡id
-                    String data = memberService.updateMember(memberBO, loginAdmin.getId());
 
-                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(data));
+                    //修改会员卡id
+                     memberService.updateMember(memberBO, loginAdmin.getId());
+
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改成功！"));
                     super.safeJsonPrint(response, result);
                     log.info("result{}",result);
                     return;
                 }
             }
 
+            
 
-            String data =memberService.updateMember(memberBO,loginAdmin.getId());
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(data));
+            memberService.updateMember(memberBO,loginAdmin.getId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改成功！"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;
