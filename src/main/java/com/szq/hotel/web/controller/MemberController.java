@@ -339,24 +339,28 @@ public class MemberController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
+            //通过id查询会员
             MemberBO memberBOId = memberService.queryMemberById(memberBO.getId());
-            MemberBO memberBO1 = memberService.selectMemberByPhoneNum(memberBO.getPhone());
-            if (!memberBOId.getPhone().equals(memberBO.getPhone())){
-                if (memberBO1!=null){
-                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000210"));
-                    super.safeJsonPrint(response, result);
-                    log.info("result{}",result);
-                    return;
+            if (memberBOId!=null) {
+                //通过手机号查询会员
+                MemberBO memberBO1 = memberService.selectMemberByPhoneNum(memberBO.getPhone());
+                if (!memberBOId.getPhone().equals(memberBO.getPhone())) {
+                    if (memberBO1 != null) {
+                        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000210"));
+                        super.safeJsonPrint(response, result);
+                        log.info("result{}", result);
+                        return;
+                    }
                 }
-            }
-
-            MemberBO memberBO2 = memberService.selectMemberByCertificateNumber(memberBO.getCertificateNumber());
-            if (!memberBOId.getCertificateNumber().equals(memberBO.getCertificateNumber())){
-                if (memberBO2!=null){
-                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000211"));
-                    super.safeJsonPrint(response, result);
-                    log.info("result{}",result);
-                    return;
+                //通过证件号查询会员
+                MemberBO memberBO2 = memberService.selectMemberByCertificateNumber(memberBO.getCertificateNumber());
+                if (!memberBOId.getCertificateNumber().equals(memberBO.getCertificateNumber())) {
+                    if (memberBO2 != null) {
+                        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000211"));
+                        super.safeJsonPrint(response, result);
+                        log.info("result{}", result);
+                        return;
+                    }
                 }
             }
             MemberCardBO memberCardBO1 = memberCardService.getCardByMemberId(memberBO.getId());
@@ -395,7 +399,7 @@ public class MemberController extends BaseCotroller {
                 }
             }
 
-            
+
 
             memberService.updateMember(memberBO,loginAdmin.getId());
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改成功！"));
