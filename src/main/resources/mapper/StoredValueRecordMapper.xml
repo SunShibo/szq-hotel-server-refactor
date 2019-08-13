@@ -18,6 +18,7 @@
     <select id="getStoredValueRecord" resultType="com.szq.hotel.entity.bo.StoredValueRecordBO" parameterType="java.util.Map">
         SELECT re.*,ad.`name` FROM `hm_stored_value_record` re LEFT JOIN hm_admin ad ON re.create_user_id = ad.id
         WHERE re.check_in_member_id = #{memberId}
+        ORDER BY re.create_time DESC
         <include refid="limit"/>
     </select>
     <!--储值记录数量-->
