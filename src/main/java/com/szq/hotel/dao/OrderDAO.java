@@ -99,6 +99,8 @@ public interface OrderDAO {
     Integer getRoomCountByRoomTypeIdByTime(@Param("roomTypeId") Integer roomTypeId,@Param("endTime")String endTime,@Param("startTime")String startTime,@Param("hotelId")Integer hotelId,@Param("roomId")Integer roomId);
     //修改备份信息
     Integer updOrderChildBackup(OrderChildBackupParam orderChildBackupParam);
+    //修改旧主帐房
+    Integer updateMainRoom(String alCode);
 
     /**
      * 订单列表

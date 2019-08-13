@@ -880,6 +880,17 @@ public class OrderService {
         orderDAO.updOrderChild(mainOrderChild);
     }
 
+    //设置主账房 旧主帐房全部变为子帐房
+    public void changeMainRoom(Integer orderChildId){
+        String code=orderDAO.getOrderChildById2(orderChildId).getAlRoomCode();
+        orderDAO.updateMainRoom(code);
+        //设置新主账房
+        OrderChildBO mainOrderChild = new OrderChildBO();
+        mainOrderChild.setId(orderChildId);
+        mainOrderChild.setMain("yes");
+        orderDAO.updOrderChild(mainOrderChild);
+    }
+
     //获取子订单剩余租期价格
     public List<EverydayRoomPriceBO> getRemainingLease(Integer orderChildId) throws ParseException {
         //获取今天四点

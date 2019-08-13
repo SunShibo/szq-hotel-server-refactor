@@ -664,6 +664,10 @@
         SELECT  money  FROM `hm_everyday_room_price` where order_child_id =#{id}  limit 0,1
     </select>
 
+    <update id="updateMainRoom" parameterType="java.lang.String">
+        update hm_order_child set main="no" where al_room_code=#{alCode}
+    </update>
+
     <sql id="orderLimit">
         limit #{pageOffset},#{pageSize}
     </sql>

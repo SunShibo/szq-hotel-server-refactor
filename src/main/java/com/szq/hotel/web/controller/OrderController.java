@@ -927,6 +927,38 @@ public class OrderController extends BaseCotroller {
     }
 
     /**
+     * 设置主账房
+     * @param orderChildId 子订单id 主账房id
+     * */
+    @RequestMapping("/changeMainRoom")
+    public void changeMainRoom(Integer orderChildId,HttpServletRequest request, HttpServletResponse response) {
+        try {
+            //验证管理员
+            AdminBO userInfo = super.getLoginAdmin(request);
+            if (userInfo == null) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            //验证参数
+            if (orderChildId == null || orderChildId.equals("") ) {
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
+                super.safeJsonPrint(response, result);
+                log.info("result{}", result);
+                return;
+            }
+            orderService.changeMainRoom(orderChildId);
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(null));
+            super.safeJsonPrint(response, result);
+            log.info("result{}", result);
+        } catch (Exception e) {
+            log.error("changeMainRoom", e);
+        }
+    }
+
+
+    /**
      * 检查身份证号是否在住
      *
      * @param id 身份证号
