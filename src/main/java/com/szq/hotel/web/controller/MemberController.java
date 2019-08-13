@@ -365,9 +365,9 @@ public class MemberController extends BaseCotroller {
                         childOrderService.recorded(childId,money,"办卡",Constants.APPLYCARD.getValue(),loginAdmin.getId(),loginAdmin.getHotelId());
                     }
                     //修改会员卡id
-                    memberService.updateMember(memberBO, loginAdmin.getId());
+                    String data = memberService.updateMember(memberBO, loginAdmin.getId());
 
-                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改会员信息成功！"));
+                    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(data));
                     super.safeJsonPrint(response, result);
                     log.info("result{}",result);
                     return;
@@ -375,8 +375,8 @@ public class MemberController extends BaseCotroller {
             }
 
 
-            memberService.updateMember(memberBO,loginAdmin.getId());
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("修改会员信息成功！"));
+            String data =memberService.updateMember(memberBO,loginAdmin.getId());
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(data));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
             return;

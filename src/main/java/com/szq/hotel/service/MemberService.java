@@ -68,12 +68,29 @@ public class MemberService {
     /*
         修改会员信息
      */
-    public void updateMember(MemberBO memberBO,Integer userId){
+    public String updateMember(MemberBO memberBO,Integer userId){
         log.info("start================updateMember");
         log.info("param{}\tUserId{}",memberBO,userId);
-        memberBO.setUpdateUserId(userId);
-        memberDAO.updateMember(memberBO);
-        log.info("end===================updateMember");
+        MemberBO memberBOId = memberDAO.queryMemberById(memberBO.getId());
+        MemberBO memberBO1 = memberDAO.selectMemberByPhoneNum(memberBO.getPhone());
+        if (!memberBOId.getPhone().equals(memberBO.getPhone())){
+            if (memberBO1!=null){
+                return "该手机号已存在！";
+            }
+        }
+
+        MemberBO memberBO2 = memberDAO.selectMemberByCertificateNumber(memberBO.getCertificateNumber());
+        if (!memberBOId.getCertificateNumber().equals(memberBO.getCertificateNumber())){
+            if (memberBO2!=null){
+                return "该证件号已存在！";
+            }
+        }
+
+            memberBO.setUpdateUserId(userId);
+            memberDAO.updateMember(memberBO);
+            log.info("end===================updateMember");
+            return "修改成功";
+
     }
 
     /*
