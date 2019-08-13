@@ -774,6 +774,8 @@ public class OrderService {
             map.put("id", oldOrderChild.getRoomId());
             if (entTime.compareTo(new Date()) > 0) {
                 map.put("state", Constants.INTHE.getValue());
+            }else{
+                map.put("state", Constants.TIMEOUT.getValue());
             }
             map.put("remark", "续租");
             map.put("userId", userId);
