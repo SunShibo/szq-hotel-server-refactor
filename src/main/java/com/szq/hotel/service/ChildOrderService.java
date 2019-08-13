@@ -256,7 +256,7 @@ public class ChildOrderService {
             //收
             resultMap.put("status", "yes");
         }
-        resultMap.put("money", consumption + pay);
+        resultMap.put("money", new BigDecimal(consumption + pay).abs());
 
         log.info("end queryChildleAccounts.........................................................");
         return resultMap;
@@ -327,6 +327,8 @@ public class ChildOrderService {
             }
             //积分减免
             if (param.getIntegral() != null) {
+                Integer intId=orderRecordService.addOrderRecord(chilId, Constants.CONSUMPTIONITEM.getValue(), Constants.INTEGRAL.getValue(), param.getIntegral(), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
+                buffer.append(intId).append(",");
                 memberService.integralBreaks(param.getCertificateNumber(), param.getIntegral(), Constants.CONSUMPTIONITEM.getValue(), "积分支付", userId);
                 cashierSummaryService.addAccounts(param.getIntegral(), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), Constants.INTEGRAL.getValue(),
                         childOrderBO.getPassengerSource(),childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
@@ -396,6 +398,8 @@ public class ChildOrderService {
 
             //积分减免
             if (param.getIntegral() != null) {
+                orderRecordService.addOrderRecord(childMain, Constants.CONSUMPTIONITEM.getValue(), Constants.INTEGRAL.getValue(), param.getIntegral(), Constants.SETTLE.getValue(), userId, null, Constants.YES.getValue());
+                childOrderDAO.free(childMain, param.getIntegral().multiply(new BigDecimal("-1")));
                 memberService.integralBreaks(param.getCertificateNumber(), param.getIntegral(), Constants.CONSUMPTIONITEM.getValue(), "积分支付", userId);
                 cashierSummaryService.addAccounts(param.getIntegral(), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), Constants.INTEGRAL.getValue(),
                        childOrderBO.getPassengerSource(),  childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
