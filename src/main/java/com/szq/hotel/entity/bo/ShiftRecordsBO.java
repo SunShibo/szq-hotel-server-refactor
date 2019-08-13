@@ -238,7 +238,7 @@ public class ShiftRecordsBO extends BaseModel {
     }
 
     public void setIntegralBack(BigDecimal integralBack) {
-        this.integralBack = integralBack;
+       this.integralBack = integralBack;
     }
 
     public BigDecimal getIntegralAmount() {
