@@ -195,8 +195,8 @@
                 showMsg('请输入减免金额和身份证号！');
                 return false;
             }
-            if (sessionData.status === 'yes' && (requestData.integral > Math.abs(sessionData.money))) {
-                showMsg('减免金额不能大于应付金额', 2, false);
+            if (sessionData.status === 'yes' && (requestData.integral !== Math.abs(sessionData.money))) {
+                showMsg('减免金额应大于0小于应付金额', 2, false);
                 return false;
             }
             //退款时判断退款金额是否大于总金额
