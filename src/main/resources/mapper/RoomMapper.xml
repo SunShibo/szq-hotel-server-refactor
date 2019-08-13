@@ -588,6 +588,7 @@
     and hotel_id = #{hotelId} and
      room_major_state IN
         (#{inthe},#{timeout})
+        and 'show' = 'yes'
      </select>
 
     <select id="queryRoomFx" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RmBO">

@@ -357,6 +357,12 @@ public class RoomController extends BaseCotroller {
             super.safeHtmlPrint(response, json);
             return;
         }
+
+
+        int i = DateUtils.parseDate(checkTime,"yyyy/MM/dd HH:mm:sss").compareTo(DateUtils.parseDate(endTime,"yyyy/MM/dd HH:mm:sss"));
+        System.err.println("开始结束时间标识:"+i);
+
+
         log.info("进入此方法");
         Map<String, Object> map = new HashMap<String, Object>();
         if (StringUtils.isEmpty(roomAuxiliaryStatus)) {
@@ -391,7 +397,6 @@ public class RoomController extends BaseCotroller {
 
         List<List<RmBO>> lists = roomService.queryRm(map);
         //根据全天房手机号查询预约入住房间
-
         List<RmBO> rmBOS = roomService.queryUserRoom(loginUser.getHotelId(), phone);
         lists.add(rmBOS);
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(lists));
@@ -916,7 +921,11 @@ public class RoomController extends BaseCotroller {
     public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
         log.info("todayPictureView*****************************************************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
-
+        if(loginAdmin == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
         Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
         super.safeJsonPrint(response, result);
