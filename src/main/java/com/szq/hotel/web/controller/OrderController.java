@@ -192,6 +192,9 @@ public class OrderController extends BaseCotroller {
             RedisTool.releaseDistributedLock(jedis, "500", requestId);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("reservationRoomException", e);
         }
     }
@@ -262,6 +265,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("closeOrder", e);
         }
     }
@@ -300,6 +306,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getReservationRoomInfo", e);
         }
     }
@@ -334,6 +343,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getOrderById", e);
         }
     }
@@ -368,6 +380,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getRoomInfoById", e);
         }
     }
@@ -402,6 +417,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getOrderInfoById", e);
         }
 
@@ -437,6 +455,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getOrderInfoById", e);
         }
 
@@ -517,6 +538,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("pay", e);
         }
 
@@ -565,6 +589,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getPayInfo", e);
 
         }
@@ -624,6 +651,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getPayInfo", e);
 
         }
@@ -653,6 +683,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getCheckInReport", e);
         }
     }
@@ -687,6 +720,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getCheckOutReport", e);
         }
 
@@ -720,6 +756,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getCheckInInfo", e);
         }
 
@@ -753,6 +792,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getCheckInInfo", e);
         }
 
@@ -819,6 +861,9 @@ public class OrderController extends BaseCotroller {
             log.info("result{}", result);
             return;
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("updCheckInInfo", e);
         }
     }
@@ -850,6 +895,9 @@ public class OrderController extends BaseCotroller {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(checkInPersonBOS));
             super.safeJsonPrint(response, result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getAlRoom", e);
         }
     }
@@ -892,6 +940,9 @@ public class OrderController extends BaseCotroller {
             }
 
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("updAlRoom", e);
         }
     }
@@ -922,6 +973,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("addAlRoom", e);
         }
     }
@@ -953,6 +1007,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("changeMainRoom", e);
         }
     }
@@ -995,6 +1052,9 @@ public class OrderController extends BaseCotroller {
                 log.info("result{}", result);
             }
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("checkId", e);
         }
 
@@ -1030,6 +1090,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getRemainingLease", e);
         }
     }
@@ -1080,6 +1143,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("changeRoom", e);
         }
     }
@@ -1124,6 +1190,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("getCheckOutInfo", e);
         }
     }
@@ -1160,6 +1229,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("checkOut", e);
         }
     }
@@ -1204,6 +1276,9 @@ public class OrderController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
         } catch (Exception e) {
+            e.getStackTrace();
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000005"));
+            super.safeJsonPrint(response, result);
             log.error("checkOutRollback", e);
         }
     }
