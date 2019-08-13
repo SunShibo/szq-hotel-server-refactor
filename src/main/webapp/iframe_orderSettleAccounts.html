@@ -195,7 +195,7 @@
                 showMsg('请输入减免金额和身份证号！');
                 return false;
             }
-            if (sessionData.status === 'yes' && (requestData.integral !== Math.abs(sessionData.money))) {
+            if (sessionData.status === 'yes' && (requestData.integral > Math.abs(sessionData.money) || requestData.integral < 0)) {
                 showMsg('减免金额应大于0小于应付金额', 2, false);
                 return false;
             }
