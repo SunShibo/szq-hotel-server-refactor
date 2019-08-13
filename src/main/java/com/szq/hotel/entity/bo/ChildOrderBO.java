@@ -9,12 +9,12 @@ public class ChildOrderBO extends BaseModel {
     private Integer id;//子订单
     private Date startTime;//入住时间
     private Date endTime;//退房时间
-    private BigDecimal payCashNum;//支付现金 金额
-    private BigDecimal otherPayNum;//其他支付金额
-    private BigDecimal roomRate;//房费 //未查询!!!!!!!
-    private BigDecimal otherRate;//其他费用
-    private BigDecimal timeoutRate;//超时费用
-    private BigDecimal freeRateNum;//免单金额
+    private BigDecimal payCashNum=new BigDecimal(0);//支付现金 金额
+    private BigDecimal otherPayNum=new BigDecimal(0);//其他支付金额
+    private BigDecimal roomRate=new BigDecimal(0);//房费 //未查询!!!!!!!
+    private BigDecimal otherRate=new BigDecimal(0);//其他费用
+    private BigDecimal timeoutRate=new BigDecimal(0);//超时费用
+    private BigDecimal freeRateNum=new BigDecimal(0);//免单金额
     private String orderState;//订单状态
     private String roomName;//房间号
     private String roomTypeName;//房型名字
