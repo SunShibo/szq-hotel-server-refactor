@@ -123,11 +123,11 @@ WHERE id = #{id}
     </update>
     <!--通过手机号查询会员信息-->
     <select id="selectMemberByPhone" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
-        SELECT * FROM hm_member WHERE phone = #{phone}
+        SELECT * FROM hm_member WHERE phone = #{phone} AND state = 'yes'
     </select>
     <!--通过证件号查询会员信息-->
     <select id="selectMemberByCerNumber" resultType="com.szq.hotel.entity.bo.MemberBO" parameterType="java.lang.String">
-        SELECT * FROM hm_member WHERE certificate_number = #{certificateNumber}
+        SELECT * FROM hm_member WHERE certificate_number = #{certificateNumber} AND state = 'yes'
     </select>
     <!--通过证件号查询会员id-->
     <select id="getIdByCerNumber" resultType="java.lang.Integer" parameterType="java.lang.String">
