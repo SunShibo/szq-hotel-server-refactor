@@ -45,7 +45,7 @@
     </ul>
 </nav>
 <div style="height: 60px;"></div>
-<form class="  layui-form" style="width: 500px;padding: 20px;">
+<form class="  layui-form" style="width: 520px;padding: 20px;">
     <div  class="layui-form-item fr">
         <label class="layui-form-label">会员级别</label>
         <div class="layui-input-inline">
@@ -54,8 +54,8 @@
         </div>
     </div>
     <div  class="layui-form-item">
-        <div class="layui-inline" style="width: 150px;visibility: hidden">
-            <p style="text-align: center">房型(基础价)</p>
+        <div class="layui-inline" style="width: 150px;">
+            <p style="text-align: center">1积分抵多少元</p>
         </div>
         <div class="layui-inline" style="width: 150px;">
             <p style="text-align: center">消费1元获得多少积分</p>
@@ -151,12 +151,19 @@
                 var price = r[i].price;
                 str +=
                   [ '<div  class="layui-form-item"> ',
-                ' <div class="layui-inline type" >',
-                '   <p>',
-                      // r[i].roomTypeName,
-                      // '(',
+                ' <div class="layui-inline inputv" >',
+                // '   <p>',
+                //       r[i].integralToMoney,
+                //       '</p>',
+                      '   <input  data-pri="',
                       // r[i].price,
-                      '</p>',
+                      '" type="number" data-id="',
+                      r[i].id,
+                      '" name="integralToMoney" id="integralToMoney',
+                      r[i].id,
+                      '"  value="',
+                      r[i].integralToMoney,
+                      '" />',
                 '   </div>',
                 '   <div class="layui-inline inputv">',
                 '   <input  type="hidden" name="id" value="',
