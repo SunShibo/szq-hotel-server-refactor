@@ -70,7 +70,7 @@
                `hm_shift_records` shift  LEFT JOIN hm_classes  cla ON cla.id=shift.classes_id
                LEFT JOIN hm_admin admin ON shift.admin_id=admin.id
                <where>
-                   shift.hotel_id=#{hotelId}
+                   shift.hotel_id=#{hotelId}  AND  shift.closing_time IS NOT NULL
                    <if test="name!=null and name!=''" >
                       AND admin.name  LIKE  '%${name}%'
                     </if>
