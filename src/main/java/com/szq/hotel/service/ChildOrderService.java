@@ -40,17 +40,19 @@ public class ChildOrderService {
         log.info("start addCashPledge........................................");
         log.info("payType:{}\torderChildId:{}\tmoney:{}\tuserId:{}", payType, orderChildId, money, userId);
         //生成记录
+        ChildOrderBO childOrderBO = this.queryOrderChildById(orderChildId);
+        Integer mainId=this.queryOrderChildMain(childOrderBO.getAlRoomCode());
         orderRecordService.addOrderRecord(orderChildId, "入住押金", payType, money, Constants.CASHPLEDGE.getValue(), userId, null, Constants.NO.getValue());
         //增加金额
         if (Constants.CASH.getValue().equals(payType)) {
             log.info("increaseCashCashPledge...............................");
-            childOrderDAO.increaseCashCashPledge(orderChildId, money);
+            childOrderDAO.increaseCashCashPledge(mainId, money);
         } else {
             log.info("increaseOtherCashPledge...............................");
-            childOrderDAO.increaseOtherCashPledge(orderChildId, money);
+            childOrderDAO.increaseOtherCashPledge(mainId, money);
         }
 
-        ChildOrderBO order = childOrderDAO.queryOrderChildById(orderChildId);
+        ChildOrderBO order = childOrderDAO.queryOrderChildById(mainId);
         //报表
         cashierSummaryService.addCheck(money, payType, IDBuilder.getOrderNumber(), userId, order.getName(), order.getOTA(),
                 order.getPassengerSource(), order.getChannel(), order.getRoomName(), order.getRoomTypeName(), null, hotelId);
