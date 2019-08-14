@@ -233,10 +233,10 @@ public class ChildOrderService {
                 payType.add(Constants.CASH.getValue());
             }
             payType.removeAll(Collections.singleton(null));
+            payType.remove(Constants.INTEGRAL.getValue());
             log.info("PayType:{}", payType);
             resultMap.put("payType", payType);
         }
-
         //查询消费多少
 
         double consumption = 0;
