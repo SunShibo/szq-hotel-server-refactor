@@ -164,13 +164,13 @@ public class MemberController extends BaseCotroller {
             MemberBO memberBO1 = memberService.selectMemberByPhone(phone);
             MemberBO memberBO2 = memberService.selectMemberByCerNumber(certificateNumber);
             if (memberBO1!=null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000203"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000210"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;
             }
             if (memberBO2!=null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000204"));
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000211"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return ;
