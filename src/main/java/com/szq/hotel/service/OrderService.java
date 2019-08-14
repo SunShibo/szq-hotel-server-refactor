@@ -1516,12 +1516,12 @@ public class OrderService {
             orderDAO.updOrderChild(orderChildBO);
 
             //把入住的房间修改为在住 目前好像没用
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", orderChildBO.getRoomId());
-            map.put("state", Constants.INTHE.getValue());
-            map.put("remark", "入住支付");
-            map.put("userId", userId);
-            roomService.updateroomMajorState(map);
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            map.put("id", orderChildBO.getRoomId());
+//            map.put("state", Constants.INTHE.getValue());
+//            map.put("remark", "入住支付");
+//            map.put("userId", userId);
+//            roomService.updateroomMajorState(map);
         }
     }
 

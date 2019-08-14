@@ -41,7 +41,7 @@ public class MemberRoomTypeController extends BaseCotroller {
      */
     @RequestMapping("/updateMemberRoomType")
     public void updateMemberRoomType(Integer memberLevelId, BigDecimal discount,
-                                     BigDecimal consumeGetIntegral,HttpServletRequest request, HttpServletResponse response){
+                                     BigDecimal consumeGetIntegral,BigDecimal integralToMoney,HttpServletRequest request, HttpServletResponse response){
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
@@ -61,6 +61,7 @@ public class MemberRoomTypeController extends BaseCotroller {
             }
                 MemberLevelBO memberLevelBO = new MemberLevelBO();
                 memberLevelBO.setConsumeGetIntegral(consumeGetIntegral);
+                memberLevelBO.setIntegralToMoney(integralToMoney);
                 memberLevelBO.setDiscount(discount);
                 memberLevelBO.setId(memberLevelId);
                 memberRoomTypeService.updateMemberRoomType(memberLevelBO,loginAdmin.getId());

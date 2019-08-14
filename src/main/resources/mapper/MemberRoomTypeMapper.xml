@@ -17,7 +17,7 @@
     <!--修改会员折扣-->
     <update id="updateMemberRoomType" parameterType="com.szq.hotel.entity.bo.MemberLevelBO">
         UPDATE `hm_member_level` SET `discount` = #{discount},
-        `consume_get_integral`=#{consumeGetIntegral},
+        `consume_get_integral`=#{consumeGetIntegral},`integral_to_money`=#{integralToMoney},
         `update_time` = NOW(),`update_user_id` =#{updateUserId}
         WHERE `id` = #{id}
     </update>

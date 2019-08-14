@@ -115,33 +115,6 @@ public class OrderController extends BaseCotroller {
                     return;
                 }
             }
-//            if(type.equals("directly")||type.equals("roomReservation")){
-//                for (OrderChildBO orderChildBO : list) {
-//                    boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
-//                            orderBO.getCheckOutTime(),orderBO.getCheckTime(),list.size(), userInfo.getHotelId());
-//                    if (!bool) {
-//                        String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "入住日期冲突"));
-//                        super.safeJsonPrint(response, result);
-//                        log.info("result{}", result);
-//                        return;
-//                    }
-//                }
-//            }else{
-//                //如果是 预约入住 或者 预约修改
-//                OrderBO oldOrderBO=orderService.getOrderBoByOrderId(orderBO.getId());
-//                if(orderBO.getCheckOutTime().compareTo(oldOrderBO.getCheckOutTime())!=0){
-//                    for (OrderChildBO orderChildBO : list) {
-//                        boolean bool = orderService.getOrderChildCountByRoomIdByTime(orderChildBO.getRoomId(), orderChildBO.getRoomTypeId(),
-//                                orderBO.getCheckOutTime(),orderBO.getCheckTime(),list.size(), userInfo.getHotelId());
-//                        if (!bool) {
-//                            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000097", "入住日期冲突"));
-//                            super.safeJsonPrint(response, result);
-//                            log.info("result{}", result);
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
 
 
             if (type.equals("reservation") || type.equals("directly")) {
@@ -523,7 +496,7 @@ public class OrderController extends BaseCotroller {
             } else {
                 orderChildBO.setOtherPayNum(money);
             }
-            orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
+            //orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
             orderChildBO.setMain("yes");
             orderService.updOrderChild(orderChildBO);
 

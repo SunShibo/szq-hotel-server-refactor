@@ -160,14 +160,20 @@ public class MemberService {
         Integer cardId = memberBO.getMemberCardId();
         //通过会员卡id查找会员级别对象
         MemberLevelBO memberLevelBO = memberLevelService.getLevelByCardId(cardId);
-        //得到消费1元获得多少积分
-        BigDecimal consumeGetIntegral = memberLevelBO.getConsumeGetIntegral();
-        //得出应该减多少积分
-        BigDecimal integral = subtractMoney.divide(consumeGetIntegral);
+        //得到1积分等于多少元
+        BigDecimal integralToMoney = memberLevelBO.getIntegralToMoney();
+        BigDecimal integral ;
+        if (integralToMoney==new BigDecimal(0)){
+            integral = new BigDecimal(0);
+        }else {
+            //得出应该减多少积分
+            integral = subtractMoney.divide(integralToMoney).setScale(2,BigDecimal.ROUND_HALF_UP);
+        }
         Map<String,Object> map = new HashMap<String, Object>();
         //进行封装
         map.put("certificateNumber",certificateNumber);
         map.put("integral",integral);
+        //积分减免
         memberDAO.integralBreaks(map);
         //查询最新
         MemberBO memberBO1 = this.selectMemberByCerNumber(certificateNumber);
