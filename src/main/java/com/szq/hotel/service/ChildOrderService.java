@@ -233,10 +233,10 @@ public class ChildOrderService {
                 payType.add(Constants.CASH.getValue());
             }
             payType.removeAll(Collections.singleton(null));
+            payType.remove(Constants.INTEGRAL.getValue());
             log.info("PayType:{}", payType);
             resultMap.put("payType", payType);
         }
-
         //查询消费多少
 
         double consumption = 0;
@@ -346,9 +346,9 @@ public class ChildOrderService {
         orderRecordService.closedAccount(StringUtils.strToList(ids));
         // 是会员应增加相对应积分
         if (childOrderBO.getMembersId() != null) {
-            if ((new BigDecimal(orderRecordService.consumption(StringUtils.strToList(ids))).multiply(new BigDecimal("-1"))).compareTo(new BigDecimal("0")) == 1) {
-                BigDecimal bigDecimal = memberService.accountIntegral(childOrderBO.getMembersId(), new BigDecimal(orderRecordService.consumption(StringUtils.strToList(ids))).multiply(new BigDecimal("-1")), "结账", userId);
-                cashierSummaryService.addAccounts(bigDecimal.multiply(new BigDecimal("-1")), childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), Constants.INTEGRAL.getValue(),
+            if (status.equals("yes") &&  param.getMoney().compareTo(new BigDecimal("0") )==1){
+                BigDecimal bigDecimal = memberService.accountIntegral(childOrderBO.getMembersId(), param.getMoney(), "结账", userId);
+                cashierSummaryService.addAccounts(bigDecimal, childOrderBO.getOrderNumber(), userId, childOrderBO.getName(), childOrderBO.getOTA(), Constants.INTEGRAL.getValue(),
                         childOrderBO.getPassengerSource(), childOrderBO.getChannel(), childOrderBO.getRoomName(), childOrderBO.getRoomTypeName(),
                         Constants.CONSUMPTIONITEM.getValue(), hotelId);
             }
