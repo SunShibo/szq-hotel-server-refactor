@@ -304,6 +304,12 @@
             } else{
                 $('#finish,#checkIn').removeClass('layui-btn-disabled').prop('disabled', '');
             }
+            //脏房不能入住
+            if(dirty === 'true'){
+                $('#checkIn').addClass('layui-btn-disabled').prop('disabled', 'disabled');
+            }else{
+                $('#checkIn').removeClass('layui-btn-disabled').prop('disabled', '');
+            }
 
             $.ajax({
                 url: api.homeRoomInfo,
@@ -567,7 +573,7 @@
                     url: api.cancelSubUpdate,
                     type: 'POST',
                     dataType: 'json',
-                    data: {orderChildId: reservationOrderId},
+                    data: {orderChildIdS: reservationOrderId},
                     success: function (data) {
                         if (!data.success) {
                             showMsg(data.errMsg, 2, false);
@@ -614,22 +620,6 @@
             });
         });
 
-        // //预约备注
-        // $('#reservationsRemarks').on('click', function () {
-        //     parent.layer.open({
-        //         type: 2,
-        //         skin: 'demo-class',
-        //         area: ['500px', '300px'],
-        //         title: '房屋备注',
-        //         shade: 0.6,
-        //         shadeClose: true,
-        //         content: 'iframe_exemption.html?s=4&o=' + subId + '&id=' + id + "&remark=" + encodeURI(subMessageRemark),
-        //         end: function () {
-        //             tab.reload();
-        //             getResult();
-        //         }
-        //     });
-        // });
     });
 </script>
 </body>

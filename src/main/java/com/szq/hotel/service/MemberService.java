@@ -71,9 +71,10 @@ public class MemberService {
     public void updateMember(MemberBO memberBO,Integer userId){
         log.info("start================updateMember");
         log.info("param{}\tUserId{}",memberBO,userId);
-        memberBO.setUpdateUserId(userId);
-        memberDAO.updateMember(memberBO);
-        log.info("end===================updateMember");
+            memberBO.setUpdateUserId(userId);
+            memberDAO.updateMember(memberBO);
+            log.info("end===================updateMember");
+
     }
 
     /*

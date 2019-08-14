@@ -53,4 +53,14 @@ public class RtBO extends BaseModel {
         this.hourRoomPrice = hourRoomPrice;
     }
 
+    @Override
+    public String toString() {
+        return "RtBO{" +
+                "roomTypeName='" + roomTypeName + '\'' +
+                ", id=" + id +
+                ", hotelId=" + hotelId +
+                ", basicPrice=" + basicPrice +
+                ", hourRoomPrice=" + hourRoomPrice +
+                '}';
+    }
 }

@@ -537,7 +537,7 @@
   </select>
 
     <select id="queryRooms" resultType="com.szq.hotel.entity.bo.RoomBO">
-    select * from hm_room where hotel_id = #{hotelId} and room_name = #{name};
+    select * from hm_room where hotel_id = #{hotelId} and room_name = #{name} and `show` = 'yes';
   </select>
 
     <update id="closeRoom">
@@ -548,10 +548,8 @@
         lock_room_start_time = #{startTime},
         lock_room_end_time = #{endTime},
         remark = #{remark}
-        where id in
-        <foreach item="item" collection="list" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        where id  = #{list}
+
     </update>
 
     <update id="opeRoom">
@@ -590,6 +588,7 @@
     and hotel_id = #{hotelId} and
      room_major_state IN
         (#{inthe},#{timeout})
+        and `show` = 'yes'
      </select>
 
     <select id="queryRoomFx" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RmBO">
@@ -693,6 +692,24 @@
         and hm_room.id = #{id}
     </select>
 
+    <select id="selectRoomId2" resultType="com.szq.hotel.entity.bo.RmBO">
+         SELECT hm_room.* , hm_hotel.name AS hotelName, hm_room_type.basic_price,
+        hm_room_type.hour_room_price,hm_room_type.room_type_name as roomType,
+        hm_floor.name AS floorName,
+        hm_room_type.room_type_name AS roomType,
+        hm_room_type.basic_price AS basicPrice,
+        hm_room_type.hour_room_price AS hourRoomPrice
+        FROM hm_floor,
+        hm_hotel,
+        hm_room_type,
+        hm_room
+        WHERE hm_room.room_type_id = hm_room_type.id
+        AND hm_room.floor_id = hm_floor.id
+        AND hm_room.hotel_id = hm_hotel.id
+        AND hm_room.room_state = 'no'
+        and hm_room.id = #{id}
+    </select>
+
     <select id="queryOrderTypeRoom" resultType="com.szq.hotel.entity.bo.RmTypeIdBO">
         SELECT  hm_order_child.room_type_id , hm_order_child.start_time as startTime,hm_order_child.end_time as endTime FROM hm_order,hm_order_child
         WHERE hm_order.id = hm_order_child.order_id
@@ -767,6 +784,19 @@
          AND hm_order.hotel_id = #{hotelId} AND hm_order_child.order_state = 'admissions'  AND hm_order.memberId_or_organizationId IS NOT NULL
     </select>
 
-
+    <select id="roomExcel" resultType="com.szq.hotel.entity.bo.RoomExportBO" >
+        SELECT hm_room.room_name as roomName , hm_hotel.name as hotelName, hm_floor.name as floorName, hm_room_type.room_type_name as
+        roomTypeName,hm_room.room_major_state as roomMajorState, hm_room.room_state as roomState,
+        hm_room.lock_room_state as lockRoomState ,  hm_room.lock_room_start_time as lockRoomStartTime,
+        hm_room.lock_room_end_time as lockRoomEndTime, hm_room.remark as remark,
+        hm_room_type.basic_price as basicPrice, hm_room_type.hour_room_price as hourRoomPrice
+        FROM hm_floor, hm_hotel, hm_room_type, hm_room
+        WHERE hm_room.room_type_id = hm_room_type.id AND hm_room.floor_id = hm_floor.id
+        AND hm_room.hotel_id = hm_hotel.id
+        <if test="hotelId != null and hotelId != ''">
+            and hm_room.hotel_id = #{hotelId}
+        </if>
+        and hm_room.show = 'yes'
+    </select>
 
 </mapper>

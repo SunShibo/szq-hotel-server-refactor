@@ -56,19 +56,21 @@
         WHERE  admin.id=#{userId}  AND    su.`type`=#{payType} AND
         su.create_time  BETWEEN #{startTime}  AND #{endTime}  AND settlement > 0
     </select>
-    <!--办卡数-->
+    <!--办卡数--><!--8.12 wuyang修改-->
     <select id="queryServizioCount" parameterType="java.util.Map" resultType="int" >
-        SELECT COUNT(su.id)  FROM `hm_cashier_summary` su LEFT JOIN hm_admin  admin ON admin.id=su.user_id
-        WHERE  admin.id=#{userId}  AND
-        su.create_time  BETWEEN #{startTime}  AND #{endTime}  AND project ='办卡'
+        SELECT COUNT(id)    FROM `hm_cashier_summary`
+        WHERE  user_id=#{userId}  AND
+        create_time  BETWEEN #{startTime}  AND #{endTime}  AND project ='办卡'  AND  settlement=0
     </select>
+
+
     <!--交班记录列表页-->
     <select id="queryShiftRecordList"  parameterType="java.util.Map" resultType="com.szq.hotel.entity.bo.ShiftRecordsBO" >
         SELECT shift.*,cla.classes_name,cla.start_time,cla.end_time,admin.`name` FROM
                `hm_shift_records` shift  LEFT JOIN hm_classes  cla ON cla.id=shift.classes_id
                LEFT JOIN hm_admin admin ON shift.admin_id=admin.id
                <where>
-                   shift.hotel_id=#{hotelId}
+                   shift.hotel_id=#{hotelId}  AND  shift.closing_time IS NOT NULL
                    <if test="name!=null and name!=''" >
                       AND admin.name  LIKE  '%${name}%'
                     </if>

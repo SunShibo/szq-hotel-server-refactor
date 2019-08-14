@@ -123,7 +123,7 @@
 
     <!--预离店数量-->
     <select id="queryCheOutCount"  parameterType="java.util.Map"  resultType="int"  >
-      SELECT  COUNT(id)  FROM `hm_order_child` WHERE
-       order_state='admissions'   AND end_time  BETWEEN #{ startTime}  AND #{endTime}
+      SELECT  COUNT(child.id)  FROM `hm_order_child` child LEFT JOIN hm_order der on child.order_id=der.id WHERE
+       order_state='admissions' AND der.hotel_id=#{hotelId}   AND end_time  BETWEEN #{ startTime}  AND #{endTime}
     </select>
 </mapper>

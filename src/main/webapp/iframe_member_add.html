@@ -166,7 +166,7 @@
             if (flag) {
                 // delete formData.birthday;
                 // sessionStorage.addMemberInfo = JSON.stringify(formData);
-                $.getJSON(api.getCardNoByLeaveId + $("#memberLevelId").val() + "&phone=" + data.field.phone + '&certificateNumber=' + data.field.certificateNumber, function (rs) {
+                $.getJSON(api.getCardNoByLeaveId + $("#memberLevelId").val() + "&phone=" + data.field.phone + '&certificateNumber=' + data.field.certificateNumber + "&random=" + Date.now(), function (rs) {
                     if (!rs.success) {
                         layer.alert(rs.errMsg);
                         return false;
@@ -198,7 +198,7 @@
                     }
                 })
             } else {
-                $.getJSON(api.getCardUpdate + "&memberId=" + getUrl('id') + "&memberCardLevelId=" + $("#memberLevelId").val() + "&random=" + Date.now(), function (rs) {
+                $.getJSON(api.getCardUpdate + "&memberId=" + getUrl('id') + "&memberCardLevelId=" + $("#memberLevelId").val() + "&phone=" + data.field.phone + '&certificateNumber=' + data.field.certificateNumber + "&random=" + Date.now(), function (rs) {
                     if (!rs.success) {
                         layer.alert(rs.errMsg);
                         return false;
@@ -224,8 +224,9 @@
                             data: formData,
                             success: function (res) {
                                 if (res.success) {
-                                    showMsg(res.data, 1, false);
-                                    closeWin();
+                                    layer.alert('修改成功，即将关闭页面！', {icon: 1}, function () {
+                                        closeWin();
+                                    });
                                 } else {
                                     showMsg(res.errMsg, 2, false);
                                 }

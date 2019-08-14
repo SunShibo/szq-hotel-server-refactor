@@ -200,7 +200,7 @@
 
         //监听导出按钮提交
         form.on('submit(outExcel)', function (data) {
-            location.href = '/room/outExcel?roomNum=' + data.field.roomNum + '&houseTypeId=' + data.field.house + '&hotelId=' + data.field.building + '&floorName=' + data.field.floor
+            location.href = 'room/roomExcel?roomName=' + data.field.roomName + '&roomTypeId=' + data.field.roomTypeId + '&floorId=' + data.field.floorId;
             return false;
         });
 

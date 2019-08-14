@@ -136,6 +136,7 @@ public class ShiftRecordsService {
 
         //办卡数
         int count = shiftRecordsDAO.queryServizioCount(queryMap);
+
         shiftRecordsBO.setMemberCardSellCount(count);
         log.info("shiftRecordsDAO.queryIncome..shiftRecordsDAO.queryBack.....result{}", shiftRecordsBO);
 

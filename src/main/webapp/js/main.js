@@ -136,6 +136,7 @@ var api = {
     , jointHousingt: '/order/getAlRoom '//查询可加入联房信息   已修改
     , join: '/order/addAlRoom'//加入联房   已修改
     , dismiss: '/order/updAlRoom'//解散联房  已修改
+    , changeMainRoom: '/order/changeMainRoom'//设置主账房  已修改
 
 
     , reportList: '/room/querySs'//按时间段查询图表000
@@ -236,6 +237,8 @@ layui.use(['jquery', 'element', 'form'], function () {
             type: 'GET',
             dataType: "json",
             success: function (rs) {
+                localStorage.removeItem('hotelMenu');
+                localStorage.removeItem('User');
                 location.href = LOGIN
             }
         })
@@ -1019,8 +1022,6 @@ function visibilityChange() {
         if (!document[hiddenProperty]) {
             // console.log('页面激活');
             location.reload();
-        } else {
-            // console.log('页面非激活');
         }
     };
     document.addEventListener(visibilityChangeEvent, onVisibilityChange);

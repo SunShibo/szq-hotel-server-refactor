@@ -203,7 +203,7 @@ public class DateUtils {
 		String lastDay = sdf.format(calendar.getTime());
 		return lastDay;
 	}
-public static void main(String[] args) {
+  public static void main(String[] args) {
 	Date startTime = DateUtils.getYesTaday();
 	Date endTime = DateUtils.getDateByType(new Date(),"yyyy-MM-dd 04:00:00");
 	DateUtils.getLastDay(endTime.toString());

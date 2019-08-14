@@ -774,6 +774,8 @@ public class OrderService {
             map.put("id", oldOrderChild.getRoomId());
             if (entTime.compareTo(new Date()) > 0) {
                 map.put("state", Constants.INTHE.getValue());
+            }else{
+                map.put("state", Constants.TIMEOUT.getValue());
             }
             map.put("remark", "续租");
             map.put("userId", userId);
@@ -805,7 +807,13 @@ public class OrderService {
     }
 
     //解除联房
-    public void updAlRoom(Integer[] idArr) {
+    public boolean updAlRoom(Integer[] idArr) {
+        for (int i = 0; i < idArr.length; i++) {
+            OrderChildBO orderChildBO=orderDAO.getOrderChildById2(idArr[i]);
+            if("yes".equals(orderChildBO.getMain())){
+                return false;
+            }
+        }
         for (int i = 0; i < idArr.length; i++) {
             //修改联房码 解除联房 设置为主账房
             OrderChildBO orderChildBO = new OrderChildBO();
@@ -814,7 +822,7 @@ public class OrderService {
             orderChildBO.setMain("yes");
             orderDAO.updOrderChild(orderChildBO);
         }
-
+        return true;
     }
 
     //联房
@@ -831,7 +839,12 @@ public class OrderService {
             List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(new Integer(orderChildIdArr[i]));
             System.err.println("orderRecoredBO.size" + orderRecoredBO.size());
             for (int y = 0; y < orderRecoredBO.size(); y++) {
-                ids = ids + orderRecoredBO.get(y).getId() + ",";
+                if(y==orderRecoredBO.size()-1){
+                    ids = ids + orderRecoredBO.get(y).getId();
+                }else{
+                    ids = ids + orderRecoredBO.get(y).getId() + ",";
+
+                }
             }
             System.err.println("ids" + ids);
             //房间消费转账到新的主账房 添加消费记录
@@ -867,6 +880,44 @@ public class OrderService {
         mainOrderChild.setId(orderChildId);
         mainOrderChild.setMain("yes");
         orderDAO.updOrderChild(mainOrderChild);
+    }
+
+    //设置主账房 旧主帐房全部变为子帐房
+    public void changeMainRoom(Integer orderChildId,Integer userId){
+
+        String code=orderDAO.getOrderChildById2(orderChildId).getAlRoomCode();
+        //旧主账房id
+        Integer mainId=childOrderService.queryOrderChildMain(code);
+        //取消旧主账房
+        orderDAO.updateMainRoom(code);
+
+        //设置新主账房
+        OrderChildBO mainOrderChild = new OrderChildBO();
+        mainOrderChild.setId(orderChildId);
+        mainOrderChild.setMain("yes");
+        orderDAO.updOrderChild(mainOrderChild);
+
+        //转账
+        List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(mainId);
+        String ids="";
+        System.err.println("orderRecoredBO.size" + orderRecoredBO.size());
+        for (int y = 0; y < orderRecoredBO.size(); y++) {
+            if(y==orderRecoredBO.size()-1){
+                ids = ids + orderRecoredBO.get(y).getId();
+            }else{
+                ids = ids + orderRecoredBO.get(y).getId() + ",";
+
+            }
+        }
+        System.err.println("ids" + ids);
+        //房间消费转账到新的主账房 添加消费记录
+        if (!ids.equals("")) {
+            System.err.println("orderChildId" + orderChildId);
+            childOrderService.transferAccounts(userId, ids, orderChildId,mainId);
+        }
+
+
+
     }
 
     //获取子订单剩余租期价格
@@ -1464,7 +1515,7 @@ public class OrderService {
             orderChildBO.setOrderState(Constants.ADMISSIONS.getValue());
             orderDAO.updOrderChild(orderChildBO);
 
-            //把入住的房间修改为在住
+            //把入住的房间修改为在住 目前好像没用
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", orderChildBO.getRoomId());
             map.put("state", Constants.INTHE.getValue());

@@ -2,9 +2,6 @@ package com.szq.hotel.web.support.interceptor;
 
 import com.google.common.collect.Sets;
 import com.szq.hotel.common.constants.SysConstants;
-import com.szq.hotel.entity.bo.AdminBO;
-import com.szq.hotel.entity.dto.ResultDTOBuilder;
-import com.szq.hotel.util.JsonUtils;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -26,7 +23,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 //    @Autowired
 //    private SystemService systemService ;
-
     // 不需要过滤的URL
     public static final Set<String> unCheckSet = Sets.newHashSet("/hotel/queryLoginHotel" , "/hotel/queryHotel" ,
              "/updatePrice/updatePrice","/updatePrice/addPrice","/updatePrice/queryCheckType","/member/selectMemberByNumber",

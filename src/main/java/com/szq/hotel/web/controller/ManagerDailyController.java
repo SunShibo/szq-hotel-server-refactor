@@ -178,12 +178,17 @@ public class ManagerDailyController extends BaseCotroller {
         String substring = endTime.substring(0, 10);
         log.info("substring:{}",substring);
         String s = substring.replaceAll("/", "-");
-
+        if(userBO == null){
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
+            return;
+        }
         ManagerdailyChangeBO managerdailyChangeBO = managerDailyService.queryInfo(s, userBO.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(managerdailyChangeBO));
         super.safeJsonPrint(response, result);
         return;
     }
+
 
 
     @RequestMapping("/insertTest")

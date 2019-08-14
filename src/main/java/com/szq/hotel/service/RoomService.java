@@ -64,10 +64,31 @@ public class RoomService {
     }
 
     public void updatelockRoomClose(Map<String, Object> map) {
+        //查询房间原状态
+        RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
+        //插入
+        Map<String, Object> mp = new HashMap<String, Object>();
+        mp.put("createTime", new Date());
+        mp.put("createUserId", map.get("userId"));
+        mp.put("roomId", roomBO.getId());
+        mp.put("virginState", roomBO.getLockRoomState());
+        mp.put("newState",  map.get("state"));
+        mp.put("remark", map.get("remark"));
+        roomRecordDAO.insertRoomState(mp);
         roomDAO.updatelockRoomState(map);
     }
 
     public void updatelockRoomOpen(Map<String, Object> map) {
+        //查询房间原状态
+        RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
+        Map<String, Object> mp = new HashMap<String, Object>();
+        mp.put("createTime", new Date());
+        mp.put("createUserId", map.get("userId"));
+        mp.put("roomId", roomBO.getId());
+        mp.put("virginState", roomBO.getLockRoomState());
+        mp.put("newState",  map.get("state"));
+        mp.put("remark", map.get("remark"));
+        roomRecordDAO.insertRoomState(mp);
         roomDAO.updatelockRoomState2(map);
     }
 
@@ -77,9 +98,8 @@ public class RoomService {
 
     public void updateroomMajorState(Map<String, Object> map) {
 
-        log.info("map:{}", map);
         RoomBO roomBO = roomDAO.selectByPrimaryKey((Integer) map.get("id"));
-        log.info("roomBO:{}", roomBO);
+
         Map<String, Object> mp = new HashMap<String, Object>();
         mp.put("createTime", new Date());
         mp.put("createUserId", map.get("userId"));
@@ -87,9 +107,8 @@ public class RoomService {
         mp.put("roomId", roomBO.getId());
         mp.put("virginState", roomBO.getRoomMajorState());
         mp.put("remark", map.get("remark"));
-        log.info("mp:{}", mp);
+
         int i = roomRecordDAO.insertRoomState(mp);
-        log.info("i:{}", i);
         roomDAO.updateroomMajorState(map);
     }
 
@@ -110,7 +129,6 @@ public class RoomService {
         String dt = (String) map.get("checkTime");
 
         String et = (String) map.get("endTime");
-
 
         //获取符合条件的房间集合
         List<RmBO> list = roomDAO.queryRm(map);
@@ -138,8 +156,6 @@ public class RoomService {
             }
         }
 
-
-
         //去重
         for (int i = 0; i < reId.size() - 1; i++) {
             for (int j = reId.size() - 1; j > i; j--) {
@@ -148,8 +164,6 @@ public class RoomService {
                 }
             }
         }
-
-
 
         //去掉不能预约入住的房间的房间
         Iterator<RmBO> iterator = list.iterator();
@@ -164,7 +178,6 @@ public class RoomService {
             }
         }
 
-
         return list;
     }
 
@@ -178,15 +191,15 @@ public class RoomService {
         List<List<RmBO>> ls = new ArrayList<List<RmBO>>();
         //获取酒店下面所有楼层
         Integer hotelId = (Integer) map.get("hotelId");
-        log.info("hotelId:{}", hotelId);
+
         List<FlrBO> flrList = roomDAO.queryFlr(hotelId);
-        log.info("酒店下共有楼层:{}", flrList);
+
         List<String> ll = new ArrayList<String>();
         ll.add("reservation");
         ll.add("notpay");
         ll.add("admissions");
         List<RmBO> list = this.publicQuery(map, ll);
-        log.info("结果:{}",list);
+
 
         String phone = (String) map.get("phone");
         MemberDiscountBO memberDiscountBO = queryMember(phone);
@@ -373,14 +386,13 @@ public class RoomService {
         String phone = (String) map.get("phone");
 
 
-
-
-
         RoomTypeNumBO roomTypeBO = new RoomTypeNumBO();
 
         //判断用户是否是会员
         MemberDiscountBO memberDiscountBO = queryMember(phone);
         log.info("是否是会员:{}", memberDiscountBO);
+
+
         //没有优惠
         if (memberDiscountBO == null) {
             log.info("没有优惠");
@@ -397,6 +409,7 @@ public class RoomService {
                         }
                         roomTypeBO.setCount(i);
                     }
+
             }
         } else {
             //有优惠
@@ -414,6 +427,7 @@ public class RoomService {
                         }
                         roomTypeBO.setCount(i);
                     }
+
             }
         }
 
@@ -1116,16 +1130,10 @@ public class RoomService {
         return ls;
     }
 
-    public void closeRoom(String startTime, String endTime, List<Integer> list, String remark) {
-        log.info("startTime:{}",startTime);
-        log.info("endTime:{}",endTime);
+    public void closeRoom(String startTime, String endTime, Integer list, String remark) {
         Date date = DateUtils.parseDate(startTime, "yyyy/MM/dd HH:mm:ss");
-        log.info("date:{}",date);
         Date date1 = DateUtils.parseDate(endTime, "yyyy/MM/dd HH:mm:ss");
-        log.info("date1:{}",date1);
-
         boolean b = belongCalendar(new Date(),date ,date1);
-
         if(b){
             roomDAO.closeRoom(startTime, endTime, list, remark, "yes");
         } else {
@@ -1260,7 +1268,7 @@ public class RoomService {
 
         //获取当前时间
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        log.info("format:{}",format);
+
         String date = format + " 06:00:00" ;
 
         //获取明天早上六点的时间
@@ -1286,9 +1294,9 @@ public class RoomService {
 
 
         //获取今天统计房价
-        log.info(format);
+
         int integer1 = roomDAO.queryEverydayRoomPrice(format);
-        log.info("integer1:{}",integer1);
+
         map.put("three", integer1);
         if(!CollectionUtils.isEmpty(rtBOS)){
             for (RtBO rtBO : rtBOS) {
@@ -1322,9 +1330,7 @@ public class RoomService {
             for (MemberLevelBO memberLevelBO : memberLevelBOS) {
                 XxDTO xxDTO = new XxDTO();
                 xxDTO.setName(memberLevelBO.getName());
-                log.info("hotelId:{}", hotelId);
-                log.info("dt:{}", dt);
-                log.info("memberLevelBO.getId():{}",memberLevelBO.getId());
+
                 xxDTO.setNumber(roomDAO.queryMemRomId(hotelId,memberLevelBO.getId()));
                 ls.add(xxDTO);
             }
