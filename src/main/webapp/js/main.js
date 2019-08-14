@@ -237,6 +237,8 @@ layui.use(['jquery', 'element', 'form'], function () {
             type: 'GET',
             dataType: "json",
             success: function (rs) {
+                localStorage.removeItem('hotelMenu');
+                localStorage.removeItem('User');
                 location.href = LOGIN
             }
         })
