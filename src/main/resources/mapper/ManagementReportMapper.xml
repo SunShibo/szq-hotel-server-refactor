@@ -132,7 +132,7 @@
         <select id="getRoomRateAdjustment" resultType="java.math.BigDecimal" parameterType="java.util.Map">
             SELECT -SUM(consumption) FROM hm_cashier_summary
             WHERE create_time &gt;= #{startTime} AND create_time &lt; #{endTime}
-                AND hotel_id = #{hotelId}  AND project = '超时费冲减' OR project = '房费冲减'
+                AND hotel_id = #{hotelId}  AND (project = '超时费冲减' OR project = '房费冲减')
         </select>
         <!--锁房数-->
         <select id="getLockRoomSum" resultType="java.lang.Integer" parameterType="java.util.Map">
