@@ -537,7 +537,7 @@
   </select>
 
     <select id="queryRooms" resultType="com.szq.hotel.entity.bo.RoomBO">
-    select * from hm_room where hotel_id = #{hotelId} and room_name = #{name};
+    select * from hm_room where hotel_id = #{hotelId} and room_name = #{name} and `show` = 'yes';
   </select>
 
     <update id="closeRoom">
@@ -588,7 +588,7 @@
     and hotel_id = #{hotelId} and
      room_major_state IN
         (#{inthe},#{timeout})
-        and 'show' = 'yes'
+        and `show` = 'yes'
      </select>
 
     <select id="queryRoomFx" parameterType="java.lang.Integer" resultType="com.szq.hotel.entity.bo.RmBO">

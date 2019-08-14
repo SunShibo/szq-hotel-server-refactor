@@ -191,15 +191,15 @@ public class RoomService {
         List<List<RmBO>> ls = new ArrayList<List<RmBO>>();
         //获取酒店下面所有楼层
         Integer hotelId = (Integer) map.get("hotelId");
-        log.info("hotelId:{}", hotelId);
+
         List<FlrBO> flrList = roomDAO.queryFlr(hotelId);
-        log.info("酒店下共有楼层:{}", flrList);
+
         List<String> ll = new ArrayList<String>();
         ll.add("reservation");
         ll.add("notpay");
         ll.add("admissions");
         List<RmBO> list = this.publicQuery(map, ll);
-        log.info("结果:{}",list);
+
 
         String phone = (String) map.get("phone");
         MemberDiscountBO memberDiscountBO = queryMember(phone);
