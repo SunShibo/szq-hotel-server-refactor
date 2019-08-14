@@ -1137,7 +1137,7 @@ public class RoomService {
         if(b){
             roomDAO.closeRoom(startTime, endTime, list, remark, "yes");
         } else {
-            roomDAO.closeRoom(startTime, endTime, list, remark, null);
+            roomDAO.closeRoom(startTime, endTime, list, remark, "no");
         }
 
     }

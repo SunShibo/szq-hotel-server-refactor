@@ -2812,7 +2812,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -2827,7 +2827,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n=  n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n ;
     }
@@ -2840,7 +2840,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n =  n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -2855,7 +2855,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = n.add(managerdailyBO.getSubtotal()) ;
+            n = n.add(managerdailyBO.getDirectBooking()) ;
         }
         return n;
     }
@@ -2873,7 +2873,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n =  n.add(managerdailyBO.getDirectBooking()) ;
+           n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -2888,7 +2888,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n =  n.add( managerdailyBO.getDirectBooking());
+            n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n ;
     }
@@ -2901,7 +2901,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-           n =  n.add(managerdailyBO.getDirectBooking()) ;
+            n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -2916,7 +2916,7 @@ public class ManagerDailyService {
             return n;
         }
         for (ManagerdailyBO managerdailyBO : managerdailyBOS) {
-            n = n.add(managerdailyBO.getDirectBooking()) ;
+            n =  n.add(managerdailyBO.getSubtotal()) ;
         }
         return n;
     }
@@ -3863,19 +3863,19 @@ public class ManagerDailyService {
 
         managerdailyBO5.setMembers(v3);
         //协议单位平均房价
-        BigDecimal v4 = b.intValue() == 0 ? new BigDecimal("0") : add.divide(b,2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal v4 = b.intValue() == 0 ? new BigDecimal("0") : v.divide(b,2, BigDecimal.ROUND_HALF_UP);
         managerdailyBO5.setAgreementUnit(v4);
         log.info("v4:{}",v4);
         //散客平均房价
-        BigDecimal v5 = c.intValue() == 0 ? new BigDecimal("0") : add.divide(c,2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal v5 = c.intValue() == 0 ? new BigDecimal("0") : v1.divide(c,2, BigDecimal.ROUND_HALF_UP);
         log.info("v5:{}",v5);
         managerdailyBO5.setIndividualTraveler(v5);
         //直接入住平均房价
-        BigDecimal v6 = d.intValue() == 0 ? new BigDecimal("0") : add.divide(d, 2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal v6 = d.intValue() == 0 ? new BigDecimal("0") : enter.divide(d, 2, BigDecimal.ROUND_HALF_UP);
         log.info("v6:{}",v6);
         managerdailyBO5.setEnter(v6);
         //预约入住平均房价
-        BigDecimal v7 = e.intValue() == 0 ? new BigDecimal("0") : add.divide(e,2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal v7 = e.intValue() == 0 ? new BigDecimal("0") : v2.divide(e,2, BigDecimal.ROUND_HALF_UP);
         log.info("v7:{}",v7);
         managerdailyBO5.setDirectBooking(v7);
 
