@@ -674,10 +674,10 @@ public class MemberController extends BaseCotroller {
             Integer memberCardId = memberBO.getMemberCardId();
             MemberLevelBO memberLevelBO = memberLevelService.getLevelByCardId(memberCardId);
             if (memberLevelBO!=null) {
-                //获取消费1元得多少积分
-                BigDecimal consumeGetIntegral = memberLevelBO.getConsumeGetIntegral();
+                //获取1积分等于多少元
+                BigDecimal integralToMoney = memberLevelBO.getIntegralToMoney();
                 //积分金额 = 积分 * 消费1元得多少积分(保留两位小数)
-                BigDecimal integralMoney = integral.multiply(consumeGetIntegral).setScale(2,BigDecimal.ROUND_HALF_UP);
+                BigDecimal integralMoney = integral.multiply(integralToMoney).setScale(2,BigDecimal.ROUND_HALF_UP);
 
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("storeValue", storeValue);

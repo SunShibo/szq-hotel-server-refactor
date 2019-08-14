@@ -11,11 +11,20 @@ public class MemberLevelBO extends BaseModel {
     private String state;//状态（yes/no）
     private String type;//能否储值（yes/no）
     private BigDecimal consumeGetIntegral;//消费1元获得多少积分
+    private BigDecimal integralToMoney;//1积分抵多少元
     private BigDecimal discount;//折扣
     private Integer createUserId;//创建人id
     private Date createTime;//创建时间
     private Integer updateUserId;//修改人id
     private Date updateTime;//修改时间
+
+    public BigDecimal getIntegralToMoney() {
+        return integralToMoney;
+    }
+
+    public void setIntegralToMoney(BigDecimal integralToMoney) {
+        this.integralToMoney = integralToMoney;
+    }
 
     public BigDecimal getConsumeGetIntegral() {
         return consumeGetIntegral;
