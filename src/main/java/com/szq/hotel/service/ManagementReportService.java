@@ -8,7 +8,6 @@ import com.szq.hotel.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -34,6 +33,7 @@ public class ManagementReportService {
         log.info("start addData..........ManagementReportService.................................");
         log.info("hotelId:{}",hotelId);
         Map<String,Object> map = new HashMap<String, Object>();
+        Date date = DateUtils.getYesTaday();
         String endTime = DateUtils.getStringData(new Date(),"yyyy-MM-dd");
         String endTime1 = endTime+" 04:00:00";
         String startTime = DateUtils.getLastDay(endTime);
@@ -65,7 +65,7 @@ public class ManagementReportService {
         managementReportBO.setEmptyRoomSum(this.getEmptyRoomSum(map));
         managementReportBO.setHourRoomLateSum(this.getHourRoomSum(map));
         managementReportBO.setHotelId(hotelId);
-
+        managementReportBO.setCreateTime(date);
         managementReportDAO.addData(managementReportBO);
         log.info("end  addData............ManagementReportService...............................");
     }

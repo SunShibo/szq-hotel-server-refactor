@@ -17,7 +17,7 @@
                   #{indemnityIncome},#{freeCheckInSum},#{roomSum},#{maintainRoomSum},
                   #{memberRoomSum},#{memberCardSoldMoney},#{roomLateSum},#{personLateSum},
                   #{commodityRevenues},#{roomRateAdjustment},#{occupancyRate},#{REVPAR},
-                  #{disableRoomSum},#{rentalIncome},#{emptyRoomSum},#{hourRoomLateSum},NOW(),#{hotelId})
+                  #{disableRoomSum},#{rentalIncome},#{emptyRoomSum},#{hourRoomLateSum},#{createTime},#{hotelId})
         </insert>
 
         <!--查询管理层报表-->
