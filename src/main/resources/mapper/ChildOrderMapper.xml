@@ -119,4 +119,8 @@
         ON type.id=child.room_type_id
         WHERE   child.al_room_code=#{code}
     </select>
+
+    <select id="queryPersonNumber"   parameterType="java.lang.Integer" resultType="java.lang.Integer" >
+        SELECT COUNT(id) FROM hm_check_in_person WHERE  order_child_id  = #{id}  AND `status`='checkin'
+    </select>
 </mapper>

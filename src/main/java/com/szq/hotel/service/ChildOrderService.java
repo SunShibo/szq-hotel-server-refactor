@@ -627,5 +627,7 @@ public class ChildOrderService {
     }
 
 
-
+    public Integer queryPersonNumber(Integer childId) {
+        return childOrderDAO.queryPersonNumber(childId);
+    }
 }

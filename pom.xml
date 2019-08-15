@@ -510,7 +510,7 @@
     <profile>
       <id>localhost</id>
       <properties>
-        <jdbc.url.ip>192.168.1.109:3306/hotel</jdbc.url.ip>
+        <jdbc.url.ip>localhost:3306/hotel</jdbc.url.ip>
         <jdbc.username>root</jdbc.username>
         <jdbc.password>root</jdbc.password>
         <system.cfg.imageBaeUrl>http://39.107.224.185:8080/</system.cfg.imageBaeUrl>

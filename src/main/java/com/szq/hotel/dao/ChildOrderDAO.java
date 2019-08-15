@@ -108,4 +108,6 @@ public interface ChildOrderDAO {
 
     List<PrintBO> queryOrderChildByCode(String alRoomCode);
 
+    Integer queryPersonNumber(Integer id);
+
 }

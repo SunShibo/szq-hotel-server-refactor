@@ -38,8 +38,9 @@ public class CheckOrderState {
     @Resource
     ManagementReportService managementReportService;
     @Resource
-     ManagerDailyService managerDailyService;
-
+    ManagerDailyService managerDailyService;
+    @Resource
+    NightAuditService  nightAuditService;
 
     int count = 0;
 
@@ -90,6 +91,9 @@ public class CheckOrderState {
                         cashierSummaryService.addRoomRate(priceBO.getMoney(),roomRateBO.getOrderNumber(),1,commonBO.getName(),
                                 roomRateBO.getOTA(),roomRateBO.getPassengerSource(),roomRateBO.getChannel(),roomRateBO.getRoomName(),
                                 roomRateBO.getRoomTypeName(),roomRateBO.getHotelId());
+                        //记录夜核房晚数
+                        Integer  person=childOrderService.queryPersonNumber(priceBO.getOrderChildId());
+                        nightAuditService.addAudit(priceBO.getOrderChildId(),roomRateBO.getHotelId(),person,roomRateBO.getChannel());
                     }
             }
         }
