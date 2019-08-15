@@ -162,15 +162,13 @@
             status = false,//入住状态
             maintain = '', //维修状态
             dirty = '', //脏房状态
+            roomState = '', //锁房状态
             roomInfoRemark = '', //房屋备注
             phone = '', //预约人手机号
             checkInObj = {},//在住信息对象
             endTime = '', //离店时间
             checkInPhone = '', //离店时间
-            roomAuxiliaryStatus = '', //入住方式
-
-            inMessageRemark = '',
-            subMessageRemark = '';
+            roomAuxiliaryStatus = ''; //入住方式
 
         $(function () {
             id = parseInt(getUrl('id'));
@@ -178,6 +176,7 @@
             status = getUrl('status');
             maintain = getUrl('maintain');
             dirty = getUrl('dirty');
+            roomState = getUrl('roomState');
 
             //判断预约状态是否需要删除
             if (state === 'false') {
@@ -298,14 +297,14 @@
             } else {
                 $('#finish').text('待打扫');
             }
-            //如果是入住或者超时状态  不允许点击
+            //如果是入住或者超时状态  不允许打扫
             if (status === 'true' || maintain === 'true') {
-                $('#finish,#checkIn').addClass('layui-btn-disabled').prop('disabled', 'disabled');
+                $('#finish').addClass('layui-btn-disabled').prop('disabled', 'disabled');
             } else{
-                $('#finish,#checkIn').removeClass('layui-btn-disabled').prop('disabled', '');
+                $('#finish').removeClass('layui-btn-disabled').prop('disabled', '');
             }
-            //脏房不能入住
-            if(dirty === 'true'){
+            //脏房、锁房、入住、维修和预约状态下 不能点击入住
+            if(dirty === 'true' || roomState === 'true' || status === 'true' || maintain === 'true' || state === 'true'){
                 $('#checkIn').addClass('layui-btn-disabled').prop('disabled', 'disabled');
             }else{
                 $('#checkIn').removeClass('layui-btn-disabled').prop('disabled', '');

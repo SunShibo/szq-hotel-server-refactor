@@ -14,18 +14,22 @@
         <button class="layui-btn member-type" id="debitCard">储值调整</button>
     </div>
 </div>
-<div class="tab-box">
-    <table id="memberInfo" lay-filter="memberInfo"></table>
-</div>
-<script type="text/html" id="toolbarDemo">
-    <div class="nav-query">
-        <div class="layui-btn-group">
-            <button class="layui-btn layui-btn-sm" lay-event="consumptionDetail">消费明细</button>
-            <button class="layui-btn layui-btn-sm" lay-event="integralDetail">积分明细</button>
-            <button class="layui-btn layui-btn-sm" lay-event="storageDetails">储值明细</button>
-        </div>
+<div class="nav-query">
+    <div class="layui-btn-group">
+        <button class="layui-btn layui-btn-sm" id="consumptionDetailBtn">消费明细</button>
+        <button class="layui-btn layui-btn-sm" id="integralDetailBtn">积分明细</button>
+        <button class="layui-btn layui-btn-sm" id="storageDetailsBtn">储值明细</button>
     </div>
-</script>
+</div>
+<div class="tab-box consumptionDetail">
+    <table id="consumptionDetail" lay-filter="consumptionDetail"></table>
+</div>
+<div class="tab-box integralDetail">
+    <table id="integralDetail" lay-filter="integralDetail"></table>
+</div>
+<div class="tab-box storageDetails">
+    <table id="storageDetails" lay-filter="storageDetails"></table>
+</div>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['table'], function () {
@@ -37,17 +41,36 @@
             if (member.type === 'no') {
                 $('.member-type').hide();
             }
+            $('.consumptionDetail').show();
+            $('.integralDetail,.storageDetails').hide();
         });
 
 
+        $('#consumptionDetailBtn').on('click', function () {
+            $('.consumptionDetail').show();
+            $('.integralDetail,.storageDetails').hide();
+        });
+
+        //积分明细
+        $('#integralDetailBtn').on('click', function () {
+            $('.integralDetail').show();
+            $('.consumptionDetail,.storageDetails').hide();
+        });
+
+        $('#storageDetailsBtn').on('click', function () {
+            $('.storageDetails').show();
+            $('.consumptionDetail,.integralDetail').hide();
+        });
+
         //消费明细
-        tab = table.render({
-            elem: '#memberInfo'
+        table.render({
+            elem: '#consumptionDetail'
             , url: api.consumeRecord + '?date=' + Date.now()
             , where: {memberId: id}
             , method: 'POST'
-            , toolbar: '#toolbarDemo'
+            , toolbar: true
             , even: true
+            , title: '消费明细'
             , text: {
                 none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
             }
@@ -74,196 +97,138 @@
                 };
             }
             , cols: [[
-                {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
+                {field: 'roomName', title: '房间号', align: 'center'},
                 {
-                    field: 'payType', title: '支付方式', minWidth: 80, align: 'center', templet: function (data) {
+                    field: 'payType', title: '支付方式', align: 'center', templet: function (data) {
                         return orderPayType(data.payType);
                     }
                 },
-                {field: 'orderNumber', title: '单号', minWidth: 80, align: 'center'},
-                {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
-                {field: 'money', title: '交易金额', minWidth: 120, align: 'center'},
-                {field: 'project', title: '交易项目', minWidth: 80, align: 'center'},
+                {field: 'orderNumber', title: '单号', align: 'center'},
+                {field: 'OTA', title: 'OTA', align: 'center'},
+                {field: 'money', title: '交易金额', align: 'center'},
+                {field: 'project', title: '交易项目', align: 'center'},
                 {
                     field: 'createTime',
                     title: '发生时间',
-                    minWidth: 80,
                     align: 'center',
                     templet: function (data) {
                         return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
                     }
                 },
-                {field: 'remark', title: '备注', minWidth: 80, align: 'center'},
-                {field: 'name', title: '收银员', minWidth: 80, align: 'center'}
+                {field: 'remark', title: '备注', align: 'center'},
+                {field: 'name', title: '收银员', align: 'center'}
             ]]
         });
 
-
-        //头工具栏事件
-        table.on('toolbar(memberInfo)', function (obj) {
-            var checkStatus = table.checkStatus(obj.config.id), data = checkStatus.data;
-            switch (obj.event) {
-                case 'consumptionDetail':
-                    //消费明细
-                    tab.reload({
-                        url: api.consumeRecord+ '?date=' + Date.now()
-                        , where: {memberId: id}
-                        , method: 'POST'
-                        , page: {
-                            curr: 1 //重新从第 1 页开始
-                        }
-                        , request: {
-                            pageName: 'pageNo'
-                            , limitName: 'pageSize'
-                        }
-                        , response: {
-                            statusName: 'code' //规定数据状态的字段名称，默认：code
-                            , statusCode: 200 //规定成功的状态码，默认：0
-                            , msgName: 'msg' //规定状态信息的字段名称，默认：msg
-                            , countName: 'count' //规定数据总数的字段名称，默认：count
-                            , dataName: 'data' //规定数据列表的字段名称，默认：data
-                        }
-                        , parseData: function (res) { //res 即为原始返回的数据
-                            return {
-                                "code": 200, //解析接口状态
-                                "msg": res.errMsg, //解析提示文本
-                                "count": res.data.count, //解析数据长度
-                                "data": res.data.consumptionRecordBOS //解析数据列表
-                            };
-                        }
-                        , cols: [[
-                            {field: 'roomName', title: '房间号', minWidth: 80, align: 'center'},
-                            {
-                                field: 'payType',
-                                title: '支付方式',
-                                minWidth: 80,
-                                align: 'center',
-                                templet: function (data) {
-                                    return orderPayType(data.payType);
-                                }
-                            },
-                            {field: 'orderNumber', title: '单号', minWidth: 80, align: 'center'},
-                            {field: 'OTA', title: 'OTA', minWidth: 80, align: 'center'},
-                            {field: 'money', title: '交易金额', minWidth: 120, align: 'center'},
-                            {field: 'project', title: '交易项目', minWidth: 80, align: 'center'},
-                            {
-                                field: 'createTime',
-                                title: '发生时间',
-                                minWidth: 80,
-                                align: 'center',
-                                templet: function (data) {
-                                    return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
-                                }
-                            },
-                            {field: 'name', title: '收银员', minWidth: 80, align: 'center'},
-                            {field: 'remark', title: '备注', minWidth: 80, align: 'center'}
-                        ]]
-                    });
-                    break;
-                case 'integralDetail':
-                    //积分明细
-                    tab.reload({
-                        url: api.integralRecord+ '?date=' + Date.now()
-                        , where: {memberId: id}
-                        , method: 'POST'
-                        , page: {
-                            curr: 1 //重新从第 1 页开始
-                        }
-                        , request: {
-                            pageName: 'pageNo'
-                            , limitName: 'pageSize'
-                        }
-                        , response: {
-                            statusName: 'code' //规定数据状态的字段名称，默认：code
-                            , statusCode: 200 //规定成功的状态码，默认：0
-                            , msgName: 'msg' //规定状态信息的字段名称，默认：msg
-                            , countName: 'count' //规定数据总数的字段名称，默认：count
-                            , dataName: 'data' //规定数据列表的字段名称，默认：data
-                        }
-                        , parseData: function (res) { //res 即为原始返回的数据
-                            return {
-                                "code": 200, //解析接口状态
-                                "msg": res.errMsg, //解析提示文本
-                                "count": res.data.count, //解析数据长度
-                                "data": res.data.integralRecordBOS //解析数据列表
-                            };
-                        }
-                        , cols: [[
-                            {field: 'id', hide: true, title: '编号', align: 'center'},
-                            {
-                                field: 'type', title: '类型', align: 'center',
-                                templet: function (data) {
-                                    return data.type
-                                }
-                            },
-                            {field: 'oddNumbers', title: '单号', align: 'center'},
-                           /* {field: 'presenterMoney', title: '赠送积分', align: 'center'},*/
-                            {field: 'integralChange', title: '积分变动', align: 'center'},
-                            {field: 'currentBalance', title: '剩余积分', align: 'center'},
-                            {
-                                field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
-                                    return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
-                                }
-                            },
-                            {field: 'name', title: '收银员', align: 'center'},
-                            {field: 'remark', title: '备注', align: 'center'}
-                        ]]
-                    });
-                    break;
-                case 'storageDetails':
-                    //储值明细
-                    tab.reload({
-                        url: api.storedRecord+ '?date=' + Date.now()
-                        , where: {memberId: id}
-                        , method: 'POST'
-                        , page: {
-                            curr: 1 //重新从第 1 页开始
-                        }
-                        , request: {
-                            pageName: 'pageNo'
-                            , limitName: 'pageSize'
-                        }
-                        , response: {
-                            statusName: 'code' //规定数据状态的字段名称，默认：code
-                            , statusCode: 200 //规定成功的状态码，默认：0
-                            , msgName: 'msg' //规定状态信息的字段名称，默认：msg
-                            , countName: 'count' //规定数据总数的字段名称，默认：count
-                            , dataName: 'data' //规定数据列表的字段名称，默认：data
-                        }
-                        , parseData: function (res) { //res 即为原始返回的数据
-                            return {
-                                "code": 200, //解析接口状态
-                                "msg": res.errMsg, //解析提示文本
-                                "count": res.data.count, //解析数据长度
-                                "data": res.data.storedValueRecordBOS //解析数据列表
-                            };
-                        }
-                        , cols: [[
-                            {field: 'id', hide: true, title: '编号', align: 'center'},
-                            {
-                                field: 'type', title: '类型', align: 'center',
-                                templet: function (data) {
-                                    return data.type
-                                }
-                            },
-                            {field: 'oddNumbers', title: '单号', align: 'center'},
-                            {field: 'storedValueMoney', title: '储值金额', align: 'center'},
-                            {field: 'presenterMoney', title: '赠送金额', align: 'center'},
-                            {field: 'currentBalance', title: '当前余额', align: 'center'},
-                            {
-                                field: 'createTime',
-                                title: '创建时间',
-                                align: 'center',
-                                templet: function (data) {
-                                    return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
-                                }
-                            },
-                            {field: 'name', title: '收银员', align: 'center'},
-                            {field: 'remark', title: '备注', align: 'center'}
-                        ]]
-                    });
-                    break;
+        table.render({
+            elem: '#integralDetail'
+            , url: api.integralRecord+ '?date=' + Date.now()
+            , where: {memberId: id}
+            , method: 'POST'
+            , page: {
+                curr: 1 //重新从第 1 页开始
             }
+            , toolbar: true
+            , even: true
+            , title: '积分明细'
+            , text: {
+                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            }
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.integralRecordBOS //解析数据列表
+                };
+            }
+            , cols: [[
+                {
+                    field: 'type', title: '类型', align: 'center',
+                    templet: function (data) {
+                        return data.type
+                    }
+                },
+                {field: 'oddNumbers', title: '单号', align: 'center'},
+                {field: 'integralChange', title: '积分变动', align: 'center'},
+                {field: 'currentBalance', title: '剩余积分', align: 'center'},
+                {
+                    field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
+                        return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
+                    }
+                },
+                {field: 'name', title: '收银员', align: 'center'},
+                {field: 'remark', title: '备注', align: 'center'}
+            ]]
+        });
+
+        //储值明细
+        table.render({
+            elem: '#storageDetails'
+            , url: api.storedRecord+ '?date=' + Date.now()
+            , where: {memberId: id}
+            , method: 'POST'
+            , page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            , toolbar: true
+            , even: true
+            , title: '储值明细'
+            , text: {
+                none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            }
+            , request: {
+                pageName: 'pageNo'
+                , limitName: 'pageSize'
+            }
+            , response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                , statusCode: 200 //规定成功的状态码，默认：0
+                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                , countName: 'count' //规定数据总数的字段名称，默认：count
+                , dataName: 'data' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 200, //解析接口状态
+                    "msg": res.errMsg, //解析提示文本
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.storedValueRecordBOS //解析数据列表
+                };
+            }
+            , cols: [[
+                {
+                    field: 'type', title: '类型', align: 'center',
+                    templet: function (data) {
+                        return data.type
+                    }
+                },
+                {field: 'oddNumbers', title: '单号', align: 'center'},
+                {field: 'storedValueMoney', title: '储值金额', align: 'center'},
+                {field: 'presenterMoney', title: '赠送金额', align: 'center'},
+                {field: 'currentBalance', title: '当前余额', align: 'center'},
+                {
+                    field: 'createTime',
+                    title: '创建时间',
+                    align: 'center',
+                    templet: function (data) {
+                        return data.createTime != null ? DateToLStr(new Date(data.createTime.time)) : '空'
+                    }
+                },
+                {field: 'name', title: '收银员', align: 'center'},
+                {field: 'remark', title: '备注', align: 'center'}
+            ]]
         });
 
 

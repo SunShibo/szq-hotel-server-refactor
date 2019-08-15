@@ -64,7 +64,7 @@ var api = {
     , roomLockRoom: '/room/updatelockRoomState'    //客房锁房   已修改
     , queryMemberById: '/member/detail?userId='//根据会员id查询
     , pickRoomQuery: '/room/quertRm'//选房查询000
-    , checkIn: '/checkin/addCheckin?v=1'//入住
+    // , checkIn: '/checkin/addCheckin?v=1'//入住
     , yueCheckIn: '/order/getReservationRoomInfo?v=1'//预约入住信息查询000
     , roomQueryById: '/room/toUpdateRoomInfo?v=1'//按roomId查询
     , roomHouseType: '/room/houseType?v=1'
