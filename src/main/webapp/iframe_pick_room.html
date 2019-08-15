@@ -55,7 +55,7 @@
    
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
-		var $,element,$b,$remove,seleted=parent.sRooms,allRoom,getSel=[];
+		var $,element,$b,$remove,seleted=parent.sRooms,allRoom,getSel=[];var roomtypedata = [];//房型数据
         var downSelected = [];
     layui.use(['element', 'jquery', 'table'], function () {
         element = layui.element,
@@ -89,7 +89,27 @@
                         $(this).removeClass("pick-jf-selected")
 						// console.log($(this).html())
 						dealUnSel(_d);
-					}else{
+					}else{var count = 0;
+                        var roomTypeCount = 0;
+                        for(var i=0;i<seleted.length;i++){
+                            if(seleted[i]['roomType']==_d['roomType']){
+                                count+=1;
+                            }
+                        }
+                        for(var i=0;i<roomtypedata.length;i++){
+                            if(roomtypedata[i]['name']==_d['roomType']){
+                                roomTypeCount = roomtypedata[i]['count'];
+                                break;
+                            }
+                        }
+                        if(roomTypeCount==0){
+                            layer.alert("可用房型数量不足")
+                            return;
+                        }
+                        if(roomTypeCount==count||roomTypeCount<count){
+                            layer.alert("可用房型数量不足")
+                            return;
+                        }
                         $(this).addClass("pick-jf-selected");
 						dealSel(_d);
                     }
