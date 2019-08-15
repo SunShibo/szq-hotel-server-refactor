@@ -1048,7 +1048,8 @@ public class OrderService {
                 System.err.println("ymd.format(date)"+ymd.format(date));
                 EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(date), orderChildBO.getId());
                 if(everydayRoomPriceBO==null){
-                    List<EverydayRoomPriceBO> everydayRoomPriceBOList = this.getRemainingLease(orderChildId);
+                    List<EverydayRoomPriceBO> everydayRoomPriceBOList = everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
+                            //this.getRemainingLease(orderChildId);
                     everydayRoomPriceBO=everydayRoomPriceBOList.get(everydayRoomPriceBOList.size()-1);
                 }
 
@@ -1061,11 +1062,6 @@ public class OrderService {
                 }
 
                 //修改房费
-                if(everydayRoomPriceBO==null){
-                    System.err.println("null了");
-                }else{
-                    System.err.println("Meishi1");
-                }
                 orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
             }
 
