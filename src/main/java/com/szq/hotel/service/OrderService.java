@@ -66,6 +66,9 @@ public class OrderService {
     @Resource
     MemberLevelService memberLevelService;
 
+    @Resource
+    NightAuditService nightAuditService;
+
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     //添加主订单 子订单 入住人 每日价格
@@ -1211,6 +1214,9 @@ public class OrderService {
                     checkInPersonBO.getName(), orderBO.getOTA(),
                     orderBO.getChannel(), orderBO.getOrderType(), orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                     "房费", hotelId);
+            //添加房晚数
+            Integer nightAuditId=nightAuditService.addAudit(orderChildId,hotelId,checkInPersonBOS.size(),orderBO.getChannel());
+            backup.setNightAuditId(nightAuditId);
         }
         if (orderChildBO.getOtherRate().intValue() > 0) {
             cashierSummaryService.addAccount(Constants.TIMEOUTCOST.getValue(), orderChildBO.getOtherRate(), orderBO.getOrderNumber(), userId,
@@ -1487,6 +1493,11 @@ public class OrderService {
                     checkInPersonBO.getName(), orderBO.getOTA(), orderBO.getChannel(), orderBO.getOrderType(),
                     orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                     "超时费减免回滚", hotelId);
+        }
+
+        //人晚数
+        if(backup.getNightAuditId()!=null){
+            nightAuditService.deleteAudit(backup.getNightAuditId());
         }
 
         //退房回滚

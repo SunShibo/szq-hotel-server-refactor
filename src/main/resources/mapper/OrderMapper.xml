@@ -82,6 +82,9 @@
             <if test="roomMajorState!=null and roomMajorState!=''">
                 room_major_state=#{roomMajorState},
             </if>
+            <if test="nightAuditId!=null and nightAuditId!=''">
+                night_audit_id=#{nightAuditId},
+            </if>
         </set>
 
     </insert>

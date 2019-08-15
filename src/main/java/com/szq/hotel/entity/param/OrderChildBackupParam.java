@@ -20,7 +20,15 @@ public class OrderChildBackupParam {
     private Date endTime;//预离店时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date practicalDepartureTime;//实际离店时间
+    private Integer nightAuditId;//人晚数id
 
+    public Integer getNightAuditId() {
+        return nightAuditId;
+    }
+
+    public void setNightAuditId(Integer nightAuditId) {
+        this.nightAuditId = nightAuditId;
+    }
 
     public Integer getTimeoutRateRecordId() {
         return timeoutRateRecordId;
