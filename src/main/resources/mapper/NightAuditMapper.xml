@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ <!-- 夜审计数 -->
+<mapper namespace="com.szq.hotel.dao.NightAuditDAO">
+
+    <insert id="addAudit"  useGeneratedKeys="true" keyProperty="id"  parameterType="com.szq.hotel.entity.bo.NightAuditBO" >
+        INSERT INTO hm_night_audit ( `child_id`, `hotel_id`, `create_time`, `person_num`, `source`)
+                                VALUES (#{childId},#{hotelId},NOW(),#{personNum},#{source});
+    </insert>
+    
+    <delete id="deleteAudit"  parameterType="java.lang.Integer">
+        DELETE  FROM   hm_night_audit  WHERE   id=#{id}
+    </delete>
+</mapper>
