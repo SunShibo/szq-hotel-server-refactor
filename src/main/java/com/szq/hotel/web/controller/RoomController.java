@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import redis.clients.jedis.Builder;
+
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
