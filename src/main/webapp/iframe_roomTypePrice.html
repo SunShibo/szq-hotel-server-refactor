@@ -137,7 +137,7 @@
                     data: data.field,
                     success: function (rs) {
                         if (rs.success) {
-                            showMsg(res.data, 1, false);
+                            showMsg(rs.data, 1, false);
                         } else {
                             showMsg(rs.errMsg, 2, false);
                         }
