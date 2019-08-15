@@ -1286,7 +1286,7 @@ public class RoomService {
         ll.add("admissions");
 
         Map<String, Object> mp = new HashMap<String, Object>();
-
+        mp.put("roomMajorState", "vacant");
         mp.put("checkTime", date);
         mp.put("hotelId", hotelId);
         mp.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1));

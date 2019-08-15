@@ -292,10 +292,7 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/updateroomMajorState")
     public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state, String remark) {
         log.info("updateroomMajorState**********************************");
-        log.info("id:{}", id);
-        log.info("state:{}", state);
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        log.info("loginAdmin:{}", loginAdmin);
         if (loginAdmin == null) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
             super.safeJsonPrint(response, result);
@@ -338,11 +335,6 @@ public class RoomController extends BaseCotroller {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
-            return;
-        }
-        if (StringUtils.isEmpty(phone)) {
-            String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000200"));
-            super.safeHtmlPrint(response, json);
             return;
         }
         if (StringUtils.isEmpty(phone)) {
