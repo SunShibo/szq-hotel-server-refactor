@@ -655,11 +655,9 @@
         where room_type_id=#{roomTypeId}
         and `show`='yes'
         and hotel_id=#{hotelId}
-
         and
-        (((lock_room_start_time is null or #{endTime}&lt;=lock_room_start_time ) and  (lock_room_end_time is null or #{startTime}>lock_room_end_time))
-        or
-        (lock_room_end_time is null or #{startTime}&gt;=lock_room_end_time))
+        ((lock_room_start_time is null or #{endTime}&lt;=lock_room_start_time )
+        or (lock_room_end_time is null or #{startTime}>lock_room_end_time))
     </select>
 
     <!--找查首日房价-->

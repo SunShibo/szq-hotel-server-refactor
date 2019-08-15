@@ -1554,7 +1554,9 @@ public class OrderService {
      * @param roomId               房间id
      * @param orderId              主订单id 没有可以为null
      */
-    public boolean getOrderChildCountByRoomIdByTime(Integer roomId, Integer roomType, Date endTime, Date startTime, Integer reservationRoomCount, Integer orderId, Integer hotelId) {
+    public boolean getOrderChildCountByRoomIdByTime(Integer roomId, Integer roomType, Date endTime, Date startTime, Integer reservationRoomCount, Integer orderId, Integer hotelId) throws ParseException {
+
+        System.err.println("11111111111111111111111111111");
         //验证房间
         if (roomId != null) {
             Integer roomCount = orderDAO.getOrderChildCountByRoomIdByTime(roomId, DateUtils.longDate(endTime), DateUtils.longDate(startTime), orderId, hotelId);
@@ -1570,6 +1572,7 @@ public class OrderService {
 
         //bug验证房型
         if (roomType != null) {
+            System.err.println("222222222222222");
             Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId, roomId);
 
             Long minute=DateUtils.getQuotMinute(endTime,startTime);
@@ -1589,6 +1592,9 @@ public class OrderService {
             int count = 1;
             while (true) {
                 Date afterDate = DateUtils.getAppointDate(startTime, count);
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+                afterDate=simpleDateFormat.parse(simpleDateFormat.format(this.getHotelDate(afterDate)));
+                endTime=simpleDateFormat.parse(simpleDateFormat.format(this.getHotelDate(endTime)));
                 if (afterDate.compareTo(endTime) <= 0) {
                     dateList.add(DateUtils.longDate(afterDate));
                     count++;
@@ -1597,6 +1603,7 @@ public class OrderService {
                 }
             }
             //获取可用房间数
+            System.err.println("11111111111111111111111111111dateList.size()"+dateList.size());
             for (int i = 0; i < dateList.size() - 1; i++) {
                 //获取订单数
                 Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, dateList.get(i + 1),
