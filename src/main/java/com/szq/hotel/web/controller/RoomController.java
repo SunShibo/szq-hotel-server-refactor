@@ -378,10 +378,6 @@ public class RoomController extends BaseCotroller {
         map.put("phone", phone);
 
 
-
-
-
-
         String format = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
         String check = checkTime.substring(0,10);
         boolean equals = format.equals(check);
@@ -392,8 +388,11 @@ public class RoomController extends BaseCotroller {
 
         List<List<RmBO>> lists = roomService.queryRm(map);
         //根据全天房手机号查询预约入住房间
-        List<RmBO> rmBOS = roomService.queryUserRoom(loginUser.getHotelId(), phone);
-        lists.add(rmBOS);
+        if(  StringUtils.isEmpty(roomTypeId) ){
+            List<RmBO> rmBOS = roomService.queryUserRoom(loginUser.getHotelId(), phone);
+            lists.add(rmBOS);
+        }
+
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(lists));
         super.safeJsonPrint(response, result);
         return;
@@ -455,8 +454,6 @@ public class RoomController extends BaseCotroller {
 
 
 
-
-
     //todo
     @RequestMapping("/queryRoomTypeNum")
     public void queryRoomTypeNum(HttpServletRequest request, HttpServletResponse response, String checkTime,
@@ -470,11 +467,12 @@ public class RoomController extends BaseCotroller {
 
         System.err.println("roomAuxiliaryStatus:"+roomAuxiliaryStatus);
 
-        if (StringUtils.isEmpty(phone)) {
-            String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000200"));
-            super.safeHtmlPrint(response, json);
+        if (loginUser == null) {
+            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
+            super.safeJsonPrint(response, result);
             return;
         }
+
         if (StringUtils.isEmpty(phone)) {
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000201"));
             super.safeHtmlPrint(response, json);
@@ -490,14 +488,17 @@ public class RoomController extends BaseCotroller {
         if(orderId != null){
             //获取用户当前要修改的订单
             List<OrderChild> orderChildren = roomService.queryOrderChildByOrderId(loginUser.getHotelId(), orderId);
-            //判断用户修改的订单是预约的房型还是预约的房间
-            OrderChild orderChild = orderChildren.get(0);
-            //如果用户修改的订单是预约的房型
+            if(!CollectionUtils.isEmpty(orderChildren)){
+                System.err.println(orderChildren);
+                //判断用户修改的订单是预约的房型还是预约的房间
+                OrderChild orderChild = orderChildren.get(0);
+                //如果用户修改的订单是预约的房型
                 //判断是否为一个订单开始时间结束时间没有改变
-                 flag = true;
-                 for (OrderChild orderC : orderChildren) {
-                     integers.add(orderC.getRoomTypeId());
-                 }
+                flag = true;
+                for (OrderChild orderC : orderChildren) {
+                    integers.add(orderC.getRoomTypeId());
+                }
+            }
              }
 
         int i = DateUtils.parseDate(checkTime,"yyyy-MM-dd HH:mm:ss").compareTo(DateUtils.parseDate(endTime,"yyyy-MM-dd HH:mm:ss"));
