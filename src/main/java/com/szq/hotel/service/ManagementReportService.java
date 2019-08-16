@@ -164,8 +164,10 @@ public class ManagementReportService {
             BigDecimal receivableSumMonth=managementReportMonth.getReceivableSum();
             //会员卡收入
             BigDecimal memberCardSoldMoneyMonth=managementReportMonth.getMemberCardSoldMoney();
+            //差
+            BigDecimal q = receivableSumMonth.subtract(memberCardSoldMoneyMonth);
             //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
-            avgConsumptionOfRoom.setMonth((receivableSumMonth.subtract(memberCardSoldMoneyMonth)).divide(roomLateSumMonth,2,BigDecimal.ROUND_HALF_UP).toString());
+            avgConsumptionOfRoom.setMonth(q.divide(roomLateSumMonth,2,BigDecimal.ROUND_HALF_UP).toString());
 
             //人晚数
             Integer personLateSumMonth=managementReportMonth.getPersonLateSum();
@@ -227,9 +229,22 @@ public class ManagementReportService {
         ManagementReportBO managementReportYear = managementReportDAO.selectManagementReport(map2);
         if(managementReportYear!=null){
             receivableSum.setYear(managementReportYear.getReceivableSum().toString());//应收合计
-            avgRoomRate.setYear(managementReportYear.getAvgRoomRate().toString());//平均房价
-            avgConsumptionOfRoom.setYear(managementReportYear.getAvgConsumptionOfRoom().toString());//房平均消费
-            avgConsumptionOfPerson.setYear(managementReportYear.getAvgConsumptionOfPerson().toString());//人均消费
+            //房晚数
+            BigDecimal roomLateSumYear = new BigDecimal(managementReportYear.getRoomLateSum());
+            //平均房价=房租收入/房晚数
+            avgRoomRate.setYear(managementReportYear.getRentalIncome().divide(roomLateSumYear,2,BigDecimal.ROUND_HALF_UP).toString());
+            //应收合计
+            BigDecimal receivableSumYear=managementReportYear.getReceivableSum();
+            //会员卡收入
+            BigDecimal memberCardSoldMoneyYear=managementReportYear.getMemberCardSoldMoney();
+            //差
+            BigDecimal q = receivableSumYear.subtract(memberCardSoldMoneyYear);
+            //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
+            avgConsumptionOfRoom.setYear(q.divide(roomLateSumYear,2,BigDecimal.ROUND_HALF_UP).toString());//房平均消费
+            //人晚数
+            Integer personLateSumYear=managementReportYear.getPersonLateSum();
+            //人均消费--应收合计/人晚数
+            avgConsumptionOfPerson.setYear(receivableSumYear.divide(new BigDecimal(personLateSumYear),2,BigDecimal.ROUND_HALF_UP).toString());//人均消费
             indemnityIncome.setYear(managementReportYear.getIndemnityIncome().toString());//赔偿收入
             freeCheckInSum.setYear(managementReportYear.getFreeCheckInSum().toString());//免费入住房数
             roomSum.setYear(managementReportYear.getRoomSum().toString());//房间总数
@@ -240,8 +255,15 @@ public class ManagementReportService {
             personLateSum.setYear(managementReportYear.getPersonLateSum().toString());//人晚数
             commodityRevenues.setYear(managementReportYear.getCommodityRevenues().toString());//商品收入
             roomRateAdjustment.setYear(managementReportYear.getRoomRateAdjustment().toString());//房费调整
-            occupancyRate.setYear(managementReportYear.getOccupancyRate());//出租率
-            REVPAR.setYear(managementReportYear.getREVPAR());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            //房间总数
+            BigDecimal roomSumYaer = new BigDecimal(managementReportYear.getRoomSum());
+            //维修房数
+            BigDecimal maintainRoomSumYear = new BigDecimal(managementReportYear.getMaintainRoomSum());
+            //差
+            BigDecimal i=roomSumYaer.subtract(maintainRoomSumYear);
+            occupancyRate.setYear(roomLateSumYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//出租率=房晚数 / (总房间数 - 维修房数)
+            //REVPAR = 应收合计 / (总房间数 - 维修房数)
+            REVPAR.setYear(receivableSumYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
             disableRoomSum.setYear(managementReportYear.getDisableRoomSum().toString());//停用房间数
             rentalIncome.setYear(managementReportYear.getRentalIncome().toString());//房租收入
             emptyRoomSum.setYear(managementReportYear.getEmptyRoomSum().toString());//空房数
