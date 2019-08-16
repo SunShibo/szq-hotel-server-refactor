@@ -66,10 +66,10 @@
             elem: '#roleManage'
             , method: 'POST'
             , url: api.roleAllData
-            , request: {
-                pageName: 'pageNo'
-                , limitName: 'pageSize'
-            }
+            // , request: {
+            //     pageName: 'pageNo'
+            //     , limitName: 'pageSize'
+            // }
             , response: {
                 statusName: 'code' //规定数据状态的字段名称，默认：code
                 , statusCode: 200 //规定成功的状态码，默认：0
@@ -81,7 +81,7 @@
                 return {
                     "code": 200, //解析接口状态
                     "msg": res.errMsg, //解析提示文本
-                    "count": res.data.count, //解析数据长度
+                    // "count": res.data.count, //解析数据长度
                     "data": res.data.data //解析数据列表
                 };
             }
@@ -127,9 +127,6 @@
                 method: 'POST',
                 where: {
                     roleName: data.field.roleName
-                },
-                page: {
-                    curr: 1 //重新从第 1 页开始
                 }
             });
             return false;
