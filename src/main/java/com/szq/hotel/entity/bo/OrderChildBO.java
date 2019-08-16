@@ -15,12 +15,12 @@ public class OrderChildBO extends BaseModel {
     @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private Date endTime;//退房时间
     private Integer certificateTypeId;//证件类型id
-    private BigDecimal payCashNum;//支付现金 金额
-    private BigDecimal otherPayNum;//其他支付金额
-    private BigDecimal roomRate;//房费 选定时定的价格，有可能改价
-    private BigDecimal otherRate;//其他费用
-    private BigDecimal timeoutRate;//超时费用
-    private BigDecimal freeRateNum;//免单金额
+    private BigDecimal payCashNum=new BigDecimal(0);//支付现金 金额
+    private BigDecimal otherPayNum=new BigDecimal(0);//其他支付金额
+    private BigDecimal roomRate=new BigDecimal(0);//房费 选定时定的价格，有可能改价
+    private BigDecimal otherRate=new BigDecimal(0);//其他费用
+    private BigDecimal timeoutRate=new BigDecimal(0);//超时费用
+    private BigDecimal freeRateNum=new BigDecimal(0);//免单金额
     private String orderState;//订单状态
     @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private Date practicalDepartureTime;//实际退房时间

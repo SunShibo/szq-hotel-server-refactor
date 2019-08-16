@@ -10,7 +10,7 @@ public class EverydayRoomPriceBO {
     private Integer orderChildId;//子订单id
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date time;//日期
-    private BigDecimal money;//价格
+    private BigDecimal money=new BigDecimal(0);//价格
     private String status;//状态
 
 

@@ -1038,29 +1038,31 @@ public class OrderService {
             if (ymd.format(hotelDate).equals(ymd.format(startTime))) {
                 Date date = hotelDate;
                 Calendar calendar2 = Calendar.getInstance();
-                calendar2.setTime(hotelDate);
+                calendar2.setTime(startTime);
                 int hour2 = calendar2.get(Calendar.HOUR_OF_DAY);
-                if (hour2 >= 4 && hour2 < 6) {
+
+                Calendar calendar3 = Calendar.getInstance();
+                calendar3.setTime(this.getHotelDate(new Date()));
+                int hour3 = calendar3.get(Calendar.HOUR_OF_DAY);
+
+                if (hour2 >= 4 && hour2 < 6&&hour3>=4) {
                     calendar2.add(calendar2.DAY_OF_WEEK, -1); //得到前一天
                     date = calendar2.getTime();
                 }
-                //这天的房价信息
                 System.err.println("ymd.format(date)"+ymd.format(date));
-                EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(date), orderChildBO.getId());
-                if(everydayRoomPriceBO==null){
-                    List<EverydayRoomPriceBO> everydayRoomPriceBOList = everydayRoomPriceDAO.getEverydayRoomById(orderChildId);
-                            //this.getRemainingLease(orderChildId);
-                    everydayRoomPriceBO=everydayRoomPriceBOList.get(everydayRoomPriceBOList.size()-1);
-                }
 
+                //这天的房价信息
+                EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(date), orderChildBO.getId());
+                System.err.println(everydayRoomPriceBO);
                 //bug:六点前 四点后入住算前一天没有滚房费 然后退房时候需滚出前天房费 目前认为 不滚也是合理的吧
                 if (hour > 4 && hour < 6) {
                     Date beforeDate = DateUtils.getAppointDate(date, -1);
                     //这天的房价信息
                     EverydayRoomPriceBO everydayRoomPriceBO2 = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(beforeDate), orderChildBO.getId());
-                    orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO2.getMoney()));
+                    if(everydayRoomPriceBO2!=null){
+                        orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO2.getMoney()));
+                    }
                 }
-
                 //修改房费
                 orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
             }
@@ -1073,10 +1075,6 @@ public class OrderService {
                 //剩余每日房价
                 List<EverydayRoomPriceBO> everydayRoomPriceBOList = this.getRemainingLease(orderChildId);
                 //提前退房
-                System.err.println(currentDate.compareTo(endDate) < 0);
-                System.err.println((hotelDate.compareTo(m2) > 0));
-                System.err.println(orderChildBO.getStartTime().compareTo(m6) < 0);
-                System.err.println(everydayRoomPriceBOList.size() > 1);
                 if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() >= 1) {
                     //这天的房价信息
                     EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(hotelDate), orderChildBO.getId());
@@ -1178,9 +1176,13 @@ public class OrderService {
         if (ymd.format(hotelDate).equals(ymd.format(startTime))) {
             Date date = hotelDate;
             Calendar calendar2 = Calendar.getInstance();
-            calendar2.setTime(hotelDate);
+            calendar2.setTime(startTime);
             int hour2 = calendar2.get(Calendar.HOUR_OF_DAY);
-            if (hour2 >= 4 && hour2 < 6) {
+
+            Calendar calendar3 = Calendar.getInstance();
+            calendar3.setTime(this.getHotelDate(new Date()));
+            int hour3 = calendar3.get(Calendar.HOUR_OF_DAY);
+            if (hour2 >= 4 && hour2 < 6&&hour3>=4) {
                 calendar2.add(calendar2.DAY_OF_WEEK, -1); //得到前一天
                 date = calendar2.getTime();
             }
@@ -1390,6 +1392,9 @@ public class OrderService {
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
         //这天的房价信息
         EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(date), orderChildBO.getId());
+        if(everydayRoomPriceBO==null){
+            return;
+        }
         Integer recordId = orderRecordService.addOrderRecord(orderChildBO.getId(), ymd.format(everydayRoomPriceBO.getTime()) + "房费",
                 null, everydayRoomPriceBO.getMoney().negate(), Constants.ROOMRATE.getValue(),
                 userId, "1天", "no");
