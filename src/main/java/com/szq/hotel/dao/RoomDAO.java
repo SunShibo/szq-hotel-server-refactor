@@ -125,9 +125,9 @@ public interface RoomDAO {
     RoomBO queryRooms(@Param("name")String name, @Param("hotelId")Integer hotelId);
 
     void closeRoom(@Param("startTime")String startTime, @Param("endTime")String endTime,
-                   @Param("list")Integer list,@Param("remark")String remark,@Param("state")String state);
+                   @Param("list")Integer list,@Param("state")String state);
 
-    void opeRoom( @Param("list")List<Integer> list,@Param("remark")String remark);
+    void opeRoom( @Param("list")List<Integer> list);
 
     /**
      * 查询酒店下各种房型房间数量
@@ -286,4 +286,13 @@ public interface RoomDAO {
      * @return
      */
     List<RoomExportBO> roomExcel(@Param("hotelId") Integer hotelId);
+
+
+    /**
+     * 查询子订单 根据主订单id
+     * @param hotelIdm
+     * @param orderId
+     * @return
+     */
+    List<OrderChild> queryOrderChildByOrderId(@Param("hotelId")Integer hotelIdm,@Param("orderId")Integer orderId);
 }

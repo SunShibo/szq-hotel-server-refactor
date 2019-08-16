@@ -63,7 +63,7 @@
                 var str2  = '';
                 $roomTypeSelect.empty();
                 try{
-                    var r = rs.data;
+                    var r = rs.data;roomtypedata = r;
 					localStorage.pickRoomTypeData = JSON.stringify(r);//设置全局选房型数据
                     for(var i=0;i<r.length;i++){
 

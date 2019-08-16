@@ -151,7 +151,6 @@ public class AdminBO extends BaseModel {
                 ", updateTime=" + updateTime +
                 ", updateUserId=" + updateUserId +
                 ", roleName='" + roleName + '\'' +
-                ", url=" + url +
                 ", hotelId=" + hotelId +
                 '}';
     }

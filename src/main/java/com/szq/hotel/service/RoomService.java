@@ -1130,20 +1130,20 @@ public class RoomService {
         return ls;
     }
 
-    public void closeRoom(String startTime, String endTime, Integer list, String remark) {
+    public void closeRoom(String startTime, String endTime, Integer list) {
         Date date = DateUtils.parseDate(startTime, "yyyy/MM/dd HH:mm:ss");
         Date date1 = DateUtils.parseDate(endTime, "yyyy/MM/dd HH:mm:ss");
         boolean b = belongCalendar(new Date(),date ,date1);
         if(b){
-            roomDAO.closeRoom(startTime, endTime, list, remark, "yes");
+            roomDAO.closeRoom(startTime, endTime, list, "yes");
         } else {
-            roomDAO.closeRoom(startTime, endTime, list, remark, "no");
+            roomDAO.closeRoom(startTime, endTime, list, "no");
         }
 
     }
 
-    public void opeRoom(List<Integer> list, String remark) {
-        roomDAO.opeRoom(list, remark);
+    public void opeRoom(List<Integer> list) {
+        roomDAO.opeRoom(list);
     }
 
     public Map<String, Object> verificationRoom(List<Integer> list, String state, String checkTime, String endTime, Integer hotelId) {
@@ -1428,6 +1428,17 @@ public class RoomService {
 
     public List<Integer> queryRoomTypeAndId(Integer hotelId, String phone){
         return roomDAO.queryRoomTypeAndId(hotelId, phone);
+    }
+
+    /**
+     * 根据订单id查询子订单列表信息
+     * @param hotelId
+     * @param orderId
+     * @return
+     */
+    public List<OrderChild> queryOrderChildByOrderId(Integer hotelId, Integer orderId){
+        return roomDAO.queryOrderChildByOrderId(hotelId, orderId);
+
     }
 
 

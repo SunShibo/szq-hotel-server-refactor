@@ -44,7 +44,7 @@ public class CheckOrderState {
 
     int count = 0;
 
-    @Scheduled(cron = "0 0/5 * * * *")    // 13.15 启动项目
+    @Scheduled(cron = "0 0/5 * * * ?")    // 13.15 启动项目
     public void CheckOrderState() {
         count++;
         try {

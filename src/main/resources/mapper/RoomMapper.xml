@@ -546,14 +546,14 @@
             lock_room_state = #{state},
         </if>
         lock_room_start_time = #{startTime},
-        lock_room_end_time = #{endTime},
-        remark = #{remark}
+        lock_room_end_time = #{endTime}
+
         where id  = #{list}
 
     </update>
 
     <update id="opeRoom">
-        update hm_room set lock_room_state = 'no',remark = #{remark},
+        update hm_room set lock_room_state = 'no',
         lock_room_start_time = null,
         lock_room_end_time = null
         where id in
@@ -797,6 +797,12 @@
             and hm_room.hotel_id = #{hotelId}
         </if>
         and hm_room.show = 'yes'
+    </select>
+
+    <select id="queryOrderChildByOrderId" resultType="com.szq.hotel.entity.bo.OrderChild">
+    SELECT hm_order_child.* FROM hm_order_child,hm_order WHERE hm_order_child.order_id = hm_order.id
+    AND hm_order.hotel_id = #{hotelId} and hm_order_child.order_state = 'reservation'
+    AND hm_order_child.order_id = #{orderId}
     </select>
 
 </mapper>

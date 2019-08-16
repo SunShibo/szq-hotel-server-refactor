@@ -57,6 +57,7 @@
 <script>
     var $,element,$b,$remove,seleted=parent.sRooms1,allRoom,getSel=[];
     var downSelected = [];
+    var roomtypedata = [];//房型数据
     var selectParameter  =  JSON.parse(localStorage.getItem(getUrl("parameter")));
 	if(!seleted) seleted = parent.sRooms;
     layui.use(['element', 'jquery', 'table'], function () {
@@ -75,11 +76,32 @@
         })
         $doc.on("click",".pick-jf",function(){
             var _d = findRoomById($(this).data("id"));
+
             if($(this).hasClass("pick-jf-selected")){
                 $(this).removeClass("pick-jf-selected")
-                // console.log($(this).html())
                 dealUnSel(_d);
             }else{
+				var count = 0;
+				var roomTypeCount = 0;
+				for(var i=0;i<seleted.length;i++){
+				    if(seleted[i]['roomType']==_d['roomType']){
+                        count+=1;
+					}
+				}
+				for(var i=0;i<roomtypedata.length;i++){
+				    if(roomtypedata[i]['name']==_d['roomType']){
+                        roomTypeCount = roomtypedata[i]['count'];
+				        break;
+					}
+				}
+				if(roomTypeCount==0){
+                    layer.alert("可用房型数量不足")
+                    return;
+                }
+                if(roomTypeCount==count||roomTypeCount<count){
+                    layer.alert("可用房型数量不足")
+                    return;
+                }
                 $(this).addClass("pick-jf-selected");
                 dealSel(_d);
             }
@@ -95,6 +117,7 @@
                 dealSel(_d);
             }
         })
+        var index = layer.load(1);
 
         //查询房间类型
         $.ajax({
@@ -103,11 +126,14 @@
             dataType: "json",
             data:selectParameter,
             success: function (rs) {
+
+               layer.close(index);
                 var $typeList = $("#typeList");
                 var str = '<p class="room-type-selected">不限</p>';
                 $typeList.empty();
                 try{
                     var r = rs.data;
+                    roomtypedata = r;
                     for(var i=0;i<r.length;i++){
                         str+='<p data-id="'+r[i].id+'">'+r[i].name+'（'+r[i].count+'）</p>'
                     }
@@ -148,14 +174,14 @@
         }else{
             delete par.roomTypeId;
 		}
-        var index = layer.load(1,{time:10*1000});
+       // var index = layer.load(1,{time:10*1000});
         $.ajax({
             url: api.pickRoomQuery,
             type: 'post',
             dataType: "json",
             data:par,
             success: function (rs) {
-                layer.close(index);
+                // layer.close(index);
 
                 var t = allRoom = rs.data;
 
