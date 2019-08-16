@@ -453,11 +453,19 @@ public class ManagementReportService {
     }
     //房晚数
     public Integer getRoomLateSum(Map<String,Object> map){
-        return managementReportDAO.getRoomLateSum(map);
+        Integer roomLateSum = managementReportDAO.getRoomLateSum(map);
+        if (roomLateSum==null){
+            return 0;
+        }
+        return roomLateSum;
     }
     //人晚数
     public  Integer getPersonLateSum(Map<String,Object> map){
-        return managementReportDAO.getPersonLateSum(map);
+        Integer personLateSum = managementReportDAO.getPersonLateSum(map);
+        if (personLateSum==null){
+            return 0;
+        }
+        return personLateSum;
     }
     //出租率-------房晚数 / (总房间数 - 维修房数)
     public BigDecimal getOccupancyRate(Map<String,Object> map){
