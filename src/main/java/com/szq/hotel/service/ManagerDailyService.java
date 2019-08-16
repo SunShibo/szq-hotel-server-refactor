@@ -3858,7 +3858,7 @@ public class ManagerDailyService {
         //会员平均房价分析
         BigDecimal v3 = new BigDecimal("0");
         if(a.intValue() != 0 ){
-             v3 =add.divide(a,2, BigDecimal.ROUND_HALF_UP);
+             v3 =members.divide(a,2, BigDecimal.ROUND_HALF_UP);
         }
 
         managerdailyBO5.setMembers(v3);
