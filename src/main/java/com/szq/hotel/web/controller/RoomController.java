@@ -843,7 +843,7 @@ public class RoomController extends BaseCotroller {
                 mp.put("newState",  roomBO.getRoomMajorState());
                 mp.put("remark", remark);
                 roomRecordDAO.insertRoomState(mp);
-                roomService.closeRoom(startTime, endTime, integer, remark);
+                roomService.closeRoom(startTime, endTime, integer);
             }
         }
 
@@ -859,7 +859,7 @@ public class RoomController extends BaseCotroller {
                 mp.put("newState",  roomBO.getRoomMajorState());
                 mp.put("remark", remark);
                 roomRecordDAO.insertRoomState(mp);
-                roomService.opeRoom(arrList, remark);
+                roomService.opeRoom(arrList);
             }
         }
 
