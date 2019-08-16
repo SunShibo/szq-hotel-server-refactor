@@ -808,8 +808,8 @@ public class RoomController extends BaseCotroller {
                 mp.put("createTime", new Date());
                 mp.put("createUserId",loginAdmin.getId());
                 mp.put("roomId", roomBO.getId());
-                mp.put("virginState", roomBO.getLockRoomState());
-                mp.put("newState",  state);
+                mp.put("virginState", roomBO.getRoomMajorState());
+                mp.put("newState",  roomBO.getRoomMajorState());
                 mp.put("remark", remark);
                 roomRecordDAO.insertRoomState(mp);
                 roomService.closeRoom(startTime, endTime, integer, remark);
@@ -824,8 +824,8 @@ public class RoomController extends BaseCotroller {
                 mp.put("createTime", new Date());
                 mp.put("createUserId",loginAdmin.getId());
                 mp.put("roomId", roomBO.getId());
-                mp.put("virginState", roomBO.getLockRoomState());
-                mp.put("newState",  state);
+                mp.put("virginState", roomBO.getRoomMajorState());
+                mp.put("newState",  roomBO.getRoomMajorState());
                 mp.put("remark", remark);
                 roomRecordDAO.insertRoomState(mp);
                 roomService.opeRoom(arrList, remark);
