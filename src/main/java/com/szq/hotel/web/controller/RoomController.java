@@ -323,10 +323,11 @@ public class RoomController extends BaseCotroller {
     }
 
 
+    // todo
     @RequestMapping("/quertRm")
     public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime,
                         String endTime, String roomTypeId, String roomAuxiliaryStatus,
-                        String phone, String state) {
+                        String phone, String state, Integer orderId) {
         log.info("start***************************************quertRm****************************************");
         AdminBO loginUser = super.getLoginAdmin(request);
         String startTime = checkTime.replaceAll("/", "-");
@@ -375,6 +376,10 @@ public class RoomController extends BaseCotroller {
         map.put("endTime", enTime);
         map.put("roomTypeId", roomTypeId);
         map.put("phone", phone);
+
+
+
+
 
 
         String format = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
@@ -446,13 +451,22 @@ public class RoomController extends BaseCotroller {
         return list;
     }
 
+
+
+
+
+
+
+    //todo
     @RequestMapping("/queryRoomTypeNum")
     public void queryRoomTypeNum(HttpServletRequest request, HttpServletResponse response, String checkTime,
-                                 String endTime, String roomTypeId, String roomAuxiliaryStatus, String phone, String state) {
+                                 String endTime, String roomTypeId, String roomAuxiliaryStatus, String phone, String state, Integer orderId) {
        checkTime = checkTime.replaceAll("/", "-");
        endTime = endTime.replaceAll("/", "-");
        log.info("queryRoomTypeNum*********************************************");
        AdminBO loginUser = super.getLoginAdmin(request);
+
+       boolean flag = false;
 
         System.err.println("roomAuxiliaryStatus:"+roomAuxiliaryStatus);
 
@@ -471,6 +485,20 @@ public class RoomController extends BaseCotroller {
             super.safeHtmlPrint(response, json);
             return;
         }
+
+        List<Integer> integers = new ArrayList<Integer>();
+        if(orderId != null){
+            //获取用户当前要修改的订单
+            List<OrderChild> orderChildren = roomService.queryOrderChildByOrderId(loginUser.getHotelId(), orderId);
+            //判断用户修改的订单是预约的房型还是预约的房间
+            OrderChild orderChild = orderChildren.get(0);
+            //如果用户修改的订单是预约的房型
+                //判断是否为一个订单开始时间结束时间没有改变
+                 flag = true;
+                 for (OrderChild orderC : orderChildren) {
+                     integers.add(orderC.getRoomTypeId());
+                 }
+             }
 
         int i = DateUtils.parseDate(checkTime,"yyyy-MM-dd HH:mm:ss").compareTo(DateUtils.parseDate(endTime,"yyyy-MM-dd HH:mm:ss"));
         System.err.println("开始结束时间标识:"+i);
@@ -534,18 +562,18 @@ public class RoomController extends BaseCotroller {
         }
         System.err.println(l);
 
-        List<Integer> integers = roomService.queryRoomTypeAndId(loginUser.getHotelId(), phone);
-        System.out.println();
-        for (RoomTypeNumBO roomTypeNumBO : l) {
-            for (Integer integer : integers) {
-                if(roomTypeNumBO.getId().equals(integer)){
-                    roomTypeNumBO.setCount(roomTypeNumBO.getCount()+1);
-                }
-            }
-        }
-        log.info("客人手机号是:{}",phone);
-        log.info("酒店是:{}",loginUser.getHotelId());
-        log.info("该客人还预约了什么房型:{}",integers);
+        /*List<Integer> integers = roomService.queryRoomTypeAndId(loginUser.getHotelId(), phone);*/
+      if(flag){
+          for (RoomTypeNumBO roomTypeNumBO : l) {
+              for (Integer integer : integers) {
+                  if(roomTypeNumBO.getId().equals(integer)){
+                      roomTypeNumBO.setCount(roomTypeNumBO.getCount()+1);
+                  }
+              }
+          }
+      }
+
+
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(l));
         super.safeJsonPrint(response, result);

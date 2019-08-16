@@ -1430,6 +1430,17 @@ public class RoomService {
         return roomDAO.queryRoomTypeAndId(hotelId, phone);
     }
 
+    /**
+     * 根据订单id查询子订单列表信息
+     * @param hotelId
+     * @param orderId
+     * @return
+     */
+    public List<OrderChild> queryOrderChildByOrderId(Integer hotelId, Integer orderId){
+        return roomDAO.queryOrderChildByOrderId(hotelId, orderId);
+
+    }
+
 
 }
 

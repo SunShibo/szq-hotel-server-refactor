@@ -799,4 +799,10 @@
         and hm_room.show = 'yes'
     </select>
 
+    <select id="queryOrderChildByOrderId" resultType="com.szq.hotel.entity.bo.OrderChild">
+    SELECT hm_order_child.* FROM hm_order_child,hm_order WHERE hm_order_child.order_id = hm_order.id
+    AND hm_order.hotel_id = #{hotelId} and hm_order_child.practical_departure_time = 'reservation'
+    AND hm_order_child.order_id = #{orderId}
+    </select>
+
 </mapper>

@@ -286,4 +286,13 @@ public interface RoomDAO {
      * @return
      */
     List<RoomExportBO> roomExcel(@Param("hotelId") Integer hotelId);
+
+
+    /**
+     * 查询子订单 根据主订单id
+     * @param hotelIdm
+     * @param orderId
+     * @return
+     */
+    List<OrderChild> queryOrderChildByOrderId(@Param("hotelId")Integer hotelIdm,@Param("orderId")Integer orderId);
 }
