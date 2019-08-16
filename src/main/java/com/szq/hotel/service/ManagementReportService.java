@@ -190,7 +190,7 @@ public class ManagementReportService {
             //出租率-房晚数 / (总房间数 - 维修房数)
             occupancyRate.setMonth(roomLateSumMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());
 
-            REVPAR.setMonth(receivableSumMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            REVPAR.setMonth(receivableSumMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString() );//REVPAR = 应收合计 / (总房间数 - 维修房数)
             disableRoomSum.setMonth(managementReportMonth.getDisableRoomSum().toString());//停用房间数
             rentalIncome.setMonth(managementReportMonth.getRentalIncome().toString());//房租收入
             emptyRoomSum.setMonth(managementReportMonth.getEmptyRoomSum().toString());//空房数
