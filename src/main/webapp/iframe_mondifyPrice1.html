@@ -193,6 +193,10 @@
             return obj;
         }
         function dealRsData(ff) {
+            if(ff&&ff==1&&$("#unify").val()==""){
+                layer.alert("价格不能为空")
+                return;
+            }
             $table.empty();
             dealDays();
             var str = '';
@@ -260,16 +264,21 @@
 
 
         function submitInfo() {
-  	      var _arr = [];
+  	      var _arr = [];var flagg = false;
             rsd.map(function (c,i) {
                 var _o={roomTypeId:c['roomTypeId'],roomTypeName:c['roomTypeName']};
 				$(".rti"+c['roomTypeId']).each(function () {
                     _o[this.dataset['date']]=this.value;
-                    _o['y'+this.dataset['date']] = this.dataset['price'];
+                    _o['y'+this.dataset['date']] = this.dataset['price'];if(this.value==''){
+                        flagg = true;
+                    }
                 })
                 _arr.push(_o);
             })
-			localStorage.setItem("modifyPrice",JSON.stringify(_arr));
+            if(flagg){
+                layer.alert("价格不能有空白项")
+                return false;
+            };localStorage.setItem("modifyPrice",JSON.stringify(_arr));
             parent.parModifyPrice();
             no();
         }

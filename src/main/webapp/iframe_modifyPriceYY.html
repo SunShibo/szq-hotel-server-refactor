@@ -173,7 +173,10 @@
             return obj;
         }
         function dealRsData(ff) {
-
+            if(ff&&ff==1&&$("#unify").val()==""){
+                layer.alert("价格不能为空")
+                return;
+            }
             var sRooms = JSON.parse(localStorage.modifyPrice);
             $table.empty();
             dealDays();
@@ -245,7 +248,7 @@
 
             function submitInfo() {
                 var _arr = [];
-
+                var flagg = false;
                 rsd.map(function (c, i) {
                     var _o = {
                         roomTypeId: c['roomTypeId'],
@@ -259,12 +262,19 @@
 
                             _o[this.dataset['date']] = this.value;
                             _o['y' + this.dataset['date']] = this.dataset['price'];
+                            if(this.value==''){
+                                flagg = true;
+                            }
                         })
                     } catch (e) {
                         // console.log(e)
                     }
                     _arr.push(_o);
                 })
+                if(flagg){
+                    layer.alert("价格不能有空白项")
+                    return false;
+                }
                 localStorage.setItem("modifyPrice", JSON.stringify(_arr));
                 parent.parModifyPrice();
                 no();
