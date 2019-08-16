@@ -500,7 +500,11 @@ public class ManagementReportService {
     }
     //入住人数
     public Integer getCheckInPerson(Map<String,Object> map){
-        return managementReportDAO.getCheckInPerson(map);
+        Integer checkInPerson = managementReportDAO.getCheckInPerson(map);
+        if (checkInPerson==null){
+            return 0;
+        }
+        return checkInPerson;
     }
     //赔偿收入-赔偿冲减
     public BigDecimal getCompensation(Map<String,Object> map){
@@ -518,15 +522,27 @@ public class ManagementReportService {
     }
     //免费入住房数
     public Integer getFreeRoomSum(Map<String,Object> map){
-        return managementReportDAO.getFreeRoomSum(map);
+        Integer freeRoomSum = managementReportDAO.getFreeRoomSum(map);
+        if (freeRoomSum==null){
+            return 0;
+        }
+        return freeRoomSum;
     }
     //维修房数
     public Integer getMaintainSum(Map<String,Object> map){
-        return managementReportDAO.getMaintainSum(map);
+        Integer maintainSum =  managementReportDAO.getMaintainSum(map);
+        if (maintainSum==null){
+            return 0;
+        }
+        return maintainSum;
     }
     //会员房数
     public Integer getMemberRoomSum(Map<String,Object> map){
-        return managementReportDAO.getMemberRoomSum(map);
+        Integer memberRoomSum = managementReportDAO.getMemberRoomSum(map);
+        if (memberRoomSum==null){
+            return 0;
+        }
+        return memberRoomSum;
     }
     //商品收入=商品收入-商品冲减
     public BigDecimal getCommodity(Map<String,Object> map){
@@ -578,16 +594,28 @@ public class ManagementReportService {
 //        Integer lockRoomSum = managementReportDAO.getLockRoomSum(map);
 //        //停用房间数
 //        Integer disableRoomSum = maintainSum + lockRoomSum;
-        return managementReportDAO.getLockRoomSum(map);
+        Integer disableRoomSum= managementReportDAO.getLockRoomSum(map);
+        if (disableRoomSum==null){
+            return 0;
+        }
+        return disableRoomSum;
     }
     //空房数
     public Integer getEmptyRoomSum(Map<String,Object> map){
-        return managementReportDAO.getEmptyRoomSum(map);
+        Integer emptyRoomSum= managementReportDAO.getEmptyRoomSum(map);
+        if (emptyRoomSum==null){
+            return 0;
+        }
+        return emptyRoomSum;
     }
 
     //钟点房晚数
     public Integer getHourRoomSum(Map<String,Object> map){
-        return managementReportDAO.getHourRoomSum(map);
+        Integer hourRoomSum=managementReportDAO.getHourRoomSum(map);
+        if (hourRoomSum==null){
+            return 0;
+        }
+        return hourRoomSum;
     }
 
 }
