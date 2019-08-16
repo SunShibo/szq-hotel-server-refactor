@@ -532,9 +532,9 @@ public class RoomController extends BaseCotroller {
             System.err.println("最小值是:{}"+min);
             l.add(min);
         }
-        System.err.println(rtBOS);
+        System.err.println(l);
 
-       /* List<Integer> integers = roomService.queryRoomTypeAndId(loginUser.getHotelId(), phone);
+        List<Integer> integers = roomService.queryRoomTypeAndId(loginUser.getHotelId(), phone);
         System.out.println();
         for (RoomTypeNumBO roomTypeNumBO : l) {
             for (Integer integer : integers) {
@@ -542,7 +542,10 @@ public class RoomController extends BaseCotroller {
                     roomTypeNumBO.setCount(roomTypeNumBO.getCount()+1);
                 }
             }
-        }*/
+        }
+        log.info("客人手机号是:{}",phone);
+        log.info("酒店是:{}",loginUser.getHotelId());
+        log.info("该客人还预约了什么房型:{}",integers);
 
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(l));
         super.safeJsonPrint(response, result);
