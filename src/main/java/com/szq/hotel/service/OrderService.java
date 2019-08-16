@@ -1020,8 +1020,6 @@ public class OrderService {
             calendar.set(Calendar.HOUR_OF_DAY, 14);
             Date m2 = calendar.getTime();
             //获取订单信息 并清空金额
-            orderChildBO.setOtherRate(new BigDecimal(0));
-            orderChildBO.setRoomRate(new BigDecimal(0));
             Date startTime = orderChildBO.getStartTime();
             Calendar calendar1 = Calendar.getInstance();
             calendar1.setTime(startTime);
@@ -1211,8 +1209,8 @@ public class OrderService {
         OrderBO orderBO = orderDAO.getOrderById(orderChildBO.getOrderId());
         if (orderChildBO.getRoomRate().intValue() > 0) {
             cashierSummaryService.addAccount(Constants.ROOMRATE.getValue(), orderChildBO.getRoomRate(), orderBO.getOrderNumber(), userId,
-                    checkInPersonBO.getName(), orderBO.getOTA(),
-                    orderBO.getChannel(), orderBO.getOrderType(), orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
+                    checkInPersonBO.getName(), orderBO.getOTA(),orderBO.getOrderType(),
+                    orderBO.getChannel(), orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                     "房费", hotelId);
             //添加房晚数
             Integer nightAuditId=nightAuditService.addAudit(orderChildId,hotelId,checkInPersonBOS.size(),orderBO.getChannel());
@@ -1220,13 +1218,13 @@ public class OrderService {
         }
         if (orderChildBO.getOtherRate().intValue() > 0) {
             cashierSummaryService.addAccount(Constants.TIMEOUTCOST.getValue(), orderChildBO.getOtherRate(), orderBO.getOrderNumber(), userId,
-                    checkInPersonBO.getName(), orderBO.getOTA(), orderBO.getOrderType(), orderBO.getChannel(),
+                    checkInPersonBO.getName(), orderBO.getOTA(),orderBO.getOrderType(),orderBO.getChannel(),
                     orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                     "超时费", hotelId);
         }
         if (money.compareTo(new BigDecimal(0)) != 0) {
             cashierSummaryService.addAccount(Constants.MITIGATE.getValue(), money.negate(), orderBO.getOrderNumber(), userId,
-                    checkInPersonBO.getName(), orderBO.getOTA(), orderBO.getOrderType(),orderBO.getChannel(),
+                    checkInPersonBO.getName(), orderBO.getOTA(),orderBO.getOrderType(),orderBO.getChannel(),
                     orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                     "超时费减免", hotelId);
         }
@@ -1477,20 +1475,20 @@ public class OrderService {
         if (backup.getRoomRate().intValue() != 0) {
             cashierSummaryService.addAccount(Constants.ROOMRATEFREE.getValue(), backup.getRoomRate().multiply(new BigDecimal(-1)), orderBO.getOrderNumber(), userId,
                     checkInPersonBO.getName(), orderBO.getOTA(),
-                    orderBO.getChannel(), orderBO.getOrderType(),orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
+                    orderBO.getOrderType(), orderBO.getChannel(), orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                     "房费回滚", hotelId);
         }
 
         if (backup.getOtherRate().intValue() != 0) {
             cashierSummaryService.addAccount(Constants.TIMEOUTCOST.getValue(), backup.getOtherRate().multiply(new BigDecimal(-1)), orderBO.getOrderNumber(), userId,
                     checkInPersonBO.getName(), orderBO.getOTA(),
-                    orderBO.getChannel(), orderBO.getOrderType(),orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
+                    orderBO.getOrderType(),orderBO.getChannel(),orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                     "超时费回滚", hotelId);
         }
 
         if (backup.getTimeoutRate().intValue() != 0) {
             cashierSummaryService.addAccount(Constants.MITIGATE.getValue(), backup.getTimeoutRate(), orderBO.getOrderNumber(), userId,
-                    checkInPersonBO.getName(), orderBO.getOTA(), orderBO.getChannel(), orderBO.getOrderType(),
+                    checkInPersonBO.getName(), orderBO.getOTA(),orderBO.getOrderType(), orderBO.getChannel(),
                     orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
                     "超时费减免回滚", hotelId);
         }

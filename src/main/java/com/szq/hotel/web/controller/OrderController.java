@@ -486,7 +486,7 @@ public class OrderController extends BaseCotroller {
             cashierSummaryService.addCheck(money, payType, orderBO.getOrderNumber(), userInfo.getId(),
                     name, orderBO.getOTA(), orderBO.getOrderType(),
                     orderBO.getChannel(), orderChildResult.getRoomName(), orderChildResult.getRoomTypeName(),
-                    null, userInfo.getHotelId());
+                    "入住支付", userInfo.getHotelId());
 
             //修改子订单信息
             OrderChildBO orderChildBO = new OrderChildBO();
