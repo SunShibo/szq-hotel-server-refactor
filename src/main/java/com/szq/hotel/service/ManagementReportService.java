@@ -41,7 +41,7 @@ public class ManagementReportService {
         map.put("startTime",startTime1);
         map.put("endTime",endTime1);//推迟1分钟防止网络延迟
         map.put("hotelId",hotelId);
-
+        log.info("map:{}",map);
         ManagementReportBO managementReportBO = new ManagementReportBO();
 
         managementReportBO.setReceivableSum(this.getReceivableSum(map));
