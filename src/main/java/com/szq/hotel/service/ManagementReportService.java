@@ -160,22 +160,32 @@ public class ManagementReportService {
             receivableSum.setMonth(managementReportMonth.getReceivableSum().toString());//应收合计
             //房晚数
             BigDecimal roomLateSumMonth = new BigDecimal(managementReportMonth.getRoomLateSum());
-            //平均房价-房租收入/房晚数
-            avgRoomRate.setMonth(managementReportMonth.getRentalIncome().divide(roomLateSumMonth,2,BigDecimal.ROUND_HALF_UP).toString());
-
+            if (roomLateSumMonth.intValue()==0){
+                avgRoomRate.setMonth("0");
+            }else {
+                //平均房价-房租收入/房晚数
+                avgRoomRate.setMonth(managementReportMonth.getRentalIncome().divide(roomLateSumMonth, 2, BigDecimal.ROUND_HALF_UP).toString());
+            }
             //应收合计
             BigDecimal receivableSumMonth=managementReportMonth.getReceivableSum();
             //会员卡收入
             BigDecimal memberCardSoldMoneyMonth=managementReportMonth.getMemberCardSoldMoney();
             //差
             BigDecimal q = receivableSumMonth.subtract(memberCardSoldMoneyMonth);
-            //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
-            avgConsumptionOfRoom.setMonth(q.divide(roomLateSumMonth,2,BigDecimal.ROUND_HALF_UP).toString());
-
+            if (roomLateSumMonth.intValue()==0){
+                avgRoomRate.setMonth("0");
+            }else {
+                //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
+                avgConsumptionOfRoom.setMonth(q.divide(roomLateSumMonth, 2, BigDecimal.ROUND_HALF_UP).toString());
+            }
             //人晚数
             Integer personLateSumMonth=managementReportMonth.getPersonLateSum();
-            //人均消费--应收合计/人晚数
-            avgConsumptionOfPerson.setMonth(receivableSumMonth.divide(new BigDecimal(personLateSumMonth),2,BigDecimal.ROUND_HALF_UP).toString());
+            if (personLateSumMonth==0){
+                avgConsumptionOfPerson.setMonth("0");
+            }else {
+                //人均消费--应收合计/人晚数
+                avgConsumptionOfPerson.setMonth(receivableSumMonth.divide(new BigDecimal(personLateSumMonth), 2, BigDecimal.ROUND_HALF_UP).toString());
+            }
             indemnityIncome.setMonth(managementReportMonth.getIndemnityIncome().toString());//赔偿收入
             freeCheckInSum.setMonth(managementReportMonth.getFreeCheckInSum().toString());//免费入住房数
             roomSum.setMonth(managementReportMonth.getRoomSum().toString());//房间总数
@@ -192,10 +202,15 @@ public class ManagementReportService {
             BigDecimal maintainRoomSumMonth = new BigDecimal(managementReportMonth.getMaintainRoomSum());
             //差
             BigDecimal i=roomSumMonth.subtract(maintainRoomSumMonth);
-            //出租率-房晚数 / (总房间数 - 维修房数)
-            occupancyRate.setMonth(roomLateSumMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());
+            if (i.intValue()==0){
+                occupancyRate.setMonth("0");
+                REVPAR.setMonth("0");
+            }else {
+                //出租率-房晚数 / (总房间数 - 维修房数)
+                occupancyRate.setMonth(roomLateSumMonth.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());
+                REVPAR.setMonth(receivableSumMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString() );//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            }
 
-            REVPAR.setMonth(receivableSumMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString() );//REVPAR = 应收合计 / (总房间数 - 维修房数)
             disableRoomSum.setMonth(managementReportMonth.getDisableRoomSum().toString());//停用房间数
             rentalIncome.setMonth(managementReportMonth.getRentalIncome().toString());//房租收入
             emptyRoomSum.setMonth(managementReportMonth.getEmptyRoomSum().toString());//空房数
@@ -234,20 +249,29 @@ public class ManagementReportService {
             receivableSum.setYear(managementReportYear.getReceivableSum().toString());//应收合计
             //房晚数
             BigDecimal roomLateSumYear = new BigDecimal(managementReportYear.getRoomLateSum());
-            //平均房价=房租收入/房晚数
-            avgRoomRate.setYear(managementReportYear.getRentalIncome().divide(roomLateSumYear,2,BigDecimal.ROUND_HALF_UP).toString());
             //应收合计
             BigDecimal receivableSumYear=managementReportYear.getReceivableSum();
             //会员卡收入
             BigDecimal memberCardSoldMoneyYear=managementReportYear.getMemberCardSoldMoney();
             //差
             BigDecimal q = receivableSumYear.subtract(memberCardSoldMoneyYear);
-            //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
-            avgConsumptionOfRoom.setYear(q.divide(roomLateSumYear,2,BigDecimal.ROUND_HALF_UP).toString());//房平均消费
+            if (roomLateSumYear.intValue()==0){
+                avgRoomRate.setYear("0");
+                avgConsumptionOfRoom.setYear("0");
+            }else {
+                //平均房价=房租收入/房晚数
+                avgRoomRate.setYear(managementReportYear.getRentalIncome().divide(roomLateSumYear,2,BigDecimal.ROUND_HALF_UP).toString());
+                //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
+                avgConsumptionOfRoom.setYear(q.divide(roomLateSumYear,2,BigDecimal.ROUND_HALF_UP).toString());//房平均消费
+            }
             //人晚数
             Integer personLateSumYear=managementReportYear.getPersonLateSum();
-            //人均消费--应收合计/人晚数
-            avgConsumptionOfPerson.setYear(receivableSumYear.divide(new BigDecimal(personLateSumYear),2,BigDecimal.ROUND_HALF_UP).toString());//人均消费
+                        if (personLateSumYear==0){
+                avgConsumptionOfPerson.setYear("0");
+            }else {
+                            //人均消费--应收合计/人晚数
+                            avgConsumptionOfPerson.setYear(receivableSumYear.divide(new BigDecimal(personLateSumYear), 2, BigDecimal.ROUND_HALF_UP).toString());
+                        }
             indemnityIncome.setYear(managementReportYear.getIndemnityIncome().toString());//赔偿收入
             freeCheckInSum.setYear(managementReportYear.getFreeCheckInSum().toString());//免费入住房数
             roomSum.setYear(managementReportYear.getRoomSum().toString());//房间总数
@@ -264,9 +288,14 @@ public class ManagementReportService {
             BigDecimal maintainRoomSumYear = new BigDecimal(managementReportYear.getMaintainRoomSum());
             //差
             BigDecimal i=roomSumYaer.subtract(maintainRoomSumYear);
-            occupancyRate.setYear(roomLateSumYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//出租率=房晚数 / (总房间数 - 维修房数)
-            //REVPAR = 应收合计 / (总房间数 - 维修房数)
-            REVPAR.setYear(receivableSumYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            if (i.intValue()==0){
+                occupancyRate.setYear("0");
+                REVPAR.setYear("0");
+            }else {
+                occupancyRate.setYear(roomLateSumYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//出租率=房晚数 / (总房间数 - 维修房数)
+                //REVPAR = 应收合计 / (总房间数 - 维修房数)
+                REVPAR.setYear(receivableSumYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            }
             disableRoomSum.setYear(managementReportYear.getDisableRoomSum().toString());//停用房间数
             rentalIncome.setYear(managementReportYear.getRentalIncome().toString());//房租收入
             emptyRoomSum.setYear(managementReportYear.getEmptyRoomSum().toString());//空房数
@@ -284,20 +313,31 @@ public class ManagementReportService {
             receivableSum.setLastYear(managementReportLastYear.getReceivableSum().toString());//应收合计
             //房晚数
             BigDecimal roomLateSumLastYear = new BigDecimal(managementReportLastYear.getRoomLateSum());
-            //平均房价=房租收入/房晚数
-            avgRoomRate.setLastYear(managementReportLastYear.getRentalIncome().divide(roomLateSumLastYear,2,BigDecimal.ROUND_HALF_UP).toString());//平均房价
+
             //应收合计
             BigDecimal receivableSumLastYear=managementReportLastYear.getReceivableSum();
             //会员卡收入
             BigDecimal memberCardSoldMoneyLastYear=managementReportLastYear.getMemberCardSoldMoney();
             //差
             BigDecimal q = receivableSumLastYear.subtract(memberCardSoldMoneyLastYear);
-            //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
-            avgConsumptionOfRoom.setLastYear(q.divide(roomLateSumLastYear,2,BigDecimal.ROUND_HALF_UP).toString());//房平均消费
+            if (roomLateSumLastYear.intValue()==0){
+                avgRoomRate.setLastYear("0");
+                avgConsumptionOfRoom.setLastYear("0");
+            }else {
+                //平均房价=房租收入/房晚数
+                avgRoomRate.setLastYear(managementReportLastYear.getRentalIncome().divide(roomLateSumLastYear,2,BigDecimal.ROUND_HALF_UP).toString());//平均房价
+                //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
+                avgConsumptionOfRoom.setLastYear(q.divide(roomLateSumLastYear,2,BigDecimal.ROUND_HALF_UP).toString());//房平均消费
+            }
+
             //人晚数
             Integer personLateSumLastYear=managementReportLastYear.getPersonLateSum();
-            //人均消费--应收合计/人晚数
-            avgConsumptionOfPerson.setLastYear(receivableSumLastYear.divide(new BigDecimal(personLateSumLastYear),2,BigDecimal.ROUND_HALF_UP).toString());//人均消费
+            if (personLateSumLastYear==0){
+                avgConsumptionOfPerson.setLastYear("0");
+            }else {
+                //人均消费--应收合计/人晚数
+                avgConsumptionOfPerson.setLastYear(receivableSumLastYear.divide(new BigDecimal(personLateSumLastYear), 2, BigDecimal.ROUND_HALF_UP).toString());//人均消费
+            }
             indemnityIncome.setLastYear(managementReportLastYear.getIndemnityIncome().toString());//赔偿收入
             freeCheckInSum.setLastYear(managementReportLastYear.getFreeCheckInSum().toString());//免费入住房数
             roomSum.setLastYear(managementReportLastYear.getRoomSum().toString());//房间总数
@@ -314,10 +354,15 @@ public class ManagementReportService {
             BigDecimal maintainRoomSumLastYear = new BigDecimal(managementReportLastYear.getMaintainRoomSum());
             //差
             BigDecimal i=roomSumLastLastYaer.subtract(maintainRoomSumLastYear);
-            //出租率=房晚数 / (总房间数 - 维修房数)
-            occupancyRate.setLastYear(roomLateSumLastYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//出租率
-            //REVPAR = 应收合计 / (总房间数 - 维修房数)
-            REVPAR.setLastYear(receivableSumLastYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            if (i.intValue()==0){
+                occupancyRate.setLastYear("0");
+                REVPAR.setLastYear("0");
+            }else {
+                //出租率=房晚数 / (总房间数 - 维修房数)
+                occupancyRate.setLastYear(roomLateSumLastYear.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());//出租率
+                //REVPAR = 应收合计 / (总房间数 - 维修房数)
+                REVPAR.setLastYear(receivableSumLastYear.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            }
             disableRoomSum.setLastYear(managementReportLastYear.getDisableRoomSum().toString());//停用房间数
             rentalIncome.setLastYear(managementReportLastYear.getRentalIncome().toString());//房租收入
             emptyRoomSum.setLastYear(managementReportLastYear.getEmptyRoomSum().toString());//空房数
@@ -355,20 +400,30 @@ public class ManagementReportService {
             receivableSum.setLastYearMonth(managementReportLastYearMonth.getReceivableSum().toString());//应收合计
             //房晚数
             BigDecimal roomLateSumLastYearMonth = new BigDecimal(managementReportLastYearMonth.getRoomLateSum());
-            //平均房价=房租收入/房晚数
-            avgRoomRate.setLastYearMonth(managementReportLastYearMonth.getRentalIncome().divide(roomLateSumLastYearMonth,2,BigDecimal.ROUND_HALF_UP).toString());//平均房价
+
             //应收合计
             BigDecimal receivableSumLastYearMonth=managementReportLastYearMonth.getReceivableSum();
             //会员卡收入
             BigDecimal memberCardSoldMoneyLastYearMonth=managementReportLastYearMonth.getMemberCardSoldMoney();
             //差
             BigDecimal q = receivableSumLastYearMonth.subtract(memberCardSoldMoneyLastYearMonth);
-            //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
-            avgConsumptionOfRoom.setLastYearMonth(q.divide(roomLateSumLastYearMonth,2,BigDecimal.ROUND_HALF_UP).toString());//房平均消费
+            if (roomLateSumLastYearMonth.intValue()==0){
+                avgRoomRate.setLastYearMonth("0");
+                avgConsumptionOfRoom.setLastYearMonth("0");
+            }else {
+                //平均房价=房租收入/房晚数
+                avgRoomRate.setLastYearMonth(managementReportLastYearMonth.getRentalIncome().divide(roomLateSumLastYearMonth,2,BigDecimal.ROUND_HALF_UP).toString());//平均房价
+                //房平均消费-房间所有总消费（应收合计-会员卡收入）/房晚数
+                avgConsumptionOfRoom.setLastYearMonth(q.divide(roomLateSumLastYearMonth,2,BigDecimal.ROUND_HALF_UP).toString());//房平均消费
+            }
             //人晚数
             Integer personLateSumLastYearMonth=managementReportLastYearMonth.getPersonLateSum();
-            //人均消费--应收合计/人晚数
-            avgConsumptionOfPerson.setLastYearMonth(receivableSumLastYearMonth.divide(new BigDecimal(personLateSumLastYearMonth),2,BigDecimal.ROUND_HALF_UP).toString());//人均消费
+            if (personLateSumLastYearMonth==0){
+                avgConsumptionOfPerson.setLastYearMonth("0");
+            }else {
+                //人均消费--应收合计/人晚数
+                avgConsumptionOfPerson.setLastYearMonth(receivableSumLastYearMonth.divide(new BigDecimal(personLateSumLastYearMonth), 2, BigDecimal.ROUND_HALF_UP).toString());//人均消费
+            }
             indemnityIncome.setLastYearMonth(managementReportLastYearMonth.getIndemnityIncome().toString());//赔偿收入
             freeCheckInSum.setLastYearMonth(managementReportLastYearMonth.getFreeCheckInSum().toString());//免费入住房数
             roomSum.setLastYearMonth(managementReportLastYearMonth.getRoomSum().toString());//房间总数
@@ -385,10 +440,15 @@ public class ManagementReportService {
             BigDecimal maintainRoomSumLastYearMonth = new BigDecimal(managementReportLastYearMonth.getMaintainRoomSum());
             //差
             BigDecimal i=roomSumLastLastYaerMonth.subtract(maintainRoomSumLastYearMonth);
-            //出租率=房晚数 / (总房间数 - 维修房数)
-            occupancyRate.setLastYearMonth(roomLateSumLastYearMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//出租率
-            //REVPAR = 应收合计 / (总房间数 - 维修房数)
-            REVPAR.setLastYearMonth(receivableSumLastYearMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            if (i.intValue()==0){
+                occupancyRate.setLastYearMonth("0");
+                REVPAR.setLastYearMonth("0");
+            }else {
+                //出租率=房晚数 / (总房间数 - 维修房数)
+                occupancyRate.setLastYearMonth(roomLateSumLastYearMonth.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());//出租率
+                //REVPAR = 应收合计 / (总房间数 - 维修房数)
+                REVPAR.setLastYearMonth(receivableSumLastYearMonth.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            }
             disableRoomSum.setLastYearMonth(managementReportLastYearMonth.getDisableRoomSum().toString());//停用房间数
             rentalIncome.setLastYearMonth(managementReportLastYearMonth.getRentalIncome().toString());//房租收入
             emptyRoomSum.setLastYearMonth(managementReportLastYearMonth.getEmptyRoomSum().toString());//空房数
