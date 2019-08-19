@@ -639,10 +639,11 @@ public class ManagementReportService {
         Integer personLateSum = this.getPersonLateSum(map);
         if (personLateSum ==0){
             return new BigDecimal(0.00);
+        }else {
+            //人均消费
+            BigDecimal avgConsumptionOfPerson = receivableSum.divide(new BigDecimal(personLateSum), 2, BigDecimal.ROUND_HALF_UP);
+            return avgConsumptionOfPerson;
         }
-        //人均消费
-        BigDecimal avgConsumptionOfPerson = receivableSum.divide(new BigDecimal(personLateSum),2,BigDecimal.ROUND_HALF_UP);
-        return avgConsumptionOfPerson;
     }
     //入住人数
     public Integer getCheckInPerson(Map<String,Object> map){
