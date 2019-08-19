@@ -84,8 +84,8 @@ public class ManagementReportService {
         FormUtilBO avgConsumptionOfPerson = new FormUtilBO();//人均消费
         FormUtilBO indemnityIncome = new FormUtilBO();//赔偿收入
         FormUtilBO freeCheckInSum = new FormUtilBO();//免费入住房数
-        FormUtilBO roomSum = new FormUtilBO();//房间总数 //todo
-        FormUtilBO maintainRoomSum = new FormUtilBO();//维修房数 //todo
+        FormUtilBO roomSum = new FormUtilBO();//房间总数
+        FormUtilBO maintainRoomSum = new FormUtilBO();//维修房数 
         FormUtilBO memberRoomSum = new FormUtilBO();//会员房数
         FormUtilBO memberCardSoldMoney = new FormUtilBO();//会员卡销售金额
         FormUtilBO roomLateSum = new FormUtilBO();//房晚数
