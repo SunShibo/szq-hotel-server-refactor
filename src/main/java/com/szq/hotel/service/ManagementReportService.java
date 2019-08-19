@@ -66,6 +66,7 @@ public class ManagementReportService {
         managementReportBO.setHourRoomLateSum(this.getHourRoomSum(map));
         managementReportBO.setHotelId(hotelId);
         managementReportBO.setCreateTime(date);
+        log.info("managementReportBO:{}",managementReportBO);
         managementReportDAO.addData(managementReportBO);
         log.info("end  addData............ManagementReportService...............................");
     }
@@ -74,6 +75,8 @@ public class ManagementReportService {
         查询结果
      */
     public ManagementReportResponseBO selectManagementReport(Date startTime, Date endTime, Integer hotelId)throws ParseException {
+        log.info("start selectManagementReport============ManagementReportService=================");
+        log.info("startTime:{},endTime:{},hotelId:{}",startTime,endTime,hotelId);
         ManagementReportResponseBO managementReportResponseBO = new ManagementReportResponseBO();
         FormUtilBO receivableSum = new FormUtilBO();//应收合计
         FormUtilBO avgRoomRate = new FormUtilBO();//平均房价
@@ -459,8 +462,9 @@ public class ManagementReportService {
         managementReportResponseBO.setRentalIncome(rentalIncome); //房租收入
         managementReportResponseBO.setEmptyRoomSum(emptyRoomSum); //空房数
         managementReportResponseBO.setHourRoomLateSum(hourRoomLateSum); //钟点房晚数
-
+        log.info("end selectManagementReport============ManagementReportService=================");
         return managementReportResponseBO;
+
     }
 
 
