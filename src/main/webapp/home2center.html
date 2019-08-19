@@ -629,7 +629,9 @@
         $("#hzjg").val(vv)
         layer.close(index)
     }
-
+	setTimeout(function () {
+        changeDays({value:1})
+    },1000)
     function changeDays(t) {
         if(new Date().getHours()<6){
             //代表早上6点以前。入住时间需要往前推一天,所以离店时间还是当天

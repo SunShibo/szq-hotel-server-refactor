@@ -301,7 +301,7 @@
                             }
                             for(var i=0;i<checkinData.length;i++){
                                 //入住时间在6点以前的情况特殊处理
-                                if(d.checkType!="hour"&&new Date().getHours()<6) {
+                                if(new Date().getHours()<6) {
                                     var arr = [{
                                         money: checkinData[i][money],
                                         time: DateToLStr(new Date(Date.now()-86400000)).split(" ")[0]

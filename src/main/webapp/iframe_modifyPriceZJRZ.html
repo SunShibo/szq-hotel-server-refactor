@@ -123,7 +123,7 @@
         }
         function DateToLStr(t) {
   	      	var dt = null;
-            if(checkType=="day"&&new Date().getHours()<6){
+            if(new Date().getHours()<6){
 				//入住时间在6点以前的情况特殊处理
                 dt = new Date(Date.now()+t-86400000);
 			}else{
