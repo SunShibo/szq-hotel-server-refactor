@@ -33,7 +33,7 @@ public class StoredValueRecordService {
      */
     public void addStoredValueRecord(Integer id, BigDecimal storedValueChange,String remark,String type, BigDecimal presenterMoney,BigDecimal currentBalance, Integer userId){
         log.info("start================addStoredValueRecord");
-        log.info("param{}\tUserId{}",id,storedValueChange,remark,type,presenterMoney,currentBalance,userId);
+        log.info("id:{}\tstoredValueChange:{}\tremark:{}\ttype:{}\tpresenterMoney:{}\tcurrentBalance:{}\tuserId:{}",id,storedValueChange,remark,type,presenterMoney,currentBalance,userId);
         StoredValueRecordBO storedValueRecordBO = new StoredValueRecordBO();
         storedValueRecordBO.setCheckInMemberId(id);
         storedValueRecordBO.setStoredValueMoney(storedValueChange);
