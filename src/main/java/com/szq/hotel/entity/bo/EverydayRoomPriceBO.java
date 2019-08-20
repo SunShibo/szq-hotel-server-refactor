@@ -47,6 +47,9 @@ public class EverydayRoomPriceBO {
     }
 
     public BigDecimal getMoney() {
+        if(money==null){
+            return new BigDecimal("0");
+        }
         return money;
     }
 

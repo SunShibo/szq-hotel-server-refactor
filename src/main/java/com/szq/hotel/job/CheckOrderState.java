@@ -76,34 +76,50 @@ public class CheckOrderState {
                 log.info("everydayRoomPriceBOS:{}",everydayRoomPriceBOS);
                 if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
                     for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){
-                        log.info("start  room price  ...............................................");
-                        //生成房费     //生成在主账房里
-                        Integer integer = childOrderService.queryOrderChildMain(roomRateBO.getAlRoomCode());
-                        childOrderService.increaseRoomRate(integer,priceBO.getMoney());
-                        orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime())+"房费",
-                                null,priceBO.getMoney().multiply(new BigDecimal("-1")), Constants.ROOMRATE.getValue(),1,"1天", Constants.NO.getValue());
-                        //把夜审状态修改回去
-                        log.info("update  room price  status................................................");
-                        childOrderService.updateRoomPrice(priceBO.getId());
-                        //生成报表
-                        log.info("start  make a repor.....................................................");
-                        CommonBO commonBO = childOrderService.queryChildName(priceBO.getOrderChildId());
-                        cashierSummaryService.addRoomRate(priceBO.getMoney(),roomRateBO.getOrderNumber(),1,commonBO.getName(),
-                                roomRateBO.getOTA(),roomRateBO.getPassengerSource(),roomRateBO.getChannel(),roomRateBO.getRoomName(),
-                                roomRateBO.getRoomTypeName(),roomRateBO.getHotelId());
-                        //记录夜核房晚数
-                        Integer  person=childOrderService.queryPersonNumber(priceBO.getOrderChildId());
-                        nightAuditService.addAudit(priceBO.getOrderChildId(),roomRateBO.getHotelId(),person,roomRateBO.getChannel());
+                        try {
+                            log.info("start  room price  ...............................................");
+                            //生成房费     //生成在主账房里
+                            Integer integer = childOrderService.queryOrderChildMain(roomRateBO.getAlRoomCode());
+                            childOrderService.increaseRoomRate(integer, priceBO.getMoney());
+                            orderRecordService.addOrderRecord(priceBO.getOrderChildId(), DateUtils.format(priceBO.getTime()) + "房费",
+                                    null, priceBO.getMoney().multiply(new BigDecimal("-1")), Constants.ROOMRATE.getValue(), 1, "1天", Constants.NO.getValue());
+                            //把夜审状态修改回去
+                            log.info("update  room price  status................................................");
+                            childOrderService.updateRoomPrice(priceBO.getId());
+                            //生成报表
+                            log.info("start  make a repor.....................................................");
+                            CommonBO commonBO = childOrderService.queryChildName(priceBO.getOrderChildId());
+                            cashierSummaryService.addRoomRate(priceBO.getMoney(), roomRateBO.getOrderNumber(), 1, commonBO.getName(),
+                                    roomRateBO.getOTA(), roomRateBO.getPassengerSource(), roomRateBO.getChannel(), roomRateBO.getRoomName(),
+                                    roomRateBO.getRoomTypeName(), roomRateBO.getHotelId());
+                            //记录夜核房晚数
+                            Integer person = childOrderService.queryPersonNumber(priceBO.getOrderChildId());
+                            nightAuditService.addAudit(priceBO.getOrderChildId(), roomRateBO.getHotelId(), person, roomRateBO.getChannel());
+                        }catch (Exception e){
+                            log.error("everydayRoomPriceException",e);
+                            continue;
+                        }
                     }
             }
         }
         List<HotelBO> hotelBOS = hotelDAO.queryHotel();
         for (HotelBO hotelBO:hotelBOS) {
-            incomeService.addIncome(hotelBO.getId());
-            //管理层报表
-            managementReportService.addData(hotelBO.getId());
-
-            managerDailyService.insertManagerDaliy(hotelBO.getId());
+            try {
+                incomeService.addIncome(hotelBO.getId());
+            }catch (Exception e){
+                log.error("incomeService.addIncomeException",e);
+            }
+            try {
+                //管理层报表
+                managementReportService.addData(hotelBO.getId());
+            }catch (Exception e){
+                log.error(" managementReportService.addDataException",e);
+            }
+            try {
+                managerDailyService.insertManagerDaliy(hotelBO.getId());
+            }catch (Exception e){
+                log.error("managerDailyService.insertManagerDaliyException",e);
+            }
         }
         log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
