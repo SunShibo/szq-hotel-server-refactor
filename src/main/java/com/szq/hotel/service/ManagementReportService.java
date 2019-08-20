@@ -204,7 +204,7 @@ public class ManagementReportService {
                 REVPAR.setMonth("0.00");
             }else {
                 //出租率-房晚数 / (总房间数 - 维修房数)
-                occupancyRate.setMonth(roomLateSumMonth.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());
+                occupancyRate.setMonth(roomLateSumMonth.divide(i, 4, BigDecimal.ROUND_HALF_UP).toString());
                 REVPAR.setMonth(receivableSumMonth.divide(i,2,BigDecimal.ROUND_HALF_UP).toString() );//REVPAR = 应收合计 / (总房间数 - 维修房数)
             }
 
@@ -289,7 +289,7 @@ public class ManagementReportService {
                 occupancyRate.setYear("0");
                 REVPAR.setYear("0.00");
             }else {
-                occupancyRate.setYear(roomLateSumYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//出租率=房晚数 / (总房间数 - 维修房数)
+                occupancyRate.setYear(roomLateSumYear.divide(i,4,BigDecimal.ROUND_HALF_UP).toString());//出租率=房晚数 / (总房间数 - 维修房数)
                 //REVPAR = 应收合计 / (总房间数 - 维修房数)
                 REVPAR.setYear(receivableSumYear.divide(i,2,BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
             }
@@ -356,7 +356,7 @@ public class ManagementReportService {
                 REVPAR.setLastYear("0.00");
             }else {
                 //出租率=房晚数 / (总房间数 - 维修房数)
-                occupancyRate.setLastYear(roomLateSumLastYear.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());//出租率
+                occupancyRate.setLastYear(roomLateSumLastYear.divide(i, 4, BigDecimal.ROUND_HALF_UP).toString());//出租率
                 //REVPAR = 应收合计 / (总房间数 - 维修房数)
                 REVPAR.setLastYear(receivableSumLastYear.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
             }
@@ -442,7 +442,7 @@ public class ManagementReportService {
                 REVPAR.setLastYearMonth("0.00");
             }else {
                 //出租率=房晚数 / (总房间数 - 维修房数)
-                occupancyRate.setLastYearMonth(roomLateSumLastYearMonth.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());//出租率
+                occupancyRate.setLastYearMonth(roomLateSumLastYearMonth.divide(i, 4, BigDecimal.ROUND_HALF_UP).toString());//出租率
                 //REVPAR = 应收合计 / (总房间数 - 维修房数)
                 REVPAR.setLastYearMonth(receivableSumLastYearMonth.divide(i, 2, BigDecimal.ROUND_HALF_UP).toString());//REVPAR = 应收合计 / (总房间数 - 维修房数)
             }
