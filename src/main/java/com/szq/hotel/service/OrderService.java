@@ -126,7 +126,6 @@ public class OrderService {
                 map.put("id", orderChild.getRoomId());
                 map.put("state", Constants.INTHE.getValue());
                 map.put("remark", "直接入住");
-                System.err.println("userId" + userId);
                 map.put("userId", userId);
                 roomService.updateroomMajorState(map);
             }
@@ -144,7 +143,7 @@ public class OrderService {
 
     //预定入住
     public void reservation(List<OrderChildBO> orderChildBOList, OrderBO orderBO, Integer userId) {
-        log.info("start addOrderInfo..................................");
+        log.info("start reservation..................................");
         log.info("orderBO:{}\torderChildBOList:{}", orderBO, orderChildBOList);
 
         //查询预约中的联房码
@@ -941,8 +940,9 @@ public class OrderService {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateString = df.format(currentTime);
         Date currentTime_2 = df.parse(dateString);
-        Calendar calendar = Calendar.getInstance();
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.getHotelDate(new Date()));
         DateFormat time = new SimpleDateFormat("yyyy-MM-dd");
         //换房时候没到凌晨四点 也就是说昨天的房费没夜审 则也能查出昨天的房价
         if (currentTime_2.getTime() < m4.getTime()) {
@@ -1055,14 +1055,15 @@ public class OrderService {
                 EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(date), orderChildBO.getId());
                 System.err.println(everydayRoomPriceBO);
                 //bug:六点前 四点后入住算前一天没有滚房费 然后退房时候需滚出前天房费 目前认为 不滚也是合理的吧
-                if (hour > 4 && hour < 6) {
-                    Date beforeDate = DateUtils.getAppointDate(date, -1);
-                    //这天的房价信息
-                    EverydayRoomPriceBO everydayRoomPriceBO2 = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(beforeDate), orderChildBO.getId());
-                    if(everydayRoomPriceBO2!=null){
-                        orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO2.getMoney()));
-                    }
-                }
+//                if (hour > 4 && hour < 6) {
+                    //对于夜审来讲是应该滚两天房费 对于我退房来将算他提前退房
+//                    Date beforeDate = DateUtils.getAppointDate(date, -1);
+//                    //这天的房价信息
+//                    EverydayRoomPriceBO everydayRoomPriceBO2 = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(ymd.format(beforeDate), orderChildBO.getId());
+//                    if(everydayRoomPriceBO2!=null){
+//                        orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO2.getMoney()));
+//                    }
+//                }
                 //修改房费
                 orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
             }
@@ -1100,6 +1101,7 @@ public class OrderService {
                     orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()));
                 }
             }
+
             return orderChildBO;
         } catch (ParseException e) {
             e.printStackTrace();
@@ -1189,10 +1191,10 @@ public class OrderService {
             this.addOrderChildRecordAndRoomRate(backup, date, orderChildBO, userId);
 
             //bug:六点前 四点后入住算前一天没有滚房费 然后退房时候需滚出前天房费 目前认为 不滚也是合理的吧
-            if (hour > 4 && hour < 6) {
-                Date beforeDate = DateUtils.getAppointDate(date, -1);
-                this.addOrderChildRecordAndRoomRate(backup, beforeDate, orderChildBO, userId);
-            }
+//            if (hour > 4 && hour < 6) {
+//                Date beforeDate = DateUtils.getAppointDate(date, -1);
+//                this.addOrderChildRecordAndRoomRate(backup, beforeDate, orderChildBO, userId);
+//            }
         }
 
         //未超时
@@ -1438,7 +1440,6 @@ public class OrderService {
         orderChildBOMoney.setId(mainId);
         orderChildBOMoney.setRoomRate(orderChildBOMoneyResult.getRoomRate().subtract(backup.getRoomRate()));
         orderChildBOMoney.setOtherRate(orderChildBOMoneyResult.getOtherRate().subtract(backup.getOtherRate()));
-        System.err.println("backup.getTimeoutRate()" + backup.getTimeoutRate());
         orderChildBOMoney.setFreeRateNum(orderChildBOMoneyResult.getFreeRateNum().add(backup.getTimeoutRate()));
         orderDAO.updOrderChildMoney(orderChildBOMoney);
 
@@ -1544,12 +1545,12 @@ public class OrderService {
             orderDAO.updOrderChild(orderChildBO);
 
             //把入住的房间修改为在住 目前好像没用
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", orderChildBO.getRoomId());
-            map.put("state", Constants.INTHE.getValue());
-            map.put("remark", "入住支付");
-            map.put("userId", userId);
-            roomService.updateroomMajorState(map);
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            map.put("id", orderChildBO.getRoomId());
+//            map.put("state", Constants.INTHE.getValue());
+//            map.put("remark", "入住支付");
+//            map.put("userId", userId);
+//            roomService.updateroomMajorState(map);
         }
     }
 
