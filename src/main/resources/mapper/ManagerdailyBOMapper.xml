@@ -378,7 +378,7 @@
   </update>
 
   <select id="queryManagerdaily" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
-    select * from hm_managerdaily where hotel_id = #{hotelId} and date_time = #{dateTime} and daily_type = #{dailyType};
+    select * from hm_managerdaily where hotel_id = #{hotelId} and date_time = #{dateTime} and daily_type = #{dailyType} limit 1;
   </select>
 
   <select id="queryManagerdailyList" resultType="com.szq.hotel.entity.bo.ManagerdailyBO">
