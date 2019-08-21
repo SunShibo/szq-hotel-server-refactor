@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szq.hotel.dao.ManagerDailyDAO">
+
+
+    <!--计算预约未到的房间数-->
+    <select id="queryNumberOrder" resultType="com.szq.hotel.entity.bo.OcBO">
+        SELECT hm_order_child.* FROM hm_order_child,hm_order
+        WHERE  hm_order_child.order_id = hm_order.id  and
+        hm_order_child.order_state = 'reservation' AND
+        hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime}
+        and  hm_order.hotel_id = #{hotelId};
+    </select>
+
+
+    <select id="queryMaintenanceroomNumber" resultType="com.szq.hotel.entity.bo.RoomRecordBO">
+        SELECT * FROM hm_room
+        WHERE room_state = 'yes'
+        AND hotel_id = #{hotelId}
+    </select>
+
+    <select id="queryNumberlockedStores" resultType="com.szq.hotel.entity.bo.RoomBO">
+        SELECT * FROM hm_room
+        WHERE hotel_id = #{hotelId}
+        AND lock_room_state = 'yes'
+        AND  (lock_room_start_time BETWEEN DATE_ADD( #{startTime},
+        INTERVAL 1 SECOND)  AND   DATE_SUB( #{endTime}, INTERVAL 1 SECOND))
+        OR (DATE_ADD(#{startTime},
+        INTERVAL 1 SECOND) BETWEEN lock_room_start_time AND lock_room_end_time)
+    </select>
+
+    <select id="queryTotalnumberGuestrooms" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM hm_room
+        WHERE hotel_id = #{hotelId} and `show` = 'yes';
+    </select>
+
+    <select id="queryCash" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(settlement),0)  FROM hm_cashier_summary
+        WHERE create_time &gt;= #{startTime} and create_time &lt; #{endTime}
+        AND hotel_id = #{hotelId} and `type` = 'cash' and settlement &gt; 0
+    </select>
+
+    <select id="queryThroughoutDayrent" resultType="com.szq.hotel.entity.bo.CashierSummaryBO">
+        SELECT * FROM hm_cashier_summary
+        WHERE
+        create_time &gt;= #{startTime} and create_time &lt; #{endTime}
+        AND project = '押金';
+    </select>
+
+
+    <select id="queryThroughoutDayrent2" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM hm_order WHERE
+        hotel_id = #{hotelId}
+        AND
+        check_time &gt;= #{startTime} and check_time &lt; #{endTime}
+        AND check_type = 'day'
+    </select>
+
+    <select id="queryRateAdjustment" resultType="java.math.BigDecimal">
+        SELECT IFNULL(sum(consumption),0) FROM hm_cashier_summary
+        WHERE project IN ('房费冲减','超时费冲减')
+        AND
+        create_time &gt;= #{startTime} and create_time &lt; #{endTime} and  hotel_id  = #{hotelId}
+    </select>
+
+    <select id="queryhourRate" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(hm_order_record.money),0) FROM hm_order, hm_order_child, hm_order_record
+        WHERE hm_order.id = hm_order_child.order_id AND hm_order_child.id = hm_order_record.order_child_id AND  hm_order.check_type = 'hour'
+        and  hm_order_record.project = '房费'
+        AND hm_order.hotel_id = #{hotelId}
+        AND hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
+    </select>
+
+    <select id="querytimeoutRate" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(consumption),0) FROM hm_cashier_summary
+        WHERE project = '超时费'
+        AND
+        create_time &gt;= #{startTime} and create_time &lt; #{endTime} and hotel_id = #{hotelId}
+    </select>
+
+    <select id="querynuclearnightRoomcharge1" resultType="com.szq.hotel.entity.bo.CashierSummary">
+        SELECT * FROM hm_cashier_summary
+        WHERE project = '房费'
+        AND
+        create_time &gt;= #{startTime} and create_time &lt; #{endTime}
+    </select>
+
+
+    <select id="querynuclearnightRoomcharge2" resultType="com.szq.hotel.entity.bo.CashierSummary">
+        SELECT * FROM hm_cashier_summary
+        WHERE project = '房费冲减'
+        AND
+        create_time &gt;= #{startTime} and create_time &lt; #{endTime}
+    </select>
+
+    <select id="querycompensation" resultType="com.szq.hotel.entity.bo.CashierSummary">
+        SELECT * FROM hm_cashier_summary
+        WHERE project in ('赔偿','赔偿冲减')
+        AND
+        create_time &gt;= #{startTime} and create_time &lt; #{endTime} and hotel_id = #{hotelId}
+    </select>
+
+    <select id="querymembershipFee" resultType="java.math.BigDecimal">
+        SELECT ifnull(sum(consumption),0) FROM hm_cashier_summary
+        WHERE project = '办卡'
+        AND
+        create_time &gt;= #{startTime} and create_time &lt; #{endTime} and hotel_id = #{hotelId}
+    </select>
+
+    <select id="querygoods" resultType="com.szq.hotel.entity.bo.CashierSummary">
+        SELECT * FROM hm_cashier_summary
+        WHERE project in ('商品','商品冲减')
+        AND
+        create_time &gt;= #{startTime} and create_time &lt; #{endTime} and hotel_id = #{hotelId}
+    </select>
+
+    <select id="queryGoods2" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(settlement),0)  FROM hm_cashier_summary
+        WHERE create_time &gt;= #{startTime} and create_time &lt; #{endTime}
+        AND hotel_id = #{hotelId} and `type` = 'cash' and settlement &lt; 0
+    </select>
+
+
+    <select id="querymembers" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(hm_order_record.money),0)  FROM hm_order,hm_order_child,hm_order_record
+        WHERE hotel_id = #{hotelId} AND hm_order_record.order_child_id = hm_order_child.id AND hm_order_child.order_id = hm_order.id
+        AND hm_order_record.project IN ('房费','房费冲减')
+        AND  hm_order.memberId_or_organizationId IS NULL
+        AND
+        hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
+        AND hm_order.members_id IS NOT NULL;
+    </select>
+
+    <select id="qyeryagreementUnit" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(hm_order_record.money),0)  FROM hm_order,hm_order_child,hm_order_record
+        WHERE hotel_id = #{hotelId} AND hm_order_record.order_child_id = hm_order_child.id AND hm_order_child.order_id = hm_order.id
+        AND hm_order_record.project IN ('房费','房费冲减')
+        AND
+        hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
+        AND  hm_order.memberId_or_organizationId is not null;
+    </select>
+
+    <select id="queryindividualTraveler" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(hm_order_record.money),0)  FROM hm_order,hm_order_child,hm_order_record
+        WHERE hotel_id = #{hotelId} AND hm_order_record.order_child_id = hm_order_child.id AND hm_order_child.order_id = hm_order.id
+        AND hm_order_record.project IN ('房费','房费冲减')
+        AND
+        hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
+        AND hm_order.members_id IS  NULL and hm_order.memberId_or_organizationId is null;
+    </select>
+
+
+    <select id="queryEnter" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(hm_order_record.money),0)  FROM hm_order,hm_order_child,hm_order_record
+        WHERE hotel_id = #{hotelId} AND hm_order_record.order_child_id = hm_order_child.id AND hm_order_child.order_id = hm_order.id
+        AND hm_order_record.project IN ('房费','房费冲减')
+        AND
+        hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
+        AND  hm_order.order_type = 'directly' AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+    </select>
+
+
+
+    <select id="queryFwMembers" resultType="java.lang.Integer">
+        SELECT COUNT(hm_order_child.id)  FROM hm_order,hm_order_child
+        WHERE  hm_order_child.order_id = hm_order.id   AND   hotel_id = #{hotelId}
+        AND  hm_order.memberId_or_organizationId IS NULL
+        AND
+        hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.members_id IS NOT NULL
+        AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+    </select>
+
+    <select id="queryFwAgreementUnit" resultType="java.lang.Integer">
+        SELECT COUNT(hm_order_child.id)  FROM hm_order,hm_order_child
+        WHERE  hm_order_child.order_id = hm_order.id   AND   hotel_id = #{hotelId}
+        AND
+        hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.memberId_or_organizationId IS NOT NULL
+        AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+    </select>
+
+    <select id="queryFwIndividualTraveler" resultType="java.lang.Integer">
+        SELECT COUNT(hm_order_child.id)  FROM hm_order,hm_order_child
+        WHERE  hm_order_child.order_id = hm_order.id   AND   hotel_id = #{hotelId}
+        AND
+        hm_order_child.start_time &gt;= #{startTime} and hm_order_child.start_time &lt; #{endTime} AND hm_order.channel  = '散客'
+        AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+    </select>
+
+    <select id="queryFwEnter" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM hm_order_child WHERE order_Id IN
+        (SELECT id FROM hm_order WHERE  order_type = 'directly' AND hotel_id = #{hotelId} and
+        check_time &gt;= #{startTime} and check_time &lt; #{endTime} AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+        )
+    </select>
+
+
+    <select id="queryFwDirectBooking" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM hm_order_child WHERE order_Id IN
+        (SELECT id FROM hm_order WHERE  order_type = 'subscribe' AND hotel_id = #{hotelId} and
+        check_time &gt;= #{startTime} and check_time &lt; #{endTime} AND hm_order_child.order_state IN ('notpay','admissions','notpaid','accomplish')
+        )
+    </select>
+
+    <select id="queryDirectBooking" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(hm_order_record.money),0)  FROM hm_order,hm_order_child,hm_order_record
+        WHERE hotel_id = #{hotelId} AND hm_order_record.order_child_id = hm_order_child.id AND hm_order_child.order_id = hm_order.id
+        AND hm_order_record.project IN ('房费','房费冲减')
+        AND
+        hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
+        AND  hm_order.order_type = 'subscribe'
+    </select>
+
+    <select id="queryOrderRe" resultType="com.szq.hotel.entity.bo.OrderReBO">
+        SELECT hm_order_record.* FROM hm_order, hm_order_child, hm_order_record
+        WHERE hm_order.id = hm_order_child.order_id AND hm_order_child.id = hm_order_record.order_child_id AND  hm_order.check_type = 'day'
+        and  hm_order_record.project = '房费'
+        AND hm_order_record.money > 0 AND hm_order.hotel_id = #{hotelId}
+        AND hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
+    </select>
+</mapper>
