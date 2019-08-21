@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface ManagerdailyBoDao {
+public interface ManagerdailyBoDAO {
     int deleteByPrimaryKey(Integer id);
 
     int insert(ManagerdailyBO record);

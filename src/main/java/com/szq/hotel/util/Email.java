@@ -4,6 +4,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
@@ -24,7 +25,7 @@ public class Email {
     // 收件人邮箱（替换为自己知道的有效邮箱）
     public static String receiveMailAccount = "15214440324@163.com";
 
-    public static void  send() throws Exception {
+    public static void  send(String title,String content) throws Exception {
         // 1. 创建一封邮件
         Properties props = new Properties(); // 用于连接邮件服务器的参数配置（发送邮件时才需要用到）
         props.setProperty("mail.transport.protocol", "smtp");  // 使用的协议（JavaMail规范要求）
@@ -37,7 +38,7 @@ public class Email {
 //        MimeMessage message = new MimeMessage(session);     // 创建邮件对象
 
         // 3. 创建一封邮件
-        MimeMessage message = createMimeMessage(session, myEmailAccount, receiveMailAccount);
+        MimeMessage message = createMimeMessage(session, myEmailAccount, receiveMailAccount,title,content);
 
 
         // 4. 根据 Session 获取邮件传输对象
@@ -66,7 +67,7 @@ public class Email {
      *      * @throws Exception
      *      
      */
-    public static MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail) throws Exception {
+    public static MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail,String title,String content) throws Exception {
         // 1. 创建一封邮件
         MimeMessage message = new MimeMessage(session);
 
@@ -79,24 +80,29 @@ public class Email {
         message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMail, "线程", "UTF-8"));
 
 
-// 4. Subject: 邮件主题（标题有广告嫌疑，避免被邮件服务器误认为是滥发广告以至返回失败，请修改标题）
-        message.setSubject("szq酒店管理系统邮件", "UTF-8");
+        // 4. Subject: 邮件主题（标题有广告嫌疑，避免被邮件服务器误认为是滥发广告以至返回失败，请修改标题）
+        message.setSubject(title, "UTF-8");
 
 
-// 5. Content: 邮件正文（可以使用html标签）（内容有广告嫌疑，避免被邮件服务器误认为是滥发广告以至返回失败，请修改发送内容）
-        message.setContent("请速检查后台线程", "text/html;charset=UTF-8");
+        // 5. Content: 邮件正文（可以使用html标签）（内容有广告嫌疑，避免被邮件服务器误认为是滥发广告以至返回失败，请修改发送内容）
+        message.setContent(content, "text/html;charset=UTF-8");
+
+        SimpleDateFormat  simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date parse = simpleDateFormat.parse("2018-10-10 10:10:10");
+        // 6. 设置发件时间
+        message.setSentDate(parse);
 
 
-// 6. 设置发件时间
-        message.setSentDate(new Date());
-
-
-// 7. 保存设置
+        // 7. 保存设置
         message.saveChanges();
 
 
         return message;
 
+    }
+
+    public static void main(String[] args) throws Exception {
+        send("跨越时间","来自过去的一封邮件");
     }
 
 }
