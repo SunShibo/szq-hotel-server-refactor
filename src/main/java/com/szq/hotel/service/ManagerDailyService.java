@@ -2,7 +2,7 @@ package com.szq.hotel.service;
 
 
 import com.szq.hotel.dao.ManagerDailyDAO;
-import com.szq.hotel.dao.ManagerdailyBOMapper;
+import com.szq.hotel.dao.ManagerdailyBoDao;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.util.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,7 +29,7 @@ public class ManagerDailyService {
     private RoomService roomService;
 
     @Resource
-    private ManagerdailyBOMapper managerdailyBOMapper;
+    private ManagerdailyBoDao managerdailyBOMapper;
 
     java.text.DecimalFormat   df   =   new   java.text.DecimalFormat("#.00");
     java.text.DecimalFormat   f   =   new   java.text.DecimalFormat("#");
