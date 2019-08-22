@@ -1065,7 +1065,9 @@ public class OrderService {
 //                    }
 //                }
                 //修改房费
-                orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
+                if(everydayRoomPriceBO!=null){
+                    orderChildBO.setRoomRate(orderChildBO.getRoomRate().add(everydayRoomPriceBO.getMoney()));
+                }
             }
 
 
