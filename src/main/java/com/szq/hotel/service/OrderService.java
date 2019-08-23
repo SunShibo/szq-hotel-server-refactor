@@ -777,16 +777,20 @@ public class OrderService {
             orderDAO.updOrderChild(orderChildBO);
 
             //修改房态
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", oldOrderChild.getRoomId());
-            if (entTime.compareTo(new Date()) > 0) {
-                map.put("state", Constants.INTHE.getValue());
-            }else{
-                map.put("state", Constants.TIMEOUT.getValue());
+            System.err.println(simpleDateFormat.format(oldEndTime));
+            System.err.println(simpleDateFormat.format(newEndTime));
+            if(oldEndTime.compareTo(newEndTime)<0){
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("id", oldOrderChild.getRoomId());
+                if (entTime.compareTo(new Date()) > 0) {
+                    map.put("state", Constants.INTHE.getValue());
+                }else{
+                    map.put("state", Constants.TIMEOUT.getValue());
+                }
+                map.put("remark", "续租");
+                map.put("userId", userId);
+                roomService.updateroomMajorState(map);
             }
-            map.put("remark", "续租");
-            map.put("userId", userId);
-            roomService.updateroomMajorState(map);
 
             //添加同住人
             if (checkInPersonJson != null && !checkInPersonJson.equals("")) {
