@@ -59,7 +59,6 @@ public class AdminController extends BaseCotroller {
             return ;
         }
         //验证权限
-
         int count = adminService.queryHotelCount(hotelId, adminBO.getRoleId());
         if(count<1){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000209")) ;
