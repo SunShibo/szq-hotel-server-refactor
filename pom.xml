@@ -483,9 +483,9 @@
   <profile>
       <id>test</id>
       <properties>
-        <jdbc.url.ip>wisewin-tech.com:3306/hotel</jdbc.url.ip>
+        <jdbc.url.ip>zccxywy.cn:3306/hotel</jdbc.url.ip>
         <jdbc.username>root</jdbc.username>
-        <jdbc.password>Sunshibo1</jdbc.password>
+        <jdbc.password>root</jdbc.password>
 
         <system.cfg.imageBaeUrl>http://39.107.224.185:8080/</system.cfg.imageBaeUrl>
         <system.cfg.uploadBaseUrl>/home/zlftFiles/image</system.cfg.uploadBaseUrl>
@@ -499,7 +499,7 @@
       <properties>
         <jdbc.url.ip>47.94.129.190:3306/hotel</jdbc.url.ip>
         <jdbc.username>root</jdbc.username>
-        <jdbc.password>Sunshibo1</jdbc.password>
+        <jdbc.password>YJQTDurbbr0324!</jdbc.password>
 
         <system.cfg.imageBaeUrl>http://39.107.224.185:8080/</system.cfg.imageBaeUrl>
         <system.cfg.uploadBaseUrl>/home/zlftFiles/image</system.cfg.uploadBaseUrl>

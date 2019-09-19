@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <configuration>
 
-    <property name="LOG_DIR" value="/www/server/tomcat/logs" />
+    <property name="LOG_DIR" value="/www/server/apache-tomcat-8.5.32/logs" />
     <!-- ch.qos.logback.core.ConsoleAppender 控制台输出 -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

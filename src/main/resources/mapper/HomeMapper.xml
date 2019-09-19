@@ -20,7 +20,7 @@
     </resultMap>
 
     <select id="home"  parameterType="java.util.Map"  resultMap="queryHome" >
-         SELECT DISTINCT room.id s   ,flo.id,flo.name,room.id as roomId,room.room_name,type.room_type_name ,
+         SELECT DISTINCT room.id s , flo.sort   ,flo.id,flo.name,room.id as roomId,room.room_name,type.room_type_name ,
         room.room_major_state,room.lock_room_state,room.room_state
         FROM hm_floor flo INNER JOIN hm_room room on room.floor_id=flo.id
                            INNER JOIN hm_room_type type ON type.id=room.room_type_id
