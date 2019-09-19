@@ -480,20 +480,6 @@
   </build>
 
   <profiles>
-  <profile>
-      <id>test</id>
-      <properties>
-        <jdbc.url.ip>zccxywy.cn:3306/hotel</jdbc.url.ip>
-        <jdbc.username>root</jdbc.username>
-        <jdbc.password>root</jdbc.password>
-
-        <system.cfg.imageBaeUrl>http://39.107.224.185:8080/</system.cfg.imageBaeUrl>
-        <system.cfg.uploadBaseUrl>/home/zlftFiles/image</system.cfg.uploadBaseUrl>
-        <system.cfg.webProjectUrl>http://client.test.urbanfit.cn/</system.cfg.webProjectUrl>
-        <system.cfg.wapProjectUrl>http://wap.test.urbanfit.cn/</system.cfg.wapProjectUrl>
-      </properties>
-    </profile>
-
    <profile>
       <id>szq</id>
       <properties>
@@ -507,21 +493,5 @@
         <system.cfg.wapProjectUrl>http://wap.test.urbanfit.cn/</system.cfg.wapProjectUrl>
       </properties>
     </profile>
-    <profile>
-      <id>localhost</id>
-      <properties>
-        <jdbc.url.ip>localhost:3306/hotel</jdbc.url.ip><!--192.168.1.107-->
-        <jdbc.username>root</jdbc.username>
-        <jdbc.password>root</jdbc.password>
-        <system.cfg.imageBaeUrl>http://39.107.224.185:8080/</system.cfg.imageBaeUrl>
-        <system.cfg.uploadBaseUrl>/home/zlftFiles/image</system.cfg.uploadBaseUrl>
-        <system.cfg.webProjectUrl>http://client.test.urbanfit.cn/</system.cfg.webProjectUrl>
-        <system.cfg.wapProjectUrl>http://wap.test.urbanfit.cn/</system.cfg.wapProjectUrl>
-      </properties>
-    </profile>
-
-
   </profiles>
-
-
 </project>
