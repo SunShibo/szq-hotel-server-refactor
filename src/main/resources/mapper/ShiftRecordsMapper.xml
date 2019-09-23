@@ -10,7 +10,7 @@
         SELECT id  FROM `hm_shift_records` WHERE admin_id=#{userId}  AND closing_time IS NULL  ORDER BY id LIMIT 0,1
     </select>
 
-    <!--上班-->
+    <!--上班bug-->
     <insert id="addShiftRecords" parameterType="com.szq.hotel.entity.bo.ShiftRecordsBO" >
         INSERT INTO`hm_shift_records` ( `classes_id`, `admin_id`, `general_income`, `cash_income`, `cash_back`,
                                         `cash_amount`, `bank_card_income`, `bank_card_back`, `bank_card_amount`, `wechat_income`,

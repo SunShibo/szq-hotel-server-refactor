@@ -46,10 +46,11 @@ public class ShiftRecordsBO extends BaseModel {
     public ShiftRecordsBO() {
     }
 
-    public ShiftRecordsBO(Integer classesId, Integer adminId, Integer hotelId) {
+    public ShiftRecordsBO(Integer classesId, Integer adminId, Integer hotelId,Date attendanceTime) {
         this.classesId = classesId;
         this.adminId = adminId;
         this.hotelId = hotelId;
+        this.attendanceTime=attendanceTime;
     }
 
     public Integer getId() {
