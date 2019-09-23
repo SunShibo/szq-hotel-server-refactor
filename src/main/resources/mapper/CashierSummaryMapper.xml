@@ -33,7 +33,7 @@
         <if test="remark!=null and remark!=''" > AND su.`remark`=#{remark}  </if>
         <if test="operator!=null and operator!=''" > AND admin.`name`=#{operator}</if>
         <if test="orderNumber!=null and orderNumber!=''" > AND su.`order_number`=#{orderNumber}  </if>
-        ORDER BY   create_time  DESC
+        ORDER BY   type  DESC
     </select>
 
 
