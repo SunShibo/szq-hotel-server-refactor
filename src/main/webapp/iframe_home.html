@@ -301,13 +301,13 @@
             //如果是入住或者超时状态  不允许打扫
             if (status === 'true' || maintain === 'true') {
                 $('#finish').addClass('layui-btn-disabled').prop('disabled', 'disabled');
-            } else{
+            } else {
                 $('#finish').removeClass('layui-btn-disabled').prop('disabled', '');
             }
             //脏房、锁房、入住、维修和预约状态下 不能点击入住
-            if(dirty === 'true' || roomState === 'true' || status === 'true' || maintain === 'true' || state === 'true'){
+            if (dirty === 'true' || roomState === 'true' || status === 'true' || maintain === 'true' || state === 'true') {
                 $('#checkIn').addClass('layui-btn-disabled').prop('disabled', 'disabled');
-            }else{
+            } else {
                 $('#checkIn').removeClass('layui-btn-disabled').prop('disabled', '');
             }
 
@@ -477,7 +477,7 @@
                         showMsg(res.data, 1, false);
                         //修改页面维修状态
                         maintain = maintain === 'true' ? 'false' : 'true';
-                        dirty = maintain === 'false' ? 'true': 'false';
+                        dirty = maintain === 'false' ? 'true' : 'false';
                     } else {
                         showMsg(res.errMsg, 2, false);
                     }
@@ -565,7 +565,7 @@
 
         //客账
         $('#outRoom').on('click', function () {
-            parent.location.href = 'orderInfo.html?state=0&back=1&id=' + encodeURI(alRoomCode);
+            window.open('orderInfo.html?state=0&back=1&id=' + encodeURI(alRoomCode) + '&date=' + Date.now(), '_blank')
         });
 
         //取消预订
