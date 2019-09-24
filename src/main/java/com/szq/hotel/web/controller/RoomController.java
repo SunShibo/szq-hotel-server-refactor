@@ -38,7 +38,7 @@ import java.util.*;
 
 
 /**
- * @Author: Bin Wang
+ * @Author: wang bin
  * @date: Created in 13:03 2019/7/5
  */
 @Controller
@@ -382,7 +382,7 @@ public class RoomController extends BaseCotroller {
         String check = checkTime.substring(0,10);
         boolean equals = format.equals(check);
 
-        if ("yes".equals(state) || equals ) {
+        if ("yes".equals(state)) {
             map.put("roomMajorState", "vacant");
         }
 
@@ -537,7 +537,7 @@ public class RoomController extends BaseCotroller {
         System.err.println("equals:"+equals);
 
 
-        if ("yes".equals(state) || equals ) {
+        if ("yes".equals(state)) {
             map.put("roomMajorState", "vacant");
         }
 
