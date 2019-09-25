@@ -936,8 +936,8 @@ function handleInput() {
         });
 
     } else {
-        layer.msg('请输入正确的证件号码');
-        $('.optional_1').hide();
+        //layer.msg('请输入正确的证件号码');
+        //$('.optional_1').hide();
     }
 }
 

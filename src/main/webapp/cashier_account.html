@@ -90,11 +90,71 @@
                         showMsg(rs.errMsg, 2, false);
                         return;
                     }
-                    tab.reload({data: JSON.parse(JSON.stringify(rs.data))})
+
+                    var abc = _dealData(rs.data);
+
+                    tab.reload({data: JSON.parse(JSON.stringify(abc))})
                 }
             });
         });
+        function _dealData(da) {
+            var _da = [];
+            var _f = '';
+            // /* 支付方式 : 现金 */ CASH("cash"),
+            //     /* 支付方式 : 银行卡 */ CART("cart"),
+            //     /* 支付方式 : 微信 */ WECHAT("wechat"),
+            //     /* 支付方式 : 支付宝 */ ALIPAY("alipay"),
+            //     /* 支付方式 : 其他支付 */ OTHER("other"),
+            //     /* 支付方式 : 储值 */ STORED("stored"),
+            //     /* 支付方式 : 积分 */ INTEGRAL("integral"),
+            var consumption = 0;
+            var settlement = 0;
+            for(var i=0;i<da.length;i++){
+                // debugger;
 
+                if(_f!=da[i]['type']){
+                    if(i!=0){
+
+                        _da.push({
+                            settlement:settlement,
+                            consumption:consumption,
+                            id:Math.random(),
+                            type:"",
+                            operator:'小计'
+                        })
+                        consumption = 0;
+                        settlement = 0;
+                        consumption+=da[i]['consumption'];
+                        settlement+=da[i]['settlement'];
+                        _da.push(da[i])
+                        _f = da[i]['type'];
+                    }else{
+                        consumption+=da[i]['consumption'];
+                        settlement+=da[i]['settlement'];
+                        _f = da[i]['type'];
+                        _da.push(da[i])
+                    }
+
+                }else{
+                    _da.push(da[i]);
+                    consumption+=da[i]['consumption'];
+                    settlement+=da[i]['settlement'];
+                    if(i==da.length-1){
+
+                        _da.push({
+                            settlement:settlement,
+                            consumption:consumption,
+                            id:Math.random(),
+                            type:"",
+                            operator:'小计'
+                        })
+                    }
+
+                }
+            }
+
+            return _da;
+        }
 
         //监听提交
         form.on('submit(formData)', function (data) {
@@ -127,7 +187,10 @@
                         showMsg(rs.data.errMsg, 2, false);
                         return;
                     }
-                    tab.reload({data: JSON.parse(JSON.stringify(rs.data))})
+                    // tab.reload({data: JSON.parse(JSON.stringify(rs.data))})
+                    var abc = _dealData(rs.data);
+
+                    tab.reload({data: JSON.parse(JSON.stringify(abc))})
                 }
             });
             return false;
@@ -201,7 +264,12 @@
                 }
                 , {
                     field: 'createTime', title: '发生日期', align: 'center', templet: function (data) {
-                        return layui.util.toDateString(data.createTime.time, 'yyyy-MM-dd HH:mm')
+                        if(data.createTime){
+                            return layui.util.toDateString(data.createTime.time, 'yyyy-MM-dd HH:mm')
+                        }else{
+                            return '';
+                        }
+
                     }
                 }
                 , {field: 'remark', title: '备注', align: 'center'}

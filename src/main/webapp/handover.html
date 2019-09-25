@@ -38,6 +38,10 @@
                 <div class="h-cols">班次时间</div>
                 <div class="h-cols"><span id="startTime"></span> - <span id="endTime"></span> - <span id="classesName"></span></div>
             </div>
+            <div class="h-rows" id="att">
+                <div class="h-cols">上下班时间</div>
+                <div class="h-cols"><span id="attendanceTime"></span> - <span id="closingTime"></span></div>
+            </div>
             <div class="h-rows" id="operator_user">
                 <div class="h-cols">交班操作员</div>
                 <div class="h-cols" id="name"></div>
@@ -233,9 +237,15 @@
             for(var item in handover){
                 if(typeof handover[item] === 'object'){
                     // $('#'+item).text(DateToLStr(new Date(handover[item].time)));
+                    if(item=='closingTime'){
+                        $('#closingTime').text(DateToLStr(new Date(handover[item].time)));
+                    }else if(item=='attendanceTime'){
+                        $('#attendanceTime').text(DateToLStr(new Date(handover[item].time)));
+                    }
                     continue;
                 }
                 $('#'+item).text(handover[item]);
+
             }
         }
 
