@@ -35,16 +35,6 @@ public class OrderRecordController extends BaseCotroller {
     @RequestMapping("/queryOrderRecord")
     public void queryOrderRecord(HttpServletRequest request, HttpServletResponse response,Integer orderChildId){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //验证参数
             if (orderChildId==null ) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));

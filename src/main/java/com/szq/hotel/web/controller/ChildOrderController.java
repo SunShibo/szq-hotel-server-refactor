@@ -41,16 +41,7 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/addCashPledge")
     public void addCashPledge(HttpServletRequest request, HttpServletResponse response, String payType, Integer orderChildId, BigDecimal money,String certificateNumber) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             if (StringUtils.isEmpty(payType)||orderChildId==null||money==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -85,16 +76,7 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/recorded")
     public void recorded(HttpServletRequest request, HttpServletResponse response,Integer orderChildId, BigDecimal money,String designation,String type) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             if (StringUtils.isEmpty(type)|| StringUtils.isEmpty(designation)||orderChildId==null || money==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -128,16 +110,7 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/free")
     public void free(HttpServletRequest request, HttpServletResponse response,Integer orderChildId, BigDecimal money,String remark,String type) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result:{}", result);
-                return;
-            }
+             AdminBO loginAdmin = super.getLoginAdmin(request);
             if (StringUtils.isEmpty(remark)|| orderChildId==null || money==null || StringUtils.isEmpty(type)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -171,16 +144,7 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/transferAccounts")
     public void transferAccounts(HttpServletRequest request, HttpServletResponse response,Integer shiftToId,Integer rollOutId,String ids) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user:{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result:{}", result);
-                return;
-            }
             if (StringUtils.isEmpty(ids)|| shiftToId==null || rollOutId==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -222,14 +186,6 @@ public class ChildOrderController extends BaseCotroller {
         try {
             log.info(request.getRequestURI());
             log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user:{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result:{}", result);
-                return;
-            }
             if (StringUtils.isEmpty(ids)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -269,16 +225,7 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/childleAccounts")
     public void childleAccounts(HttpServletRequest request, HttpServletResponse response, Integer chilId, String ids,String payType, PayTypeBO param,String status) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user:{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result:{}", result);
-                return;
-            }
             if (StringUtils.isEmpty(ids)||chilId==null||StringUtils.isEmpty(status)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -317,16 +264,6 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/queryAccounts")
     public void queryAccounts(HttpServletRequest request, HttpServletResponse response,String ids) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             if (StringUtils.isEmpty(ids)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -365,16 +302,8 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/accounts")
     public void accounts(HttpServletRequest request, HttpServletResponse response,String ids,String payType, PayTypeBO param,String status) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
+             AdminBO loginAdmin = super.getLoginAdmin(request);
+
             if (StringUtils.isEmpty(ids)||StringUtils.isEmpty(status)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -409,16 +338,7 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/alonePrint")
     public void alonePrint(HttpServletRequest request, HttpServletResponse response,String  ids) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             if (StringUtils.isEmpty(ids)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -448,16 +368,7 @@ public class ChildOrderController extends BaseCotroller {
     @RequestMapping("/print")
     public void print(HttpServletRequest request, HttpServletResponse response,Integer childId) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             if (childId==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);

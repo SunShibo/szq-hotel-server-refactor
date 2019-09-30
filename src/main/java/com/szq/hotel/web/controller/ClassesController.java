@@ -34,10 +34,6 @@ public class ClassesController extends BaseCotroller {
     @RequestMapping("/getClasses")
     public void getClasses(HttpServletRequest request,HttpServletResponse response, Integer hotelId){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
             //不是登录时不传hotelId  这时查询当前用户登录的酒店班次
             if(hotelId==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));

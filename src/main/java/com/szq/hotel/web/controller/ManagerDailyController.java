@@ -34,12 +34,6 @@ public class ManagerDailyController extends BaseCotroller {
 
     @RequestMapping("/queryTest")
     public void selectManagerDaliy(HttpServletRequest request, HttpServletResponse response,String date){
-        AdminBO userBO = super.getLoginUser(request);
-        if (userBO == null) {
-            String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "请登录"));
-            safeTextPrint(response, json);
-            return;
-        }
         ManagerdailyChangeBO managerdailyChangeBO = new ManagerdailyChangeBO();
 
         HotelTableBO grossrealIncome = new HotelTableBO();//总实际收入
@@ -174,7 +168,6 @@ public class ManagerDailyController extends BaseCotroller {
     @RequestMapping("/selectManagerDaliy")
     public void queryManagerDaliy(HttpServletRequest request, HttpServletResponse response, String endTime){
         AdminBO userBO = super.getLoginUser(request);
-        log.info("date:{}", endTime);
         String substring = endTime.substring(0, 10);
         log.info("substring:{}",substring);
         String s = substring.replaceAll("/", "-");

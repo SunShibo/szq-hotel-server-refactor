@@ -36,16 +36,7 @@ public class HotelController extends BaseCotroller {
     @RequestMapping("/addHotel")
     public void addHotel(HttpServletRequest request, HttpServletResponse response,HotelBO hotelBO){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //验证参数
             if (StringUtils.isEmpty(hotelBO.getName()) || StringUtils.isEmpty(hotelBO.getPhone()) || StringUtils.isEmpty(hotelBO.getSite())) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -76,16 +67,7 @@ public class HotelController extends BaseCotroller {
     @RequestMapping("/deleteHotel")
     public void deleteHotel(HttpServletRequest request, HttpServletResponse response,Integer hotelId){
         try{
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
-
             if(hotelId==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -117,16 +99,7 @@ public class HotelController extends BaseCotroller {
     @RequestMapping("/updateHotel")
     public void updateHotel(HttpServletRequest request, HttpServletResponse response,HotelBO hotelBO){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             if (hotelBO.getId() == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -156,17 +129,6 @@ public class HotelController extends BaseCotroller {
     @RequestMapping("/queryHotel")
     public void queryHotel(HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
-
             List<HotelBO> hotelBOS = hotelService.queryHotel();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(hotelBOS));
             super.safeJsonPrint(response, result);
@@ -188,8 +150,6 @@ public class HotelController extends BaseCotroller {
     @RequestMapping("/queryLoginHotel")
     public void queryLoginHotel(HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             List<CommonBO> commonBOS = hotelService.queryLoginHotel();
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(commonBOS));
             super.safeJsonPrint(response, result);

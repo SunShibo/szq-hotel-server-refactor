@@ -31,16 +31,6 @@ public class IntegralRecordController extends BaseCotroller {
     @RequestMapping("/getIntegralRecord")
     public void getIntegralRecord(Integer memberId,Integer pageNo, Integer pageSize, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //参数验证
             if (memberId == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));

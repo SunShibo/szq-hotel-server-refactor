@@ -39,17 +39,8 @@ public class CheckInPersonController extends BaseCotroller {
     @RequestMapping("/addCheckInPerson")
     public void addCheckInPerson(Integer orderChildId,String name,String gender,String phone,String certificateNumber,Integer certificateType,String status,String remark,HttpServletRequest request, HttpServletResponse response){
         try{
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //获取管理员对象
+                //获取管理员对象
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin==null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
             //参数验证
             if (orderChildId==null||StringUtils.isEmpty(name)||StringUtils.isEmpty(phone)||StringUtils.isEmpty(certificateNumber)||certificateType == null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -58,8 +49,6 @@ public class CheckInPersonController extends BaseCotroller {
                 return ;
             }
             checkInPersonService.addCheckInPerson(orderChildId, name, gender, phone, certificateNumber, certificateType, status, remark,loginAdmin.getId());
-
-
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success("添加成功！"));
             super.safeJsonPrint(response, result);
             log.info("result{}",result);
@@ -89,19 +78,8 @@ public class CheckInPersonController extends BaseCotroller {
      */
     @RequestMapping("/updCheckInPerson")
     public void updCheckInPerson(Integer id,String name,String gender,String phone,String certificateNumber,Integer certificateType,String status,String remark,HttpServletRequest request, HttpServletResponse response){
-
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
-            if (id == null) {
+              if (id == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);

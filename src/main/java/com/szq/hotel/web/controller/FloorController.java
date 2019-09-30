@@ -35,16 +35,7 @@ public class FloorController extends BaseCotroller {
     @RequestMapping("/addFloor")
     public void addHotel(HttpServletRequest request, HttpServletResponse response,FloorBO floorBO){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //验证参数
             if (StringUtils.isEmpty(floorBO.getName()) || floorBO.getHotelId()==null ) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -75,16 +66,7 @@ public class FloorController extends BaseCotroller {
     @RequestMapping("/deleteFloor")
     public void deleteHotel(HttpServletRequest request, HttpServletResponse response,Integer floorId){
         try{
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
-
             if(floorId==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -115,16 +97,7 @@ public class FloorController extends BaseCotroller {
     @RequestMapping("/updateFloor")
     public void updateFloor(HttpServletRequest request, HttpServletResponse response,FloorBO  floorBO){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             if (floorBO.getId() == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -154,16 +127,6 @@ public class FloorController extends BaseCotroller {
     @RequestMapping("/queryFloor")
     public void queryHotel(HttpServletRequest request, HttpServletResponse response,Integer hotelId){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             if(hotelId==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);

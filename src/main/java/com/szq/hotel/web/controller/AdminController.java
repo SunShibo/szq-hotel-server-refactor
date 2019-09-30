@@ -96,12 +96,6 @@ public class AdminController extends BaseCotroller {
     @RequestMapping("/adminRegister")
     public void adminRegister(HttpServletRequest request, HttpServletResponse response, AdminBO admin){
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
         //验证参数
         if(admin == null || StringUtils.isEmpty(admin.getPassword() )
                 || StringUtils.isEmpty(admin.getMobile()) || StringUtils.isEmpty(admin.getName()) || admin.getRoleId()==null){
@@ -140,13 +134,6 @@ public class AdminController extends BaseCotroller {
     @RequestMapping("/getAdminById")
     public void getAdminById(HttpServletRequest request,HttpServletResponse response,
                              Integer userId,Integer roleId,String userName,Integer pageNo,Integer pageSize){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
         //查询信息
         Map<String, Object> map = new HashMap<String, Object>();
         QueryInfo queryInfo = getQueryInfo(pageNo, pageSize);
@@ -175,13 +162,6 @@ public class AdminController extends BaseCotroller {
      */
     @RequestMapping("/delAdmins")
     public void delAdmin(HttpServletRequest request,HttpServletResponse response,String idArr){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
         // 非空判断
         if(StringUtils.isEmpty(idArr)||idArr.length()<=2){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
@@ -205,13 +185,7 @@ public class AdminController extends BaseCotroller {
      */
     @RequestMapping("/updateAdminUser")
     public void updateAdminUser(HttpServletRequest request, HttpServletResponse response, AdminBO param){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
+
         //验证参数
         if(param.getId()==null||param.getId().equals("")||param.getMobile()==null||param.getMobile().equals("")||param.getName()==null
                 ||param.getName().equals("") ){
@@ -256,12 +230,7 @@ public class AdminController extends BaseCotroller {
     public void changePassword(HttpServletRequest request, HttpServletResponse response,String passWord,String newPassword){
         // 非空判断
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
+
         //验证参数
         if(StringUtils.isEmpty(passWord) || StringUtils.isEmpty(newPassword)){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
@@ -294,13 +263,6 @@ public class AdminController extends BaseCotroller {
     @RequestMapping("/addRoleGrantAuthority")
     public void addRoleGrantAuthority(HttpServletRequest request,HttpServletResponse response,
                  String roleName,String menuIds,String hotelIds){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
         //参数验证
         if(StringUtils.isEmpty(roleName) || StringUtils.isEmpty(menuIds)||StringUtils.isEmpty(hotelIds)){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001")) ;
@@ -338,13 +300,6 @@ public class AdminController extends BaseCotroller {
      */
     @RequestMapping("/getAllRoleMenu")
     public void getAllRoleMenu(HttpServletRequest request,HttpServletResponse response,String roleName){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
         List<RoleBO> ros = adminService.getRoleByRoleName(roleName);
         String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(ros));
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(json)) ;
@@ -362,12 +317,6 @@ public class AdminController extends BaseCotroller {
     @RequestMapping("/grantAuthority")
     public void grantAuthority(HttpServletRequest request,HttpServletResponse response,Integer roleId,String menuIds,String hotelIds,String roleName){
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
         //验证参数
         if(StringUtils.isEmpty(String.valueOf(roleId)) || StringUtils.isEmpty(String.valueOf(menuIds))|| StringUtils.isEmpty(roleName)){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
@@ -414,13 +363,7 @@ public class AdminController extends BaseCotroller {
      */
     @RequestMapping("/delRoleByIds")
     public void delRoleByIds(HttpServletRequest request,HttpServletResponse response,String roleIds){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
+
         //验证参数
         if(StringUtils.isEmpty(String.valueOf(roleIds)) || roleIds.length()<=2){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;
@@ -446,13 +389,6 @@ public class AdminController extends BaseCotroller {
     //退出登录
     @RequestMapping("/exitLogin")
     public void exit(HttpServletResponse response,HttpServletRequest  request){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
         //退出登录
         String clientLoginID = super.getClientLoginID(request);
         if (StringUtils.isEmpty(clientLoginID)) {
@@ -473,13 +409,7 @@ public class AdminController extends BaseCotroller {
     //查询所有权限菜单
     @RequestMapping("getPermissionsMenu")
     public void getPermissionsMenu(HttpServletResponse response,HttpServletRequest  request){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
-        //验证用户
-        if(loginAdmin==null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户未登录")) ;
-            super.safeJsonPrint(response, result);
-            return ;
-        }
+
         //查询所有权限
         List<MenuBO> menuBOList=adminService.getMenuList();
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(menuBOList)) ;

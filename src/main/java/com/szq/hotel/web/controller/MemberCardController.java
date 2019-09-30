@@ -40,16 +40,6 @@ public class MemberCardController extends BaseCotroller {
     @RequestMapping("/addMemberCard")
     public void  addMemberCard(Integer memberLevelId, String cardNumber, BigDecimal money,HttpServletRequest request, HttpServletResponse response){
         try{
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //验证参数
             if (memberLevelId==null ||StringUtils.isEmpty(cardNumber)|| money==null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -112,16 +102,6 @@ public class MemberCardController extends BaseCotroller {
     @RequestMapping("/deleteMemberCard")
     public void deleteMemberCard(Integer id,HttpServletRequest request, HttpServletResponse response){
         try{
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
-
             if(id==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -155,16 +135,6 @@ public class MemberCardController extends BaseCotroller {
     @RequestMapping("/updateMemberCard")
     public void updateMemberCard(MemberCardBO memberCardBO,HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             if (memberCardBO.getId() == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -192,16 +162,6 @@ public class MemberCardController extends BaseCotroller {
     @RequestMapping("/selectMemberCard")
     public void selectMemberCard(String state,String name,BigDecimal money,String cardNumber,Integer pageNo, Integer pageSize,HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             Map<String,Object> map=new HashMap<String, Object>();
             map.put("state",state);
             map.put("name",name);
@@ -238,16 +198,6 @@ public class MemberCardController extends BaseCotroller {
     @RequestMapping("/importMemberCard")
     public void importMemberCard(@RequestParam(value="file",required = false)MultipartFile file, HttpServletRequest  request, HttpServletResponse  response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //参数验证
             if (file == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -275,16 +225,6 @@ public class MemberCardController extends BaseCotroller {
     @RequestMapping("/exportMemberCard")
     public void download(String name,BigDecimal money,Integer cardNumber,String state,HttpServletResponse response, HttpServletRequest request){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             ServletOutputStream out=response.getOutputStream();
             try {
                 SimpleDateFormat   formatter   =   new   SimpleDateFormat   ("yyyyMMddHHmmss");

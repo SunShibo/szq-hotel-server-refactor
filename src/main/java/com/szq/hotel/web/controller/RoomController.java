@@ -291,14 +291,7 @@ public class RoomController extends BaseCotroller {
      */
     @RequestMapping("/updateroomMajorState")
     public void updateroomMajorState(HttpServletRequest request, HttpServletResponse response, Integer id, String state, String remark) {
-        log.info("updateroomMajorState**********************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        if (loginAdmin == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            log.info("result{}", result);
-            return;
-        }
         Map<String, Object> map = new HashMap<String, Object>();
         Jedis jedis = RedisConnectFactory.getJedis();
         String requestId = request.getSession().getId();
@@ -328,16 +321,9 @@ public class RoomController extends BaseCotroller {
     public void queryRm(HttpServletRequest request, HttpServletResponse response, String checkTime,
                         String endTime, String roomTypeId, String roomAuxiliaryStatus,
                         String phone, String state, Integer orderId) {
-        log.info("start***************************************quertRm****************************************");
         AdminBO loginUser = super.getLoginAdmin(request);
         String startTime = checkTime.replaceAll("/", "-");
         String enTime =  endTime.replaceAll("/", "-");
-        if (loginUser == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            log.info("result{}", result);
-            return;
-        }
         if (StringUtils.isEmpty(phone)) {
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000201"));
             super.safeHtmlPrint(response, json);
@@ -464,14 +450,6 @@ public class RoomController extends BaseCotroller {
        AdminBO loginUser = super.getLoginAdmin(request);
 
        boolean flag = false;
-
-        System.err.println("roomAuxiliaryStatus:"+roomAuxiliaryStatus);
-
-        if (loginUser == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            return;
-        }
 
         if (StringUtils.isEmpty(phone)) {
             String json = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000201"));
@@ -603,16 +581,7 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/updateRoomMaintain")
     public void updateRoomState(Integer id, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             if (id == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -638,16 +607,7 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/updateRoomRemark")
     public void updateRoomRemark(Integer id, String remark, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             if (id == null || StringUtils.isEmpty(remark)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -680,16 +640,6 @@ public class RoomController extends BaseCotroller {
     @RequestMapping("/getRoomMessage")
     public void getRoomMessage(Integer id, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             if (id == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -723,16 +673,7 @@ public class RoomController extends BaseCotroller {
 
     @RequestMapping("/querySc")
     public void querySc(HttpServletRequest request, HttpServletResponse response, String checkTime, String endTime) {
-        log.info("querySc************************************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        log.info("loginUser:{}", loginAdmin);
-        if (loginAdmin == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            log.info("result{}", result);
-            return;
-        }
-
         checkTime = checkTime.replaceAll("/", "-");
         endTime = endTime.replaceAll("/", "-");
         if (StringUtils.isEmpty(checkTime)) {
@@ -761,13 +702,6 @@ public class RoomController extends BaseCotroller {
         AdminBO loginAdmin = super.getLoginAdmin(request);
         checkTime = checkTime.replaceAll("/","-");
         endTime = endTime.replaceAll("/","-");
-        log.info("loginUser:{}", loginAdmin);
-        if (loginAdmin == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            log.info("result{}", result);
-            return;
-        }
         if (StringUtils.isEmpty(checkTime)) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
@@ -794,11 +728,6 @@ public class RoomController extends BaseCotroller {
                                     String roomId, String state, String remark) {
         log.info("updatelockRoomState*************************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        if (loginAdmin == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            return;
-        }
         if (roomId == null) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
@@ -877,12 +806,6 @@ public class RoomController extends BaseCotroller {
                                  String ids, String state, String checkTime, String endTime) {
         log.info("verificationRoom**********************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        if (loginAdmin == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            log.info("result{}", result);
-            return;
-        }
         if (StringUtils.isEmpty(ids)) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);
@@ -926,11 +849,6 @@ public class RoomController extends BaseCotroller {
     public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
         log.info("todayPictureView*****************************************************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
-        if(loginAdmin == null){
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            return;
-        }
         Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
         super.safeJsonPrint(response, result);
@@ -947,17 +865,7 @@ public class RoomController extends BaseCotroller {
     public void queryRoomFx(HttpServletRequest request, HttpServletResponse response, Integer orderId) {
         log.info("queryRoomFx************************************************************************");
         log.info("orderId:{}", orderId);
-
         AdminBO loginAdmin = super.getLoginAdmin(request);
-
-        log.info("loginAdmin:{}", loginAdmin);
-
-        if (loginAdmin == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            log.info("result{}", result);
-            return;
-        }
 
         if (orderId == null) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -972,26 +880,13 @@ public class RoomController extends BaseCotroller {
     }
 
 
-    @RequestMapping("/test")
-    public void test() throws Exception {
-        boolean date = roomService.isDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 06:00:00"), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-02 06:00:00"),
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-02 06:00:00"),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-03 05:59:59"));
-        System.out.println(date);
-
-    }
-
 
     @RequestMapping("/selectRoom")
     public void selectRoom(HttpServletRequest request, HttpServletResponse response, Integer id){
         AdminBO loginAdmin = super.getLoginAdmin(request);
         log.info("loginAdmin:{}", loginAdmin);
         log.info("id:{}", id);
-        if (loginAdmin == null) {
-            String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-            super.safeJsonPrint(response, result);
-            log.info("result{}", result);
-            return;
-        }
+
         if (id == null) {
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
             super.safeJsonPrint(response, result);

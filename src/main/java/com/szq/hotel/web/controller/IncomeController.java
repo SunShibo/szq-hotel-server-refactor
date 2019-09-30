@@ -28,16 +28,8 @@ public class IncomeController extends BaseCotroller {
     @RequestMapping("/getIncome")
     public void getIncome(HttpServletRequest request, HttpServletResponse response, Date date) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request) ;
-            if(userInfo == null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002" , "用户没有登录")) ;
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
             if(date==null){
                 date=new Date();
             }

@@ -66,17 +66,8 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/addMember")
     public void  addmember(String cardNumber,MemberBO memberBO,BigDecimal money,String payType,Integer childId, HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //获取管理员对象
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin==null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
             //参数验证
             if (StringUtils.isEmpty(memberBO.getName())||StringUtils.isEmpty(memberBO.getCertificateNumber())||StringUtils.isEmpty(memberBO.getPhone())||memberBO.getCertificateType()==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -140,20 +131,8 @@ public class MemberController extends BaseCotroller {
      */
     @RequestMapping("/getMemberCardNumber")
     public void getMemberCardNumber(Integer memberCardLevelId,String phone,String certificateNumber,HttpServletRequest request,HttpServletResponse response){
-
         try {
-
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //获取管理员对象
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin==null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
             //参数验证
             if (memberCardLevelId == null||StringUtils.isEmpty(phone)||StringUtils.isEmpty(certificateNumber)){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -207,17 +186,6 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/deleteMember")
     public void deleteMember(Integer id,HttpServletRequest request, HttpServletResponse response){
         try{
-
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
-
             if(id==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -249,20 +217,7 @@ public class MemberController extends BaseCotroller {
      */
     @RequestMapping("/updateGetMemberCardNumber")
     public void updateGetMemberCardNumber(Integer memberCardLevelId,Integer memberId,String phone,String certificateNumber,HttpServletRequest request,HttpServletResponse response){
-
         try {
-
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //获取管理员对象
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin==null){
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return ;
-            }
             //参数验证
             if (memberCardLevelId == null||memberId==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -347,16 +302,7 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/updateMember")
     public void updateMember(String cardNumber,MemberBO memberBO,BigDecimal money,String payType,Integer childId,HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             if (memberBO.getId() == null||StringUtils.isEmpty(cardNumber)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -425,16 +371,6 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/selectMember")
     public void selectMember(String query,Integer pageNo, Integer pageSize,HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             Map<String,Object> map=new HashMap<String, Object>();
             map.put("query",query);
 
@@ -473,16 +409,6 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/selectMemberByNumber")
     public void selectMember(String phone,String certificateNumber,HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //参数验证
             if (StringUtils.isEmpty(phone)&StringUtils.isEmpty(certificateNumber)){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -526,16 +452,7 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/integralChange")
     public void integralChange(Integer id,BigDecimal integralChange,String remark,String type,BigDecimal currentBalance, HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             if (integralChange == null||id==null||StringUtils.isEmpty(remark)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -574,16 +491,7 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/storedValueChange")
     public void storedValueChange(Integer id,BigDecimal storedValueChange,String remark,String type, BigDecimal presenterMoney,BigDecimal currentBalance,HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             if (id==null||storedValueChange == null||remark==null||StringUtils.isEmpty(type)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -632,16 +540,7 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/getStoreValueIntegral")
     public void getStoreValueIntegral(String certificateNumber,HttpServletRequest request,HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //参数验证
             if (StringUtils.isEmpty(certificateNumber)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -710,16 +609,6 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/getMemberInfo")
     public void getMemberInfo(Integer memberId,HttpServletRequest request,HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //参数验证
             if (memberId == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -748,16 +637,7 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/importMember")
     public void importMember(@RequestParam(value="file",required = false)MultipartFile file, HttpServletRequest  request, HttpServletResponse  response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //参数验证
             if (file == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -785,16 +665,7 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/exportMember")
     public void download(HttpServletResponse response, HttpServletRequest request){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             ServletOutputStream out=response.getOutputStream();
             try {
                 SimpleDateFormat formatter   =   new   SimpleDateFormat   ("yyyyMMddHHmmss");
@@ -826,16 +697,6 @@ public class MemberController extends BaseCotroller {
     @RequestMapping("/getConsumptionRecord")
     public void getConsumptionRecord(Integer memberId,Integer pageNo, Integer pageSize,HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //参数验证
             if (memberId==null){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));

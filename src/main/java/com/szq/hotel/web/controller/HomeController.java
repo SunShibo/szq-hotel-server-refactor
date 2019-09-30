@@ -39,17 +39,7 @@ public class HomeController extends BaseCotroller {
     @RequestMapping("/home")
     public void home(HttpServletRequest request, HttpServletResponse response,HomeParam param){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
-
             List<FloorRoomBO> home = homeService.home(loginAdmin.getHotelId(),param.getVacant(), param.getInthe(), param.getTimeout(),
                     param.getDirty(), param.getSubscribe(), param.getDeparture(), param.getMaintain(), param.getShop(),param.getTypes());
 
@@ -77,16 +67,7 @@ public class HomeController extends BaseCotroller {
     @RequestMapping("/homeCount")
     public void homeCount(HttpServletRequest request, HttpServletResponse response){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
 
             List<HomeRoomTypeBO> homeRoomTypeBOS = homeService.queryRoomTypeNum(loginAdmin.getHotelId());
             HomeTypeBO homeTypeBO = homeService.queryRommStatus(loginAdmin.getHotelId());

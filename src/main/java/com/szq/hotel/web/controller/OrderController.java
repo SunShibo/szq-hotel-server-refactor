@@ -65,8 +65,6 @@ public class OrderController extends BaseCotroller {
     public void reservationRoom(HttpServletRequest request, HttpServletResponse response,
                                 OrderBO orderBO, String OrderChildJSON, String type) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             Jedis jedis = RedisConnectFactory.getJedis();
             String requestId = UUID.randomUUID().toString();
             if (!(RedisTool.tryGetDistributedLock(jedis, "500", requestId, 1000))) {
@@ -77,12 +75,6 @@ public class OrderController extends BaseCotroller {
             }
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderBO == null || OrderChildJSON == null || type == null || type.length() == 0 || orderBO.getPhone() == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -216,16 +208,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("closeOrder")
     public void closeOrder(String orderChildIdS, HttpServletResponse response, HttpServletRequest request) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildIdS == null || orderChildIdS.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -256,16 +240,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getReservationRoomInfo")
     public void getReservationRoomInfo(HttpServletRequest request, HttpServletResponse response, String idNumber, String mobile) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                log.info("result{}", result);
-                super.safeJsonPrint(response, result);
-                return;
-            }
             //验证参数
             if ((idNumber == null || idNumber.length() == 0) && (mobile == null || mobile.length() == 0)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -294,16 +270,6 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getOrderById")
     public void getOrderById(Integer orderId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //验证管理员
-            AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderId == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -331,16 +297,6 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getRoomInfoById")
     public void getRoomInfoById(String alCode, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //验证管理员
-            AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (alCode == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -368,16 +324,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getOrderInfoById")
     public void getOrderInfoById(Integer orderChildId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildId == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -406,16 +354,6 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getSubscribeOrderChild")
     public void getSubscribeOrderChild(Integer orderId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //验证管理员
-            AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderId == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -447,16 +385,7 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/pay")
     public void pay(BigDecimal money, String payType, Integer id, String name, String certificateNumber, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (id == null || money == null || payType == null || payType.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -528,16 +457,6 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getPayInfo")
     public void getPayInfo(Integer orderId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //验证管理员
-            AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderId == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -548,7 +467,6 @@ public class OrderController extends BaseCotroller {
             List<OrderChildBO> orderChildBOS = orderService.getPayInfo(orderId);
             //所有支付人
             for (OrderChildBO orderChild : orderChildBOS) {
-                System.err.println("入住人是否是会员"+orderChild.getNameStatus());
                 if ("yes".equals(orderChild.getMain())) {
                     List<OrderChildBO> oneOrderChild = new ArrayList<OrderChildBO>();
                     oneOrderChild.add(orderChild);
@@ -578,16 +496,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getOrderChildPayInfo")
     public void getOrderChildPayInfo(Integer orderId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderId == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -639,18 +549,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getCheckInReport")
     public void getCheckInReport(Date startTime,Date endTime,HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null||startTime==null||endTime==null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
-
             List<OrderResult> results = orderService.getCheckInReport(userInfo.getHotelId(),startTime,endTime);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results));
             super.safeJsonPrint(response, result);
@@ -672,16 +572,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getCheckOutReport")
     public void getCheckOutReport(Date beforeTime, Date afterTime, Integer pageNo, Integer pageSize, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             Map<String, Object> resultMap = new HashMap<String, Object>();
             QueryInfo queryInfo = getQueryInfo(pageNo, pageSize);
             List<OrderResult> list = orderService.getCheckOutReport(beforeTime, afterTime, queryInfo.getPageOffset(), queryInfo.getPageSize(), userInfo.getHotelId());
@@ -707,16 +599,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getCheckInInfo")
     public void getCheckInInfo(Integer roomId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (roomId == null || roomId.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -743,16 +627,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getReservationInfo")
     public void getReservationInfo(Integer roomId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (roomId == null || roomId.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -790,17 +666,7 @@ public class OrderController extends BaseCotroller {
                                String checkInPersonJson, HttpServletResponse response,
                                String everyDayRoomPrice, HttpServletRequest request) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
-
             //验证入住人
             if (checkInPersonJson != null && !checkInPersonJson.equals("")) {
                 List<CheckInPersonBO> list = JsonUtils.getJSONtoList(checkInPersonJson, CheckInPersonBO.class);
@@ -846,17 +712,8 @@ public class OrderController extends BaseCotroller {
      */
     @RequestMapping("/getAlRoom")
     public void getAlRoom(String alCode, HttpServletRequest request, HttpServletResponse response) {
-        //验证管理员
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (alCode == null || alCode.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -881,16 +738,6 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/updAlRoom")
     public void updAlRoom(String orderChildIds, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //验证管理员
-            AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildIds == null || orderChildIds.length() < 2) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -926,14 +773,7 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/addAlRoom")
     public void addAlRoom(Integer orderChildId, String orderChildIds, HttpServletRequest request, HttpServletResponse response) {
         try {
-            //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildId == null || orderChildId.equals("") || orderChildIds == null || orderChildIds.length() == 0) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -960,14 +800,7 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/changeMainRoom")
     public void changeMainRoom(Integer orderChildId,HttpServletRequest request, HttpServletResponse response) {
         try {
-            //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户未登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildId == null || orderChildId.equals("") ) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -996,17 +829,6 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/checkId")
     public void checkId(String id, HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-
-            //验证管理员
-            AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (id == null || id.length() == 0) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -1041,16 +863,6 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getRemainingLease")
     public void getRemainingLease(Integer orderChildId, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            //验证管理员
-            AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildId == null || orderChildId.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -1079,17 +891,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/changeRoom")
     public void changeRoom(OrderChildBO orderChildBO, String everydayRoomPrice, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildBO == null || orderChildBO.getId() == null || everydayRoomPrice == null || everydayRoomPrice.length() < 2) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -1131,17 +934,6 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/getCheckOutInfo")
     public void getCheckOutInfo(Integer orderChildId, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-
-            //验证管理员
-            AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildId == null || orderChildId.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -1179,16 +971,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/checkOut")
     public void checkOut(Integer orderChildId, BigDecimal money, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildId == null || orderChildId.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -1217,17 +1001,8 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/checkOutRollback")
     public void checkOutRollback(Integer orderChildId, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            if (userInfo == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002", "用户没有登录"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
             //验证参数
             if (orderChildId == null || orderChildId.equals("")) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001", "参数异常"));
@@ -1262,17 +1037,7 @@ public class OrderController extends BaseCotroller {
     @RequestMapping("/queryOrderList")
     public void queryOrderList(HttpServletRequest request, HttpServletResponse response, OrderParam param) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
-
             //计算分页
             QueryInfo queryInfo = getQueryInfo(param.getPageNo(), param.getPageSize());
             param.setPageOffset(queryInfo.getPageOffset());

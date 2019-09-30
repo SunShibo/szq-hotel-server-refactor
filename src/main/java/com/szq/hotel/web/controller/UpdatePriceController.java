@@ -37,16 +37,7 @@ public class UpdatePriceController extends BaseCotroller {
     @RequestMapping("/updatePrice")
     public void updatePrice(HttpServletRequest request, HttpServletResponse response, String phone, Date startTime, Integer dayNum, String typeIds, Integer orderId, String checkType){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //验证参数
             if (dayNum==null || StringUtils.isEmpty(typeIds)|| orderId==null || StringUtils.isEmpty(checkType)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -84,16 +75,6 @@ public class UpdatePriceController extends BaseCotroller {
     @RequestMapping("/addPrice")
     public void addPrice(HttpServletRequest request, HttpServletResponse response,String data){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //验证参数
             if (StringUtils.isEmpty(data)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -125,16 +106,6 @@ public class UpdatePriceController extends BaseCotroller {
     @RequestMapping("/queryCheckType")
     public void queryCheckType(HttpServletRequest request, HttpServletResponse response,String roomIds,String checkType,Date startTime,Integer dayNum){
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}",loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}",result);
-                return;
-            }
             //验证参数
             if (StringUtils.isEmpty(roomIds) || StringUtils.isEmpty(checkType)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));

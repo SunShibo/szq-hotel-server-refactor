@@ -2,7 +2,13 @@ package com.szq.hotel.web.support.interceptor;
 
 import com.google.common.collect.Sets;
 import com.szq.hotel.common.constants.SysConstants;
+import com.szq.hotel.entity.bo.AdminBO;
+import com.szq.hotel.entity.dto.ResultDTOBuilder;
+import com.szq.hotel.util.JsonUtils;
+import com.szq.hotel.web.controller.ClassesController;
 import com.szq.hotel.web.controller.base.BaseCotroller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -19,6 +25,7 @@ import java.util.Set;
 * @date 2015/1/12
 */
 public class AuthInterceptor extends HandlerInterceptorAdapter {
+    private static final Logger log = LoggerFactory.getLogger(HandlerInterceptorAdapter.class);
 
 
 //    @Autowired
@@ -49,11 +56,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-       /*String uri = this.getInvokeMethod(request);
+       String uri = this.getInvokeMethod(request);
         if(unCheckSet.contains(uri) || uri.indexOf(".")!=-1 ){
             return true;
         }
-
         AdminBO loginAdmin = baseCotroller.getLoginAdmin(request);
         if(loginAdmin==null){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002")) ;
@@ -61,15 +67,15 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
 
-
         if(loginAdmin.getUrl().contains(uri)){
+            log.info("user{}",loginAdmin);
             return true;
         }else{
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000000")) ;
             baseCotroller.safeJsonPrint(response,result);
             return false;
-        }*/
-       return true;
+        }
+     //  return true;
 
     }
 

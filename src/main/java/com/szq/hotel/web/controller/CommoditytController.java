@@ -55,17 +55,7 @@ public class CommoditytController extends BaseCotroller {
     @RequestMapping("/addCommodity")
     public void addCommodity(HttpServletRequest request, HttpServletResponse response, String payType, String consumptionType, BigDecimal money, String info, String certificateNumber) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
-
             //验证参数
             if (StringUtils.isEmpty(payType) || StringUtils.isEmpty(consumptionType) || StringUtils.isEmpty(info) || money == null || money.doubleValue() < 0) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
@@ -109,17 +99,7 @@ public class CommoditytController extends BaseCotroller {
     @RequestMapping("/queryCommodiry")
     public void queryCommodiry(HttpServletRequest request, HttpServletResponse response, Integer pageNo, Integer pageSize, String startTime, String endTime, String condition) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
-
             //计算分页
             Map<String, Object> queryMap = new HashMap<String, Object>();
             QueryInfo queryInfo = getQueryInfo(pageNo, pageSize);
@@ -162,17 +142,6 @@ public class CommoditytController extends BaseCotroller {
     @RequestMapping("/queryCommodiryById")
     public void queryCommodiryById(HttpServletRequest request, HttpServletResponse response, Integer id) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
-
             if (id == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -204,17 +173,6 @@ public class CommoditytController extends BaseCotroller {
     @RequestMapping("/querySuspend")
     public void querySuspend(HttpServletRequest request, HttpServletResponse response, String roomName) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
-            AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
-
             if (StringUtils.isEmpty(roomName)) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
                 super.safeJsonPrint(response, result);
@@ -256,17 +214,7 @@ public class CommoditytController extends BaseCotroller {
     @RequestMapping("/suspend")
     public void suspend(HttpServletRequest request, HttpServletResponse response, String consumptionType, BigDecimal money, String info, Integer childId) {
         try {
-            log.info(request.getRequestURI());
-            log.info("param:{}", JsonUtils.getJsonString4JavaPOJO(request.getParameterMap()));
             AdminBO loginAdmin = super.getLoginAdmin(request);
-            log.info("user{}", loginAdmin);
-            if (loginAdmin == null) {
-                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000002"));
-                super.safeJsonPrint(response, result);
-                log.info("result{}", result);
-                return;
-            }
-
             //验证参数
             if (StringUtils.isEmpty(consumptionType) || StringUtils.isEmpty(info) || money == null || money.doubleValue() < 0 || childId == null) {
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001"));
