@@ -1,5 +1,6 @@
 package com.szq.hotel.util.redisUtils;
 
+import com.szq.hotel.entity.bo.AdminBO;
 import org.redisson.Config;
 import org.redisson.Redisson;
 import org.redisson.RedissonClient;
@@ -22,8 +23,7 @@ public class RedissonHandler {
 
     private final static String ip = "60.205.226.180";//"60.205.226.180";//"wisewin-tech.com";
 
-    private final static String password = "Sunshibo1!";//"denglu328325";//"sunshibo1!";
-
+    private final static String password = "Sunshibo1!";//"Sunshibo1!";//"sunshibo1!";
 
 
     /**
@@ -310,13 +310,13 @@ public class RedissonHandler {
         return redisson.loadBucketValues(keys);
     }
     public static void main(String[] args) {
-        RedissonHandler.getInstance().set("1","111", 90L);
-        RedissonHandler.getInstance().set("2","222", 90L);
-        RedissonHandler.getInstance().set("3","333", 90L);
 
-        Map<String, Object> keys = RedissonHandler.getInstance().getKeys("1", "2", "3");
-        // RedissonHandler.getInstance().closeRedisson();
-        System.out.println("完成......");
+        Object nightAuditor = RedissonHandler.getInstance().get("nightAuditor");
+        if (nightAuditor == null) {
+            RedissonHandler.getInstance().set("nightAuditor", "nightAuditor", (long) 60 * 60);
+        } else {
+            return;
+        }
     }
 
 

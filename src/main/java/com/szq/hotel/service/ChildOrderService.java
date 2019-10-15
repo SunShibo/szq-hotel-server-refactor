@@ -164,7 +164,6 @@ public class ChildOrderService {
         String[] split = ids.split(",");
         for (int i = 0; i < split.length; i++) {
             OrderRecoredBO orderRecoredBO = orderRecordService.queryOrderRecordById(Integer.parseInt(split[i]));
-
             //押金
             if (Constants.CASHPLEDGE.getValue().equals(orderRecoredBO.getProject())) {
                 log.info("start transferAccounts....CASHPLEDGE.....................................................");
@@ -629,5 +628,17 @@ public class ChildOrderService {
 
     public Integer queryPersonNumber(Integer childId) {
         return childOrderDAO.queryPersonNumber(childId);
+    }
+
+    /**
+     * 判断是否联房
+     * @param shifoId
+     * @param outId
+     * @return
+     */
+    public boolean isAlRoom(Integer shifoId,Integer outId){
+        ChildOrderBO shifo = childOrderDAO.queryOrderChildById(shifoId);
+        ChildOrderBO out = childOrderDAO.queryOrderChildById(outId);
+        return shifo.getAlRoomCode().equals(out.getAlRoomCode());
     }
 }

@@ -121,14 +121,14 @@ public class UpdatePriceController extends BaseCotroller {
                 log.info("result{}",result);
                 return;
             }
-            //判断房间可用状态
+        /*    //判断房间可用状态
            boolean b = updatePriceService.upState(startTime, dayNum, roomIds, checkType);
             if(!b){
                 String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001","房间数量不足"));
                 super.safeJsonPrint(response, result);
                 log.info("result{}",result);
                 return;
-            }
+            }*/
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);

@@ -10,17 +10,17 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 public class RedisConnectFactory {
     //Redis服务器IP
-//    private static String ADDR = "192.168.110.241";
+   //private static String ADDR = "localhost";
     //private static String ADDR = "wisewin-tech.com";
     //private static String ADDR = "";
-    private static String ADDR = "60.205.226.180";
+   private static String ADDR = "60.205.226.180";
 
     //Redis的端口号
 //    private static int PORT = 7001;
     private static int PORT = 6379;
 
     //访问密码
-    //private static String AUTH = "sunshibo1!";
+ //    private static String AUTH = null;
     //private static String AUTH = "denglu328325";
     private static String AUTH = "Sunshibo1!";
 

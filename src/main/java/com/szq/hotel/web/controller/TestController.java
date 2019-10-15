@@ -2,9 +2,12 @@ package com.szq.hotel.web.controller;
 import com.szq.hotel.common.constants.Constants;
 import com.szq.hotel.dao.HotelDAO;
 import com.szq.hotel.entity.bo.*;
+import com.szq.hotel.entity.dto.ResultDTOBuilder;
 import com.szq.hotel.job.CheckOrderState;
 import com.szq.hotel.service.*;
 import com.szq.hotel.util.DateUtils;
+import com.szq.hotel.util.JsonUtils;
+import com.szq.hotel.util.redisUtils.RedisLock;
 import com.szq.hotel.web.controller.base.BaseCotroller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -86,6 +90,22 @@ public class TestController extends BaseCotroller {
         log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
 
+}
+private int i=0;
+@RequestMapping("/Locktest")
+    public void test(HttpServletResponse  response) throws InterruptedException {
+    RedisLock lock = new RedisLock();
+  //  lock.lock("one");
+    log.info("start  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+    if(i==0){
+        Thread.sleep(5000);
+        i++;
+    }
+    log.info("end  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+   // lock.releaseLock("one");
+    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(i));
+    super.safeJsonPrint(response, result);
 }
 
 }

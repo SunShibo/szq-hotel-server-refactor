@@ -8,6 +8,8 @@ import com.szq.hotel.entity.bo.HotelBO;
 import com.szq.hotel.entity.bo.RoomRateBO;
 import com.szq.hotel.service.*;
 import com.szq.hotel.util.DateUtils;
+import com.szq.hotel.util.redisUtils.RedisLock;
+import com.szq.hotel.util.redisUtils.RedissonHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -42,11 +45,11 @@ public class CheckOrderState {
     @Resource
     NightAuditService  nightAuditService;
 
-    int count = 0;
+
 
     @Scheduled(cron = "0 0/5 * * * ?")    // 13.15 启动项目
     public void CheckOrderState() {
-        count++;
+
         try {
             //关闭未支付的
             orderService.closeOrder(1);
@@ -54,8 +57,6 @@ public class CheckOrderState {
             roomService.updRoom();
             //入住超时修改房态
             orderService.updTimeOutOrder(1);
-
-            System.err.println("执行" + count + "次当前时间:" + new Date());
         } catch (Exception e) {
             System.out.println("修改失败");
         }
@@ -66,16 +67,28 @@ public class CheckOrderState {
      */
     @Scheduled(cron= "30 59 3 * * ?")
     public void nightAuditor() {
+        RedisLock lock = null;
+        try {
+            lock = new RedisLock();
+            lock.lock("nightAuditorLOCK");
+
+            Object nightAuditor = RedissonHandler.getInstance().get("nightAuditor");
+            if (nightAuditor == null) {
+                RedissonHandler.getInstance().set("nightAuditor", "nightAuditor", (long) 60 * 60);
+            } else {
+                return;
+            }
+
             log.info("start  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             List<RoomRateBO> roomRateBOS = childOrderService.queryOrderChild();
-            log.info("roomRateBOS:{}",roomRateBOS);
-            for(int i=0;i<roomRateBOS.size();i++){
+            log.info("roomRateBOS:{}", roomRateBOS);
+            for (int i = 0; i < roomRateBOS.size(); i++) {
                 RoomRateBO roomRateBO = roomRateBOS.get(i);
-                log.info("roomRateBO:{} , i:{}",roomRateBO,i);
+                log.info("roomRateBO:{} , i:{}", roomRateBO, i);
                 List<EverydayRoomPriceBO> everydayRoomPriceBOS = childOrderService.queryRoomPrice(roomRateBO.getId(), DateUtils.getNow());
-                log.info("everydayRoomPriceBOS:{}",everydayRoomPriceBOS);
-                if(everydayRoomPriceBOS!=null && everydayRoomPriceBOS.size()>0){
-                    for(EverydayRoomPriceBO priceBO:everydayRoomPriceBOS){
+                log.info("everydayRoomPriceBOS:{}", everydayRoomPriceBOS);
+                if (everydayRoomPriceBOS != null && everydayRoomPriceBOS.size() > 0) {
+                    for (EverydayRoomPriceBO priceBO : everydayRoomPriceBOS) {
                         try {
                             log.info("start  room price  ...............................................");
                             //生成房费     //生成在主账房里
@@ -95,33 +108,39 @@ public class CheckOrderState {
                             //记录夜核房晚数
                             Integer person = childOrderService.queryPersonNumber(priceBO.getOrderChildId());
                             nightAuditService.addAudit(priceBO.getOrderChildId(), roomRateBO.getHotelId(), person, roomRateBO.getChannel());
-                        }catch (Exception e){
-                            log.error("everydayRoomPriceException",e);
+                        } catch (Exception e) {
+                            log.error("everydayRoomPriceException", e);
                             continue;
                         }
                     }
+                }
             }
+            List<HotelBO> hotelBOS = hotelDAO.queryHotel();
+            for (HotelBO hotelBO : hotelBOS) {
+                try {
+                    incomeService.addIncome(hotelBO.getId());
+                } catch (Exception e) {
+                    log.error("incomeService.addIncomeException", e);
+                }
+                try {
+                    //管理层报表
+                    managementReportService.addData(hotelBO.getId());
+                } catch (Exception e) {
+                    log.error(" managementReportService.addDataException", e);
+                }
+                try {
+                    managerDailyService.insertManagerDaliy(hotelBO.getId());
+                } catch (Exception e) {
+                    log.error("managerDailyService.insertManagerDaliyException", e);
+                }
+            }
+            log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        }catch (Exception e){
+            log.error("nightAuditorError",e);
+        }finally {
+            lock.releaseLock("nightAuditorLOCK");
         }
-        List<HotelBO> hotelBOS = hotelDAO.queryHotel();
-        for (HotelBO hotelBO:hotelBOS) {
-            try {
-                incomeService.addIncome(hotelBO.getId());
-            }catch (Exception e){
-                log.error("incomeService.addIncomeException",e);
-            }
-            try {
-                //管理层报表
-                managementReportService.addData(hotelBO.getId());
-            }catch (Exception e){
-                log.error(" managementReportService.addDataException",e);
-            }
-            try {
-                managerDailyService.insertManagerDaliy(hotelBO.getId());
-            }catch (Exception e){
-                log.error("managerDailyService.insertManagerDaliyException",e);
-            }
-        }
-        log.info("end  nightAuditor +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
     }
 
 

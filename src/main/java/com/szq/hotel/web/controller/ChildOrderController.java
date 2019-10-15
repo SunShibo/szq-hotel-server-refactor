@@ -159,6 +159,13 @@ public class ChildOrderController extends BaseCotroller {
                 log.info("result:{}", result);
                 return;
             }
+
+            if(childOrderService.isAlRoom(shiftToId,rollOutId)){
+                String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000098"));
+                super.safeJsonPrint(response, result);
+                log.info("result:{}", result);
+                return;
+            }
             childOrderService.transferAccounts(loginAdmin.getId(),ids,shiftToId,rollOutId);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
