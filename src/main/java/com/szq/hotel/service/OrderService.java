@@ -589,6 +589,8 @@ public class OrderService {
     }
 
 
+
+
     //获取在住报表
     public List<OrderResult> getCheckInReport(Integer hotelId, Date time) throws ParseException {
         //获取当天开始时间
@@ -607,9 +609,10 @@ public class OrderService {
         close4.add(Calendar.DATE, 1);
         Date endTime = close4.getTime();
 
-        List<OrderResult> resultList=new ArrayList<OrderResult>();
+
         List<OrderResult> list = orderDAO.getCheckInReport(hotelId, startTime, endTime);
         for (OrderResult orderResult : list) {
+            Date moneyTime=time;
             //判断是否是订单的结束日期，如果是结束日期，则取前天的房费
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(orderResult.getEndTime());
@@ -621,17 +624,18 @@ public class OrderService {
             Date closeTime = calendar.getTime();
             SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
             Date currDate = simp.parse(simp.format(closeTime));
-            if(currDate.getTime()==time.getTime()){
+            if (currDate.getTime() == time.getTime()&&DateUtils.getQuotMinute(orderResult.getEndTime(),orderResult.getStartTime())>4*60) {
                 calendar.add(Calendar.DATE, -1);
-                time=calendar.getTime();
+                moneyTime=calendar.getTime();
             }
-            for (OrderResult order : list)  {
-                EverydayRoomPriceBO everydayRoomPriceBO=everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(simp.format(time),order.getId());
-                order.setMoney(everydayRoomPriceBO.getMoney().toString());
+            EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(simp.format(moneyTime), orderResult.getId());
+            if (everydayRoomPriceBO == null) {
+                continue;
             }
+            orderResult.setMoney(everydayRoomPriceBO.getMoney().toString());
         }
 
-        return resultList;
+        return list;
     }
 
     //获取预离店报表

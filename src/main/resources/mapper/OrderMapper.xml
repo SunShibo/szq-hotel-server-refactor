@@ -203,7 +203,7 @@
         inner join hm_check_in_person as p on c.id=p.order_child_id
         inner join hm_dictionaries_value as v on p.certificate_type=v.id
         left join hm_order_record as `or` on  c.id=`or`.order_child_id
-        where order_state !='cancel' AND order_state !='reservation'
+        where order_state ='admissions'
         and o.hotel_id=#{hotelId}
         and #{startTime}&lt;=end_time and #{endTime} &gt; start_time
         group by c.id
