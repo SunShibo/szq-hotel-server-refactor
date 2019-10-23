@@ -23,6 +23,7 @@ public class test {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        System.out.println(hour);
         if (hour <= 4) {
             calendar.add(Calendar.DATE, -1);
         }

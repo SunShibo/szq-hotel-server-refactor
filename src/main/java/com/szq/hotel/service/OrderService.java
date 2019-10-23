@@ -591,15 +591,16 @@ public class OrderService {
     //获取在住报表
     public List<OrderResult> getCheckInReport(Integer hotelId,Date time) throws ParseException {
         //获取当天日期
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour <= 4) {
-            calendar.add(Calendar.DATE, -1);
-        }
-        Date myTime = calendar.getTime();
-        SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
-        Date currDate = simp.parse(simp.format(myTime));
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(time);
+//        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//        System.out.println("hour"+hour);
+//        if (hour <= 4) {
+//            calendar.add(Calendar.DATE, -1);
+//        }
+//        Date myTime = calendar.getTime();
+//        SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
+//        Date currDate = simp.parse(simp.format(myTime));
         //获取当天开始时间
         Calendar start4 = Calendar.getInstance();
         start4.setTime(time);
@@ -615,7 +616,8 @@ public class OrderService {
         close4.set(Calendar.SECOND, 0);
         close4.add(Calendar.DATE, 1);
         Date endTime = close4.getTime();
-        return orderDAO.getCheckInReport(hotelId, startTime, endTime,currDate);
+        SimpleDateFormat simp2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return orderDAO.getCheckInReport(hotelId, startTime, endTime,time);
     }
 
     //获取预离店报表

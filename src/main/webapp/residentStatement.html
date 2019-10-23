@@ -47,11 +47,11 @@
                 <input type="text" name="startTime" class="layui-input" id="startTime"
                        placeholder="开始时间" autocomplete="off">
             </div>
-            <div class="layui-form-mid">至</div>
+          <!--  <div class="layui-form-mid">至</div>
             <div class="layui-input-inline">
                 <input type="text" name="endTime" class="layui-input" id="endTime"
                        placeholder="结束时间" autocomplete="off">
-            </div>
+            </div>-->
         </div>
         <div class="layui-inline">
             <button class="layui-btn" lay-submit="" lay-filter="formData">查询</button>
@@ -78,8 +78,7 @@
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    startTime: DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000))) + ' 06:00:00',
-                    endTime: DateToLStr3(new Date(Date.now())) + ' 06:00:00'
+                    time: DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000)))
                 },
                 success: function (data) {
                     if(!data.success){
@@ -94,18 +93,14 @@
         //监听提交
         form.on('submit(formData)', function (data) {
             if (!data.field.startTime) {
-                startTime = DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000))) + ' 03:00:00'
-            }
-            if (!data.field.endTime) {
-                endTime = DateToLStr3(new Date(Date.now())) + ' 05:00:00'
+                time = DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000)))
             }
             $.ajax({
                 url: '/order/getCheckInReport',
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    startTime: data.field.startTime,
-                    endTime: data.field.endTime
+                    time: data.field.startTime,
                 },
                 success: function (data) {
                     if(!data.success){
@@ -189,37 +184,12 @@
         var start = laydate.render({
             elem: '#startTime'
             , type: 'datetime'
-            , value: DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000))) + ' 06:00:00'
-            , format: 'yyyy/MM/dd HH:mm:ss'
+            , value: DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000)))
+            , format: 'yyyy/MM/dd'
             , btns: ['clear', 'confirm'],
-            done: function (value, date) {
-                endMax = end.config.max;
-                end.config.min = date;
-                end.config.min.month = date.month - 1;
-            },
-            change: function (value, date, endDate) {
-                var timestamp2 = Date.parse(new Date(value));
-                timestamp2 = timestamp2 / 1000;
-                end.config.min = timestamp2;
-                end.config.min.month = date.month - 1;
-            }
+
         });
 
-        var end = laydate.render({
-            elem: '#endTime'
-            , type: 'datetime'
-            , value: DateToLStr3(new Date(Date.now())) + ' 06:00:00'
-            , format: 'yyyy/MM/dd HH:mm:ss'
-            , btns: ['clear', 'confirm']
-            , done: function (value, date) {
-                if (!$.trim(value)) {
-                    var curDate = new Date();
-                    date = {'date': curDate.getDate(), 'month': curDate.getMonth() + 1, 'year': curDate.getFullYear()};
-                }
-                start.config.max = date;
-                start.config.max.month = date.month - 1;
-            }
-        });
     });
 
 </script>
