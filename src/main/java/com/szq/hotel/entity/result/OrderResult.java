@@ -4,6 +4,7 @@ import java.util.Date;
 
 //在住 预离报表
 public class OrderResult {
+    private Integer id;
     private String orderNumber;//订单号
     private String name;//入住人姓名
     private String value;//入住人证件类型
@@ -11,6 +12,7 @@ public class OrderResult {
     private String roomName;//房号
     private String roomTypeName;//房型
     private String money;//当天价格
+    private Date currTime;//当天日期
     private Date startTime;//入住日期
     private Date endTime;//结束日期
     private String payCashNum;//现金支付金额
@@ -18,6 +20,23 @@ public class OrderResult {
     private String roomRate;//房费
     private String otherRate;//其他费用
     private String freeRateNum;//免单费用
+
+
+    public Date getCurrTime() {
+        return currTime;
+    }
+
+    public void setCurrTime(Date currTime) {
+        this.currTime = currTime;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getOrderNumber() {
         return orderNumber;
