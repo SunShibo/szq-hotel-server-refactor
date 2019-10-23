@@ -204,9 +204,10 @@
         inner join hm_dictionaries_value as v on p.certificate_type=v.id
         inner join hm_everyday_room_price as e on c.id=e.order_child_id
         left join hm_order_record as `or` on  c.id=`or`.order_child_id
-        where order_state ='admissions'
+        where order_state !='cancel' AND order_state !='reservation'
         and o.hotel_id=#{hotelId}
-        and #{startTime}&lt;=end_time and #{endTime}&gt;=start_time
+        and #{startTime}&lt;=end_time and #{endTime} &gt; start_time
+        and e.`time`=#{time}
         group by c.id
     </select>
 

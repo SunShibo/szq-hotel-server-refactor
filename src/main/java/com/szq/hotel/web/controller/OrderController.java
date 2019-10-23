@@ -547,11 +547,11 @@ public class OrderController extends BaseCotroller {
      * 获取在住报表
      */
     @RequestMapping("/getCheckInReport")
-    public void getCheckInReport(Date startTime,Date endTime,HttpServletRequest request, HttpServletResponse response) {
+    public void getCheckInReport(Date time,HttpServletRequest request, HttpServletResponse response) {
         try {
             //验证管理员
             AdminBO userInfo = super.getLoginAdmin(request);
-            List<OrderResult> results = orderService.getCheckInReport(userInfo.getHotelId(),startTime,endTime);
+            List<OrderResult> results = orderService.getCheckInReport(userInfo.getHotelId(),time);
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(results));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);

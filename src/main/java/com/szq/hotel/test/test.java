@@ -17,111 +17,36 @@ import java.util.Date;
 import java.util.List;
 
 public class test {
-    public static void main2(String args[]) {
-        List<OrderChildBO> OrderChildBOList = new ArrayList<OrderChildBO>();//每日房价信息
-        OrderChildBO childBO = new OrderChildBO();
-        childBO.setRoomId(6);
-        childBO.setRoomTypeId(6);
-        childBO.setRemark("房型2换为房型6/房间6");
-        List<EverydayRoomPriceBO> everydayRoomPriceBOList = new ArrayList<EverydayRoomPriceBO>();
-        EverydayRoomPriceBO everydayRoomPriceBO = new EverydayRoomPriceBO();
-        everydayRoomPriceBO.setMoney(new BigDecimal(150));
-        everydayRoomPriceBO.setTime(new Date());
-        everydayRoomPriceBOList.add(everydayRoomPriceBO);
-        EverydayRoomPriceBO everydayRoomPriceBO2 = new EverydayRoomPriceBO();
-        everydayRoomPriceBO2.setMoney(new BigDecimal(150));
-        everydayRoomPriceBO2.setTime(new Date());
-        everydayRoomPriceBOList.add(everydayRoomPriceBO2);
-        EverydayRoomPriceBO everydayRoomPriceBO3 = new EverydayRoomPriceBO();
-        everydayRoomPriceBO3.setMoney(new BigDecimal(50));
-        everydayRoomPriceBO3.setTime(new Date());
-        everydayRoomPriceBOList.add(everydayRoomPriceBO3);
-        childBO.setEverydayRoomPriceBOS(everydayRoomPriceBOList);
-
-        CheckInPersonBO checkInPersonBO = new CheckInPersonBO();
-        checkInPersonBO.setName("王洋");
-        checkInPersonBO.setGender("男");
-        checkInPersonBO.setPhone("6666");
-        checkInPersonBO.setCertificateNumber("66666");
-        checkInPersonBO.setRemark("买瓶水");
-        CheckInPersonBO checkInPersonBO2 = new CheckInPersonBO();
-        checkInPersonBO2.setName("张茜");
-        checkInPersonBO2.setGender("女");
-        checkInPersonBO2.setPhone("55555");
-        checkInPersonBO2.setCertificateNumber("5555555");
-        checkInPersonBO2.setRemark("我要奶茶");
-        List<CheckInPersonBO> checkInPersonBOS = new ArrayList<CheckInPersonBO>();
-        checkInPersonBOS.add(checkInPersonBO);
-        checkInPersonBOS.add(checkInPersonBO2);
-        childBO.setCheckInPersonBOS(checkInPersonBOS);
-        OrderChildBOList.add(childBO);
-
-        OrderChildBO childBO2 = new OrderChildBO();
-
-        childBO2.setRoomId(2);
-        childBO2.setRoomTypeId(2);
-        childBO2.setRemark("大床房的备注");
-        List<EverydayRoomPriceBO> everydayRoomPriceBOList2 = new ArrayList<EverydayRoomPriceBO>();
-        EverydayRoomPriceBO everydayRoomPriceBO5 = new EverydayRoomPriceBO();
-        everydayRoomPriceBO5.setMoney(new BigDecimal(100));
-        everydayRoomPriceBO5.setTime(new Date());
-        everydayRoomPriceBOList2.add(everydayRoomPriceBO5);
-        EverydayRoomPriceBO everydayRoomPriceBO4 = new EverydayRoomPriceBO();
-        everydayRoomPriceBO4.setMoney(new BigDecimal(200));
-        everydayRoomPriceBO4.setTime(new Date());
-        everydayRoomPriceBOList2.add(everydayRoomPriceBO4);
-        EverydayRoomPriceBO everydayRoomPriceBO6 = new EverydayRoomPriceBO();
-        everydayRoomPriceBO6.setMoney(new BigDecimal(200));
-        everydayRoomPriceBO6.setTime(new Date());
-        everydayRoomPriceBOList2.add(everydayRoomPriceBO6);
-        childBO2.setEverydayRoomPriceBOS(everydayRoomPriceBOList2);
-
-
-        CheckInPersonBO checkInPersonBO3 = new CheckInPersonBO();
-        checkInPersonBO3.setName("男3");
-        checkInPersonBO3.setGender("男");
-        checkInPersonBO3.setPhone("33333");
-        checkInPersonBO3.setCertificateNumber("33333");
-        checkInPersonBO3.setRemark("男3的备注");
-        CheckInPersonBO checkInPersonBO4 = new CheckInPersonBO();
-        checkInPersonBO4.setName("女4");
-        checkInPersonBO4.setGender("女");
-        checkInPersonBO4.setPhone("55555");
-        checkInPersonBO4.setCertificateNumber("5555555");
-        checkInPersonBO4.setRemark("女4的备注");
-        List<CheckInPersonBO> checkInPersonBOS2 = new ArrayList<CheckInPersonBO>();
-        checkInPersonBOS2.add(checkInPersonBO3);
-        checkInPersonBOS2.add(checkInPersonBO4);
-        //childBO2.setCheckInPersonBOS(checkInPersonBOS2);
-        OrderChildBOList.add(childBO2);
-        String json = JSON.toJSONString(OrderChildBOList);
-        System.err.println(json);
-
-        List<OrderChildBO> list = JsonUtils.getJSONtoList(json, OrderChildBO.class);
-        for (OrderChildBO orderChild : list) {
-            //添加子订单 返回订单id
-            System.err.println(orderChild.getRoomId());
-            System.err.println(orderChild.getRoomTypeId());
-            //这个房型下的每日价格
-            List<EverydayRoomPriceBO> everydayRoomPriceBOLista = orderChild.getEverydayRoomPriceBOS();
-            for (EverydayRoomPriceBO everydayRoomPriceBOe : everydayRoomPriceBOLista) {
-                System.err.println(everydayRoomPriceBOe.getTime());
-                System.err.println(everydayRoomPriceBOe.getMoney());
-            }
-
-        }
-    }
-
     public static void main(String args[]) throws ParseException {
-//        Date endTime = new Date();
-//        System.err.println("entaa" + DateUtils.longDate(endTime));
-//        Calendar calendar2 = Calendar.getInstance();
-//        calendar2.setTime(endTime);
-//        calendar.set(Calendar.HOUR_OF_DAY, 14);
-//        endTime = calendar.getTime();
-//        System.err.println("entaaa" + DateUtils.longDate(endTime));
-            Integer i=1;
-            Integer b=1;
-            System.err.println(i.equals(b));
+        Date time=new Date();
+        //获取当天日期
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (hour <= 4) {
+            calendar.add(Calendar.DATE, -1);
+        }
+        Date myTime = calendar.getTime();
+        SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date currDate = simp.parse(simp.format(myTime));
+        System.out.println("myTime:"+simp.format(myTime));
+        //获取当天开始时间
+        Calendar start4 = Calendar.getInstance();
+        start4.setTime(time);
+        start4.set(Calendar.HOUR_OF_DAY, 04);
+        start4.set(Calendar.MINUTE, 0);
+        start4.set(Calendar.SECOND, 0);
+        Date startTime = start4.getTime();
+        System.out.println("startTime:"+simp.format(startTime));
+        //获取当天结束时间
+        Calendar close4 = Calendar.getInstance();
+        close4.setTime(time);
+        close4.set(Calendar.HOUR_OF_DAY, 04);
+        close4.set(Calendar.MINUTE, 0);
+        close4.set(Calendar.SECOND, 0);
+        close4.add(Calendar.DATE, 1);
+        Date endTime = close4.getTime();
+        System.out.println("endTime:"+simp.format(endTime));
+
     }
 }

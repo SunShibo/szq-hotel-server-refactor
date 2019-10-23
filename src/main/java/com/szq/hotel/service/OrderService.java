@@ -589,8 +589,33 @@ public class OrderService {
 
 
     //获取在住报表
-    public List<OrderResult> getCheckInReport(Integer hotelId, Date startTime, Date endTime) {
-        return orderDAO.getCheckInReport(hotelId, startTime, endTime);
+    public List<OrderResult> getCheckInReport(Integer hotelId,Date time) throws ParseException {
+        //获取当天日期
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (hour <= 4) {
+            calendar.add(Calendar.DATE, -1);
+        }
+        Date myTime = calendar.getTime();
+        SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
+        Date currDate = simp.parse(simp.format(myTime));
+        //获取当天开始时间
+        Calendar start4 = Calendar.getInstance();
+        start4.setTime(time);
+        start4.set(Calendar.HOUR_OF_DAY, 04);
+        start4.set(Calendar.MINUTE, 0);
+        start4.set(Calendar.SECOND, 0);
+        Date startTime = start4.getTime();
+        //获取当天结束时间
+        Calendar close4 = Calendar.getInstance();
+        close4.setTime(time);
+        close4.set(Calendar.HOUR_OF_DAY, 04);
+        close4.set(Calendar.MINUTE, 0);
+        close4.set(Calendar.SECOND, 0);
+        close4.add(Calendar.DATE, 1);
+        Date endTime = close4.getTime();
+        return orderDAO.getCheckInReport(hotelId, startTime, endTime,currDate);
     }
 
     //获取预离店报表

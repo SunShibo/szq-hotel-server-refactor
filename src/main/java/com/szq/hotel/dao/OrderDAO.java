@@ -59,7 +59,7 @@ public interface OrderDAO {
     //根据主订单id查询房间信息（客帐管理）
     List<OrderChildBO> getRoomInfoById(String alCode);
     //获取在住报表
-    List<OrderResult> getCheckInReport(@Param("hotelId") Integer hotelId,@Param("startTime") Date startTime,@Param("endTime") Date endTime);
+    List<OrderResult> getCheckInReport(@Param("hotelId") Integer hotelId,@Param("startTime") Date startTime,@Param("endTime") Date endTime,@Param("time") Date time);
     //获取预离报表
     List<OrderResult> getCheckOutReport(@Param("beforeTime") Date beforeTime,@Param("afterTime") Date afterTime,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("hotelId")Integer hotelId);
     //获取预离报表总数
