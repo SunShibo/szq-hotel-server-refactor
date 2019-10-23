@@ -55,14 +55,14 @@
 
     <!--查询消费项-->
     <select id="consumption"  resultType="double" >
-        SELECT ifnull(SUM(money),0)  FROM `hm_order_record` WHERE   money &lt;0  AND  id in
+        SELECT round(ifnull(SUM(money),0),2)  FROM `hm_order_record` WHERE   money &lt;0  AND  id in
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
     </select>
     <!--查询支付项-->
     <select id="pay" resultType="double" >
-        SELECT ifnull(SUM(money),0)  FROM `hm_order_record` WHERE   money >0  AND  id in
+        SELECT round(ifnull(SUM(money),0),2)  FROM `hm_order_record` WHERE   money >0  AND  id in
         <foreach collection="list" item="id" open="(" separator=","  close=")" >
             #{id}
         </foreach>
