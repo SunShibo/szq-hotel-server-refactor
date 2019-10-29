@@ -6,8 +6,6 @@
     <script src="js/loadcss.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
-<object classid="clsid:10946843-7507-44FE-ACE8-2B3483D179B7" codebase="IDCardReader.ocx" id="CVR_IDCard"
-        name="CVR_IDCard" width="0" height="0"></object>
 <form class="layui-form" action="" style="margin: 0 10px;" lay-filter="form">
     <fieldset class="layui-elem-field">
         <legend>入住信息</legend>
@@ -114,7 +112,7 @@
         //扫描身份证
         $(document).on('click', '.IDCardReader', function () {
             var IDCardReaderData = IDCardReader();
-            if(!!IDCardReaderData){
+            if (!!IDCardReaderData) {
                 //获取下标
                 var num = $(this).data('num');
                 //赋值
@@ -148,7 +146,7 @@
         //获取价格
         function getRoomPriceAll() {
             $.ajax({
-                url: api.getRoomInfoById + orderChildId,
+                url: api.getRoomInfoById + orderChildId + '&date=' + Date.now(),
                 type: 'GET',
                 dataType: 'json',
                 success: function (res) {
@@ -324,6 +322,7 @@
         }
 
 
+        //修改保存
         form.on('submit(formSubmit)', function (data) {
             // console.info(data);
             //获取修改后的入住信息

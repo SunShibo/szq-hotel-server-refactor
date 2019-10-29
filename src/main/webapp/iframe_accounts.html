@@ -130,7 +130,7 @@
             }
             $.ajax({
                 url: api.changeMainRoom,
-                typeL: 'POST',
+                type: 'POST',
                 dataType: 'json',
                 data: {orderChildId: selectDelArr[0]},
                 success: function (rs) {
@@ -150,7 +150,7 @@
         form.on('submit(addAccounts)', function (data) {
             $.ajax({
                 url: api.join,
-                typeL: 'POST',
+                type: 'POST',
                 dataType: 'json',
                 data: {orderChildId: orderChildId, orderChildIds: selectNewArr.join(',')},
                 success: function (rs) {
@@ -170,7 +170,7 @@
         form.on('submit(delAccounts)', function (data) {
             $.ajax({
                 url: api.dismiss,
-                typeL: 'POST',
+                type: 'POST',
                 dataType: 'json',
                 data: {orderChildIds: JSON.stringify(selectDelArr)},
                 success: function (rs) {
