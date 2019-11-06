@@ -91,7 +91,7 @@ public class OrderController extends BaseCotroller {
             //bug判断房型是否够用 房间预定和 预约修改都要判断房型 房间是否够用 与预约中的是不是不会冲突
             for (OrderChildBO orderChildBO : list) {
                 for (OrderChildBO childBO : list) {
-                    if(orderChildBO.getRoomTypeId()==childBO.getRoomTypeId()){
+                    if(orderChildBO.getRoomTypeId().equals(childBO.getRoomTypeId())){
                         orderChildBO.setRoomTypeCount(orderChildBO.getRoomTypeCount()+1);
                     }
                 }

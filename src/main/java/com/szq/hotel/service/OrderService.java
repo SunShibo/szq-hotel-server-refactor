@@ -589,8 +589,6 @@ public class OrderService {
     }
 
 
-
-
     //获取在住报表
     public List<OrderResult> getCheckInReport(Integer hotelId, Date time) throws ParseException {
         //获取当天开始时间
@@ -612,7 +610,7 @@ public class OrderService {
 
         List<OrderResult> list = orderDAO.getCheckInReport(hotelId, startTime, endTime);
         for (OrderResult orderResult : list) {
-            Date moneyTime=time;
+            Date moneyTime = time;
             //判断是否是订单的结束日期，如果是结束日期，则取前天的房费
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(orderResult.getEndTime());
@@ -624,9 +622,9 @@ public class OrderService {
             Date closeTime = calendar.getTime();
             SimpleDateFormat simp = new SimpleDateFormat("yyyy-MM-dd");
             Date currDate = simp.parse(simp.format(closeTime));
-            if (currDate.getTime() == time.getTime()&&DateUtils.getQuotMinute(orderResult.getEndTime(),orderResult.getStartTime())>4*60) {
+            if (currDate.getTime() == time.getTime() && DateUtils.getQuotMinute(orderResult.getEndTime(), orderResult.getStartTime()) > 4 * 60) {
                 calendar.add(Calendar.DATE, -1);
-                moneyTime=calendar.getTime();
+                moneyTime = calendar.getTime();
             }
             EverydayRoomPriceBO everydayRoomPriceBO = everydayRoomPriceDAO.getRemainingEverydayRoomByIdAndTime(simp.format(moneyTime), orderResult.getId());
             if (everydayRoomPriceBO == null) {
@@ -1641,14 +1639,6 @@ public class OrderService {
             orderChildBO.setOtherPayNum(new BigDecimal(0));
             orderChildBO.setPayCashNum(new BigDecimal(0));
             orderDAO.updOrderChild(orderChildBO);
-
-            //把入住的房间修改为在住 目前好像没用
-//            Map<String, Object> map = new HashMap<String, Object>();
-//            map.put("id", orderChildBO.getRoomId());
-//            map.put("state", Constants.INTHE.getValue());
-//            map.put("remark", "入住支付");
-//            map.put("userId", userId);
-//            roomService.updateroomMajorState(map);
         }
     }
 
@@ -1657,7 +1647,59 @@ public class OrderService {
         return orderDAO.getOrderChildBackup(id);
     }
 
+    public List<Date> getDateList(Date startTime, Date endTime) throws ParseException {
+        //拆分获取多段日期
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        List<Date> dateList = new ArrayList<Date>();
+        dateList.add(startTime);
+        int count = 1;
+        while (true) {
+            Date afterDate = DateUtils.getAppointDate(startTime, count);
+            afterDate = simpleDateFormat.parse(simpleDateFormat.format(this.getHotelDate(afterDate)));
+            endTime = simpleDateFormat.parse(simpleDateFormat.format(this.getHotelDate(endTime)));
+            if (afterDate.compareTo(endTime) <= 0) {
+                System.err.println("时间:"+afterDate);
+                dateList.add(afterDate);
+                count++;
+            } else {
+                break;
+            }
+        }
+        return dateList;
+    }
 
+    //获取某个日期的下午两点
+    public static Date longDate1(Date date) {
+        if (date == null)
+            return null;
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 14);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            return calendar.getTime();
+        } catch (IllegalArgumentException e) {
+
+        }
+        return null;
+    }
+    //获取某个日期的下午两点零一秒
+    public static Date longDate2(Date date) {
+        if (date == null)
+            return null;
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 14);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 1);
+            return calendar.getTime();
+        } catch (IllegalArgumentException e) {
+
+        }
+        return null;
+    }
     /**
      * 验证这个房间或者房型  是否可以续租或者入住 是否会与预约中的房间房型发生冲突
      *
@@ -1672,7 +1714,7 @@ public class OrderService {
     public boolean getOrderChildCountByRoomIdByTime(Integer roomId, Integer roomType, Date endTime, Date startTime, Integer reservationRoomCount, Integer orderId, Integer hotelId) throws ParseException {
         log.info("start  getOrderChildCountByRoomIdByTime......................................................................................");
         log.info("roomId:{}\troomType:{}\tendTime:{}\treservationRoomCount:{}\torderId\thotelId:{}", roomId, roomType, endTime, reservationRoomCount, orderId, hotelId);
-        //验证房间
+        //验证某个房间是否被预约
         if (roomId != null) {
             Integer roomCount = orderDAO.getOrderChildCountByRoomIdByTime(roomId, DateUtils.longDate(endTime), DateUtils.longDate(startTime), orderId, hotelId);
             if (roomCount > 0) {
@@ -1685,48 +1727,38 @@ public class OrderService {
 //            }
         }
 
-        //bug验证房型
+        //验证房型数量是否足够
         if (roomType != null) {
+            //时间段
+            List<Date> dateList = this.getDateList(startTime, endTime);
+            //可用房型数量
             Integer roomCount = orderDAO.getRoomCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime), DateUtils.longDate(startTime), hotelId, roomId);
             Long minute = DateUtils.getQuotMinute(endTime, startTime);
+            //验证小时房
             if (minute <= 4 * 60) {
-                //获取订单数
-                Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, DateUtils.longDate(endTime),
-                        DateUtils.longDate(startTime), orderId, hotelId);
-                System.err.println("roomCount" + roomCount + ":orderCount" + orderCount);
-                System.err.println(reservationRoomCount);
-                if (roomCount - orderCount < reservationRoomCount) {
-                    return false;
-                }
-            }
-            //拆分获取多段结束日期
-            List<String> dateList = new ArrayList<String>();
-            dateList.add(DateUtils.longDate(startTime));
-            int count = 1;
-            while (true) {
-                Date afterDate = DateUtils.getAppointDate(startTime, count);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                afterDate = simpleDateFormat.parse(simpleDateFormat.format(this.getHotelDate(afterDate)));
-                endTime = simpleDateFormat.parse(simpleDateFormat.format(this.getHotelDate(endTime)));
-                if (afterDate.compareTo(endTime) <= 0) {
-                    dateList.add(DateUtils.longDate(afterDate));
-                    count++;
-                } else {
-                    break;
-                }
-            }
-            //获取可用房间数
-            for (int i = 0; i < dateList.size() - 1; i++) {
-                //获取订单数
-                Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, dateList.get(i + 1),
-                        dateList.get(i), orderId, hotelId);
-                System.err.println("roomCount" + roomCount + ":orderCount" + orderCount);
-                System.err.println(reservationRoomCount);
+                Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, endTime, startTime, orderId, hotelId);
                 if (roomCount - orderCount < reservationRoomCount) {
                     return false;
                 }
             }
 
+            //验证每个时间段每个房型是否都可用
+            for (int i = 0; i < dateList.size() - 1; i++) {
+                //获取订单数
+                Integer orderCount = orderDAO.getOrderChildCountByRoomTypeIdByTime(roomType, this.longDate1(dateList.get(i + 1)),
+                        this.longDate2(dateList.get(i)), orderId, hotelId);
+                System.out.println("===========1============");
+                System.out.println("开始时间" + dateList.get(i));
+                System.out.println("结束" + dateList.get(i + 1));
+                System.out.println("房型" + roomType);
+                System.out.println("roomCount" + roomCount);
+                System.out.println("orderCount" + orderCount);
+                System.out.println("reservationRoomCount" + reservationRoomCount);
+                System.out.println("===========1============");
+                if (roomCount - orderCount < reservationRoomCount) {
+                    return false;
+                }
+            }
         }
         log.info("end getOrderChildCountByRoomIdByTime.............................................");
         return true;
