@@ -1186,10 +1186,12 @@ public class OrderService {
                 //计算超时费
                 Long minute2 = DateUtils.getQuotMinute(currentTimeDate, endTime);
                 //超过4小时
-                if (minute2 <= 4 * 60) {
-                    orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
-                } else {
-                    orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()));
+                if(minute2>15){
+                    if (minute2 <= 4 * 60) {
+                        orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
+                    } else {
+                        orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()));
+                    }
                 }
             }
             log.info("result:{}", orderChildBO);
@@ -1213,7 +1215,6 @@ public class OrderService {
         OrderChildBackupParam backup = new OrderChildBackupParam();
 
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat hh = new SimpleDateFormat("HH");
         Calendar calendar = Calendar.getInstance();
         //当前时间
@@ -1232,13 +1233,10 @@ public class OrderService {
             hotelDate = DateUtils.getBeforeDay(calendarHotel.getTime(), -1);
         }
 
-        //获取今天凌晨四点
-        calendar.set(Calendar.HOUR_OF_DAY, 04);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        Date m4 = calendar.getTime();
         //获取今天凌晨六点
         calendar.set(Calendar.HOUR_OF_DAY, 06);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
         Date m6 = calendar.getTime();
         //获取下午两点
         calendar.set(Calendar.HOUR_OF_DAY, 14);
@@ -1297,9 +1295,6 @@ public class OrderService {
             //剩余每日房价
             List<EverydayRoomPriceBO> everydayRoomPriceBOList = this.getRemainingLease(orderChildId);
             //提前退房
-            System.err.println("hotelDate" + ymdhms.format(hotelDate));
-            System.err.println("m2" + ymdhms.format(m2));
-            System.err.println("hotelDate.compareTo(m2) > 0" + (hotelDate.compareTo(m2) > 0));
             if (currentDate.compareTo(endDate) < 0 && hotelDate.compareTo(m2) > 0 && orderChildBO.getStartTime().compareTo(m6) < 0 && everydayRoomPriceBOList.size() >= 1) {
                 this.addOrderChildRecordAndRoomRate2(backup, hotelDate, orderChildBO, userId, money);
             }
@@ -1309,7 +1304,6 @@ public class OrderService {
             this.addOrderChildRecordAndRoomRate3(backup, endTime, orderChildBO, userId, money);
             backup.setRoomMajorState(Constants.TIMEOUT.getValue());
         }
-
 
         List<CheckInPersonBO> checkInPersonBOS = checkInPersonService.getCheckInPersonById(orderChildBO.getId(), Constants.CHECKIN.getValue());
         CheckInPersonBO checkInPersonBO = checkInPersonBOS.get(0);
@@ -1387,42 +1381,45 @@ public class OrderService {
         //计算超时费
         Date currentTimeDate = new Date();
         Long minute = DateUtils.getQuotMinute(currentTimeDate, endTime);
-        //超过4小时
-        if (minute <= 4 * 60) {
-            orderChild.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
-            orderChild.setFreeRateNum(money);
-            backup.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
-            backup.setTimeoutRate(money);
-            //加记录
-            Integer recordId = orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "半天超时费",
-                    null, orderChild.getOtherRate().negate(), Constants.TIMEOUTCOST.getValue(),
-                    userId, null, "no");
-            backup.setOtherRateRecordId(recordId);
-
-            //减免费用
-            if (money.compareTo(new BigDecimal(0)) != 0) {
-                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), "超时减免",
-                        null, money, Constants.MITIGATE.getValue(),
+        //后来的需求 退房在15分钟之内不算超时费用
+        if(minute>15){
+            //超过4小时
+            if (minute <= 4 * 60) {
+                orderChild.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
+                orderChild.setFreeRateNum(money);
+                backup.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
+                backup.setTimeoutRate(money);
+                //加记录
+                Integer recordId = orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "半天超时费",
+                        null, orderChild.getOtherRate().negate(), Constants.TIMEOUTCOST.getValue(),
                         userId, null, "no");
-                backup.setTimeoutRateRecordId(recordId2);
-            }
-        } else {
-            orderChild.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()));
-            orderChild.setFreeRateNum(money);
-            backup.setOtherRate(orderChild.getOtherRate());
-            backup.setTimeoutRate(money);
-            //加记录
-            Integer recordId = orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "全天超时费",
-                    null, orderChild.getOtherRate().negate(), Constants.TIMEOUTCOST.getValue(),
-                    userId, null, "no");
-            backup.setOtherRateRecordId(recordId);
+                backup.setOtherRateRecordId(recordId);
 
-            //减免费用
-            if (money.compareTo(new BigDecimal(0)) != 0) {
-                Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), "超时减免",
-                        null, money, Constants.MITIGATE.getValue(),
+                //减免费用
+                if (money.compareTo(new BigDecimal(0)) != 0) {
+                    Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), "超时减免",
+                            null, money, Constants.MITIGATE.getValue(),
+                            userId, null, "no");
+                    backup.setTimeoutRateRecordId(recordId2);
+                }
+            } else {
+                orderChild.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()));
+                orderChild.setFreeRateNum(money);
+                backup.setOtherRate(orderChild.getOtherRate());
+                backup.setTimeoutRate(money);
+                //加记录
+                Integer recordId = orderRecordService.addOrderRecord(orderChild.getId(), ymd.format(currentTimeDate) + "全天超时费",
+                        null, orderChild.getOtherRate().negate(), Constants.TIMEOUTCOST.getValue(),
                         userId, null, "no");
-                backup.setTimeoutRateRecordId(recordId2);
+                backup.setOtherRateRecordId(recordId);
+
+                //减免费用
+                if (money.compareTo(new BigDecimal(0)) != 0) {
+                    Integer recordId2 = orderRecordService.addOrderRecord(orderChild.getId(), "超时减免",
+                            null, money, Constants.MITIGATE.getValue(),
+                            userId, null, "no");
+                    backup.setTimeoutRateRecordId(recordId2);
+                }
             }
         }
     }
