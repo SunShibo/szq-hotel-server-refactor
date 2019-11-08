@@ -235,7 +235,7 @@ public class OrderService {
         String alRoomCode = orderChildBOListOld.get(0).getAlRoomCode();
 
         //前端应该传null 有时候会传过来0
-        if (orderChildBOList.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() == 0) {
+        if (orderChildBOList.size()>0&&orderChildBOList.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() == 0) {
             orderChildBOList.get(0).setRoomId(null);
         }
         //旧预约信息和新预约信息 预约的类型不一样
