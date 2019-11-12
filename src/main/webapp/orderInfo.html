@@ -469,8 +469,8 @@
             //格式化选中消费项
             state = {};
             //计算合计
-            var collection = data.payCashNum + data.otherPayNum;
-            var consumption = data.roomRate + data.otherRate + data.freeRateNum;
+            var collection = (data.payCashNum + data.otherPayNum).toFixed(2);
+            var consumption = (data.roomRate + data.otherRate + data.freeRateNum).toFixed(2);
             var total = collection - consumption;
 
             //收款项

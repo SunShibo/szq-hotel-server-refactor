@@ -19,18 +19,6 @@ var OUTPAYJSON = {
 };
 
 
-//身份证号码正则
-var IDREG = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
-//港澳通行证
-var HMPASSCHECK = /^([A-Z]\d{6,10}(\(\w{1}\))?)$/;
-//台湾通行证
-var TAIWANPASS = /^\d{8}|^[a-zA-Z0-9]{10}|^\d{18}$/;
-//护照
-var PASSPORT = /^([a-zA-z]|[0-9]){5,17}$/;
-//军官证
-var OFFICERS = /^[\u4E00-\u9FA5](字第)([0-9a-zA-Z]{4,8})(号?)$/;
-
-
 var api = {
     admin: '/admin/getAdminById' //管理员列表查询   已修改
     , delAdmin: '/admin/delAdmins' //管理员删除   已修改
@@ -281,12 +269,12 @@ layui.use(['jquery', 'element', 'form'], function () {
             });
             //设置会员详情
             setUserInfo(CVR_IDCard.CardNo, function (res, success) {
-                if(success){
+                if (success) {
                     $('.integral').text(res.integralMoney);
                     $('.prepaidCard').text(res.storeValue);
                     //显示会员详情
                     $('.optional_1').show();
-                }else {
+                } else {
                     layui.layer.alert(res, {title: '提示信息', icon: 5});
                 }
             });
@@ -876,7 +864,7 @@ setTimeout(function () {
             $("#side").addClass("side-open")
         }
     });
-},1000)
+}, 1000)
 
 
 function showPosPort() {
@@ -919,26 +907,18 @@ function setUserInfo(ID, callback) {
 
 //身份证验证并查询会员信息
 function handleInput() {
-    var val = $('#card').val(),
-        flag = new RegExp(IDREG).test(val) || new RegExp(HMPASSCHECK).test(val) || new RegExp(TAIWANPASS).test(val) || new RegExp(PASSPORT).test(val) || new RegExp(OFFICERS).test(val);
-    //再进行正则判断
-    if (flag) {
-        //获取用户会员信息
-        setUserInfo(val, function (res, success) {
-            if (success) {
-                $('.integral').text(res.integralMoney);
-                $('.prepaidCard').text(res.storeValue);
-                $('.optional_1').show();
-            } else {
-                layer.msg(res);
-                $('.optional_1').hide();
-            }
-        });
-
-    } else {
-        //layer.msg('请输入正确的证件号码');
-        //$('.optional_1').hide();
-    }
+    var val = $('#card').val()
+    //获取用户会员信息
+    setUserInfo(val, function (res, success) {
+        if (success) {
+            $('.integral').text(res.integralMoney);
+            $('.prepaidCard').text(res.storeValue);
+            $('.optional_1').show();
+        } else {
+            layer.msg(res);
+            $('.optional_1').hide();
+        }
+    });
 }
 
 // 防抖

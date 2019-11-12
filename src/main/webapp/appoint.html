@@ -992,8 +992,8 @@
             sRooms1[i]['roomName'] = sRooms1[i]['roomNum']+"";
             sRooms1[i]['roomTypeId'] = roomTypeId;
         }
-        state.totalPrice = _yuyuePrice;
-        $("#totalPrice").text(_yuyuePrice);
+        state.totalPrice = _yuyuePrice.toFixed(0);
+        $("#totalPrice").text(state.totalPrice);
         updateTable();
     }
 

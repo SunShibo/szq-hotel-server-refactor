@@ -411,8 +411,8 @@
                         }
                     }
                     localStorage.modifyPrice = JSON.stringify(rs.data);
-                    state.totalPrice = _yuyuePrice;
-                    $("#totalPrice").text(_yuyuePrice);
+                    state.totalPrice = _yuyuePrice.toFixed(0);
+                    $("#totalPrice").text(state.totalPrice);
                     tableObj.reload({data: JSON.parse(JSON.stringify(sRooms))})
                     // updateTable();
                 }
