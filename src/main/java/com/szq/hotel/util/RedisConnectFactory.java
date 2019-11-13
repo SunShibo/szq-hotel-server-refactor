@@ -10,9 +10,8 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 public class RedisConnectFactory {
     //Redis服务器IP
-   //private static String ADDR = "localhost";
+  // private static String ADDR = "localhost";
     //private static String ADDR = "wisewin-tech.com";
-    //private static String ADDR = "";
    private static String ADDR = "60.205.226.180";
 
     //Redis的端口号
@@ -20,9 +19,9 @@ public class RedisConnectFactory {
     private static int PORT = 6379;
 
     //访问密码
- //    private static String AUTH = null;
+    // private static String AUTH = null;
     //private static String AUTH = "denglu328325";
-    private static String AUTH = "Sunshibo1!";
+     private static String AUTH = "Sunshibo1!";
 
     //可用连接实例的最大数目，默认值为8；
     //如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。

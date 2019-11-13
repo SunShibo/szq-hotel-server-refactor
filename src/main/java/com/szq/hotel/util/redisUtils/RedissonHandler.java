@@ -23,7 +23,7 @@ public class RedissonHandler {
 
     private final static String ip = "60.205.226.180";//"60.205.226.180";//"wisewin-tech.com";
 
-    private final static String password = "Sunshibo1!";//"Sunshibo1!";//"sunshibo1!";
+    private final static String password ="Sunshibo1!";//"Sunshibo1!";//"sunshibo1!";
 
 
     /**

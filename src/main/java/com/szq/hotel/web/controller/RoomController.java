@@ -848,6 +848,9 @@ public class RoomController extends BaseCotroller {
     public void todayPictureView(HttpServletRequest request, HttpServletResponse response) {
         log.info("todayPictureView*****************************************************************");
         AdminBO loginAdmin = super.getLoginAdmin(request);
+        if(loginAdmin==null){
+            return;
+        }
         Map<String, Object> map = roomService.todayPictureView(loginAdmin.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(map));
         super.safeJsonPrint(response, result);
