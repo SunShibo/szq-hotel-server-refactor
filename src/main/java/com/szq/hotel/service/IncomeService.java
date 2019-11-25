@@ -311,9 +311,6 @@ public class IncomeService {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.HOUR_OF_DAY, 04);
         String dateStr=simpleDateFormat.format(calendar.getTime());
-        System.err.println(dateStr);
-
-        System.err.println(endDateStr);
         IncomeBO incomeBO=new IncomeBO();
         //房费减免
         BigDecimal roomRateRoom=incomeDAO.getCashierSummaryByProject(dateStr,endDateStr, Constants.ROOMRATEFREE.getValue(),hotelId);
@@ -389,11 +386,9 @@ public class IncomeService {
 
         //借方总记
         BigDecimal debtSum=roomRateRoom.add(roomRate).add(mitigate).add(timeoutRoomRate)
-                        .add(commodityFerr).add(compEnsatinonEecomp).add(commodity)
-                        .add(compensation).add(memberCardRate).add(otherRate);
+                        .add(commodityFerr).add(compEnsatinonEecomp).add(otherRate);
 
 
-        System.err.println(debtSum+"debtSum");
         if(debtSum==null){
             debtSum=new BigDecimal(0);
         }
@@ -429,7 +424,7 @@ public class IncomeService {
         }
         incomeBO.setStoredPay(storedPay);
         //贷方总记
-        BigDecimal creditSum=cash.add(bankCard).add(wechat).add(alipay).add(storedPay);
+        BigDecimal creditSum=cash.add(bankCard).add(wechat).add(alipay);
         if(creditSum==null){
             creditSum=new BigDecimal(0);
         }

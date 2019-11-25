@@ -46,6 +46,12 @@
 <div class="tab-box">
     <table id="residentStatement" lay-filter="residentStatement" class="layui-table"></table>
 </div>
+<div style="color:#ff3400; width: 90%;margin: 20px auto;">
+    <label>注：</label>
+    <div class="text">其他费用 = 商品 + 赔偿 + 会员卡收入</div>
+    <div class="text">借方总计 = 房费 + 超时费 + 房费调整 + 其他费用</div>
+    <div class="text">贷方总计 = 现金 + 银行卡 + 微信 + 支付宝</div>
+</div>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['table', 'element', 'form', 'laydate'], function () {
@@ -77,29 +83,29 @@
                 success: function (data) {
                     var rs = data.data;
                     var newRs = [{
-                        project: "房费"
+                        project: "　房费"
                     },{
-                        project: "超时费"
+                        project: "　超时费"
                     },{
-                        project: "房费调整"
+                        project: "　房费调整"
                     },{
-                        project: "其他费用"
+                        project: "　其他费用"
                     },{
-                        project: "商品"
+                        project: "　　商品"
                     },{
-                        project: "赔偿"
+                        project: "　　赔偿"
                     },{
-                        project: "会员卡收入"
+                        project: "　　会员卡收入"
                     },{
                         project: "借方总计"
                     },{
-                        project: "现金"
+                        project: "　现金"
                     },{
-                        project: "银行卡"
+                        project: "　银行卡"
                     },{
-                        project: "微信"
+                        project: "　微信"
                     },{
-                        project: "支付宝"
+                        project: "　支付宝"
                     },{
                         project: "储值支付"
                     },{
@@ -194,7 +200,7 @@
             }
             , toolbar: true
             , cols: [[ //标题栏
-                {field: 'project', align: 'center', title: '营业项目', rowspan: 2} //rowspan即纵向跨越的单元格数
+                {field: 'project', align: 'left', title: '营业项目', rowspan: 2} //rowspan即纵向跨越的单元格数
                 ,{align: 'center', title: '本年实际情况', colspan: 4}
                 , {align: 'center', title: '去年同期', colspan: 4}
 

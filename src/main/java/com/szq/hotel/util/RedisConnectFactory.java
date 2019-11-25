@@ -11,7 +11,6 @@ import redis.clients.jedis.JedisPoolConfig;
 public class RedisConnectFactory {
     //Redis服务器IP
   // private static String ADDR = "localhost";
-    //private static String ADDR = "wisewin-tech.com";
    private static String ADDR = "60.205.226.180";
 
     //Redis的端口号
@@ -20,7 +19,6 @@ public class RedisConnectFactory {
 
     //访问密码
     // private static String AUTH = null;
-    //private static String AUTH = "denglu328325";
      private static String AUTH = "Sunshibo1!";
 
     //可用连接实例的最大数目，默认值为8；
