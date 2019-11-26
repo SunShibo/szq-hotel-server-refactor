@@ -234,7 +234,7 @@ public class OrderService {
         String alRoomCode = orderChildBOListOld.get(0).getAlRoomCode();
 
         //前端应该传null 有时候会传过来0
-        if (orderChildBOList.size()>0&&orderChildBOList.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() == 0) {
+        if (orderChildBOList.size() > 0 && orderChildBOList.get(0).getRoomId() != null && orderChildBOList.get(0).getRoomId() == 0) {
             orderChildBOList.get(0).setRoomId(null);
         }
         //旧预约信息和新预约信息 预约的类型不一样
@@ -493,6 +493,9 @@ public class OrderService {
         String[] orderChildS = orderChildIdS.split(",");
         for (int i = 0; i < orderChildS.length; i++) {
             OrderChildBO orderChildResult = orderDAO.getOrderChildById(new Integer(orderChildS[i]));
+            if (orderChildResult == null) {
+                continue;
+            }
             //关闭子订单
             OrderChildBO orderChildBO = new OrderChildBO();
             orderChildBO.setId(new Integer(orderChildS[i]));
@@ -912,36 +915,47 @@ public class OrderService {
     }
 
     //联房
+    //从子帐房，点联防，把其他房间连过来，其他房间房费没有转过来，也或者是没有设置主张放
     public void addAlRoom(Integer orderChildId, String orderChildIds, Integer userId) {
         log.info("start  addAlRoom......................................................................................");
         log.info("orderChildId:{}\torderChildIds:{}\tuserId:{}", orderChildId, orderChildIds, userId);
-        //旧主账房
-        String[] orderChildIdArr = orderChildIds.split(",");
-        //新主账房
+        //新主账房信息
         OrderChildBO orderChildBONew = orderDAO.getOrderChildById(orderChildId);
-        //旧主账房 取消主账房 联房码修改为新主账房的联房码
+        //把新主帐房也加到要变更的主帐房集合中去，因为这个新的帐房有可能是有可能不是主帐房那么，它的主帐房没法转账
+        if (orderChildBONew.getMain() == null || orderChildBONew.getMain().equals("no")) {
+            List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBONew.getAlRoomCode(), "yes");
+            for (OrderChildBO child : orderChildBOList) {
+                orderChildIds = orderChildIds + "," + child.getId();
+            }
+            //设置新主账房
+            OrderChildBO mainOrderChild = new OrderChildBO();
+            mainOrderChild.setId(orderChildId);
+            mainOrderChild.setMain("yes");
+            orderDAO.updOrderChild(mainOrderChild);
+        }
+
+        //旧主账房id
+        String[] orderChildIdArr = orderChildIds.split(",");
+
+        //旧主账房 取消主账房 联房码修改为新主账房的联房码和转账
         for (int i = 0; i < orderChildIdArr.length; i++) {
             //主账房的账单记录id
             String ids = "";
-            System.err.println("orderChildIdArr[" + i + "]" + orderChildIdArr[i]);
+            //旧主帐房的账单记录
             List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(new Integer(orderChildIdArr[i]));
-            System.err.println("orderRecoredBO.size" + orderRecoredBO.size());
             for (int y = 0; y < orderRecoredBO.size(); y++) {
                 if (y == orderRecoredBO.size() - 1) {
                     ids = ids + orderRecoredBO.get(y).getId();
                 } else {
                     ids = ids + orderRecoredBO.get(y).getId() + ",";
-
                 }
             }
-            System.err.println("ids" + ids);
             //房间消费转账到新的主账房 添加消费记录
             if (!ids.equals("")) {
-                System.err.println("orderChildId" + orderChildId);
                 childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]));
             }
 
-            //修改旧联房码
+            //修改旧主帐房及子帐房联房码
             OrderChildBO orderChildBO = orderDAO.getOrderChildById(new Integer(orderChildIdArr[i]));
             List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBO.getAlRoomCode(), null);
             for (OrderChildBO child : orderChildBOList) {
@@ -952,18 +966,8 @@ public class OrderService {
                 orderDAO.updOrderChild(child);
             }
         }
-        //根据新主账房 查询出来这个联房码的旧主账房
-        OrderChildBO orderChildBo = orderDAO.getOrderChildById2(orderChildId);
-        List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBo.getAlRoomCode(), null);
-        for (OrderChildBO child : orderChildBOList) {
-            child.setPayCashNum(new BigDecimal(0));
-            child.setOtherPayNum(new BigDecimal(0));
-            child.setAlRoomCode(orderChildBONew.getAlRoomCode());
-            child.setMain("no");
-            orderDAO.updOrderChild(child);
-        }
 
-        //设置新主账房
+        //设置新主账房（上边循环会把方法开始的设置主帐房改回去）
         OrderChildBO mainOrderChild = new OrderChildBO();
         mainOrderChild.setId(orderChildId);
         mainOrderChild.setMain("yes");
@@ -1185,7 +1189,7 @@ public class OrderService {
                 //计算超时费
                 Long minute2 = DateUtils.getQuotMinute(currentTimeDate, endTime);
                 //超过4小时
-                if(minute2>15){
+                if (minute2 > 15) {
                     if (minute2 <= 4 * 60) {
                         orderChildBO.setTimeoutRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
                     } else {
@@ -1381,7 +1385,7 @@ public class OrderService {
         Date currentTimeDate = new Date();
         Long minute = DateUtils.getQuotMinute(currentTimeDate, endTime);
         //后来的需求 退房在15分钟之内不算超时费用
-        if(minute>15){
+        if (minute > 15) {
             //超过4小时
             if (minute <= 4 * 60) {
                 orderChild.setOtherRate(new BigDecimal(roomTypeBO.getBasicPrice()).divide(new BigDecimal(2)));
@@ -1654,7 +1658,7 @@ public class OrderService {
             afterDate = simpleDateFormat.parse(simpleDateFormat.format(this.getHotelDate(afterDate)));
             endTime = simpleDateFormat.parse(simpleDateFormat.format(this.getHotelDate(endTime)));
             if (afterDate.compareTo(endTime) <= 0) {
-                System.err.println("时间:"+afterDate);
+                System.err.println("时间:" + afterDate);
                 dateList.add(afterDate);
                 count++;
             } else {
@@ -1680,6 +1684,7 @@ public class OrderService {
         }
         return null;
     }
+
     //获取某个日期的下午两点零一秒
     public static Date longDate2(Date date) {
         if (date == null)
@@ -1696,6 +1701,7 @@ public class OrderService {
         }
         return null;
     }
+
     /**
      * 验证这个房间或者房型  是否可以续租或者入住 是否会与预约中的房间房型发生冲突
      *
