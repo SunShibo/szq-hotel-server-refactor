@@ -69,6 +69,9 @@ public class ShiftRecordsService {
         log.info("result:{}", id);
         log.info("start shiftRecordsDAO.queryShiftRecordsById.......................................");
         ShiftRecordsBO shiftRecordsBO = shiftRecordsDAO.queryShiftRecordsById(id);
+        if(shiftRecordsBO==null){
+            return null;
+        }
         shiftRecordsBO.setClosingTime(new Date());
         log.info("result:{}", shiftRecordsBO);
 

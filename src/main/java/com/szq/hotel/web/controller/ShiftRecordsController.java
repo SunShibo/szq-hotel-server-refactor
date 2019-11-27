@@ -52,23 +52,23 @@ public class ShiftRecordsController extends BaseCotroller {
             }
 
             ShiftRecordsBO shiftRecordsBO = shiftRecordsService.shifRecord(type, loginAdmin.getId());
-
-            if (Constants.YES.getValue().equals(type)) {
-                log.info("start log out .................................");
-                //退出登录
-                String clientLoginID = super.getClientLoginID(request);
-                if (clientLoginID != null) {
-                    String key = super.createKey(clientLoginID, SysConstants.CURRENT_LOGIN_USER);
-                    //从redis中删除用户信息
-                    log.info("start delete key .................................");
-                    RedissonHandler.getInstance().delete(key);
-                    //删除cookie
-                    log.info("start delete 删除cookie .................................");
-                    super.removeCookie(request, response, key);
+            if(shiftRecordsBO!=null) {
+                if (Constants.YES.getValue().equals(type)) {
+                    log.info("start log out .................................");
+                    //退出登录
+                    String clientLoginID = super.getClientLoginID(request);
+                    if (clientLoginID != null) {
+                        String key = super.createKey(clientLoginID, SysConstants.CURRENT_LOGIN_USER);
+                        //从redis中删除用户信息
+                        log.info("start delete key .................................");
+                        RedissonHandler.getInstance().delete(key);
+                        //删除cookie
+                        log.info("start delete 删除cookie .................................");
+                        super.removeCookie(request, response, key);
+                    }
+                    log.info("end log out .................................");
                 }
-                log.info("end log out .................................");
             }
-
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(shiftRecordsBO));
             super.safeJsonPrint(response, result);
             log.info("result{}", result);
