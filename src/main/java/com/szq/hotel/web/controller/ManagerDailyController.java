@@ -176,6 +176,7 @@ public class ManagerDailyController extends BaseCotroller {
             super.safeJsonPrint(response, result);
             return;
         }
+        log.info("s:{}",s);
         ManagerdailyChangeBO managerdailyChangeBO = managerDailyService.queryInfo(s, userBO.getHotelId());
         String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(managerdailyChangeBO));
         super.safeJsonPrint(response, result);
