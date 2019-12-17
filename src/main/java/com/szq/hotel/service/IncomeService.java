@@ -81,6 +81,15 @@ public class IncomeService {
         }
         //今年同月和去年同月的差异
         IncomeBO monthDifferences=new IncomeBO();
+        //新增：其他支付
+        if(incomeBO1.getOther().intValue()<=0||incomeBO4.getOther().intValue()<=0){
+            monthDifferences.setOther(new BigDecimal(100));
+        }else if(incomeBO4.getOther().intValue()>incomeBO1.getOther().intValue()){
+            monthDifferences.setOther((incomeBO4.getOther().subtract(incomeBO1.getOther())).divide(incomeBO4.getOther(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
+        }else{
+            monthDifferences.setOther((incomeBO1.getOther().subtract(incomeBO4.getOther())).divide(incomeBO1.getOther(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
+        }
+        //
         if(incomeBO1.getRoomRate().intValue()<=0||incomeBO4.getRoomRate().intValue()<=0){
             monthDifferences.setRoomRate(new BigDecimal(100));
         }else if(incomeBO4.getRoomRate().intValue()>incomeBO1.getRoomRate().intValue()){
@@ -181,6 +190,15 @@ public class IncomeService {
         }
         //今年和去年的差异
         IncomeBO yearDifferences=new IncomeBO();
+        //新增：其他支付
+        if(incomeBO3.getOther().intValue()<=0||incomeBO5.getOther().intValue()<=0){
+            yearDifferences.setOther(new BigDecimal(100));
+        }else if(incomeBO5.getOther().intValue()>incomeBO3.getOther().intValue()){
+            yearDifferences.setOther((incomeBO5.getOther().subtract(incomeBO3.getOther())).divide(incomeBO5.getOther(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
+        }else{
+            yearDifferences.setOther((incomeBO3.getOther().subtract(incomeBO5.getOther())).divide(incomeBO3.getOther(),RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
+        }
+        //
         if(incomeBO3.getRoomRate().intValue()<=0||incomeBO5.getRoomRate().intValue()<=0){
             yearDifferences.setRoomRate(new BigDecimal(100));
         }else if(incomeBO5.getRoomRate().intValue()>incomeBO3.getRoomRate().intValue()){
@@ -384,7 +402,7 @@ public class IncomeService {
         }
         incomeBO.setOtherRate(otherRate);
 
-        //借方总记
+        //借方总记  房费减免+房费+超时费减免+超时费+商品减免+赔偿减免+其他费用
         BigDecimal debtSum=roomRateRoom.add(roomRate).add(mitigate).add(timeoutRoomRate)
                         .add(commodityFerr).add(compEnsatinonEecomp).add(otherRate);
 
@@ -423,8 +441,14 @@ public class IncomeService {
             storedPay=new BigDecimal(0);
         }
         incomeBO.setStoredPay(storedPay);
+        //新增:其他支付
+        BigDecimal other=incomeDAO.getCashierSummaryByType(dateStr,endDateStr,Constants.OTHER.getValue(),hotelId);
+        if(other==null){
+            other=new BigDecimal(0);
+        }
+        incomeBO.setOther(other);
         //贷方总记
-        BigDecimal creditSum=cash.add(bankCard).add(wechat).add(alipay);
+        BigDecimal creditSum=cash.add(bankCard).add(wechat).add(alipay).add(other);
         if(creditSum==null){
             creditSum=new BigDecimal(0);
         }

@@ -19,11 +19,17 @@ public class RedissonHandler {
 
     private volatile RedissonClient redisson;
 
+//    private final String port = "6379";
+//
+//    private final static String ip = "60.205.226.180";//"wisewin-tech.com";
+//
+//    private final static String password = "Sunshibo1!";//"sunshibo1!";
+
     private final String port = "6379";
 
-    private final static String ip = "60.205.226.180";//"wisewin-tech.com";
+    private final static String ip = "zccxywy.cn";//"wisewin-tech.com";
 
-    private final static String password = "Sunshibo1!";//"sunshibo1!";
+    private final static String password = "wangyang";//"sunshibo1!";
 
 
     /**

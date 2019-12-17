@@ -15,14 +15,32 @@ public class IncomeBO extends BaseModel {
     private BigDecimal compensation=new BigDecimal(0);//赔偿
     private BigDecimal memberCardRate=new BigDecimal(0);//会员卡收入
     private BigDecimal debtSum=new BigDecimal(0);//借方总记
+    private BigDecimal debtSumAll=new BigDecimal(0);//******借方总记(减去房费调整)
     private BigDecimal cash=new BigDecimal(0);//现金
     private BigDecimal bankCard=new BigDecimal(0);//银行卡
     private BigDecimal wechat=new BigDecimal(0);//微信
     private BigDecimal alipay=new BigDecimal(0);//支付宝
+    private BigDecimal other=new BigDecimal(0);//******其他支付
     private BigDecimal storedPay=new BigDecimal(0);//储值支付
     private BigDecimal creditSum=new BigDecimal(0);//贷方总记
     private Date nightAuditorTime;//夜审时间
     private Integer hotelId;//酒店id
+
+    public BigDecimal getDebtSumAll() {
+        return debtSumAll;
+    }
+
+    public void setDebtSumAll(BigDecimal debtSumAll) {
+        this.debtSumAll = debtSumAll;
+    }
+
+    public BigDecimal getOther() {
+        return other;
+    }
+
+    public void setOther(BigDecimal other) {
+        this.other = other;
+    }
 
     public Integer getId() {
         return id;
