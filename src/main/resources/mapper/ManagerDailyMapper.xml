@@ -73,7 +73,7 @@
 
     <select id="querytimeoutRate" resultType="java.math.BigDecimal">
         SELECT IFNULL(SUM(consumption),0) FROM hm_cashier_summary
-        WHERE project = '超时费'
+        WHERE (project = '超时费' OR project = '超时费冲减')
         AND
         create_time &gt;= #{startTime} and create_time &lt; #{endTime} and hotel_id = #{hotelId}
     </select>
@@ -213,8 +213,7 @@
     <select id="queryOrderRe" resultType="com.szq.hotel.entity.bo.OrderReBO">
         SELECT hm_order_record.* FROM hm_order, hm_order_child, hm_order_record
         WHERE hm_order.id = hm_order_child.order_id AND hm_order_child.id = hm_order_record.order_child_id AND  hm_order.check_type = 'day'
-        and  hm_order_record.project = '房费'
-        AND hm_order_record.money > 0 AND hm_order.hotel_id = #{hotelId}
+        AND( hm_order_record.project = '房费' OR hm_order_record.project = '房费冲减'  ) AND hm_order.hotel_id = #{hotelId}
         AND hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
     </select>
 </mapper>

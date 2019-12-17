@@ -6,6 +6,7 @@ import com.szq.hotel.dao.ManagerdailyBoDAO;
 import com.szq.hotel.entity.bo.*;
 import com.szq.hotel.util.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -459,7 +460,7 @@ public class ManagerDailyService {
 
 
         //营业收入明细
-        //获取全天日租今日发生
+        //获取全天日租今日发生 todo
         throughoutDayrent.setDay(managerdailyBO1.getThroughoutDayrent().intValue() != 0 ? df.format(managerdailyBO1.getThroughoutDayrent())+"" : "0.00");
 
         //获取全天日租本月累计
@@ -3785,7 +3786,7 @@ public class ManagerDailyService {
         BigDecimal v11 = timeoutRate(hotelId,startTime, endTime);
         managerdailyBO2.setTimeoutRate(v11);//计算超时房费
 
-        BigDecimal v12 = v8.add(v10).add(v11).subtract(v9);
+        BigDecimal v12 = v8.add(v10).add(v11);
         managerdailyBO2.setNuclearnightRoomcharge(v12);//计算夜核房费
         BigDecimal v13 = compensation(hotelId,startTime, endTime);
         managerdailyBO2.setCompensation(v13);//赔偿
@@ -4041,7 +4042,6 @@ public class ManagerDailyService {
      */
     private BigDecimal timeoutRate(Integer hotelId,String startTime, String endTime){
         BigDecimal bigDecimal = managerDailyDAO.querytimeoutRate(startTime, endTime, hotelId);
-
         return bigDecimal.abs() ;
     }
 
@@ -4362,6 +4362,8 @@ public class ManagerDailyService {
 
         return bigDecimal;
     }
+
+
 
     /**
      * 获取当天总收入
