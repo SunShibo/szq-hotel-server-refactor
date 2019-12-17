@@ -49,7 +49,7 @@
 <div style="color:#ff3400; width: 90%;margin: 20px auto;">
     <label>注：</label>
     <div class="text">其他费用 = 商品 + 赔偿 + 会员卡收入</div>
-    <div class="text">借方总计 = 房费 + 超时费 + 房费调整 + 其他费用</div>
+    <div class="text">借方总计 = 房费 + 超时费 + 其他费用</div>
     <div class="text">贷方总计 = 现金 + 银行卡 + 微信 + 支付宝 + 其他支付</div>
 </div>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
@@ -108,11 +108,11 @@
                     }, {
                         project: "　支付宝"
                     }, {
+                        project: "　其他支付"
+                    }, {
                         project: "储值支付"
                     }, {
                         project: "贷方总计"
-                    }, {
-                        project: "贷方总计（减掉其他支付）"
                     }]
                     for (var i = 0; i < newRs.length; i++) {
                         var v = 'roomRate'
@@ -151,13 +151,13 @@
                                 v = 'alipay'
                                 break;
                             case 12:
-                                v = 'storedPay'
+                                v = 'other'
                                 break;
                             case 13:
-                                v = 'creditSum'
+                                v = 'storedPay'
                                 break;
                             case 14:
-                                v = 'other'
+                                v = 'creditSum'
                                 break;
                         }
 
