@@ -317,6 +317,7 @@ public class IncomeService {
     public void addIncome(Integer hotelId){
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=DateUtils.getYesTaday();
+        //Date date=new Date();
 
         //获取今天凌晨四点
         Calendar calendar=Calendar.getInstance();

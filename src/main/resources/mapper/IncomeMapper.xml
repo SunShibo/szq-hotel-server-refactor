@@ -41,7 +41,7 @@
         (null,#{roomRate},#{timeoutRoomRate},#{roomRateAdjustment},
         #{otherRate},#{commodity},#{compensation},
         #{memberCardRate},#{debtSum},#{cash},
-        #{bankCard},#{wechat},#{alipay},#{storedPay},
+        #{bankCard},#{wechat},#{other},#{alipay},#{storedPay},
         #{creditSum},#{nightAuditorTime},#{hotelId})
     </insert>
     
