@@ -73,7 +73,7 @@
 
     <select id="querytimeoutRate" resultType="java.math.BigDecimal">
         SELECT IFNULL(SUM(consumption),0) FROM hm_cashier_summary
-        WHERE project = '超时费'
+        WHERE (project = '超时费' OR project = '超时费冲减')
         AND
         create_time &gt;= #{startTime} and create_time &lt; #{endTime} and hotel_id = #{hotelId}
     </select>

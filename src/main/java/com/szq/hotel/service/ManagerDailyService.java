@@ -3786,7 +3786,7 @@ public class ManagerDailyService {
         BigDecimal v11 = timeoutRate(hotelId,startTime, endTime);
         managerdailyBO2.setTimeoutRate(v11);//计算超时房费
 
-        BigDecimal v12 = v8.add(v10).add(v11).add(v9);
+        BigDecimal v12 = v8.add(v10).add(v11);
         managerdailyBO2.setNuclearnightRoomcharge(v12);//计算夜核房费
         BigDecimal v13 = compensation(hotelId,startTime, endTime);
         managerdailyBO2.setCompensation(v13);//赔偿
@@ -4042,7 +4042,6 @@ public class ManagerDailyService {
      */
     private BigDecimal timeoutRate(Integer hotelId,String startTime, String endTime){
         BigDecimal bigDecimal = managerDailyDAO.querytimeoutRate(startTime, endTime, hotelId);
-
         return bigDecimal.abs() ;
     }
 
