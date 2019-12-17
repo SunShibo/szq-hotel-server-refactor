@@ -275,6 +275,11 @@ public class AdminService {
      * @param roleIds 角色id
      */
     public boolean delRoleById(Integer[] roleIds) {
+        //删除角色菜单
+        for (int i=0;i<roleIds.length;i++) {
+            adminDAO.delRoleMenuByRoleId(roleIds[i]);
+        }
+        //删除角色
         return adminDAO.delRoleById(roleIds);
     }
 

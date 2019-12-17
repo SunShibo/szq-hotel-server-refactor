@@ -316,7 +316,7 @@ public class AdminController extends BaseCotroller {
      */
     @RequestMapping("/grantAuthority")
     public void grantAuthority(HttpServletRequest request,HttpServletResponse response,Integer roleId,String menuIds,String hotelIds,String roleName){
-        AdminBO loginAdmin = super.getLoginAdmin(request);
+        //AdminBO loginAdmin = super.getLoginAdmin(request);
         //验证参数
         if(StringUtils.isEmpty(String.valueOf(roleId)) || StringUtils.isEmpty(String.valueOf(menuIds))|| StringUtils.isEmpty(roleName)){
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.failure("0000001" , "参数异常")) ;

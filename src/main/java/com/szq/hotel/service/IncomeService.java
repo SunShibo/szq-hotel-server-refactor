@@ -402,9 +402,8 @@ public class IncomeService {
         }
         incomeBO.setOtherRate(otherRate);
 
-        //借方总记  房费减免+房费+超时费减免+超时费+商品减免+赔偿减免+其他费用
-        BigDecimal debtSum=roomRateRoom.add(roomRate).add(mitigate).add(timeoutRoomRate)
-                        .add(commodityFerr).add(compEnsatinonEecomp).add(otherRate);
+        //借方总记：房费+超时费+其他费用
+        BigDecimal debtSum=roomRate.add(timeoutRoomRate).add(otherRate);
 
 
         if(debtSum==null){
