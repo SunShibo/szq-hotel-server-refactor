@@ -17,7 +17,7 @@
             <a href="javascript:;" id="hotelusername"></a>
             <dl class="layui-nav-child">
                 <!--<dd>-->
-                    <!--<a href="javascript:;" id="updateHotel">更换酒店</a>-->
+                <!--<a href="javascript:;" id="updateHotel">更换酒店</a>-->
                 <!--</dd>-->
                 <dd>
                     <a href="javascript:;" id="updatePass">修改密码</a>
@@ -34,11 +34,13 @@
     <div class="layui-form-item">
         <label class="layui-form-label">起止时间</label>
         <div class="layui-input-inline" style="width: 165px;">
-            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off" class="layui-input inline-input"
+            <input type="text" name="startTime" lay-verify="required" id="startTime" autocomplete="off"
+                   class="layui-input inline-input"
                    placeholder="开始时间">
         </div>
         <div class="layui-input-inline" style="width: 165px;">
-            <input type="text" name="endTime" lay-verify="required" id="endTime" autocomplete="off" class="layui-input inline-input"
+            <input type="text" name="endTime" lay-verify="required" id="endTime" autocomplete="off"
+                   class="layui-input inline-input"
                    placeholder="结束时间">
         </div>
         <label class="layui-form-label">收银员</label>
@@ -66,12 +68,13 @@
         var form = layui.form, $ = layui.$, table = layui.table, laydate = layui.laydate
             , startTime = 0, endTime = 0;
         var today = DateToLStr(new Date());
-        renderSelect("cnId", 'id', 'name', api.allChannel, form,function (str,rs) {});
+        renderSelect("cnId", 'id', 'name', api.allChannel, form, function (str, rs) {
+        });
         $("#startTime").val(today);
         $("#endTime").val(today);
         setTimeout(function () {
             resultInfo()
-        },100);
+        }, 100);
         //监听提交
         form.on('submit(formData)', function (data) {
             resultInfo();
@@ -81,27 +84,27 @@
         //获取
         function resultInfo() {
             var obj = {
-                startTime:$("#startTime").val().replace(/-/g, "/"),
+                startTime: $("#startTime").val().replace(/-/g, "/"),
                 endTime: $("#endTime").val().replace(/-/g, "/"),
             };
-            if($("#name").val()){
+            if ($("#name").val()) {
                 obj.name = $("#name").val();
             }
 
-            if($("#cnId").val()){
+            if ($("#cnId").val()) {
                 obj.cnId = $("#cnId").val();
             }
-            var index = layer.load(1,{time:10*1000});
+            var index = layer.load(1, {time: 10 * 1000});
             $.ajax({
                 url: '/roomForms/queryCashiersummaryTabe',
                 type: 'POST',
                 dataType: 'json',
-                data:obj,
+                data: obj,
                 success: function (rs) {
                     tab.reload({data: JSON.parse(JSON.stringify(rs.data))})
                     layer.closeAll()
                 },
-                error:function (rs) {
+                error: function (rs) {
                     layer.closeAll();
                     layer.alert(rs.responseText);
                 }
@@ -115,13 +118,14 @@
             , loading: true // 是否显示加载条
             , title: '收银汇总报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="text-align: center">收银汇总报表</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>收银汇总报表</p>');
+                $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true
             , cols: [[ //标题栏
-                 {
+                {
                     field: 'type', title: '类型', align: 'center', templet: function (data) {
-                        switch (data.type){
+                        switch (data.type) {
                             case 1:
                                 return '夜核房费';
                             case 2:
@@ -179,8 +183,8 @@
                 , {field: 'authorizedAmount', title: '授权金额', align: 'center'}
                 , {
                     field: 'createTime', title: '发生时间', align: 'center', templet: function (data) {
-                        if(data.dateTime)
-                        return DateToLStr(new Date(data.dateTime.time))
+                        if (data.dateTime)
+                            return DateToLStr(new Date(data.dateTime.time))
                         else return ''
                     }
                 }

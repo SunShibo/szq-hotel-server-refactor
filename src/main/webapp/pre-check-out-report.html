@@ -130,7 +130,8 @@
             , loading: true // 是否显示加载条
             , title: '预离店报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="text-align: center">预离店报表</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>预离店报表</p>');
+                $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true
             , limit: 10000

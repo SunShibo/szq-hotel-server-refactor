@@ -101,7 +101,8 @@
             , loading: true // 是否显示加载条
             , title: '充值日报'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="text-align: center">充值日报</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>充值日报</p>');
+                $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true
             , cols: [[ //标题栏
