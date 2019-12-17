@@ -17,7 +17,7 @@
             <a href="javascript:;" id="hotelusername"></a>
             <dl class="layui-nav-child">
                 <!--<dd>-->
-                    <!--<a href="javascript:;" id="updateHotel">更换酒店</a>-->
+                <!--<a href="javascript:;" id="updateHotel">更换酒店</a>-->
                 <!--</dd>-->
                 <dd>
                     <a href="javascript:;" id="updatePass">修改密码</a>
@@ -50,7 +50,7 @@
     <label>注：</label>
     <div class="text">其他费用 = 商品 + 赔偿 + 会员卡收入</div>
     <div class="text">借方总计 = 房费 + 超时费 + 房费调整 + 其他费用</div>
-    <div class="text">贷方总计 = 现金 + 银行卡 + 微信 + 支付宝</div>
+    <div class="text">贷方总计 = 现金 + 银行卡 + 微信 + 支付宝 + 其他支付</div>
 </div>
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
@@ -59,7 +59,7 @@
         //监听提交
         form.on('submit(formData)', function (data) {
             var st = $("#startTime").val();
-            if(st==''){
+            if (st == '') {
                 layer.msg("请选择时间")
                 return false;
             }
@@ -70,10 +70,11 @@
             $("#startTime").val(DateToLStr3(new Date()));
             resultInfo(DateToLStr3(new Date()))
         })
+
         //获取
         function resultInfo(startTime) {
             var obj = {
-                 date:startTime
+                date: startTime
             };
             $.ajax({
                 url: '/income/getIncome ',
@@ -84,74 +85,79 @@
                     var rs = data.data;
                     var newRs = [{
                         project: "　房费"
-                    },{
+                    }, {
                         project: "　超时费"
-                    },{
+                    }, {
                         project: "　房费调整"
-                    },{
+                    }, {
                         project: "　其他费用"
-                    },{
+                    }, {
                         project: "　　商品"
-                    },{
+                    }, {
                         project: "　　赔偿"
-                    },{
+                    }, {
                         project: "　　会员卡收入"
-                    },{
+                    }, {
                         project: "借方总计"
-                    },{
+                    }, {
                         project: "　现金"
-                    },{
+                    }, {
                         project: "　银行卡"
-                    },{
+                    }, {
                         project: "　微信"
-                    },{
+                    }, {
                         project: "　支付宝"
-                    },{
+                    }, {
                         project: "储值支付"
-                    },{
+                    }, {
                         project: "贷方总计"
+                    }, {
+                        project: "贷方总计（减掉其他支付）"
                     }]
-                    for(var i=0;i<newRs.length;i++){
+                    for (var i = 0; i < newRs.length; i++) {
                         var v = 'roomRate'
-                        switch(i) {
+                        switch (i) {
                             case 1:
-                                v =  'timeoutRoomRate'
+                                v = 'timeoutRoomRate'
                                 break;
                             case 2:
-                                v =  'roomRateAdjustment'
+                                v = 'roomRateAdjustment'
                                 break;
                             case 3:
-                                v =  'otherRate'
+                                v = 'otherRate'
                                 break;
                             case 4:
-                                v =  'commodity'
+                                v = 'commodity'
                                 break;
                             case 5:
-                                v =  'compensation'
+                                v = 'compensation'
                                 break;
                             case 6:
-                                v =  'memberCardRate'
+                                v = 'memberCardRate'
                                 break;
                             case 7:
-                                v =  'debtSum'
+                                v = 'debtSum'
                                 break;
                             case 8:
-                                v =  'cash'
+                                v = 'cash'
                                 break;
                             case 9:
-                                v =  'bankCard'
+                                v = 'bankCard'
                                 break;
                             case 10:
-                                v =  'wechat'
+                                v = 'wechat'
                                 break;
                             case 11:
-                                v =  'alipay'
+                                v = 'alipay'
                                 break;
                             case 12:
-                                v =  'storedPay'
+                                v = 'storedPay'
                                 break;
                             case 13:
-                                v =  'creditSum'
+                                v = 'creditSum'
+                                break;
+                            case 14:
+                                v = 'other'
                                 break;
                         }
 
@@ -196,12 +202,13 @@
             , loading: true // 是否显示加载条
             , title: '营收报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="text-align: center">营收报表</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>营收报表</p>');
+                $('.tab-box, th').css('font-weight', 600)
             }
             , toolbar: true
             , cols: [[ //标题栏
                 {field: 'project', align: 'left', title: '营业项目', rowspan: 2} //rowspan即纵向跨越的单元格数
-                ,{align: 'center', title: '本年实际情况', colspan: 4}
+                , {align: 'center', title: '本年实际情况', colspan: 4}
                 , {align: 'center', title: '去年同期', colspan: 4}
 
             ], [
@@ -209,16 +216,18 @@
                 , {field: 'b', align: 'center', title: '月累计'}
                 , {field: 'c', align: 'center', title: '上月累计'}
                 , {field: 'd', align: 'center', title: '年累计'}
-                ,{field: 'e', align: 'center', title: '月累计'}
-                , {field: 'f', align: 'center', title: '月差异'
-                    ,templet: function (data) {
-                        return data.f+"%";
+                , {field: 'e', align: 'center', title: '月累计'}
+                , {
+                    field: 'f', align: 'center', title: '月差异'
+                    , templet: function (data) {
+                        return data.f + "%";
                     }
                 }
                 , {field: 'g', align: 'center', title: '年累计'}
-                , {field: 'h', align: 'center', title: '年差异'
-                    ,templet: function (data) {
-                        return data.h+"%";
+                , {
+                    field: 'h', align: 'center', title: '年差异'
+                    , templet: function (data) {
+                        return data.h + "%";
                     }
                 }
             ]]
