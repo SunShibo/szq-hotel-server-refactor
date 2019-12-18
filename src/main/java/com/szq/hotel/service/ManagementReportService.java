@@ -148,11 +148,20 @@ public class ManagementReportService {
         ct.setTime(endTime);
         String firstDay1 = format.format(ct.getTime());
         String endTime1 = firstDay1 + " 05:00:00";
+        //当前时间
         Date endTime111 = dd.parse(endTime1);
+        //获取当前月最后一天
+        ct.set(Calendar.DAY_OF_MONTH, ct.getActualMaximum(Calendar.DAY_OF_MONTH));
+        ct.add(Calendar.DAY_OF_MONTH,1);
+        String last = format.format(ct.getTime())+" 04:00:00";
+        Date endTime0 = dd.parse(last);
 
         Map<String, Object> map1 = new HashMap<String, Object>();
         map1.put("startTime", startTime1);
-        map1.put("endTime", endTime111);
+        //结束时间为当前日
+        //map1.put("endTime", endTime111);
+        //结束时间为月底
+        map1.put("endTime",endTime0);
         map1.put("hotelId", hotelId);
 
         ManagementReportBO managementReportMonth = managementReportDAO.selectManagementReport(map1);
@@ -236,9 +245,11 @@ public class ManagementReportService {
         String firstDay4 = format.format(calendar1.getTime());
         String endTime4 = firstDay4 + " 04:00:00";
         Date s3 = dd.parse(endTime4);
+
+
         Map<String, Object> map2 = new HashMap<String, Object>();
         map2.put("startTime", s1);
-        map2.put("endTime", endTime);
+        map2.put("endTime", s2);
         map2.put("hotelId", hotelId);
 
         ManagementReportBO managementReportYear = managementReportDAO.selectManagementReport(map2);
