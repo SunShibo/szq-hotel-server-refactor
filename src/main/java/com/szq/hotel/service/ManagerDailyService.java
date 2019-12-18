@@ -3777,10 +3777,12 @@ public class ManagerDailyService {
         //添加营业收入明细
         ManagerdailyBO managerdailyBO2 = new ManagerdailyBO();
         BigDecimal v8 = throughoutDayrent(hotelId, startTime, endTime);
+        v8 = v8.abs();
         managerdailyBO2.setThroughoutDayrent(v8);//全天日租
         BigDecimal v9 = rateAdjustment(hotelId,startTime, endTime);
         managerdailyBO2.setRateAdjustment(v9);//计算房费调整
         BigDecimal v10 = hourRate(hotelId, startTime, endTime);
+        v10 = v10.abs();
         managerdailyBO2.setHourRate(v10);//计算钟点房费
         BigDecimal v11 = timeoutRate(hotelId,startTime, endTime);
         managerdailyBO2.setTimeoutRate(v11);//计算超时房费
