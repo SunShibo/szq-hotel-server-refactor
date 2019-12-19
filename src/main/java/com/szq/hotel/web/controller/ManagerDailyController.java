@@ -16,7 +16,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -182,6 +183,7 @@ public class ManagerDailyController extends BaseCotroller {
         super.safeJsonPrint(response, result);
         return;
     }
+
 
 
     @RequestMapping("/insertTest")

@@ -1320,7 +1320,7 @@ public class ManagerDailyService {
 
 
 
-    //获取上个月的今天
+    /*//获取上个月的今天
     private String isDate(Date date){
 
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
@@ -1328,7 +1328,20 @@ public class ManagerDailyService {
         Calendar cal=Calendar.getInstance();
         cal.add(Calendar.MONTH,-1);
         return sdf.format(cal.getTime());
+    }*/
+
+
+
+    private String isDate(Date date){
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();//日历对象
+        calendar.setTime(date);//设置当前日期
+        calendar.add(Calendar.MONTH, -1);//月份减一
+        System.out.println(calendar.getTime());//输出上个月的日期
+        String format = sdf.format(calendar.getTime());
+      return format;
     }
+
 
 
 

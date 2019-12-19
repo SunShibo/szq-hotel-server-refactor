@@ -1,5 +1,5 @@
 import com.szq.hotel.dao.ManagerdailyBoDAO;
-import org.junit.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
