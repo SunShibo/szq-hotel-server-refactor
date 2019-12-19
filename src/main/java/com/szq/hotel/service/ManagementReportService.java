@@ -141,7 +141,7 @@ public class ManagementReportService {
         cal_1.add(Calendar.MONTH, 0);
         cal_1.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
         String firstDay = format.format(cal_1.getTime());
-        String str = firstDay + " 04:00:00";
+        String str = firstDay + " 03:00:00";
         Date startTime1 = dd.parse(str);
 
         Calendar ct = Calendar.getInstance();
@@ -152,7 +152,7 @@ public class ManagementReportService {
         Date endTime111 = dd.parse(endTime1);
         //获取当前月最后一天
         ct.set(Calendar.DAY_OF_MONTH, ct.getActualMaximum(Calendar.DAY_OF_MONTH));
-        ct.add(Calendar.DAY_OF_MONTH,1);
+        //ct.add(Calendar.DAY_OF_MONTH,1);
         String last = format.format(ct.getTime())+" 04:00:00";
         Date endTime0 = dd.parse(last);
 
@@ -234,16 +234,23 @@ public class ManagementReportService {
         calendar1.clear();
         calendar1.set(Calendar.YEAR, s);
         String firstDay2 = format.format(calendar1.getTime());
-        String endTime2 = firstDay2 + " 04:00:00";
+        String endTime2 = firstDay2 + " 03:00:00";
         Date s1 = dd.parse(endTime2);
-        calendar1.set(Calendar.YEAR, s + 1);
+//        calendar1.set(Calendar.YEAR, s + 1);
+//        String firstDay3 = format.format(calendar1.getTime());
+//        String endTime3 = firstDay3 + " 05:00:00";
+//        Date s2 = dd.parse(endTime3);
+        calendar1.set(Calendar.MONTH,calendar1.getActualMaximum(Calendar.MONTH));
+        calendar1.set(Calendar.DAY_OF_MONTH,calendar1.getActualMaximum(Calendar.DAY_OF_MONTH));
         String firstDay3 = format.format(calendar1.getTime());
-        String endTime3 = firstDay3 + " 04:00:00";
+        String endTime3 = firstDay3 + " 05:00:00";
         Date s2 = dd.parse(endTime3);
 
-        calendar1.set(Calendar.YEAR, s - 1);
-        String firstDay4 = format.format(calendar1.getTime());
-        String endTime4 = firstDay4 + " 04:00:00";
+        Calendar qq = Calendar.getInstance();
+        qq.set(Calendar.YEAR, s - 1);
+        qq.set(Calendar.DAY_OF_YEAR,1);
+        String firstDay4 = format.format(qq.getTime());
+        String endTime4 = firstDay4 + " 03:00:00";
         Date s3 = dd.parse(endTime4);
 
 
@@ -313,7 +320,13 @@ public class ManagementReportService {
         //查询去年
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("startTime", s3);
-        map3.put("endTime", s1);
+        //去年最后一天
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.add(Calendar.YEAR, -1);//拨回去年
+        calendar2.set(Calendar.DAY_OF_YEAR,calendar2.getActualMaximum(Calendar.DAY_OF_YEAR));//最后一天
+        String last1 = format.format(calendar2.getTime())+" 05:00:00";
+        Date last2 = dd.parse(last1);
+        map3.put("endTime", last2);
         map3.put("hotelId", hotelId);
 
         ManagementReportBO managementReportLastYear = managementReportDAO.selectManagementReport(map3);
@@ -387,8 +400,13 @@ public class ManagementReportService {
         cal_2.add(Calendar.YEAR, -1);
         cal_2.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
         String firstDayy = format.format(cal_2.getTime());
-        String str3 = firstDayy + " 04:00:00";
+        String str3 = firstDayy + " 03:00:00";
         Date startTimelast = dd.parse(str3);
+
+        cal_2.set(Calendar.DAY_OF_MONTH,cal_2.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String mouthlast = format.format(cal_2.getTime());
+        String str4 = mouthlast+" 04:00:00";
+        Date mouthlastdate = dd.parse(str4);
 
         Calendar ct1 = Calendar.getInstance();
         ct1.setTime(format.parse(firstDayy));
@@ -399,7 +417,7 @@ public class ManagementReportService {
 
         Map<String, Object> map4 = new HashMap<String, Object>();
         map4.put("startTime", startTimelast);
-        map4.put("endTime", endTimeTimelast);
+        map4.put("endTime", mouthlastdate);
         map4.put("hotelId", hotelId);
 
         ManagementReportBO managementReportLastYearMonth = managementReportDAO.selectManagementReport(map4);
@@ -470,13 +488,13 @@ public class ManagementReportService {
         cal_3.setTime(startTime);
         cal_3.add(Calendar.YEAR, -1);
         String firstDayyyy = format.format(cal_3.getTime());
-        String str5 = firstDayyyy + " 04:00:00";
+        String str5 = firstDayyyy + " 03:00:00";
         Date startTimelast1 = dd.parse(str5);
         System.out.print(startTimelast1);
 
         Calendar aaaa = Calendar.getInstance();
         aaaa.setTime(startTimelast1);
-        aaaa.add(Calendar.DAY_OF_YEAR, 1);
+        //aaaa.add(Calendar.DAY_OF_YEAR, 1);
         String firstDayyyyy = format.format(aaaa.getTime());
         String str6 = firstDayyyyy + " 04:00:00";
         Date endTimeyy = dd.parse(str6);
