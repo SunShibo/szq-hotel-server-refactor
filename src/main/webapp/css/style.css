@@ -592,6 +592,8 @@ body {
   justify-content: space-between;
   border-top: 1px #0C0C0C solid;
   border-bottom: 1px #0C0C0C solid;
+  font-weight: 600;
+  color: #000;
 }
 .order-info-main .o-reight .r-total .t-left {
   width: 25%;

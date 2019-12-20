@@ -90,6 +90,9 @@
             elem: '#bottomTable'
             , method: 'POST'
             , limit: 10000
+            , done: function (res, curr, count) {
+                $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
+            }
             , cols: [[ //表头
                 {
                     field: 'createTime', width: 200, title: '消费时间', templet: function (data) {

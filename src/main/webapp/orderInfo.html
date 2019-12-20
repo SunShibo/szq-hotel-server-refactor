@@ -129,6 +129,9 @@
             elem: '#orderList'
             , limit: 10000
             , method: 'POST'
+            , done: function (res, curr, count) {
+                $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
+            }
             , cols: [[ //表头
                 {field: 'roomName', title: '房号', align: 'center', width: 100}
                 , {field: 'name', title: '姓名', align: 'center', width: 120}
@@ -144,6 +147,7 @@
             , limit: 10000
             , even: true
             , done: function (res, curr, count) {
+                $('.layui-table-cell, .layui-table th').css({'font-weight': 600, 'color': '#000000'})
                 var data = res.data;
                 //如果第一次进入时无数据，跳出方法
                 if (data.length == 0) return;

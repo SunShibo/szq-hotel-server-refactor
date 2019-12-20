@@ -91,6 +91,10 @@
         var tab = table.render({
             elem: '#subTable'
             , limit: 10000
+            , toolbar: true
+            , done: function (res, curr, count) {
+                $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
+            }
             , cols: [[ //表头
                 {
                     field: 'payType', title: '支付方式', width: 200, align: 'center', templet: function (data) {
