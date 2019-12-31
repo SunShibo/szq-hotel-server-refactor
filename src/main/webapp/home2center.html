@@ -395,6 +395,7 @@
 
         }
         form.on('submit(checksubmit)', function (data) {
+            debugger
             var d = data.field;
             d.type = "directly";
             d.IDNumberType = d.certificateId + "";
@@ -752,6 +753,7 @@
     }
 
     function updateTable() {
+        debugger
         var d = sRooms, c = customs;
         for (var i = 0; i < d.length; i++) {
             if(c.length!=0&&!c[0].roomId){
@@ -792,7 +794,6 @@
     }
 
     function calcPrice() {
-
         var checkType_ = $("input[name='checkType']:checked").val();
         var d = sRooms;
         var c = saleInfo;

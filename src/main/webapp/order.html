@@ -288,7 +288,9 @@
                         }
                     }
                 }
-                , {field: 'unitPrice', title: '首日单价', width: 100, align: 'center'}
+                , {field: 'unitPrice', title: '首日单价', width: 100, align: 'center', templet: function (data) {
+                        return (Math.round(data.unitPrice * 100) / 100);
+                    }}
                 , {field: 'remark', title: '备注', width: 100, align: 'center'}
                 , {
                     field: 'orderState', title: '订单状态', width: 120, align: 'center', templet: function (data) {

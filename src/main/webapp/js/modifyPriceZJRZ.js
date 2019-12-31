@@ -88,7 +88,6 @@ function getTypeIds() {
 
 
 function parModifyPrice() {
-
     if(localStorage.modifyPrice){
 
         var _mp = JSON.parse(localStorage.modifyPrice);
@@ -130,9 +129,9 @@ function parModifyPrice() {
 
         var _v = $("#totalPrice").text();
         if(_v.indexOf("/")==-1){
-            $("#totalPrice").text(_total+"/"+_v);
+            $("#totalPrice").text((Math.round(_total * 100) / 100)+"/"+_v);
         }else{
-            $("#totalPrice").text(_total+"/"+_v.split('/')[1]);
+            $("#totalPrice").text((Math.round(_total * 100) / 100)+"/"+_v.split('/')[1]);
         }
 
         tableObj.reload({data:JSON.parse(JSON.stringify(sRooms))})

@@ -22,7 +22,7 @@
             <a href="javascript:;" id="hotelusername"></a>
             <dl class="layui-nav-child">
                 <!--<dd>-->
-                    <!--<a href="javascript:;" id="updateHotel">更换酒店</a>-->
+                <!--<a href="javascript:;" id="updateHotel">更换酒店</a>-->
                 <!--</dd>-->
                 <dd>
                     <a href="javascript:;" id="updatePass">修改密码</a>
@@ -210,7 +210,9 @@
             , loading: true // 是否显示加载条
             , title: '管理层报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>管理层报表</p>');
+
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(startTime ? new Date(startTime) : new Date()) + '</span>管理层报表</p>');
+
                 $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true

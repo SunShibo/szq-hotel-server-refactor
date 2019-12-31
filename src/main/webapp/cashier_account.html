@@ -76,15 +76,13 @@
             // new Date(.getTime() + (4 * 60 * 60 * 1000))
             renderSelect("cnId", 'value', 'value', api.allChannel, form, function (str, rs) {
             });
-            var obj = {
-                startTime: DateToLStr4(new Date(new Date().getTime() - (24 * 60 * 60 * 1000))).concat('04:00:00'),
-                endTime: DateToLStr4(new Date()).concat('04:00:00')
-            };
+            startTime= DateToLStr4(new Date(Date.now() - (24 * 60 * 60 * 1000))).concat('04:00:00');
+            endTime= DateToLStr4(new Date()).concat('04:00:00');
             $.ajax({
                 url: api.FormAccountDetail,
                 type: 'POST',
                 dataType: 'json',
-                data: obj,
+                data: {startTime: startTime, endTime: endTime},
                 success: function (rs) {
                     if (!rs.success) {
                         showMsg(rs.errMsg, 2, false);
@@ -100,13 +98,6 @@
         function _dealData(da) {
             var _da = [];
             var _f = '';
-            // /* 支付方式 : 现金 */ CASH("cash"),
-            //     /* 支付方式 : 银行卡 */ CART("cart"),
-            //     /* 支付方式 : 微信 */ WECHAT("wechat"),
-            //     /* 支付方式 : 支付宝 */ ALIPAY("alipay"),
-            //     /* 支付方式 : 其他支付 */ OTHER("other"),
-            //     /* 支付方式 : 储值 */ STORED("stored"),
-            //     /* 支付方式 : 积分 */ INTEGRAL("integral"),
             var consumption = 0;
             var settlement = 0;
             for(var i=0;i<da.length;i++){
@@ -159,16 +150,9 @@
         //监听提交
         form.on('submit(formData)', function (data) {
             var obj = {
-                startTime: data.field.startTime,
-                endTime: data.field.endTime
+                startTime: startTime,
+                endTime: endTime
             };
-
-            if (!obj.startTime) {
-                obj.startTime = DateToLStr4(new Date(new Date().getTime() - (24 * 60 * 60 * 1000))).concat('04:00:00')
-            }
-            if (!obj.endTime) {
-                obj.endTime = DateToLStr4(new Date()).concat('04:00:00');
-            }
 
             if (data.field.operator) {
                 obj.operator = data.field.operator;
@@ -207,7 +191,7 @@
             , loading: true // 是否显示加载条
             , title: '收银入账信息报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>收银入账信息报表</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date(startTime))+ ' - '+ DateToLStr(new Date(endTime)) + '</span>收银入账信息报表</p>');
                 $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true
@@ -281,7 +265,10 @@
             type: 'datetime',
             value: DateToLStr4(new Date(new Date().getTime() - (24 * 60 * 60 * 1000))).concat('04:00:00'),
             format: 'yyyy/MM/dd HH:mm:ss',
-            btns: ['confirm']
+            btns: ['confirm'],
+            done: function (value) {
+                startTime = new Date(value);
+            }
         });
 
         laydate.render({
@@ -289,7 +276,10 @@
             type: 'datetime',
             value: DateToLStr4(new Date()).concat('04:00:00'),
             format: 'yyyy/MM/dd HH:mm:ss',
-            btns: ['confirm']
+            btns: ['confirm'],
+            done: function (value) {
+                endTime = new Date(value)
+            }
         });
     });
 </script>

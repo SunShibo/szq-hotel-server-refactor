@@ -55,7 +55,7 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['table', 'element', 'form', 'laydate'], function () {
-        var table = layui.table, $ = layui.$, form = layui.form, state = 0, laydate = layui.laydate;
+        var table = layui.table, $ = layui.$, form = layui.form, state = 0, laydate = layui.laydate, startTime = 0;
         //监听提交
         form.on('submit(formData)', function (data) {
             var st = $("#startTime").val();
@@ -202,7 +202,7 @@
             , loading: true // 是否显示加载条
             , title: '营收报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>营收报表</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(startTime ? startTime : new Date()) + '</span>营收报表</p>');
                 $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true
@@ -237,7 +237,10 @@
             elem: '#startTime',
             type: 'date',
             format: 'yyyy/MM/dd',
-            btns: ['confirm']
+            btns: ['confirm'],
+            done: function (value) {
+                startTime = new Date(value)
+            }
         });
     });
 

@@ -61,12 +61,18 @@
             elem: '#startTime',
             type: 'date',
             format: 'yyyy/MM/dd',
-            btns: ['confirm']
+            btns: ['confirm'],
+            done: function (value) {
+                today = DateToLStr3(new Date(value));
+            }
         });
         laydate.render({
             elem: '#endTime',
             type: 'date',
-            btns: ['confirm']
+            btns: ['confirm'],
+            done: function (value) {
+                yesterday = DateToLStr3(new Date(value));
+            }
         });
         $(function () {
             $("#startTime").val(today);
@@ -83,8 +89,8 @@
         //获取
         function resultInfo() {
             var obj = {
-                afterTime: $("#startTime").val().replace(/-/g, "/") + ' 00:00:00',
-                beforeTime: $("#endTime").val().replace(/-/g, "/") + ' 23:59:59',
+                afterTime: today + ' 00:00:00',
+                beforeTime: yesterday + ' 23:59:59',
                 pageNo:1,
                 pageSize:99999
             };
@@ -101,11 +107,6 @@
         }
 
         function formatData(data) {
-            // for (var i = 0, len = data.length; i < len; i++) {
-            //     data[i].endTime = layui.util.toDateString(data[i].endTime.time, 'yyyy-MM-dd HH:mm');
-            //     data[i].startTime = layui.util.toDateString(data[i].startTime.time, 'yyyy-MM-dd HH:mm');
-            // }
-            // console.log(data);
             tab.reload({data: JSON.parse(JSON.stringify(data))});
         }
 
@@ -130,7 +131,7 @@
             , loading: true // 是否显示加载条
             , title: '预离店报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>预离店报表</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date(today)) +' - '+ DateToLStr(new Date(yesterday)) + '</span>预离店报表</p>');
                 $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true

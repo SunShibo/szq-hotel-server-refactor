@@ -65,7 +65,7 @@
 <script>
     layui.use(['table', 'element', 'form', 'laydate', 'layer'], function () {
         var table = layui.table, $ = layui.$, form = layui.form, laydate = layui.laydate
-            , layer = layui.layer;
+            , layer = layui.layer, startTime = 0;
 
         $(function () {
             resultInfo()
@@ -73,6 +73,7 @@
 
         //获取
         function resultInfo() {
+            startTime = DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000)));
             $.ajax({
                 url: '/order/getCheckInReport',
                 type: 'POST',
@@ -138,7 +139,7 @@
             , loading: true // 是否显示加载条
             , title: '在住报表'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>在住报表</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(startTime ? new Date(startTime) : new Date()) + '</span>在住报表</p>');
                 $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true
@@ -187,7 +188,10 @@
             , type: 'datetime'
             , value: DateToLStr3(new Date(Date.now() - (24 * 60 * 60 * 1000)))
             , format: 'yyyy/MM/dd'
-            , btns: ['clear', 'confirm'],
+            , btns: ['clear', 'confirm']
+            , done: function (value, date) {
+                startTime = new Date(value);
+            }
 
         });
 

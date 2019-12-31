@@ -80,6 +80,8 @@
                     for (var item in r.hotel) {
                         if (typeof r.hotel[item] === 'object') {
                             $('#' + item).text(DateToLStr(new Date(r.hotel[item].time)))
+                        }else if(typeof r.hotel[item] === 'number'){
+                            $('#' + item).text(Math.round(r.hotel[item] * 100) / 100);
                         } else {
                             $('#' + item).text(r.hotel[item]);
                         }
@@ -102,7 +104,9 @@
                     }
                 }
                 , {field: 'info', title: '消费详情', align: 'center'}
-                , {field: 'money', title: '消费金额', align: 'center'}
+                , {field: 'money', title: '消费金额', align: 'center', templet: function (data) {
+                        return (Math.round(data.money * 100) / 100);
+                    }}
                 , {
                     field: 'createTime', title: '消费时间', align: 'center', templet: function (data) {
                         return !!data.createTime ? DateToLStr(new Date(data.createTime.time)) : '';

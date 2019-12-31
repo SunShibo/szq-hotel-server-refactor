@@ -74,8 +74,8 @@
         //获取
         function resultInfo() {
             var obj = {
-                startTime: $("#startTime").val().replace(/-/g, "/") + ' 00:00:00',
-                endTime: $("#endTime").val().replace(/-/g, "/") + ' 23:59:59',
+                startTime: today + ' 00:00:00',
+                endTime: yesterday + ' 23:59:59',
             };
             var index = layer.load(1, {time: 10 * 1000});
             $.ajax({
@@ -101,7 +101,7 @@
             , loading: true // 是否显示加载条
             , title: '充值日报'
             , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>充值日报</p>');
+                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + today + ' 00:00:00'+' - '+ yesterday + ' 23:59:59' + '</span>充值日报</p>');
                 $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
             }
             , toolbar: true
@@ -132,12 +132,18 @@
             elem: '#startTime',
             type: 'date',
             format: 'yyyy/MM/dd',
-            btns: ['confirm']
+            btns: ['confirm'],
+            done: function (value) {
+                today = DateToLStr3(new Date(value));
+            }
         });
         laydate.render({
             elem: '#endTime',
             type: 'date',
-            btns: ['confirm']
+            btns: ['confirm'],
+            done: function (value) {
+                yesterday = DateToLStr3(new Date(value));
+            }
         });
     });
 </script>

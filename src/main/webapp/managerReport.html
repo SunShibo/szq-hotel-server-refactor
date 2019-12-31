@@ -76,7 +76,7 @@
 <!--</div>-->
 <div style="width: 800px;border: 1px solid #ccc;margin: 20px;" class="table ">
     <div class="tr" style="background: #ccc">
-        <p class="td noright"></p>
+        <p class="td noright" id="showTime"></p>
         <p class="td noright"></p>
         <p class="td noright"></p>
         <p class="td noright">经理日报表</p>
@@ -651,6 +651,7 @@
 
         //获取
         function resultInfo() {
+            $('#showTime').text(DateToLStr3(new Date(endTime ? endTime : today)))
             var obj = {
                 endTime: endTime ? endTime : today
             };
@@ -680,47 +681,47 @@
             tab.reload({data: JSON.parse(JSON.stringify(data))});
         }
 
-        var tab = table.render({
-            elem: '#residentStatement' //指定原始表格元素选择器（推荐id选择器）
-            , limit: 10000
-            , response: {
-                statusName: 'code' //规定数据状态的字段名称，默认：code
-                , statusCode: 200 //规定成功的状态码，默认：0
-                , msgName: 'msg' //规定状态信息的字段名称，默认：msg
-                , countName: 'count' //规定数据总数的字段名称，默认：count
-                , dataName: 'data' //规定数据列表的字段名称，默认：data
-            }
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "code": 200, //解析接口状态
-                    "msg": res.errMsg, //解析提示文本
-                    "count": res.data.count, //解析数据长度
-                    "data": res.data.statement //解析数据列表
-                };
-            }
-            , done: function (res, curr, count) {
-                $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>经理日报表</p>');
-                $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
-            }
-            , even: true
-            , loading: true // 是否显示加载条
-            , toolbar: true
-            , cols: [[ //标题栏
-                {field: 'project', align: 'center', title: '营业项目', rowspan: 2} //rowspan即纵向跨越的单元格数
-                , {align: 'center', title: '本年实际情况', colspan: 4}
-                , {align: 'center', title: '去年同期', colspan: 4}
-
-            ], [
-                {field: 'thisYearThisPrice', align: 'center', title: '当日'}
-                , {field: 'thisYearThisMonth', align: 'center', title: '月累计'}
-                , {field: 'thisYearThisLastMonth', align: 'center', title: '上月累计'}
-                , {field: 'thisYearThisYear', align: 'center', title: '年累计'}
-                , {field: 'lastYearThisMonth', align: 'center', title: '月累计'}
-                , {field: 'lastYearMonthDifferences', align: 'center', title: '月差异'}
-                , {field: 'lastYearThisYear', align: 'center', title: '年累计'}
-                , {field: 'lastYearDifferencesIn', align: 'center', title: '年差异'}
-            ]]
-        });
+        // var tab = table.render({
+        //     elem: '#residentStatement' //指定原始表格元素选择器（推荐id选择器）
+        //     , limit: 10000
+        //     , response: {
+        //         statusName: 'code' //规定数据状态的字段名称，默认：code
+        //         , statusCode: 200 //规定成功的状态码，默认：0
+        //         , msgName: 'msg' //规定状态信息的字段名称，默认：msg
+        //         , countName: 'count' //规定数据总数的字段名称，默认：count
+        //         , dataName: 'data' //规定数据列表的字段名称，默认：data
+        //     }
+        //     , parseData: function (res) { //res 即为原始返回的数据
+        //         return {
+        //             "code": 200, //解析接口状态
+        //             "msg": res.errMsg, //解析提示文本
+        //             "count": res.data.count, //解析数据长度
+        //             "data": res.data.statement //解析数据列表
+        //         };
+        //     }
+        //     , done: function (res, curr, count) {
+        //         $(".layui-table-tool-temp").html('<p style="position: relative;width:100%;text-align: center;font-weight: 600"><span style="position: absolute;left: 20px">' + DateToLStr(new Date()) + '</span>经理日报表</p>');
+        //         $('.layui-table-cell, th').css({'font-weight': 600, 'color': '#000000'})
+        //     }
+        //     , even: true
+        //     , loading: true // 是否显示加载条
+        //     , toolbar: true
+        //     , cols: [[ //标题栏
+        //         {field: 'project', align: 'center', title: '营业项目', rowspan: 2} //rowspan即纵向跨越的单元格数
+        //         , {align: 'center', title: '本年实际情况', colspan: 4}
+        //         , {align: 'center', title: '去年同期', colspan: 4}
+        //
+        //     ], [
+        //         {field: 'thisYearThisPrice', align: 'center', title: '当日'}
+        //         , {field: 'thisYearThisMonth', align: 'center', title: '月累计'}
+        //         , {field: 'thisYearThisLastMonth', align: 'center', title: '上月累计'}
+        //         , {field: 'thisYearThisYear', align: 'center', title: '年累计'}
+        //         , {field: 'lastYearThisMonth', align: 'center', title: '月累计'}
+        //         , {field: 'lastYearMonthDifferences', align: 'center', title: '月差异'}
+        //         , {field: 'lastYearThisYear', align: 'center', title: '年累计'}
+        //         , {field: 'lastYearDifferencesIn', align: 'center', title: '年差异'}
+        //     ]]
+        // });
 
         laydate.render({
             elem: '#startTime',

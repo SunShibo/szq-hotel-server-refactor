@@ -73,10 +73,11 @@
                     var r = data.data;
                     topTable.reload({data: r.top});
                     bottomTable.reload({data: r.data});
-
                     for (var item in r.hotel){
                         if (typeof r.hotel[item] === 'object') {
                             $('#' + item).text(DateToLStr(new Date(r.hotel[item].time)))
+                        }else if(typeof r.hotel[item] === 'number'){
+                            $('#' + item).text(Math.round(r.hotel[item] * 100) / 100);
                         } else {
                             $('#' + item).text(r.hotel[item]);
                         }
@@ -102,7 +103,9 @@
                 , {field: 'project', title: '项目'}
                 , {field: 'info', width: 230, title: '详情'}
                 , {field: 'number', title: '数量'}
-                , {field: 'money', title: '价格'}
+                , {field: 'money', title: '价格', templet: function (data) {
+                        return (Math.round(data.money * 100) / 100);
+                    }}
                 , {
                     field: 'payType', title: '支付方式', templet: function (data) {
                         return orderPayType(data.payType);

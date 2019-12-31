@@ -651,7 +651,7 @@
                         break;
                     }
                 }
-            }else
+            }else{
                 for (var j = 0; j < c.length; j++) {
                     if (d[i].roomId == c[j].roomId) {
                         d[i].name = c[j].name;
@@ -662,6 +662,7 @@
                         break;
                     }
                 }
+            }
         }
         // console.info(d);
         tableObj.reload({data: JSON.parse(JSON.stringify(d))})
@@ -695,12 +696,12 @@
         for(var i=0;i<d.length;i++){
 
             if(checkType_=="day"){
-                state.totalPrice+=(sRooms[i].basicPrice*days);
+                state.totalPrice+=(sRooms[i].basicPrice*days.toFixed(2));
             } else {
-                state.totalPrice+=(sRooms[i].hourRoomPrice*days);
+                state.totalPrice+=(sRooms[i].hourRoomPrice*days.toFixed(2));
             }
         }
-        state.totalPrice = state.totalPrice.toFixed(0)
+        state.totalPrice = state.totalPrice.toFixed(2)
         updateTable()
     }
 
