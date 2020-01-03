@@ -153,13 +153,12 @@ public class ManagementReportService {
         //获取当前月最后一天
         ct.set(Calendar.DAY_OF_MONTH, ct.getActualMaximum(Calendar.DAY_OF_MONTH));
         //ct.add(Calendar.DAY_OF_MONTH,1);
-        String last = format.format(ct.getTime())+" 04:00:00";
+        String last = format.format(ct.getTime())+" 05:00:00";
         Date endTime0 = dd.parse(last);
 
         Map<String, Object> map1 = new HashMap<String, Object>();
         map1.put("startTime", startTime1);
         //结束时间为当前日
-        //map1.put("endTime", endTime111);
         //结束时间为月底
         map1.put("endTime",endTime0);
         map1.put("hotelId", hotelId);
@@ -236,22 +235,13 @@ public class ManagementReportService {
         String firstDay2 = format.format(calendar1.getTime());
         String endTime2 = firstDay2 + " 03:00:00";
         Date s1 = dd.parse(endTime2);
-//        calendar1.set(Calendar.YEAR, s + 1);
-//        String firstDay3 = format.format(calendar1.getTime());
-//        String endTime3 = firstDay3 + " 05:00:00";
-//        Date s2 = dd.parse(endTime3);
+
         calendar1.set(Calendar.MONTH,calendar1.getActualMaximum(Calendar.MONTH));
         calendar1.set(Calendar.DAY_OF_MONTH,calendar1.getActualMaximum(Calendar.DAY_OF_MONTH));
         String firstDay3 = format.format(calendar1.getTime());
         String endTime3 = firstDay3 + " 05:00:00";
         Date s2 = dd.parse(endTime3);
 
-        Calendar qq = Calendar.getInstance();
-        qq.set(Calendar.YEAR, s - 1);
-        qq.set(Calendar.DAY_OF_YEAR,1);
-        String firstDay4 = format.format(qq.getTime());
-        String endTime4 = firstDay4 + " 03:00:00";
-        Date s3 = dd.parse(endTime4);
 
 
         Map<String, Object> map2 = new HashMap<String, Object>();
@@ -318,10 +308,20 @@ public class ManagementReportService {
         }
 
         //查询去年
+
+        Calendar qq = Calendar.getInstance();
+        qq.setTime(startTime);
+        qq.add(Calendar.YEAR, -1);
+        qq.set(Calendar.DAY_OF_YEAR,1);
+        String firstDay4 = format.format(qq.getTime());
+        String endTime4 = firstDay4 + " 03:00:00";
+        Date s3 = dd.parse(endTime4);
+
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("startTime", s3);
         //去年最后一天
         Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(startTime);
         calendar2.add(Calendar.YEAR, -1);//拨回去年
         calendar2.set(Calendar.DAY_OF_YEAR,calendar2.getActualMaximum(Calendar.DAY_OF_YEAR));//最后一天
         String last1 = format.format(calendar2.getTime())+" 05:00:00";
@@ -413,7 +413,6 @@ public class ManagementReportService {
         ct1.add(Calendar.MONTH, +1);
         String firstDayyy = format.format(ct1.getTime());
         String endTimey = firstDayyy + " 04:00:00";
-        Date endTimeTimelast = dd.parse(endTimey);
 
         Map<String, Object> map4 = new HashMap<String, Object>();
         map4.put("startTime", startTimelast);
@@ -489,16 +488,9 @@ public class ManagementReportService {
         cal_3.add(Calendar.YEAR, -1);
         String firstDayyyy = format.format(cal_3.getTime());
         String str5 = firstDayyyy + " 03:00:00";
+        String str6 = firstDayyyy + " 05:00:00";
         Date startTimelast1 = dd.parse(str5);
-        System.out.print(startTimelast1);
-
-        Calendar aaaa = Calendar.getInstance();
-        aaaa.setTime(startTimelast1);
-        //aaaa.add(Calendar.DAY_OF_YEAR, 1);
-        String firstDayyyyy = format.format(aaaa.getTime());
-        String str6 = firstDayyyyy + " 04:00:00";
         Date endTimeyy = dd.parse(str6);
-        System.out.print(endTimeyy);
         Map<String, Object> map5 = new HashMap<String, Object>();
         map5.put("startTime", startTimelast1);
         map5.put("endTime", endTimeyy);
@@ -506,26 +498,26 @@ public class ManagementReportService {
 
         ManagementReportBO managementReportLastYearDay = managementReportDAO.selectManagementReport(map5);
         if (managementReportLastYearDay!=null){
-            receivableSum.setLastYearMonth(managementReportLastYearDay.getReceivableSum().toString());//应收合计
-            avgRoomRate.setLastYearMonth(managementReportLastYearDay.getAvgRoomRate().toString());//平均房价
-            avgConsumptionOfRoom.setLastYearMonth(managementReportLastYearDay.getAvgConsumptionOfRoom().toString());//房平均消费
-            avgConsumptionOfPerson.setLastYearMonth(managementReportLastYearDay.getAvgConsumptionOfPerson().toString());//人均消费
-            indemnityIncome.setLastYearMonth(managementReportLastYearDay.getIndemnityIncome().toString());//赔偿收入
-            freeCheckInSum.setLastYearMonth(managementReportLastYearDay.getFreeCheckInSum().toString());//免费入住房数
-            roomSum.setLastYearMonth(managementReportLastYearDay.getRoomSum().toString());//房间总数
-            maintainRoomSum.setLastYearMonth(managementReportLastYearDay.getMaintainRoomSum().toString());//维修房数
-            memberRoomSum.setLastYearMonth(managementReportLastYearDay.getMemberRoomSum().toString());//会员房数
-            memberCardSoldMoney.setLastYearMonth(managementReportLastYearDay.getMemberCardSoldMoney().toString());//会员卡销售金额
-            roomLateSum.setLastYearMonth(managementReportLastYearDay.getRoomLateSum().toString());//房晚数
-            personLateSum.setLastYearMonth(managementReportLastYearDay.getPersonLateSum().toString());//人晚数
-            commodityRevenues.setLastYearMonth(managementReportLastYearDay.getCommodityRevenues().toString());//商品收入
-            roomRateAdjustment.setLastYearMonth(managementReportLastYearDay.getRoomRateAdjustment().toString());//房费调整
-            occupancyRate.setLastYearMonth(managementReportLastYearDay.getOccupancyRate());//出租率
-            REVPAR.setLastYearMonth(managementReportLastYearDay.getREVPAR());//REVPAR = 应收合计 / (总房间数 - 维修房数)
-            disableRoomSum.setLastYearMonth(managementReportLastYearDay.getDisableRoomSum().toString());//停用房间数
-            rentalIncome.setLastYearMonth(managementReportLastYearDay.getRentalIncome().toString());//房租收入
-            emptyRoomSum.setLastYearMonth(managementReportLastYearDay.getEmptyRoomSum().toString());//空房数
-            hourRoomLateSum.setLastYearMonth(managementReportLastYearDay.getHourRoomLateSum().toString());//钟点房晚数
+            receivableSum.setLastYearDay(managementReportLastYearDay.getReceivableSum().toString());//应收合计
+            avgRoomRate.setLastYearDay(managementReportLastYearDay.getAvgRoomRate().toString());//平均房价
+            avgConsumptionOfRoom.setLastYearDay(managementReportLastYearDay.getAvgConsumptionOfRoom().toString());//房平均消费
+            avgConsumptionOfPerson.setLastYearDay(managementReportLastYearDay.getAvgConsumptionOfPerson().toString());//人均消费
+            indemnityIncome.setLastYearDay(managementReportLastYearDay.getIndemnityIncome().toString());//赔偿收入
+            freeCheckInSum.setLastYearDay(managementReportLastYearDay.getFreeCheckInSum().toString());//免费入住房数
+            roomSum.setLastYearDay(managementReportLastYearDay.getRoomSum().toString());//房间总数
+            maintainRoomSum.setLastYearDay(managementReportLastYearDay.getMaintainRoomSum().toString());//维修房数
+            memberRoomSum.setLastYearDay(managementReportLastYearDay.getMemberRoomSum().toString());//会员房数
+            memberCardSoldMoney.setLastYearDay(managementReportLastYearDay.getMemberCardSoldMoney().toString());//会员卡销售金额
+            roomLateSum.setLastYearDay(managementReportLastYearDay.getRoomLateSum().toString());//房晚数
+            personLateSum.setLastYearDay(managementReportLastYearDay.getPersonLateSum().toString());//人晚数
+            commodityRevenues.setLastYearDay(managementReportLastYearDay.getCommodityRevenues().toString());//商品收入
+            roomRateAdjustment.setLastYearDay(managementReportLastYearDay.getRoomRateAdjustment().toString());//房费调整
+            occupancyRate.setLastYearDay(managementReportLastYearDay.getOccupancyRate());//出租率
+            REVPAR.setLastYearDay(managementReportLastYearDay.getREVPAR());//REVPAR = 应收合计 / (总房间数 - 维修房数)
+            disableRoomSum.setLastYearDay(managementReportLastYearDay.getDisableRoomSum().toString());//停用房间数
+            rentalIncome.setLastYearDay(managementReportLastYearDay.getRentalIncome().toString());//房租收入
+            emptyRoomSum.setLastYearDay(managementReportLastYearDay.getEmptyRoomSum().toString());//空房数
+            hourRoomLateSum.setLastYearDay(managementReportLastYearDay.getHourRoomLateSum().toString());//钟点房晚数
         }
 
         managementReportResponseBO.setReceivableSum(receivableSum);

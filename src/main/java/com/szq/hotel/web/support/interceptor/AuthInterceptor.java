@@ -34,7 +34,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             "/Dictionary/getDic","/admin/adminLogin","/","/classes/getClasses","/room/todayPictureView","/room/queryRoomTypeNum",
             "/room/quertRm","/room/queryRoomFx","/room/verificationRoom","/room/queryRoomTypeNum","/room/queryRt","/room/quertRm",
             "/room/updateroomMajorState","/room/queryRoomTypeCount","/member/getStoreValueIntegral","checkInPerson/updCheckInPerson",
-            "checkInPerson/addCheckInPerson","/order/getOrderById","/admin/changePassword") ;
+            "checkInPerson/addCheckInPerson","/order/getOrderById","/admin/changePassword","/test/test") ;
 
     public static final Set<String> CheckListForAjax = Sets.newHashSet("/client/login" , "/apiCourse/toDetail" ) ;
 

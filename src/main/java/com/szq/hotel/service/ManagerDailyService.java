@@ -1439,7 +1439,7 @@ public class ManagerDailyService {
      private String isYear(Date date){
      Calendar cal = Calendar.getInstance();
      cal.setTime(date);
-     cal.add(Calendar.YEAR, 1);//增加一年
+     cal.add(Calendar.YEAR, -1);//增加一年
      return new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
  }
 
@@ -3752,7 +3752,7 @@ public class ManagerDailyService {
         System.err.println(year2);
         if(year2.intValue() ==  0){
             System.err.println("返100.00%");
-            return "0.00%";
+            return "100.00%";
         }
        BigDecimal a = year1.subtract(year2);
         BigDecimal n = a.divide(year1,2).multiply(new BigDecimal("100"));
