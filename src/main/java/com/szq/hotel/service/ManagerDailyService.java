@@ -1269,11 +1269,11 @@ public class ManagerDailyService {
             return "0.00%";
         }
 
-        sk2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
+        sk2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy),2).multiply(new BigDecimal("100"));
         //今年出租率
-        BigDecimal j =  sk2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
+        BigDecimal j =  sk2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy),2).multiply(new BigDecimal("100"));
         //去年出租率
-        BigDecimal s =  sk2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
+        BigDecimal s =  sk2Year(hotelId, year).divide(xj3Year(hotelId, year),2).multiply(new BigDecimal("100"));
 
         return  j.subtract(s)+"%";
     }
@@ -1284,9 +1284,9 @@ public class ManagerDailyService {
             return "0.00%";
         }
         //今年出租率
-        BigDecimal j =  xydw2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
+        BigDecimal j =  xydw2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy),2).multiply(new BigDecimal("100"));
         //去年出租率
-        BigDecimal s =  xydw2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
+        BigDecimal s =  xydw2Year(hotelId, year).divide(xj3Year(hotelId, year),2).multiply(new BigDecimal("100"));
 
         return  j.subtract(s)+"%";
     }
@@ -1297,9 +1297,9 @@ public class ManagerDailyService {
             return "0.00%";
         }
         //今年出租率
-        BigDecimal j =   zjrz2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
+        BigDecimal j =   zjrz2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy),2).multiply(new BigDecimal("100"));
         //去年出租率
-        BigDecimal s =   zjrz2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
+        BigDecimal s =   zjrz2Year(hotelId, year).divide(xj3Year(hotelId, year),2).multiply(new BigDecimal("100"));
 
         return  j.subtract(s)+"%";
     }
@@ -1311,9 +1311,9 @@ public class ManagerDailyService {
             return "0.00%";
         }
         //今年出租率
-        BigDecimal j =  fjyd2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy)).multiply(new BigDecimal("100"));
+        BigDecimal j =  fjyd2Year(hotelId, yyyy).divide(xj3Year(hotelId, yyyy),2).multiply(new BigDecimal("100"));
         //去年出租率
-        BigDecimal s =   fjyd2Year(hotelId, year).divide(xj3Year(hotelId, year)).multiply(new BigDecimal("100"));
+        BigDecimal s =   fjyd2Year(hotelId, year).divide(xj3Year(hotelId, year),2).multiply(new BigDecimal("100"));
 
         return j.subtract(s) + "%";
     }
@@ -3750,7 +3750,7 @@ public class ManagerDailyService {
             System.err.println("返100.00%");
             return "100.00%";
         }
-        BigDecimal n = (year1.subtract(year2)).divide(year2).multiply(new BigDecimal("100"));
+        BigDecimal n = (year1.subtract(year2)).divide(year2,2).multiply(new BigDecimal("100"));
 
         return n+"%";
     }
@@ -4274,7 +4274,7 @@ public class ManagerDailyService {
 
         BigDecimal divide = new BigDecimal("0");
         if(i.intValue() != 0){
-             divide = members.divide(i);
+             divide = members.divide(i,2);
         }
         return divide;
     }
@@ -4295,7 +4295,7 @@ public class ManagerDailyService {
         BigDecimal i = FwAgreementUnit(hotelId, startTime, endTime);
         BigDecimal divide = new BigDecimal("0");
         if(i.intValue() != 0){
-             divide = v.divide(i);
+             divide = v.divide(i,2);
         }
         return divide;
     }
@@ -4316,7 +4316,7 @@ public class ManagerDailyService {
         BigDecimal i = FwIndividualTraveler(hotelId, startTime, endTime);
         BigDecimal divide = new BigDecimal("0");
         if(i.intValue() != 0){
-             divide = v.divide(i);
+             divide = v.divide(i,2);
         }
         return divide;
     }
@@ -4335,7 +4335,7 @@ public class ManagerDailyService {
         BigDecimal i = FwEnter(hotelId, startTime, endTime);
         BigDecimal divide = new BigDecimal("0");
         if(i.intValue() != 0){
-            divide = enter.divide(i);
+            divide = enter.divide(i,2);
         }
         return divide;
     }
@@ -4356,7 +4356,7 @@ public class ManagerDailyService {
         BigDecimal i = FwDirectBooking(hotelId, startTime, endTime);
         BigDecimal divide = new BigDecimal("0");
         if(i.intValue() != 0){
-            divide = v.divide(i);
+            divide = v.divide(i,2);
         }
         return divide;
     }
