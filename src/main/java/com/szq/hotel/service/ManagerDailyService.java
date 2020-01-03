@@ -292,7 +292,7 @@ public class ManagerDailyService {
         //上年同期
         grossrealIncome.setLastYearDay(lastYearDay(hotelId, date).intValue() != 0 ? df.format(lastYearDay(hotelId, date))+"" : "0.00");
 
-        //计算年增长率
+        //计算年增长率  增长率=增量/原总量*100% todo
         grossrealIncome.setInsertRial(isIncrease(year(hotelId, yyyy),year(hotelId, year)));
 
 
@@ -1442,6 +1442,10 @@ public class ManagerDailyService {
      cal.add(Calendar.YEAR, 1);//增加一年
      return new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
  }
+
+    public static void main(String[] args) {
+
+    }
 
     /**
      * 获取上年同期总收入
@@ -3748,9 +3752,10 @@ public class ManagerDailyService {
         System.err.println(year2);
         if(year2.intValue() ==  0){
             System.err.println("返100.00%");
-            return "100.00%";
+            return "0.00%";
         }
-        BigDecimal n = (year1.subtract(year2)).divide(year2,2).multiply(new BigDecimal("100"));
+       BigDecimal a = year1.subtract(year2);
+        BigDecimal n = a.divide(year1,2).multiply(new BigDecimal("100"));
 
         return n+"%";
     }
