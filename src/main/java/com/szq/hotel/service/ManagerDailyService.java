@@ -459,7 +459,7 @@ public class ManagerDailyService {
 
 
         //营业收入明细
-        //获取全天日租今日发生 todo
+        //获取全天日租今日发生
         throughoutDayrent.setDay(managerdailyBO1.getThroughoutDayrent().intValue() != 0 ? df.format(managerdailyBO1.getThroughoutDayrent())+"" : "0.00");
 
         //获取全天日租本月累计
@@ -3748,10 +3748,10 @@ public class ManagerDailyService {
      * @return
      */
     public String isIncrease(BigDecimal year1, BigDecimal year2){
-        System.err.println(year1);
-        System.err.println(year2);
+        if(year1.intValue() ==  0){
+            return "100.00%";
+        }
         if(year2.intValue() ==  0){
-            System.err.println("返100.00%");
             return "100.00%";
         }
        BigDecimal a = year1.subtract(year2);
