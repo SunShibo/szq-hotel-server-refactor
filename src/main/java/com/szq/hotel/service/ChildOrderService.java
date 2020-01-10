@@ -619,7 +619,9 @@ public class ChildOrderService {
             for(int i=0;i<printBOS.size();i++){
                 PrintBO printBO = printBOS.get(i);
                 CommonBO commonBO = childOrderDAO.queryChildName(printBO.getId());
-                printBO.setName(commonBO.getName());
+                if(commonBO!=null) {
+                    printBO.setName(commonBO.getName());
+                }
             }
         }
         return printBOS;

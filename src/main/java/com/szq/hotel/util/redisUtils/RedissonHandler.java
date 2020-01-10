@@ -21,12 +21,12 @@ public class RedissonHandler {
 
     private final String port = "6379";
 
-  // private final static String ip = "60.205.226.180";//"wisewin-tech.com";
+   /* private final static String ip = "60.205.226.180";//"wisewin-tech.com";
 
-    //private final static String password = "Sunshibo1!";//"sunshibo1!";
+    private final static String password = "Sunshibo1!";//"sunshibo1!";
+*/
 
-
-    private final static String ip = "zccxywy.cn"; //"wisewin-tech.com";
+ private final static String ip = "zccxywy.cn"; //"wisewin-tech.com";
 
     private final static String password = "wangyang";//"sunshibo1!";
 
@@ -60,11 +60,12 @@ public class RedissonHandler {
 
     /**
      * delete
+     *
      * @param key
      */
     public void delete(String key) {
         RBucket<Object> rBucket = redisson.getBucket(key);
-        rBucket.delete() ;
+        rBucket.delete();
     }
 
     /**
@@ -205,13 +206,13 @@ public class RedissonHandler {
      * 获取锁
      *
      * @param lockKey
-     * @param expire 单位秒
+     * @param expire  单位秒
      * @return
      */
-    public RLock getRLock(String lockKey , Long expire) {
+    public RLock getRLock(String lockKey, Long expire) {
         RLock rLock = redisson.getLock(lockKey);
-        if (expire != null ) {
-            rLock.expire(expire , TimeUnit.SECONDS) ;
+        if (expire != null) {
+            rLock.expire(expire, TimeUnit.SECONDS);
         }
         return rLock;
     }
@@ -230,13 +231,13 @@ public class RedissonHandler {
      * 获取原子数
      *
      * @param objectName
-     * @param expire 过期时间 单位秒
+     * @param expire     过期时间 单位秒
      * @return
      */
-    public RAtomicLong getRAtomicLong(String objectName , Long expire) {
+    public RAtomicLong getRAtomicLong(String objectName, Long expire) {
         RAtomicLong rAtomicLong = redisson.getAtomicLong(objectName);
-        if (expire != null ) {
-            rAtomicLong.expire(expire , TimeUnit.SECONDS) ;
+        if (expire != null) {
+            rAtomicLong.expire(expire, TimeUnit.SECONDS);
         }
         return rAtomicLong;
     }
@@ -311,9 +312,10 @@ public class RedissonHandler {
         this.redisson = this.getRedisson(config);
     }
 
-    public Map<String,Object> getKeys(String... keys){
+    public Map<String, Object> getKeys(String... keys) {
         return redisson.loadBucketValues(keys);
     }
+
     public static void main(String[] args) {
 
         Object nightAuditor = RedissonHandler.getInstance().get("nightAuditor");

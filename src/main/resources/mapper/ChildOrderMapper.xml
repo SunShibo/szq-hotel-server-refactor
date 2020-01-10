@@ -117,7 +117,7 @@
         FROM hm_order oder  LEFT JOIN hm_order_child child ON child.order_id=oder.id
         LEFT JOIN hm_room  room ON room.id=child.room_id  LEFT JOIN hm_room_type type
         ON type.id=child.room_type_id
-        WHERE   child.al_room_code=#{code}
+        WHERE   child.al_room_code=#{code} and child.order_state!='cancel'
     </select>
 
     <select id="queryPersonNumber"   parameterType="java.lang.Integer" resultType="java.lang.Integer" >
