@@ -150,6 +150,7 @@ public class ChildOrderService {
      */
     public Integer queryOrderChildMain(String code) {
         log.info("queryOrderChildMain.......................................................");
+        System.out.println("=========="+code);
         return childOrderDAO.queryOrderChildMain(code);
     }
 

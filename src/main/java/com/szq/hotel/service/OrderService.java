@@ -915,17 +915,18 @@ public class OrderService {
     }
 
     //联房
-    //从子帐房，点联防，把其他房间连过来，其他房间房费没有转过来，也或者是没有设置主张放
     public void addAlRoom(Integer orderChildId, String orderChildIds, Integer userId) {
         log.info("start  addAlRoom......................................................................................");
         log.info("orderChildId:{}\torderChildIds:{}\tuserId:{}", orderChildId, orderChildIds, userId);
-        //新主账房信息
+        //新要设置的主账房信息
         OrderChildBO orderChildBONew = orderDAO.getOrderChildById(orderChildId);
-        //把新主帐房也加到要变更的主帐房集合中去，因为这个新的帐房有可能是有可能不是主帐房那么，它的主帐房没法转账
+        //如果新要设置的主帐房，原本不是帐房，那么就去查询它原来的主帐房，看作也是要联过来的帐房
         if (orderChildBONew.getMain() == null || orderChildBONew.getMain().equals("no")) {
             List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBONew.getAlRoomCode(), "yes");
             for (OrderChildBO child : orderChildBOList) {
                 orderChildIds = orderChildIds + "," + child.getId();
+                child.setMain("no");
+                orderDAO.updOrderChild(child);
             }
             //设置新主账房
             OrderChildBO mainOrderChild = new OrderChildBO();
@@ -950,10 +951,6 @@ public class OrderService {
                     ids = ids + orderRecoredBO.get(y).getId() + ",";
                 }
             }
-            //房间消费转账到新的主账房 添加消费记录
-            if (!ids.equals("")) {
-                childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]));
-            }
 
             //修改旧主帐房及子帐房联房码
             OrderChildBO orderChildBO = orderDAO.getOrderChildById(new Integer(orderChildIdArr[i]));
@@ -962,19 +959,27 @@ public class OrderService {
                 child.setPayCashNum(new BigDecimal(0));
                 child.setOtherPayNum(new BigDecimal(0));
                 child.setAlRoomCode(orderChildBONew.getAlRoomCode());
-                child.setMain("no");
+                if(child.getId().equals(orderChildId)){
+                    child.setMain("yes");
+                }else{
+                    child.setMain("no");
+                }
                 orderDAO.updOrderChild(child);
+            }
+
+            //房间消费转账到新的主账房 添加消费记录
+            if (!ids.equals("")) {
+                childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]));
             }
         }
 
         //设置新主账房（上边循环会把方法开始的设置主帐房改回去）
-        OrderChildBO mainOrderChild = new OrderChildBO();
-        mainOrderChild.setId(orderChildId);
-        mainOrderChild.setMain("yes");
-        orderDAO.updOrderChild(mainOrderChild);
+//        OrderChildBO mainOrderChild = new OrderChildBO();
+//        mainOrderChild.setId(orderChildId);
+//        mainOrderChild.setMain("yes");
+//        orderDAO.updOrderChild(mainOrderChild);
         log.info("end addAlRoom.............................................");
     }
-
     //设置主账房 旧主帐房全部变为子帐房
     public void changeMainRoom(Integer orderChildId, Integer userId) {
         log.info("start  changeMainRoom......................................................................................");
