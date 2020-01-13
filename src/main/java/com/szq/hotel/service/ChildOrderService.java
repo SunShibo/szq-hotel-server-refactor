@@ -163,6 +163,9 @@ public class ChildOrderService {
         log.info("userId:{}\tids:{}\tshiftToId:{}\trollOutId:{}", userId, ids, shiftToId, rollOutId);
         String[] split = ids.split(",");
         for (int i = 0; i < split.length; i++) {
+            ChildOrderBO childOrderBO1 = this.queryOrderChildById(shiftToId);
+            shiftToId = this.queryOrderChildMain(childOrderBO1.getAlRoomCode());  //转入到主订单中！
+
             OrderRecoredBO orderRecoredBO = orderRecordService.queryOrderRecordById(Integer.parseInt(split[i]));
             //押金
             if (Constants.CASHPLEDGE.getValue().equals(orderRecoredBO.getProject())) {
