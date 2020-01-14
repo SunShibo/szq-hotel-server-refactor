@@ -948,8 +948,7 @@ public class OrderService {
             //旧主帐房的账单记录
             List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(new Integer(orderChildIdArr[i]));
             for (int y = 0; y < orderRecoredBO.size(); y++) {
-                System.out.println("记录："+orderRecoredBO.get(i).getInfo()+"="+orderRecoredBO.get(i).getMoney());
-                if (y == orderRecoredBO.size() - 1) {
+                 if (y == orderRecoredBO.size() - 1) {
                     ids = ids + orderRecoredBO.get(y).getId();
                 } else {
                     ids = ids + orderRecoredBO.get(y).getId() + ",";
