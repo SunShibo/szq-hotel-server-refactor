@@ -925,6 +925,9 @@ public class OrderService {
             List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBONew.getAlRoomCode(), "yes");
             for (OrderChildBO child : orderChildBOList) {
                 orderChildIds = orderChildIds + "," + child.getId();
+                //为了不会重复加钱
+                child.setPayCashNum(new BigDecimal(0));
+                child.setOtherPayNum(new BigDecimal(0));
                 child.setMain("no");
                 orderDAO.updOrderChild(child);
             }
@@ -945,6 +948,7 @@ public class OrderService {
             //旧主帐房的账单记录
             List<OrderRecoredBO> orderRecoredBO = orderRecordService.queryOrderRecord(new Integer(orderChildIdArr[i]));
             for (int y = 0; y < orderRecoredBO.size(); y++) {
+                System.out.println("记录："+orderRecoredBO.get(i).getInfo()+"="+orderRecoredBO.get(i).getMoney());
                 if (y == orderRecoredBO.size() - 1) {
                     ids = ids + orderRecoredBO.get(y).getId();
                 } else {
@@ -952,10 +956,15 @@ public class OrderService {
                 }
             }
 
+            //房间消费转账到新的主账房 添加消费记录
+            if (!ids.equals("")) {
+                childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]),false);
+            }
             //修改旧主帐房及子帐房联房码
             OrderChildBO orderChildBO = orderDAO.getOrderChildById(new Integer(orderChildIdArr[i]));
             List<OrderChildBO> orderChildBOList = orderDAO.getOrderByCode(orderChildBO.getAlRoomCode(), null);
             for (OrderChildBO child : orderChildBOList) {
+                //为了不会重复加钱
                 child.setPayCashNum(new BigDecimal(0));
                 child.setOtherPayNum(new BigDecimal(0));
                 child.setAlRoomCode(orderChildBONew.getAlRoomCode());
@@ -967,10 +976,7 @@ public class OrderService {
                 orderDAO.updOrderChild(child);
             }
 
-            //房间消费转账到新的主账房 添加消费记录
-            if (!ids.equals("")) {
-                childOrderService.transferAccounts(userId, ids, orderChildId, new Integer(orderChildIdArr[i]));
-            }
+
         }
 
         //设置新主账房（上边循环会把方法开始的设置主帐房改回去）
@@ -1012,7 +1018,7 @@ public class OrderService {
         //房间消费转账到新的主账房 添加消费记录
         if (!ids.equals("")) {
             System.err.println("orderChildId" + orderChildId);
-            childOrderService.transferAccounts(userId, ids, orderChildId, mainId);
+            childOrderService.transferAccounts(userId, ids, orderChildId, mainId,false);
         }
         log.info("end changeMainRoom.............................................");
     }
