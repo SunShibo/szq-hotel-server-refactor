@@ -148,7 +148,7 @@
 
         //添加
         form.on('submit(addAccounts)', function (data) {
-            $('#addAccounts').addClass('layui-btn-disabled');
+            $('.layui-btn').prop('disabled','disabled').addClass('layui-btn-disabled');
             $.ajax({
                 url: api.join,
                 type: 'POST',

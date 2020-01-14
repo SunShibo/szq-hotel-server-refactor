@@ -207,6 +207,8 @@
 
         //获取同来人对象数组
         function formSubmit(data) {
+
+            $('.layui-btn').attr('disabled','disabled').addClass('layui-btn-disabled');
             var arr = [];
             for (var i = 1; i <= num; i++) {
                 //创建一个同来人对象

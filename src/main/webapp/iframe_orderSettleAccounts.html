@@ -111,6 +111,7 @@
 
         //监听支付方式
         form.on('radio(payType)', function (data) {
+            $('.layui-btn').attr('disabled','disabled').addClass('layui-btn-disabled');
             if (!checked) clearIDForm(form, 'formData');
             //判断选中的是否是储值支付
             switch (data.value) {

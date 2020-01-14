@@ -107,6 +107,7 @@
 
         //监听退房按钮提交
         form.on('submit(formData)', function (data) {
+            $('.layui-btn').attr('disabled','disabled').addClass('layui-btn-disabled');
             requestData = data.field;
             //防止重复点击
             if (index != null) clearTimeout(index);

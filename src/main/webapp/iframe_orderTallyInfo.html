@@ -33,7 +33,7 @@
 
         //点击挂账按钮
         $('#formData').on('click', function () {
-
+            $('.layui-btn').attr('disabled','disabled').addClass('layui-btn-disabled');
             var oo = {};
 
             if (tallyInfoId === 0) {

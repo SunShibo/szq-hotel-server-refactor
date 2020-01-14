@@ -992,14 +992,16 @@ function closeWin() {
 }
 
 //监听用户是否激活当前页面
-function visibilityChange() {
+function visibilityChange(fn) {
     var hiddenProperty = 'hidden' in document ? 'hidden' :
         'webkitHidden' in document ? 'webkitHidden' :
             'mozHidden' in document ? 'mozHidden' :
                 null;
     var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
     var onVisibilityChange = function () {
-        if (!document[hiddenProperty]) {
+        if(!!fn){
+          fn();
+        } else if (!document[hiddenProperty]) {
             // console.log('页面激活');
             location.reload();
         }
