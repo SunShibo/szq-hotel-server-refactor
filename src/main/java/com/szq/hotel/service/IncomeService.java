@@ -404,8 +404,7 @@ public class IncomeService {
         incomeBO.setOtherRate(otherRate);
 
         //借方总记：房费+超时费+其他费用
-        BigDecimal debtSum=roomRate.add(timeoutRoomRate).add(otherRate);
-
+        BigDecimal debtSum= incomeBO.getRoomRate().add(timeoutRoomRate).add(otherRate);
 
         if(debtSum==null){
             debtSum=new BigDecimal(0);

@@ -263,4 +263,7 @@ public interface ManagerDailyDAO {
      * @return
      */
     BigDecimal queryGoods2(@Param("hotelId")Integer hotelId, @Param("startTime")String startTime, @Param("endTime")String endTime);
+
+
+    void up(@Param("day")BigDecimal day,@Param("hour")BigDecimal hour,@Param("time")String time);
 }

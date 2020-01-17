@@ -16,7 +16,7 @@
 <script src="js/loadjs.js" type="text/javascript" charset="utf-8"></script>
 <script>
     layui.use(['form', 'table'], function () {
-        var form = layui.form, $ = layui.$, table = layui.table, tally = {}, tallyInfo = {};
+        var form = layui.form, $ = layui.$, table = layui.table, tally = {}, tallyInfo = {}, tallyInfoId = 0;
 
         $(function () {
             tallyInfo = JSON.parse(sessionStorage.getItem('orderTallyInfo'));
@@ -33,14 +33,19 @@
 
         //点击挂账按钮
         $('#formData').on('click', function () {
-
+            $('.layui-btn').attr('disabled','disabled').addClass('layui-btn-disabled');
             var oo = {};
 
-            oo.rollOutId=getUrl("id");
-            oo.ids=getUrl("ids");
-            oo.shiftToId = tallyInfo[0].id;
-            if(oo.rollOutId == oo.shiftToId){
-                layer.alert("不能挂自己房间")
+            if (tallyInfoId === 0) {
+                layer.alert("请选择转入房间");
+                return;
+            }
+
+            oo.rollOutId = getUrl("id");
+            oo.ids = getUrl("ids");
+            oo.shiftToId = tallyInfoId;
+            if (oo.rollOutId == oo.shiftToId) {
+                layer.alert("不能挂自己房间");
                 return;
             }
             $.ajax({
@@ -49,11 +54,11 @@
                 dataType: 'json',
                 data: oo,
                 success: function (rs) {
-                    if(rs.success){
+                    if (rs.success) {
                         showMsg('操作成功', 1, false);
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
-                    }else{
+                    } else {
                         layer.alert(rs.errMsg);
                     }
                     return false;
@@ -61,11 +66,17 @@
             })
         });
 
+        //单选按钮点击事件
+        table.on('radio(tallyInfo)', function (obj) {
+            tallyInfoId = obj.data.id
+        });
+
         var tab = table.render({
             elem: '#tallyInfo'
             , limit: 10000
             , cols: [[ //表头
-                {field: 'roomName', title: '房号', align: 'center', width: 90}
+                {type: 'radio', fixed: 'left'}
+                , {field: 'roomName', title: '房号', align: 'center', width: 90}
                 , {field: 'name', title: '姓名', align: 'center', width: 100}
                 , {field: 'phone', title: '手机号', align: 'center', width: 100}
                 , {

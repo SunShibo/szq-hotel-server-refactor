@@ -166,7 +166,7 @@ public class ChildOrderController extends BaseCotroller {
                 log.info("result:{}", result);
                 return;
             }
-            childOrderService.transferAccounts(loginAdmin.getId(),ids,shiftToId,rollOutId);
+            childOrderService.transferAccounts(loginAdmin.getId(),ids,shiftToId,rollOutId,true);
 
             String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(""));
             super.safeJsonPrint(response, result);

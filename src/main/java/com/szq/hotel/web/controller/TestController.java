@@ -44,7 +44,8 @@ public class TestController extends BaseCotroller {
     private NightAuditService nightAuditService;
     @Resource
     IncomeService incomeService;
-
+ @Resource
+ TestService testService;
 
     @RequestMapping("/start")
     public void nightAuditor2() {
@@ -91,21 +92,12 @@ public class TestController extends BaseCotroller {
 
 
 }
-private int i=0;
-@RequestMapping("/Locktest")
-    public void test(HttpServletResponse  response) throws InterruptedException {
-    RedisLock lock = new RedisLock();
-  //  lock.lock("one");
-    log.info("start  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
-    if(i==0){
-        Thread.sleep(5000);
-        i++;
-    }
-    log.info("end  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-   // lock.releaseLock("one");
-    String result = JsonUtils.getJsonString4JavaPOJO(ResultDTOBuilder.success(i));
-    super.safeJsonPrint(response, result);
-}
 
+
+
+    @RequestMapping("/test")
+    public void test(){
+      testService.test();
+   }
 }

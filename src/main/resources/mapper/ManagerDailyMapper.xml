@@ -216,4 +216,8 @@
         AND( hm_order_record.project = '房费' OR hm_order_record.project = '房费冲减'  ) AND hm_order.hotel_id = #{hotelId}
         AND hm_order_record.create_time &gt;= #{startTime} and hm_order_record.create_time &lt; #{endTime}
     </select>
+
+    <update id="up" >
+        UPDATE `hm_managerdaily` SET  `throughout_dayrent` = #{day}  , `hour_rate` = #{hour} WHERE  daily_type = 2  AND date_time= #{time}
+    </update>
 </mapper>

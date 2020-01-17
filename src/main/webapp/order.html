@@ -184,7 +184,9 @@
 
         $(function () {
             //判断用户是否激活当前页面
-            visibilityChange();
+            visibilityChange(function () {
+                $('.layui-laypage-skip').find(".layui-laypage-btn") .click();
+            });
 
             //获取查询的订单状态   如何订单状态为null 则这设置订单状态为预约订单
             orderState = sessionStorage.getItem('orderState');
