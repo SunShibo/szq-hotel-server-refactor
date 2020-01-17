@@ -105,6 +105,8 @@
 
                 if(_f!=da[i]['type']){
                     if(i!=0){
+                        settlement = Math.round(settlement * 100) / 100
+                        consumption = Math.round(consumption * 100) / 100
 
                         _da.push({
                             settlement:settlement,
@@ -117,11 +119,15 @@
                         settlement = 0;
                         consumption+=da[i]['consumption'];
                         settlement+=da[i]['settlement'];
+                        settlement = Math.round(settlement * 100) / 100
+                        consumption = Math.round(consumption * 100) / 100
                         _da.push(da[i])
                         _f = da[i]['type'];
                     }else{
                         consumption+=da[i]['consumption'];
                         settlement+=da[i]['settlement'];
+                        settlement = Math.round(settlement * 100) / 100
+                        consumption = Math.round(consumption * 100) / 100
                         _f = da[i]['type'];
                         _da.push(da[i])
                     }
@@ -130,6 +136,8 @@
                     _da.push(da[i]);
                     consumption+=da[i]['consumption'];
                     settlement+=da[i]['settlement'];
+                    settlement = Math.round(settlement * 100) / 100
+                    consumption = Math.round(consumption * 100) / 100
                     if(i==da.length-1){
 
                         _da.push({
