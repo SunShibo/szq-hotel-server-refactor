@@ -18,8 +18,9 @@ import java.util.List;
 
 public class test {
     public static void main(String args[]) throws ParseException {
-        ArrayList<String> test=new ArrayList<String>();
-        System.err.println(test.get(0));
+        BigDecimal bigDecimal=new BigDecimal(1);
+        bigDecimal.add(new BigDecimal(2));
+        System.err.println(bigDecimal);
 
     }
 }

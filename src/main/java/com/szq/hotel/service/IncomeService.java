@@ -397,7 +397,7 @@ public class IncomeService {
         }
         incomeBO.setMemberCardRate(memberCardRate);
         //其他费用
-        BigDecimal otherRate=commodity.add(compensation).add(memberCardRate);
+        BigDecimal otherRate=incomeBO.getCommodity().add(incomeBO.getCompensation()).add(memberCardRate);
         if(otherRate==null){
             otherRate=new BigDecimal(0);
         }
