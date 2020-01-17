@@ -103,12 +103,12 @@
         //支付方法
         function pay() {
             //当押金输入 为空 或者 为0时  跳出方法
-            if (!requestData.money) return false;
+            // if (!requestData.money) return false;
             //押金金额不能小于0
-            if (requestData.money <= 0) {
-                showMsg('押金金额不能小于0', 2, false);
-                return false;
-            }
+            // if (requestData.money <= 0) {
+            //     showMsg('押金金额不能小于0', 2, false);
+            //     return false;
+            // }
             //支付方式
             var payType = requestData.payType;
 
